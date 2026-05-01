@@ -84,16 +84,29 @@ setupMobileNav();
 setupRevealOnScroll();
 setupSmoothAnchors();
 
-// Scroll Progress Bar
-function updateProgressBar() {
+// Scroll State & Effects
+function updateNavState() {
   const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+  
+  // 1. Progress Bar
   const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
   const scrolled = (winScroll / height) * 100;
-  document.getElementById("scrollProgress").style.width = scrolled + "%";
+  const progressEl = document.getElementById("scrollProgress");
+  if (progressEl) progressEl.style.width = scrolled + "%";
+
+  // 2. Topbar sticky effect
+  const topbar = document.querySelector(".topbar");
+  if (topbar) {
+    if (winScroll > 20) {
+      topbar.classList.add("is-scrolled");
+    } else {
+      topbar.classList.remove("is-scrolled");
+    }
+  }
 }
 
-window.addEventListener('scroll', updateProgressBar, { passive: true });
-updateProgressBar();
+window.addEventListener('scroll', updateNavState, { passive: true });
+updateNavState();
 
 
 

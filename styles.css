@@ -143,12 +143,19 @@ strong{ font-weight: 650; }
   justify-content:space-between;
   gap: 16px;
   padding: 10px 20px;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: rgba(11, 15, 20, 0.65);
-  border: 1px solid rgba(231,238,247,0.1);
+  backdrop-filter: blur(18px) saturate(1.4);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  background: rgba(5, 5, 5, 0.55);
+  border: 1px solid rgba(245, 158, 11, 0.08);
   border-radius: 999px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  transition: border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Efecto sticky: borde ámbar al scrollear */
+.topbar.is-scrolled .topbar__inner {
+  border-color: rgba(245, 158, 11, 0.25);
+  box-shadow: 0 4px 30px rgba(0,0,0,0.5), 0 0 15px rgba(245, 158, 11, 0.06);
 }
 
 .brand{
@@ -167,6 +174,10 @@ strong{ font-weight: 650; }
   font-weight: 650;
   letter-spacing: -0.02em;
   color: var(--text);
+  transition: text-shadow 0.4s ease;
+}
+.topbar.is-scrolled .brand__name {
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.3);
 }
 
 .nav{
@@ -224,9 +235,10 @@ strong{ font-weight: 650; }
 }
 .nav__menu a:hover{
   color: #F59E0B;
-  border-color: rgba(245, 158, 11,0.3);
-  background: rgba(245, 158, 11,0.3);
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.08);
 }
+
 
 /* Glow effect for nav links - no underlines */
 .nav__menu a:hover::after,
@@ -955,27 +967,37 @@ strong{ font-weight: 650; }
   .nav__toggle{ display:inline-flex; }
   .nav__menu{
     position: absolute;
-    right: 20px;
-    top: 62px;
+    right: 0;
+    top: calc(100% + 12px);
     flex-direction: column;
-    min-width: 230px;
-    padding: 10px;
-    border-radius: 16px;
-    border: 1px solid var(--border);
-    background: rgba(11,15,20,0.95);
-    backdrop-filter: blur(12px);
-    box-shadow: var(--shadow);
+    min-width: 200px;
+    padding: 8px;
+    border-radius: 18px;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+    background: rgba(5, 5, 5, 0.9);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.7), 0 0 20px rgba(245, 158, 11, 0.05);
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
     transform: translateY(-10px);
-    transition: opacity 200ms ease, visibility 200ms ease, transform 200ms ease,
-    display:flex;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s ease;
+    display: flex;
   }
   .nav__menu.is-open{
     opacity: 1;
+    visibility: visible;
     pointer-events: auto;
     transform: translateY(0);
   }
+  .nav__menu li { width: 100%; }
+  .nav__menu a { 
+    width: 100%; 
+    justify-content: flex-start;
+    padding: 12px 20px;
+    border-radius: 12px;
+  }
+}
   .contact__grid{ grid-template-columns: 1fr; }
   .panelFooter{ grid-template-columns: 1fr; }
   .cap{ grid-column: span 12; }
@@ -1047,8 +1069,7 @@ strong{ font-weight: 650; }
 }
 
 
-
-}/* PROJECTS SECTION - Blue Team Arsenal */
+/* PROJECTS SECTION - Blue Team Arsenal */
 .projects-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -1118,7 +1139,6 @@ strong{ font-weight: 650; }
 
 .project-actions {
   padding-top: 16px;
-  border-top: 1px solid rgba(231, 238, 247, 0.08);
 }
 
 .project-actions .btn {
@@ -1308,4 +1328,27 @@ body::after {
 }
 .stack-category .stackItem {
   margin-bottom: 4px;
+}
+
+/* Featured Training Item — usa solo box-shadow/border, sin ::before para no romper el spotlight */
+.training__item--featured {
+  border-color: rgba(245, 158, 11, 0.45) !important;
+  box-shadow: 0 0 28px rgba(245, 158, 11, 0.12), inset 0 0 60px rgba(245, 158, 11, 0.03);
+}
+
+
+.badge--certified {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  vertical-align: middle;
 }
