@@ -1,46 +1,46 @@
+# Plan: arreglar scroll, reveal y glitch en desktop (1920px)
+
 ## Diagnóstico
 
-Verifiqué el preview y confirmé el problema:
+Mirando el código y el preview en 1920px detecté **3 problemas concretos** que coinciden con lo que describís:
 
-1. **Las secciones no animan**: en `src/styles.css` la animación está definida como `@utility reveal-on-view { ... }`. En Tailwind v4, `@utility` es "on-demand": solo se emite si el escáner detecta la clase como literal en el código fuente. Como `reveal-on-view` y `in-view` se agregan dinámicamente con `classList.add(...)` desde JS (`src/routes/index.tsx` línea 548 y 553), Tailwind no las detecta de forma confiable y **no las compila en el bundle final**. Resultado: el elemento nunca recibe `opacity: 0` ni el `@keyframes reveal-up`, así que aparece de golpe sin animación.
+### 1. Glitch del nombre "SANTIAGO / SANDILI"
+- El `<h1>` combina dos animaciones que pelean entre sí: `glitch-on` (translate + text-shadow cada 8s) y `animate-reveal` (slide-up con `transform: translateY`).
+- En desktop, con `text-[12rem]`, los `translate(-2px, 1px)` se notan como un "salto" feo del título cada ~8 segundos.
+- Además `tracking-tighter` + `leading-[0.85]` + el text-shadow del glitch dejan halos cromáticos que en pantallas grandes parecen un bug.
 
-2. **El scroll no se siente suave**: `html { scroll-behavior: smooth }` sí está en el CSS, pero el botón "volver arriba" usa `window.scrollTo({ behavior: "smooth" })` y los anchors del nav dependen del navegador. Conviene asegurar que la regla CSS llegue al bundle y que la navegación por hash también dispare scroll suave programáticamente.
+### 2. Aparición de secciones (reveal) entrecortada
+- Cada `section[data-reveal]` se anima con `translate3d(0, 24px, 0)` + `opacity 0 → 1`. En desktop muchas secciones miden más que el viewport y el `rootMargin: "0px 0px -10% 0px"` con `threshold: 0.01` hace que el reveal se dispare muy tarde — la sección ya está visible cuando empieza a aparecer.
+- `contain: layout paint` en `.reveal-on-view` rompe el flujo de scroll cuando hay grids grandes (stack/certs), generando reflows visibles.
+- Al final del reveal queda `will-change: transform, opacity` permanente, lo que ensucia el composite layer y empeora el scroll posterior.
 
-## Cambios propuestos en `src/styles.css`
+### 3. Scroll
+- Hay doble fuente de smooth-scroll: CSS `html { scroll-behavior: smooth }` + `window.scrollTo({ behavior: "smooth" })` en handlers. Funcionan, pero el offset del nav es `-56` cuando el nav real mide `h-16` (64px) → al hacer click en un link queda el título tapado.
+- En desktop, sin offset bien calibrado, se siente "saltón".
 
-- **Reemplazar `@utility reveal-on-view`** por reglas CSS planas en `@layer base` (o fuera de cualquier capa on-demand), de modo que SIEMPRE se incluyan en el bundle, independientemente del escáner:
+## Cambios
 
-```css
-.reveal-on-view {
-  opacity: 0;
-  transform: translate3d(0, 24px, 0);
-  will-change: transform, opacity;
-  contain: layout paint;
-  backface-visibility: hidden;
-}
-.reveal-on-view.in-view {
-  animation: reveal-up 0.7s var(--ease-out-expo) both;
-}
-```
+### `src/styles.css`
+1. Reescribir `@keyframes glitch` para que **no haga translate** — solo aberración cromática suave con `text-shadow`, y bajar la frecuencia (de 8s a 12s) para que sea un detalle, no un glitch molesto.
+2. `.reveal-on-view`:
+   - Reducir desplazamiento a `translate3d(0, 16px, 0)` y duración a `0.55s` para una entrada más natural.
+   - Quitar `contain: layout paint` (causa reflows en grids grandes).
+   - Limpiar `will-change` al terminar la animación (`animation-fill-mode` + reset vía `.in-view` con `will-change: auto`).
+3. Añadir `scroll-padding-top: 64px` en `html` para que el ancla scrollee respetando la altura del nav sticky.
 
-- Mantener el bloque `@media (prefers-reduced-motion: reduce)` que ya neutraliza el efecto.
+### `src/routes/index.tsx`
+1. `useRevealOnView`:
+   - Cambiar a `rootMargin: "0px 0px -15% 0px"` y `threshold: [0, 0.15]` para que el trigger sea predecible en pantallas altas.
+   - Tras añadir `in-view`, en `animationend` quitar `will-change`.
+2. `handleNavClick`: usar offset real `64` (altura del nav `h-16`) en vez de `56`.
+3. Hero `<h1>`: separar el `animate-reveal` del `glitch-on` envolviendo el texto en un `<span class="glitch-on">` interno, así la animación de reveal (transform del padre) no se acumula con los micro-transforms del glitch.
 
-- Como cinturón y tirantes, agregar `@source inline("reveal-on-view in-view");` cerca del top del CSS para que Tailwind tampoco intente eliminar nada relacionado.
+## Verificación
+- Recargar `/` en 1920×1080.
+- Confirmar que el nombre no "salta" cada 8s (solo halo cromático muy sutil).
+- Scrollear lento y rápido: secciones aparecen suaves, sin saltos ni reflows.
+- Click en cada link del nav: la sección queda bien posicionada bajo el nav sticky, no tapada.
+- Probar `prefers-reduced-motion`: todo aparece estático sin animaciones.
 
-## Cambios propuestos en `src/routes/index.tsx`
-
-- **Scroll suave para enlaces del nav**: interceptar clicks en `<a href="#...">` del `Nav` y hacer `document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })`. Esto garantiza scroll suave aún si el navegador ignora `scroll-behavior: smooth` por algún motivo (extensiones, settings de accesibilidad activas).
-- Mantener `useRevealOnView` como está (ya quedó bien con `requestAnimationFrame` y soporte de reduce-motion).
-
-## Verificación post-cambio
-
-1. Recargar el preview en `/`.
-2. Confirmar que al cargar, las secciones bajo el fold empiezan invisibles y aparecen con fade+slide al scrollear.
-3. Click en "PROYECTOS", "CONTACTO", etc. del nav → scroll suave.
-4. Click en botón "volver arriba" → scroll suave hasta el tope.
-5. Activar `prefers-reduced-motion` en el OS → secciones visibles instantáneamente, scroll instantáneo.
-
-## Archivos a modificar
-
-- `src/styles.css` — convertir `@utility reveal-on-view` en CSS plano y agregar safelist.
-- `src/routes/index.tsx` — handler de scroll suave en el Nav.
+## Nota sobre el espacio a los costados
+El layout usa `max-w-7xl` (≈1280px) centrado — eso es **intencional** para legibilidad. En 1920px sobran ~320px por lado y eso es esperable. Si querés, lo puedo abordar como cambio aparte (ampliar a `max-w-[1600px]` o agregar contenido decorativo lateral), pero no lo incluyo acá porque dijiste que el problema principal es scroll/reveal/glitch.
