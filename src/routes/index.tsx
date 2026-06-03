@@ -67,7 +67,7 @@ const PROJECTS: Project[] = [
     id: "02",
     title: "Blue Team Automation Scripts",
     description:
-      "Scripts operacionales para DFIR y SOC: triage de endpoints, enumeración local, parseo de logs, integración con threat intel y plantillas de investigación rápida.",
+      "Repositorio de scripts orientados a tareas operativas de SOC y DFIR. La idea es ir documentando utilidades que me sirvan para triage, parsing, recolección de evidencia y automatización de tareas repetitivas.",
     href: "https://github.com/dsandili06/blueteam-scripts",
     label: "AUTOMATION_BT.REPO",
     image: blueteamScriptsImg,
