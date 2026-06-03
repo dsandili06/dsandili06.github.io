@@ -579,13 +579,30 @@ function Footer() {
 
 function Nav() {
   const links = [
-    { href: "#proyectos", label: "Proyectos" },
-    { href: "#investigaciones", label: "Labs" },
-    { href: "#stack", label: "Stack" },
-    { href: "#formacion", label: "Certs" },
-    { href: "#cursos", label: "Cursos" },
-    { href: "#contacto", label: "Contacto" },
+    { href: "#proyectos", id: "proyectos", label: "Proyectos" },
+    { href: "#investigaciones", id: "investigaciones", label: "Labs" },
+    { href: "#stack", id: "stack", label: "Stack" },
+    { href: "#formacion", id: "formacion", label: "Certs" },
+    { href: "#cursos", id: "cursos", label: "Cursos" },
+    { href: "#contacto", id: "contacto", label: "Contacto" },
   ];
+  const [active, setActive] = useState<string>("");
+  useEffect(() => {
+    const sections = links
+      .map((l) => document.getElementById(l.id))
+      .filter((el): el is HTMLElement => Boolean(el));
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
+    );
+    sections.forEach((s) => obs.observe(s));
+    return () => obs.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <nav className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border-dim">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between font-display text-xs tracking-widest">
@@ -593,20 +610,27 @@ function Nav() {
           SANTIAGO // BLUE TEAM
         </a>
         <div className="hidden md:flex gap-8 uppercase">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="hover:text-accent transition-colors"
-            >
-              {l.label}
-            </a>
-          ))}
+          {links.map((l) => {
+            const isActive = active === l.id;
+            return (
+              <a
+                key={l.href}
+                href={l.href}
+                className={`relative pb-1 transition-colors ${isActive ? "text-accent" : "hover:text-accent"}`}
+              >
+                {l.label}
+                <span
+                  className={`absolute left-0 -bottom-0.5 h-px bg-accent transition-all ${isActive ? "w-full" : "w-0"}`}
+                />
+              </a>
+            );
+          })}
         </div>
       </div>
     </nav>
   );
 }
+
 
 function RotatingRole() {
   const [idx, setIdx] = useState(0);
