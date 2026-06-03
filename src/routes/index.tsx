@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Menu, X } from "lucide-react";
 import socLabsImg from "@/assets/project-soc-labs.jpg";
 import blueteamScriptsImg from "@/assets/project-blueteam-scripts.jpg";
 
@@ -637,8 +637,10 @@ function Nav() {
     return () => obs.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const [menuOpen, setMenuOpen] = useState(false);
   const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     e.preventDefault();
+    setMenuOpen(false);
     const target =
       id === "top" ? document.documentElement : document.getElementById(id);
     if (!target) return;
@@ -649,16 +651,35 @@ function Nav() {
     window.scrollTo({ top, behavior: "smooth" });
     history.replaceState(null, "", id === "top" ? " " : `#${id}`);
   };
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
+
+  const Brand = (
+    <a
+      href="#top"
+      onClick={(e) => handleNavClick(e, "top")}
+      className="text-accent font-bold font-display tracking-tight flex items-center gap-1 whitespace-nowrap text-[11px] sm:text-xs"
+      aria-label="Inicio"
+    >
+      <span className="text-muted-foreground">┌──(</span>
+      <span>dsandili06@blueteam</span>
+      <span className="text-muted-foreground">)-[</span>
+      <span className="text-[var(--accent-green)]">~</span>
+      <span className="text-muted-foreground">]</span>
+      <span className="ml-1 text-accent">$</span>
+      <span className="ml-0.5 inline-block w-2 h-3.5 bg-accent animate-pulse align-middle" aria-hidden />
+    </a>
+  );
+
   return (
-    <nav className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border-dim">
-      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between font-display text-xs tracking-widest">
-        <a
-          href="#top"
-          onClick={(e) => handleNavClick(e, "top")}
-          className="text-accent font-bold"
-        >
-          SANTIAGO // BLUE TEAM
-        </a>
+    <nav className="sticky top-0 z-50 bg-background/90 backdrop-blur-md border-b border-border-dim">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between font-display text-xs tracking-widest">
+        {Brand}
         <div className="hidden md:flex gap-8 uppercase">
           {links.map((l) => {
             const isActive = active === l.id;
@@ -677,6 +698,42 @@ function Nav() {
             );
           })}
         </div>
+        <button
+          type="button"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+          aria-expanded={menuOpen}
+          className="md:hidden inline-flex items-center justify-center w-10 h-10 -mr-2 text-accent border border-border-dim hover:border-accent transition-colors"
+        >
+          {menuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
+        </button>
+      </div>
+
+      {/* Mobile slide-down menu */}
+      <div
+        className={`md:hidden overflow-hidden border-t border-border-dim bg-background/95 backdrop-blur-md transition-[max-height,opacity] duration-300 ${
+          menuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"
+        }`}
+      >
+        <ul className="flex flex-col px-4 py-3 font-display text-xs uppercase tracking-widest">
+          {links.map((l) => {
+            const isActive = active === l.id;
+            return (
+              <li key={l.href}>
+                <a
+                  href={l.href}
+                  onClick={(e) => handleNavClick(e, l.id)}
+                  className={`flex items-center gap-3 py-3 border-b border-border-dim/60 transition-colors ${
+                    isActive ? "text-accent" : "hover:text-accent"
+                  }`}
+                >
+                  <span className="text-accent/60">{">"}</span>
+                  <span>{l.label}</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
       </div>
     </nav>
   );
