@@ -632,44 +632,83 @@ function Nav() {
 }
 
 
-function RotatingRole() {
+function TypewriterRole() {
+  const [text, setText] = useState("");
   const [idx, setIdx] = useState(0);
+  const [phase, setPhase] = useState<"typing" | "holding" | "deleting">("typing");
   useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % ROLES.length), 2200);
-    return () => clearInterval(id);
-  }, []);
+    const word = ROLES[idx];
+    let timeout: ReturnType<typeof setTimeout>;
+    if (phase === "typing") {
+      if (text.length < word.length) {
+        timeout = setTimeout(() => setText(word.slice(0, text.length + 1)), 80);
+      } else {
+        timeout = setTimeout(() => setPhase("deleting"), 1400);
+      }
+    } else if (phase === "deleting") {
+      if (text.length > 0) {
+        timeout = setTimeout(() => setText(word.slice(0, text.length - 1)), 40);
+      } else {
+        setIdx((i) => (i + 1) % ROLES.length);
+        setPhase("typing");
+      }
+    }
+    return () => clearTimeout(timeout);
+  }, [text, phase, idx]);
   return (
-    <span
-      key={idx}
-      className="px-2 py-0.5 border border-accent uppercase tracking-widest animate-reveal min-w-[10ch] text-center"
-    >
-      {ROLES[idx]}
+    <span className="px-2 py-0.5 border border-accent uppercase tracking-widest min-w-[18ch] inline-flex items-center">
+      <span>{text}</span>
+      <span className="ml-0.5 animate-pulse">█</span>
     </span>
   );
+}
+
+function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    const start = performance.now();
+    const dur = 1200;
+    let raf = 0;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setN(Math.round(to * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [to]);
+  return <span>{n}{suffix}</span>;
 }
 
 function Hero() {
   return (
     <section
       id="top"
-      className="py-28 md:py-44 flex flex-col items-start border-b border-border-dim overflow-hidden"
+      className="relative py-28 md:py-44 flex flex-col items-start border-b border-border-dim overflow-hidden"
     >
-      <div className="flex items-center gap-4 text-accent font-display text-sm md:text-base mb-6 animate-reveal">
-        <RotatingRole />
+      <div className="scanline" />
+      <div className="flex items-center gap-4 text-accent font-display text-sm md:text-base mb-6 animate-reveal flex-wrap">
+        <TypewriterRole />
         <span className="flex items-center gap-2">
           <span className="size-2 bg-accent animate-pulse" />
           ACTIVE_SESSION
         </span>
+        <span className="flex items-center gap-2 text-[var(--accent-green)]">
+          <span className="size-2 rounded-full bg-[var(--accent-green)] animate-pulse" />
+          AVAILABLE
+        </span>
       </div>
 
       <h1
-        className="font-display font-bold uppercase tracking-tighter leading-[0.85] text-6xl md:text-[9rem] lg:text-[12rem] mb-12 animate-reveal"
+        className="glitch-on font-display font-bold uppercase tracking-tighter leading-[0.85] text-6xl md:text-[9rem] lg:text-[12rem] mb-12 animate-reveal"
         style={{ animationDelay: "100ms" }}
       >
         Santiago
         <br />
         Sandili
       </h1>
+
 
       <div
         className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full animate-reveal"
