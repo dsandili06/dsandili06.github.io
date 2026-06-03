@@ -372,41 +372,75 @@ function Portfolio() {
           id="formacion"
           className="py-24 border-b border-border-dim"
         >
-          <SectionHeader number="04" title="Formación" />
-          <ul className="flex flex-col">
-            {FORMATION.map((f) => (
-              <li
-                key={f.title}
-                className="flex justify-between items-start border-b border-border-dim py-5 gap-6"
-              >
-                <div>
-                  {f.href ? (
-                    <a
-                      href={f.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="font-bold uppercase hover:text-accent transition-colors"
-                    >
-                      {f.title}
-                    </a>
-                  ) : (
-                    <h4 className="font-bold uppercase">{f.title}</h4>
-                  )}
-                  <span className="block text-xs text-muted-foreground font-display mt-1">
-                    {f.org}
-                  </span>
-                </div>
-                <span
-                  className={`text-xs font-display font-bold whitespace-nowrap ${
-                    f.accent ? "text-accent" : "text-muted-foreground"
-                  }`}
+          <SectionHeader number="04" title="Certificaciones" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
+            {CERTIFICATIONS.map((c) => {
+              const obtained = c.status === "OBTENIDA";
+              const Wrapper: React.ElementType = c.href ? "a" : "div";
+              const wrapperProps = c.href
+                ? { href: c.href, target: "_blank", rel: "noreferrer" }
+                : {};
+              return (
+                <Wrapper
+                  key={c.code}
+                  {...wrapperProps}
+                  className={`bg-background p-8 flex flex-col group transition-colors ${
+                    obtained ? "hover:bg-accent/5" : "opacity-90"
+                  } ${c.href ? "cursor-pointer" : ""}`}
                 >
-                  {f.status}
-                </span>
-              </li>
-            ))}
-          </ul>
+                  <div className="flex items-center justify-between mb-6">
+                    <span
+                      className={`font-display text-[10px] tracking-widest px-2 py-1 border ${
+                        obtained
+                          ? "border-accent text-accent bg-accent/10"
+                          : "border-muted-foreground/40 text-muted-foreground"
+                      }`}
+                    >
+                      {obtained ? "✓ OBTENIDA" : "◌ EN PREPARACIÓN"}
+                    </span>
+                    <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+                      {c.year}
+                    </span>
+                  </div>
+
+                  <span className="font-display text-[11px] uppercase tracking-widest text-accent mb-2">
+                    {c.org} · {c.code}
+                  </span>
+                  <h3
+                    className={`font-display text-2xl md:text-3xl uppercase font-bold leading-tight mb-6 ${
+                      obtained ? "group-hover:text-accent transition-colors" : ""
+                    }`}
+                  >
+                    {c.title}
+                  </h3>
+
+                  {c.score && (
+                    <div className="mt-auto border-t border-border-dim pt-5">
+                      <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground block mb-2">
+                        Puntaje obtenido
+                      </span>
+                      <span className="font-display text-4xl md:text-5xl font-bold text-accent leading-none">
+                        {c.score}
+                      </span>
+                    </div>
+                  )}
+
+                  {c.href && (
+                    <span className="mt-6 inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent group-hover:gap-3 transition-all">
+                      Ver certificado <span className="text-base">→</span>
+                    </span>
+                  )}
+                  {!c.score && !c.href && (
+                    <span className="mt-auto pt-5 border-t border-border-dim font-display text-xs uppercase tracking-widest text-muted-foreground">
+                      Estudio en curso · examen programado
+                    </span>
+                  )}
+                </Wrapper>
+              );
+            })}
+          </div>
         </section>
+
 
         <section id="cursos" className="py-24 border-b border-border-dim">
           <SectionHeader number="05" title="Cursos Completados" />
