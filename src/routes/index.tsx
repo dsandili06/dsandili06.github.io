@@ -472,7 +472,7 @@ function Portfolio() {
 
 
         <section id="cursos" data-reveal className="py-24 border-b border-border-dim">
-          <SectionHeader number="05" title="Cursos Completados" />
+          <SectionHeader number="06" title="Cursos Completados" />
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
             ORGANIZADO CRONOLÓGICAMENTE
           </p>
