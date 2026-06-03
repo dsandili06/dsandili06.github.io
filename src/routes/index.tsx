@@ -494,7 +494,6 @@ function Portfolio() {
               <div className="flex-1 min-w-0">
                 <h4 className="font-bold uppercase text-base leading-tight text-muted-foreground inline-block">
                   <span>Curso en proceso</span>
-                  <TerminalCaret dim />
                 </h4>
                 <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground/70 mt-1 block">
                    PRÓXIMAMENTE
