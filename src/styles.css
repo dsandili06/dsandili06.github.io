@@ -79,9 +79,10 @@ html { scroll-behavior: smooth; }
 }
 
 @keyframes reveal-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(48px); filter: blur(6px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
+
 
 @layer base {
   * { border-color: var(--border-dim); }
