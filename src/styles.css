@@ -47,10 +47,6 @@ html { scroll-behavior: smooth; }
   to { transform: translateX(-50%); }
 }
 
-@keyframes caret-blink {
-  0%, 49% { opacity: 1; }
-  50%, 100% { opacity: 0; }
-}
 
 @keyframes scanline {
   0% { transform: translateY(-10%); opacity: 0; }
@@ -103,40 +99,7 @@ html { scroll-behavior: smooth; }
   animation: slide-up 0.8s var(--ease-out-expo) both;
 }
 
-@utility caret {
-  &::after {
-    content: "▊";
-    display: inline-block;
-    margin-left: 0.15em;
-    color: var(--accent);
-    animation: caret-blink 1s steps(1) infinite;
-  }
-}
 
-@utility caret-dim {
-  &::after {
-    content: "▊";
-    display: inline-block;
-    margin-left: 0.15em;
-    color: color-mix(in oklab, var(--accent) 70%, transparent);
-    animation: caret-blink 1.1s steps(1) infinite;
-  }
-}
-
-@layer utilities {
-  .terminal-caret {
-    display: inline-block;
-    margin-left: 0.15em;
-    color: var(--accent);
-    line-height: 1;
-    animation: caret-blink 1s steps(1, end) infinite;
-  }
-
-  .terminal-caret-dim {
-    color: color-mix(in oklab, var(--accent) 70%, transparent);
-    animation-duration: 1.1s;
-  }
-}
 
 @utility glitch-on {
   animation: glitch 8s infinite;

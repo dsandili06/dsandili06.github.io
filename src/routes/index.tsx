@@ -772,31 +772,11 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
       </span>
       <h2 className="font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
         <span>{title}</span>
-        <TerminalCaret />
       </h2>
     </div>
   );
 }
 
-function TerminalCaret({ dim = false }: { dim?: boolean }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`terminal-caret${dim ? " terminal-caret-dim" : ""}`}
-      style={{
-        animation: `caret-blink ${dim ? "1.1s" : "1s"} steps(1, end) infinite`,
-        color: dim
-          ? "color-mix(in oklab, var(--accent) 70%, transparent)"
-          : "var(--accent)",
-        display: "inline-block",
-        lineHeight: 1,
-        marginLeft: "0.15em",
-      }}
-    >
-      ▊
-    </span>
-  );
-}
 
 
 function ProjectRow({ project }: { project: Project }) {
