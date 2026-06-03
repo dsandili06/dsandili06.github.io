@@ -700,6 +700,18 @@ function Hero() {
         style={{ animationDelay: "200ms" }}
       >
         <div className="space-y-5 max-w-[42ch]">
+          <p className="text-xl md:text-2xl font-light text-pretty">
+            Oriundo del interior del país, apasionado por la ciberseguridad y
+            por aprender algo nuevo cada día. Enfocado en{" "}
+            <span className="text-accent">Blue Team</span>: DFIR, threat hunting
+            y análisis de malware.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Construyendo un camino desde laboratorios y scripts hacia
+            operaciones de defensa reales. Este portfolio es la bitácora de ese
+            recorrido.
+          </p>
+        </div>
 
         <div className="flex flex-col items-start gap-4">
           <a
