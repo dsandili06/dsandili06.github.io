@@ -267,6 +267,7 @@ const CERTIFICATIONS: {
   year: string;
   score?: string;
   status: "OBTENIDA" | "EN PREPARACIÓN";
+  badge: string;
   href?: string;
 }[] = [
   {
@@ -276,6 +277,7 @@ const CERTIFICATIONS: {
     year: "2026",
     score: "948 / 1000",
     status: "OBTENIDA",
+    badge: "✓ THM SAL1 CERTIFIED",
     href: "https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf",
   },
   {
@@ -284,6 +286,7 @@ const CERTIFICATIONS: {
     org: "CompTIA",
     year: "2026",
     status: "EN PREPARACIÓN",
+    badge: "◌ EN PREPARACIÓN",
   },
 ];
 
