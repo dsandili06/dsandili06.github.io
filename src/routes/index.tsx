@@ -815,15 +815,19 @@ function Hero() {
         className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full animate-reveal"
         style={{ animationDelay: "200ms" }}
       >
-        <div className="space-y-5 max-w-[42ch]">
-          <p className="text-xl md:text-2xl font-light text-pretty">
-            Oriundo del interior del país, apasionado por la ciberseguridad y
-            por aprender algo nuevo cada día. Enfocado en{" "}
-            <span className="text-accent">Blue Team</span>: DFIR, SOC Operations y Malware Analysis.
+        <div className="space-y-5 max-w-[52ch]">
+          <p className="font-display text-[11px] md:text-xs uppercase tracking-[0.25em] text-accent">
+            SOC Analyst Jr. · Blue Team · DFIR · Malware Analysis
           </p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Construyendo un camino desde laboratorios y scripts hacia
-            operaciones de defensa reales.
+          <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
+            Soy Santiago Daniel Sandili, analista SOC Jr. orientado a{" "}
+            <span className="text-accent">Blue Team</span>, DFIR y análisis de malware. Me fui formando de manera práctica con laboratorios, writeups y herramientas reales para desarrollar una base sólida en detección, triage y respuesta a incidentes.
+          </p>
+          <p className="text-sm md:text-base text-foreground/75 leading-relaxed text-pretty">
+            Con el tiempo empecé a inclinarme cada vez más por la parte defensiva de la ciberseguridad: análisis forense, investigación de memoria, revisión de logs, tráfico de red y comportamiento de malware. Ahí fue donde encontré el área en la que quiero crecer profesionalmente.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
+            Este portfolio reúne parte de ese recorrido: certificaciones, laboratorios, proyectos y documentación técnica que fui construyendo mientras desarrollo mi perfil en ciberseguridad.
           </p>
         </div>
 
