@@ -79,9 +79,10 @@ html { scroll-behavior: smooth; }
 }
 
 @keyframes reveal-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(48px); filter: blur(6px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
+
 
 @layer base {
   * { border-color: var(--border-dim); }
@@ -156,10 +157,12 @@ html { scroll-behavior: smooth; }
 
 @utility reveal-on-view {
   opacity: 0;
+  will-change: transform, opacity, filter;
   &.in-view {
-    animation: reveal-up 0.7s var(--ease-out-expo) both;
+    animation: reveal-up 1s var(--ease-out-expo) both;
   }
 }
+
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
