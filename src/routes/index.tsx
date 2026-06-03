@@ -562,11 +562,16 @@ function useRevealOnView() {
           if (e.isIntersecting) {
             const el = e.target as HTMLElement;
             requestAnimationFrame(() => el.classList.add("in-view"));
+            const onEnd = () => {
+              el.classList.add("reveal-done");
+              el.removeEventListener("animationend", onEnd);
+            };
+            el.addEventListener("animationend", onEnd);
             obs.unobserve(el);
           }
         });
       },
-      { rootMargin: "0px 0px -10% 0px", threshold: 0.01 },
+      { rootMargin: "0px 0px -15% 0px", threshold: [0, 0.15] },
     );
     els.forEach((el) => obs.observe(el));
     return () => obs.disconnect();
@@ -640,7 +645,7 @@ function Nav() {
     const top =
       id === "top"
         ? 0
-        : (target.getBoundingClientRect().top + window.scrollY) - 56;
+        : (target.getBoundingClientRect().top + window.scrollY) - 64;
     window.scrollTo({ top, behavior: "smooth" });
     history.replaceState(null, "", id === "top" ? " " : `#${id}`);
   };
@@ -729,12 +734,12 @@ function Hero() {
       </div>
 
       <h1
-        className="glitch-on font-display font-bold uppercase tracking-tighter leading-[0.85] text-6xl md:text-[9rem] lg:text-[12rem] mb-12 animate-reveal"
+        className="font-display font-bold uppercase tracking-tighter leading-[0.85] text-6xl md:text-[9rem] lg:text-[12rem] mb-12 animate-reveal"
         style={{ animationDelay: "100ms" }}
       >
-        Santiago
+        <span className="glitch-on">Santiago</span>
         <br />
-        Sandili
+        <span className="glitch-on">Sandili</span>
       </h1>
 
 
