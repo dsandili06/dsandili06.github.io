@@ -67,11 +67,11 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
-      { title: "Santiago Daniel Sandili — SOC Analyst / Blue Team" },
+      { title: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team" },
       {
         name: "description",
         content:
-          "Portfolio de Santiago Daniel Sandili — Analista SOC / Blue Team. DFIR, threat hunting, malware analysis y automatización defensiva.",
+          "Portfolio de Santiago Daniel Sandili — Analista de Seguridad L1 / Blue Team. DFIR, threat hunting, malware analysis y automatización defensiva.",
       },
     ],
   }),

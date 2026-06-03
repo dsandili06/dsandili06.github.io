@@ -9,15 +9,15 @@ import blueteamScriptsImg from "@/assets/project-blueteam-scripts.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Santiago Daniel Sandili — SOC Analyst / Blue Team" },
+      { title: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team" },
       {
         name: "description",
         content:
-          "Portfolio de Santiago Daniel Sandili — Analista SOC / Blue Team. DFIR, threat hunting, malware analysis y automatización defensiva.",
+          "Portfolio de Santiago Daniel Sandili — Analista de Seguridad L1 / Blue Team. DFIR, threat hunting, malware analysis y automatización defensiva.",
       },
       {
         property: "og:title",
-        content: "Santiago Daniel Sandili — SOC Analyst / Blue Team",
+        content: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team",
       },
       {
         property: "og:description",
@@ -271,9 +271,9 @@ const CERTIFICATIONS: {
 }[] = [
   {
     code: "SAL1",
-    title: "SOC Analyst Level 1",
-    org: "TryHackMe",
-    year: "2024",
+    title: "SECURITY ANALYST L1",
+    org: "TRYHACKME",
+    year: "2026",
     score: "948 / 1000",
     status: "OBTENIDA",
     href: "https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf",
@@ -282,7 +282,7 @@ const CERTIFICATIONS: {
     code: "SY0-701",
     title: "CompTIA Security+",
     org: "CompTIA",
-    year: "2025",
+    year: "2026",
     status: "EN PREPARACIÓN",
   },
 ];
