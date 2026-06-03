@@ -170,19 +170,11 @@ html { scroll-behavior: smooth; scroll-padding-top: 64px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reveal-on-view {
-    opacity: 1 !important;
-    transform: none !important;
-    animation: none !important;
-  }
-}
-
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.001ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.001ms !important;
-  }
+  /* Disable only large-movement / flashing animations. Subtle fades/slides remain. */
+  .glitch-on { animation: none !important; }
+  .scanline { animation: none !important; }
+  .border-beam::before { animation: none !important; }
+  .animate-marquee,
+  [class*="marquee"] { animation: none !important; }
   html { scroll-behavior: auto; }
 }
