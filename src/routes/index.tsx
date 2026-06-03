@@ -293,15 +293,15 @@ const COURSES: Course[] = [
   { n: "06", title: "SOC L1 Path", org: "TryHackMe" },
   {
     n: "07",
-    title: "Cyber Incident Response and Digital Forensics",
-    org: "LinkedIn Learning",
+    title: "SOC L1 BOOTCAMP",
+    org: "DOJO COMMUNITY",
   },
   {
     n: "08",
     title: "CompTIA Security+ (SY0-701) Cert Prep",
     org: "LinkedIn Learning",
   },
-  { n: "09", title: "SOC L1 BOOTCAMP", org: "ComunidadDojo" },
+  { n: "09", title: "CYBER INCIDENT RESPONSE AND DIGITAL FORENSICS", org: "LINKEDIN LEARNING" },
 ];
 
 const ROLES = ["DFIR ANALYST", "MALWARE ANALYST", "BLUE TEAM"];
@@ -331,7 +331,7 @@ function Portfolio() {
             <InProgressRow
               label="NEXT_PROJECT.WIP"
               title="Próximo proyecto en construcción"
-              description="Laboratorio personal de detección + reglas Sigma propias. Más detalles cuando esté listo para publicar."
+              description="Más detalles cuando esté listo para publicar."
             />
           </div>
         </Section>
@@ -443,7 +443,7 @@ function Portfolio() {
                   )}
                   {!c.score && !c.href && (
                     <span className="mt-auto pt-5 border-t border-border-dim font-display text-xs uppercase tracking-widest text-muted-foreground">
-                      Estudio en curso · examen programado
+                      ESTUDIO EN CURSO 
                     </span>
                   )}
                 </Wrapper>
@@ -489,7 +489,7 @@ function Portfolio() {
                   Curso en proceso
                 </h4>
                 <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground/70 mt-1 block">
-                  Formación continua · próximamente
+                   PRÓXIMAMENTE
                 </span>
               </div>
               <span className="font-display text-[10px] tracking-widest text-accent/70 border border-dashed border-accent/40 px-2 py-1 whitespace-nowrap">
@@ -619,7 +619,7 @@ function Hero() {
           </a>
           <div className="flex flex-col gap-1 font-display text-xs text-muted-foreground">
             <span>STATUS: DEFENSIVE_OPERATIONS</span>
-            <span>BASE: BUENOS_AIRES_AR</span>
+            <span>BASE: TUC, AR.</span>
           </div>
         </div>
       </div>
@@ -875,7 +875,7 @@ function ContactSection() {
     <section id="contacto" className="py-24 border-t border-border-dim">
       <SectionHeader number="06" title="Contacto" />
       <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
-        Canales abiertos · respuesta en 24-48hs
+        ¡CONECTEMOS!
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
         {channels.map((c) => (
