@@ -665,23 +665,6 @@ function TypewriterRole() {
   );
 }
 
-function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    const start = performance.now();
-    const dur = 1200;
-    let raf = 0;
-    const tick = (t: number) => {
-      const p = Math.min(1, (t - start) / dur);
-      const eased = 1 - Math.pow(1 - p, 3);
-      setN(Math.round(to * eased));
-      if (p < 1) raf = requestAnimationFrame(tick);
-    };
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [to]);
-  return <span>{n}{suffix}</span>;
-}
 
 function Hero() {
   return (
@@ -717,38 +700,6 @@ function Hero() {
         style={{ animationDelay: "200ms" }}
       >
         <div className="space-y-5 max-w-[42ch]">
-          <p className="text-xl md:text-2xl font-light text-pretty">
-            Oriundo del interior del país, apasionado por la ciberseguridad y
-            por aprender algo nuevo cada día. Enfocado en{" "}
-            <span className="text-accent">Blue Team</span>: DFIR, threat hunting
-            y análisis de malware.
-          </p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Construyendo un camino desde laboratorios y scripts hacia
-            operaciones de defensa reales. Este portfolio es la bitácora de ese
-            recorrido.
-          </p>
-          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border-dim max-w-md">
-            <div>
-              <div className="font-display text-3xl md:text-4xl font-bold text-accent leading-none">
-                <Counter to={15} />
-              </div>
-              <div className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Writeups</div>
-            </div>
-            <div>
-              <div className="font-display text-3xl md:text-4xl font-bold text-accent leading-none">
-                <Counter to={9} />
-              </div>
-              <div className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Cursos</div>
-            </div>
-            <div>
-              <div className="font-display text-3xl md:text-4xl font-bold text-accent leading-none">
-                <Counter to={1} />
-              </div>
-              <div className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Cert</div>
-            </div>
-          </div>
-        </div>
 
         <div className="flex flex-col items-start gap-4">
           <a
