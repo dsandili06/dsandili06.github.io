@@ -328,8 +328,18 @@ function Portfolio() {
       <main className="max-w-7xl mx-auto px-6 relative z-10">
         <Hero />
 
+        <Section id="about" number="01" title="About Me">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl">
+            <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty">
+              Vengo del interior de Tucumán y estoy construyendo mi camino en ciberseguridad desde un enfoque práctico. Mi interés principal está en entender cómo se detecta, investiga y contiene una amenaza a partir de evidencia real.
+            </p>
+            <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty">
+              Me gusta trabajar sobre memoria, artefactos de Windows, tráfico de red, logs y casos de malware para reconstruir lo que pasó y sacar conclusiones útiles. Por eso mi foco hoy está en <span className="text-accent">Blue Team</span>, DFIR y análisis técnico orientado a incidentes.
+            </p>
+          </div>
+        </Section>
 
-        <Section id="proyectos" number="01" title="Proyectos">
+        <Section id="proyectos" number="02" title="Proyectos">
           <div className="flex flex-col">
             {PROJECTS.map((p) => (
               <ProjectRow key={p.id} project={p} />
@@ -342,7 +352,7 @@ function Portfolio() {
           </div>
         </Section>
 
-        <Section id="investigaciones" number="02" title="Investigaciones">
+        <Section id="investigaciones" number="03" title="Investigaciones">
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
             WRITEUPS · INVESTIGACIONES
           </p>
