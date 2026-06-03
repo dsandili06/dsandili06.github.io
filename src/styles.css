@@ -99,25 +99,6 @@ html { scroll-behavior: smooth; }
   animation: slide-up 0.8s var(--ease-out-expo) both;
 }
 
-@utility caret {
-  &::after {
-    content: "▊";
-    display: inline-block;
-    margin-left: 0.15em;
-    color: var(--accent);
-    animation: caret-blink 1s steps(1) infinite;
-  }
-}
-
-@utility caret-dim {
-  &::after {
-    content: "▊";
-    display: inline-block;
-    margin-left: 0.15em;
-    color: color-mix(in oklab, var(--accent) 70%, transparent);
-    animation: caret-blink 1.1s steps(1) infinite;
-  }
-}
 
 @layer utilities {
   .terminal-caret {
