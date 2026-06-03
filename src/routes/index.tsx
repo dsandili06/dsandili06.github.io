@@ -67,7 +67,7 @@ const PROJECTS: Project[] = [
     id: "02",
     title: "Blue Team Automation Scripts",
     description:
-      "Scripts operacionales para DFIR y SOC: triage de endpoints, enumeración local, parseo de logs, integración con threat intel y plantillas de investigación rápida.",
+      "Repositorio de scripts orientados a tareas operativas de SOC y DFIR. La idea es ir documentando utilidades que me sirvan para triage, parsing, recolección de evidencia y automatización de tareas repetitivas.",
     href: "https://github.com/dsandili06/blueteam-scripts",
     label: "AUTOMATION_BT.REPO",
     image: blueteamScriptsImg,
@@ -267,6 +267,7 @@ const CERTIFICATIONS: {
   year: string;
   score?: string;
   status: "OBTENIDA" | "EN PREPARACIÓN";
+  badge: string;
   href?: string;
 }[] = [
   {
@@ -276,6 +277,7 @@ const CERTIFICATIONS: {
     year: "2026",
     score: "948 / 1000",
     status: "OBTENIDA",
+    badge: "✓ THM SAL1 CERTIFIED",
     href: "https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf",
   },
   {
@@ -284,6 +286,7 @@ const CERTIFICATIONS: {
     org: "CompTIA",
     year: "2026",
     status: "EN PREPARACIÓN",
+    badge: "◌ EN PREPARACIÓN",
   },
 ];
 
@@ -328,8 +331,18 @@ function Portfolio() {
       <main className="max-w-7xl mx-auto px-6 relative z-10">
         <Hero />
 
+        <Section id="about" number="01" title="About Me">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl">
+            <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty">
+              Vengo del interior de Tucumán y estoy construyendo mi camino en ciberseguridad desde un enfoque práctico. Mi interés principal está en entender cómo se detecta, investiga y contiene una amenaza a partir de evidencia real.
+            </p>
+            <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty">
+              Me gusta trabajar sobre memoria, artefactos de Windows, tráfico de red, logs y casos de malware para reconstruir lo que pasó y sacar conclusiones útiles. Por eso mi foco hoy está en <span className="text-accent">Blue Team</span>, DFIR y análisis técnico orientado a incidentes.
+            </p>
+          </div>
+        </Section>
 
-        <Section id="proyectos" number="01" title="Proyectos">
+        <Section id="proyectos" number="02" title="Proyectos">
           <div className="flex flex-col">
             {PROJECTS.map((p) => (
               <ProjectRow key={p.id} project={p} />
@@ -342,7 +355,7 @@ function Portfolio() {
           </div>
         </Section>
 
-        <Section id="investigaciones" number="02" title="Investigaciones">
+        <Section id="investigaciones" number="03" title="Investigaciones">
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
             WRITEUPS · INVESTIGACIONES
           </p>
@@ -364,7 +377,7 @@ function Portfolio() {
           data-reveal
           className="py-24 border-b border-border-dim"
         >
-          <SectionHeader number="03" title="Stack Técnico" />
+          <SectionHeader number="04" title="Stack Técnico" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border-dim border border-border-dim">
             {STACK.map((cat) => (
               <div key={cat.category} className="bg-background p-6 flex flex-col">
@@ -391,7 +404,7 @@ function Portfolio() {
           data-reveal
           className="py-24 border-b border-border-dim"
         >
-          <SectionHeader number="04" title="Certificaciones" />
+          <SectionHeader number="05" title="Certificaciones" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
             {CERTIFICATIONS.map((c) => {
               const obtained = c.status === "OBTENIDA";
@@ -415,7 +428,7 @@ function Portfolio() {
                           : "border-muted-foreground/40 text-muted-foreground"
                       }`}
                     >
-                      {obtained ? "✓ OBTENIDA" : "◌ EN PREPARACIÓN"}
+                      {c.badge}
                     </span>
                     <span className="font-display text-[10px] tracking-widest text-muted-foreground">
                       {c.year}
@@ -462,7 +475,7 @@ function Portfolio() {
 
 
         <section id="cursos" data-reveal className="py-24 border-b border-border-dim">
-          <SectionHeader number="05" title="Cursos Completados" />
+          <SectionHeader number="06" title="Cursos Completados" />
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
             ORGANIZADO CRONOLÓGICAMENTE
           </p>
@@ -484,7 +497,7 @@ function Portfolio() {
                   </span>
                 </div>
                 <span className="font-display text-[10px] tracking-widest text-accent border border-accent/40 px-2 py-1 whitespace-nowrap">
-                  ✓ COMPLETO
+                  ✓ COMPLETADO
                 </span>
               </li>
             ))}
@@ -613,6 +626,7 @@ function Footer() {
 
 function Nav() {
   const links = [
+    { href: "#about", id: "about", label: "About" },
     { href: "#proyectos", id: "proyectos", label: "Proyectos" },
     { href: "#investigaciones", id: "investigaciones", label: "Labs" },
     { href: "#stack", id: "stack", label: "Stack" },
@@ -804,15 +818,19 @@ function Hero() {
         className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full animate-reveal"
         style={{ animationDelay: "200ms" }}
       >
-        <div className="space-y-5 max-w-[42ch]">
-          <p className="text-xl md:text-2xl font-light text-pretty">
-            Oriundo del interior del país, apasionado por la ciberseguridad y
-            por aprender algo nuevo cada día. Enfocado en{" "}
-            <span className="text-accent">Blue Team</span>: DFIR, SOC Operations y Malware Analysis.
+        <div className="space-y-5 max-w-[52ch]">
+          <p className="font-display text-[11px] md:text-xs uppercase tracking-[0.25em] text-accent">
+            SOC Analyst Jr. · Blue Team · DFIR · Malware Analysis
           </p>
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            Construyendo un camino desde laboratorios y scripts hacia
-            operaciones de defensa reales.
+          <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
+            Soy Santiago Daniel Sandili, analista SOC Jr. orientado a{" "}
+            <span className="text-accent">Blue Team</span>, DFIR y análisis de malware. Me fui formando de manera práctica con laboratorios, writeups y herramientas reales para desarrollar una base sólida en detección, triage y respuesta a incidentes.
+          </p>
+          <p className="text-sm md:text-base text-foreground/75 leading-relaxed text-pretty">
+            Con el tiempo empecé a inclinarme cada vez más por la parte defensiva de la ciberseguridad: análisis forense, investigación de memoria, revisión de logs, tráfico de red y comportamiento de malware. Ahí fue donde encontré el área en la que quiero crecer profesionalmente.
+          </p>
+          <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
+            Este portfolio reúne parte de ese recorrido: certificaciones, laboratorios, proyectos y documentación técnica que fui construyendo mientras desarrollo mi perfil en ciberseguridad.
           </p>
         </div>
 
@@ -833,7 +851,7 @@ function Hero() {
               SAL1
             </div>
             <div className="mt-2 font-display text-xs uppercase tracking-widest text-muted-foreground group-hover:text-background/80">
-              TryHackMe · SOC Analyst Lvl 1
+              TryHackMe · Security Analyst L1
             </div>
             <div className="mt-3 font-display text-xs uppercase tracking-widest text-accent group-hover:text-background">
               Score 948 / 1000 →
@@ -1100,7 +1118,7 @@ function ContactSection() {
   ];
   return (
     <section id="contacto" data-reveal className="py-24 border-t border-border-dim">
-      <SectionHeader number="06" title="Contacto" />
+      <SectionHeader number="07" title="Contacto" />
       <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
         ¡CONECTEMOS!
       </p>
