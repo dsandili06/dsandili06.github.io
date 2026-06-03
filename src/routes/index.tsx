@@ -565,11 +565,7 @@ function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer className="py-16 border-t border-border-dim font-display text-[10px] uppercase tracking-widest text-muted-foreground/70">
-      <pre className="text-accent/40 text-[10px] leading-tight mb-4 overflow-x-auto">{`  ____ ___  ____      ____  _              _____                     
- / ___/ _ \\/ ___|    | __ )| |_   _  ___  |_   _|__  __ _ _ __ ___  
- \\___ \\ | | | |      |  _ \\| | | | |/ _ \\   | |/ _ \\/ _\` | '_ \` _ \\ 
-  ___) | |_| | |___  | |_) | | |_| |  __/   | |  __/ (_| | | | | | |
- |____/\\___/ \\____|  |____/|_|\\__,_|\\___|   |_|\\___|\\__,_|_| |_| |_|`}</pre>
+      <pre className="text-accent/40 text-[10px] leading-tight mb-4 overflow-x-auto">{`\n`}</pre>
       <div className="flex flex-wrap items-center justify-between gap-4">
         <span>{"\n"}</span>
         <span className="text-accent/70">$ exit 0_</span>
