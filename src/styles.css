@@ -157,9 +157,20 @@ html { scroll-behavior: smooth; }
 
 @utility reveal-on-view {
   opacity: 0;
-  will-change: transform, opacity, filter;
+  transform: translate3d(0, 24px, 0);
+  will-change: transform, opacity;
+  contain: layout paint;
+  backface-visibility: hidden;
   &.in-view {
-    animation: reveal-up 1s var(--ease-out-expo) both;
+    animation: reveal-up 0.7s var(--ease-out-expo) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-view {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
   }
 }
 
