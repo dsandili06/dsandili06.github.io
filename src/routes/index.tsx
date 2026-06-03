@@ -374,7 +374,7 @@ function Portfolio() {
           data-reveal
           className="py-24 border-b border-border-dim"
         >
-          <SectionHeader number="03" title="Stack Técnico" />
+          <SectionHeader number="04" title="Stack Técnico" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border-dim border border-border-dim">
             {STACK.map((cat) => (
               <div key={cat.category} className="bg-background p-6 flex flex-col">
