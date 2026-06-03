@@ -492,8 +492,9 @@ function Portfolio() {
                 10
               </span>
               <div className="flex-1 min-w-0">
-                <h4 className="caret-dim font-bold uppercase text-base leading-tight text-muted-foreground inline-block">
-                  Curso en proceso
+                <h4 className="font-bold uppercase text-base leading-tight text-muted-foreground inline-block">
+                  <span>Curso en proceso</span>
+                  <TerminalCaret dim />
                 </h4>
                 <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground/70 mt-1 block">
                    PRÓXIMAMENTE
@@ -660,7 +661,7 @@ function TypewriterRole() {
   return (
     <span className="px-2 py-0.5 border border-accent uppercase tracking-widest min-w-[18ch] inline-flex items-center">
       <span>{text}</span>
-      <span className="ml-0.5 animate-pulse">█</span>
+      <TerminalCaret />
     </span>
   );
 }
