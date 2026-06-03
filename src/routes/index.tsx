@@ -328,19 +328,30 @@ function Portfolio() {
             {PROJECTS.map((p) => (
               <ProjectRow key={p.id} project={p} />
             ))}
+            <InProgressRow
+              label="NEXT_PROJECT.WIP"
+              title="Próximo proyecto en construcción"
+              description="Laboratorio personal de detección + reglas Sigma propias. Más detalles cuando esté listo para publicar."
+            />
           </div>
         </Section>
 
         <Section id="investigaciones" number="02" title="Investigaciones">
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
-            Writeups · CyberDefenders Labs · {INVESTIGATIONS.length} reportes
+            Writeups · CyberDefenders Labs · {INVESTIGATIONS.length} reportes · formación continua
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border-dim border border-border-dim">
             {INVESTIGATIONS.map((i) => (
               <InvestigationCard key={i.id} item={i} />
             ))}
+            <InProgressCard
+              code="LAB_016"
+              title="Investigación en proceso"
+              hint="Próximo writeup CyberDefenders en análisis."
+            />
           </div>
         </Section>
+
 
         <section
           id="stack"
