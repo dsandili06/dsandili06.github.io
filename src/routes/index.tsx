@@ -632,10 +632,26 @@ function Nav() {
     return () => obs.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const target =
+      id === "top" ? document.documentElement : document.getElementById(id);
+    if (!target) return;
+    const top =
+      id === "top"
+        ? 0
+        : (target.getBoundingClientRect().top + window.scrollY) - 56;
+    window.scrollTo({ top, behavior: "smooth" });
+    history.replaceState(null, "", id === "top" ? " " : `#${id}`);
+  };
   return (
     <nav className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border-dim">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between font-display text-xs tracking-widest">
-        <a href="#top" className="text-accent font-bold">
+        <a
+          href="#top"
+          onClick={(e) => handleNavClick(e, "top")}
+          className="text-accent font-bold"
+        >
           SANTIAGO // BLUE TEAM
         </a>
         <div className="hidden md:flex gap-8 uppercase">
@@ -645,6 +661,7 @@ function Nav() {
               <a
                 key={l.href}
                 href={l.href}
+                onClick={(e) => handleNavClick(e, l.id)}
                 className={`relative pb-1 transition-colors ${isActive ? "text-accent" : "hover:text-accent"}`}
               >
                 {l.label}
