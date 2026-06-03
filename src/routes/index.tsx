@@ -360,6 +360,7 @@ function Portfolio() {
 
         <section
           id="stack"
+          data-reveal
           className="py-24 border-b border-border-dim"
         >
           <SectionHeader number="03" title="Stack Técnico" />
@@ -386,6 +387,7 @@ function Portfolio() {
 
         <section
           id="formacion"
+          data-reveal
           className="py-24 border-b border-border-dim"
         >
           <SectionHeader number="04" title="Certificaciones" />
@@ -458,7 +460,7 @@ function Portfolio() {
         </section>
 
 
-        <section id="cursos" className="py-24 border-b border-border-dim">
+        <section id="cursos" data-reveal className="py-24 border-b border-border-dim">
           <SectionHeader number="05" title="Cursos Completados" />
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
             Ruta cronológica · {COURSES.length} cursos
@@ -485,19 +487,19 @@ function Portfolio() {
                 </span>
               </li>
             ))}
-            <li className="bg-background p-6 flex items-start gap-5 border border-dashed border-accent/40 -m-px">
-              <span className="font-display text-3xl font-bold text-accent/30 leading-none">
+            <li className="bg-background p-6 flex items-start gap-5 border border-dashed border-[var(--accent-amber)]/40 -m-px progress-shimmer">
+              <span className="font-display text-3xl font-bold text-[var(--accent-amber)]/40 leading-none">
                 10
               </span>
               <div className="flex-1 min-w-0">
-                <h4 className="font-bold uppercase text-base leading-tight text-muted-foreground">
+                <h4 className="caret-amber font-bold uppercase text-base leading-tight text-muted-foreground inline-block">
                   Curso en proceso
                 </h4>
                 <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground/70 mt-1 block">
                    PRÓXIMAMENTE
                 </span>
               </div>
-              <span className="font-display text-[10px] tracking-widest text-accent/70 border border-dashed border-accent/40 px-2 py-1 whitespace-nowrap">
+              <span className="font-display text-[10px] tracking-widest text-[var(--accent-amber)] border border-dashed border-[var(--accent-amber)]/50 px-2 py-1 whitespace-nowrap">
                 ◌ EN PROCESO
               </span>
             </li>
