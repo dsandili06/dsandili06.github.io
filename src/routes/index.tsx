@@ -334,10 +334,10 @@ function Portfolio() {
         <Section id="about" number="01" title="About Me">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl">
             <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty">
-              Vengo del interior de Tucumán y estoy construyendo mi camino en ciberseguridad desde un enfoque práctico. Mi interés principal está en entender cómo se detecta, investiga y contiene una amenaza a partir de evidencia real.
+              Vengo del interior del país (Argentina) y estoy construyendo mi camino en ciberseguridad desde un enfoque práctico. Mi interés principal está en entender cómo se detecta, investiga y contiene una amenaza a partir de evidencia real.
             </p>
             <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty">
-              Me gusta trabajar sobre memoria, artefactos de Windows, tráfico de red, logs y casos de malware para reconstruir lo que pasó y sacar conclusiones útiles. Por eso mi foco hoy está en <span className="text-accent">Blue Team</span>, DFIR y análisis técnico orientado a incidentes.
+              Me gusta trabajar sobre memoria, artefactos de Windows, tráfico de red, logs y casos de malware para reconstruir lo que pasó y sacar conclusiones útiles. Por eso mi foco hoy está en <span className="text-accent">Blue Team</span>.
             </p>
           </div>
         </Section>
@@ -824,10 +824,10 @@ function Hero() {
           </p>
           <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
             Soy Santiago Daniel Sandili, analista SOC Jr. orientado a{" "}
-            <span className="text-accent">Blue Team</span>, DFIR y análisis de malware. Me fui formando de manera práctica con laboratorios, writeups y herramientas reales para desarrollar una base sólida en detección, triage y respuesta a incidentes.
+            <span className="text-accent">Blue Team</span> y DFIR . Me fui formando de manera práctica con laboratorios, writeups y herramientas reales para desarrollar una base sólida en detección, triage y respuesta a incidentes.
           </p>
           <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
-            Con el tiempo empecé a inclinarme cada vez más por la parte defensiva de la ciberseguridad: análisis forense, investigación de memoria, revisión de logs, tráfico de red y comportamiento de malware. Ahí fue donde encontré el área en la que quiero crecer profesionalmente.
+            Con el tiempo empecé a inclinarme cada vez más por la parte defensiva de la ciberseguridad: análisis forense, investigación de memoria, revisión de logs, tráfico de red y comportamiento de malware.{" "}
           </p>
           <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
             Este portfolio reúne parte de ese recorrido: certificaciones, laboratorios, proyectos y documentación técnica que fui construyendo mientras desarrollo mi perfil en ciberseguridad.
