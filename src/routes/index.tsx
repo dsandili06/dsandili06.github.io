@@ -511,7 +511,7 @@ function Portfolio() {
         <Footer />
       </main>
 
-      <ScrollToTop />
+      
     </div>
   );
 }
