@@ -623,6 +623,7 @@ function Footer() {
 
 function Nav() {
   const links = [
+    { href: "#about", id: "about", label: "About" },
     { href: "#proyectos", id: "proyectos", label: "Proyectos" },
     { href: "#investigaciones", id: "investigaciones", label: "Labs" },
     { href: "#stack", id: "stack", label: "Stack" },
