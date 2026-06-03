@@ -772,7 +772,6 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
       </span>
       <h2 className="font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
         <span>{title}</span>
-        <TerminalCaret />
       </h2>
     </div>
   );
