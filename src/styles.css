@@ -10,6 +10,8 @@
   --color-accent: var(--accent);
   --color-accent-secondary: var(--accent-secondary);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-green: var(--accent-green);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --font-display: "Sora", system-ui, sans-serif;
@@ -28,8 +30,12 @@
   --accent: #58a6ff;
   --accent-secondary: #79c0ff;
   --accent-foreground: #0d1117;
+  --accent-amber: #d29922;
+  --accent-green: #3fb950;
   --muted-foreground: #7d8590;
 }
+
+html { scroll-behavior: smooth; }
 
 @keyframes slide-up {
   from { transform: translateY(40px); opacity: 0; }
@@ -39,6 +45,46 @@
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+@keyframes blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-10%); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(110%); opacity: 0; }
+}
+
+@keyframes glitch {
+  0%, 92%, 100% { transform: translate(0); text-shadow: none; }
+  93% { transform: translate(-2px, 1px); text-shadow: 2px 0 var(--accent), -2px 0 var(--accent-amber); }
+  94% { transform: translate(2px, -1px); text-shadow: -2px 0 var(--accent), 2px 0 var(--accent-amber); }
+  95% { transform: translate(-1px, 0); text-shadow: 1px 0 var(--accent-secondary); }
+  96% { transform: translate(1px, -1px); text-shadow: none; }
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(200%); }
+}
+
+@keyframes beam {
+  to { --beam-angle: 360deg; }
+}
+
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes reveal-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @layer base {
@@ -55,4 +101,80 @@
 
 @utility animate-reveal {
   animation: slide-up 0.8s var(--ease-out-expo) both;
+}
+
+@utility caret {
+  &::after {
+    content: "▊";
+    margin-left: 0.15em;
+    color: var(--accent);
+    animation: blink 1s steps(1) infinite;
+  }
+}
+
+@utility caret-amber {
+  &::after {
+    content: "█";
+    margin-left: 0.15em;
+    color: var(--accent-amber);
+    animation: blink 1s steps(1) infinite;
+  }
+}
+
+@utility glitch-on {
+  animation: glitch 8s infinite;
+}
+
+@utility scanline {
+  position: absolute;
+  inset-inline: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent) 60%, transparent), transparent);
+  pointer-events: none;
+  animation: scanline 9s linear infinite;
+}
+
+@utility progress-shimmer {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--accent-amber) 70%, transparent), transparent);
+    animation: shimmer 2.2s linear infinite;
+  }
+}
+
+@utility border-beam {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(from var(--beam-angle), transparent 0deg, var(--accent) 40deg, transparent 80deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+            mask-composite: exclude;
+    animation: beam 4s linear infinite;
+    pointer-events: none;
+  }
+}
+
+@utility reveal-on-view {
+  opacity: 0;
+  &.in-view {
+    animation: reveal-up 0.7s var(--ease-out-expo) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  html { scroll-behavior: auto; }
 }
