@@ -401,7 +401,7 @@ function Portfolio() {
           data-reveal
           className="py-24 border-b border-border-dim"
         >
-          <SectionHeader number="04" title="Certificaciones" />
+          <SectionHeader number="05" title="Certificaciones" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
             {CERTIFICATIONS.map((c) => {
               const obtained = c.status === "OBTENIDA";
