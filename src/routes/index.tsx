@@ -561,13 +561,69 @@ function useRevealOnView() {
 }
 
 function Footer() {
-  const year = new Date().getFullYear();
   return (
-    <footer className="py-16 border-t border-border-dim font-display text-[10px] uppercase tracking-widest text-muted-foreground/70">
-      <pre className="text-accent/40 text-[10px] leading-tight mb-4 overflow-x-auto">{`\n`}</pre>
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <span>{"\n"}</span>
-        <span className="text-accent/70">$ exit 0_</span>
+    <footer aria-hidden className="relative mt-24 select-none">
+      {/* Top hairline with glow */}
+      <div className="relative h-px w-full overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent to-transparent blur-sm opacity-50" />
+      </div>
+
+      {/* Grid + radial glow stage */}
+      <div
+        className="relative h-56 md:h-72 w-full overflow-hidden"
+        style={{
+          backgroundImage:
+            "linear-gradient(to right, color-mix(in oklab, var(--accent) 10%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--accent) 10%, transparent) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+          maskImage:
+            "radial-gradient(ellipse at 50% 100%, black 0%, transparent 75%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse at 50% 100%, black 0%, transparent 75%)",
+        }}
+      >
+        {/* Centered glow */}
+        <div
+          className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-[140%] aspect-square rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, color-mix(in oklab, var(--accent) 35%, transparent) 0%, transparent 60%)",
+          }}
+        />
+
+        {/* Concentric geometric mark */}
+        <svg
+          viewBox="0 0 200 200"
+          className="absolute left-1/2 bottom-6 md:bottom-10 -translate-x-1/2 w-28 md:w-36 text-accent"
+        >
+          <defs>
+            <linearGradient id="footerStroke" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="currentColor" stopOpacity="0.9" />
+              <stop offset="100%" stopColor="currentColor" stopOpacity="0.2" />
+            </linearGradient>
+          </defs>
+          <g fill="none" stroke="url(#footerStroke)" strokeWidth="1">
+            <circle cx="100" cy="100" r="88">
+              <animate attributeName="r" values="86;90;86" dur="6s" repeatCount="indefinite" />
+            </circle>
+            <circle cx="100" cy="100" r="64" opacity="0.7" />
+            <circle cx="100" cy="100" r="40" opacity="0.5" />
+            <polygon points="100,30 170,140 30,140" opacity="0.8" />
+          </g>
+          <circle cx="100" cy="100" r="4" fill="currentColor">
+            <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
+          </circle>
+        </svg>
+
+        {/* Scanline */}
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.06]"
+          style={{
+            backgroundImage:
+              "repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, currentColor 2px, currentColor 3px)",
+            color: "var(--accent)",
+          }}
+        />
       </div>
     </footer>
   );
