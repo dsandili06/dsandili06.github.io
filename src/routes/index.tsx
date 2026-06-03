@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { ArrowUp } from "lucide-react";
 import socLabsImg from "@/assets/project-soc-labs.jpg";
 import blueteamScriptsImg from "@/assets/project-blueteam-scripts.jpg";
 
@@ -510,6 +511,7 @@ function Portfolio() {
         <Footer />
       </main>
 
+      <ScrollToTop />
     </div>
   );
 }
