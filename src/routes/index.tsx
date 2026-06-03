@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import socLabsImg from "@/assets/project-soc-labs.jpg";
 import blueteamScriptsImg from "@/assets/project-blueteam-scripts.jpg";
+
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -311,8 +313,10 @@ const LINKEDIN = "https://www.linkedin.com/in/santiagodsandili/";
 const GITHUB = "https://github.com/dsandili06";
 
 function Portfolio() {
+  useRevealOnView();
   return (
-    <div className="min-h-screen bg-background text-foreground font-body">
+    <div className="min-h-screen bg-background text-foreground font-body relative">
+      <BackgroundFX />
       <div
         aria-hidden
         className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-7xl border-x border-border-dim/40 pointer-events-none z-40"
@@ -322,6 +326,7 @@ function Portfolio() {
 
       <main className="max-w-7xl mx-auto px-6 relative z-10">
         <Hero />
+
 
         <Section id="proyectos" number="01" title="Proyectos">
           <div className="flex flex-col">
@@ -355,6 +360,7 @@ function Portfolio() {
 
         <section
           id="stack"
+          data-reveal
           className="py-24 border-b border-border-dim"
         >
           <SectionHeader number="03" title="Stack Técnico" />
@@ -381,6 +387,7 @@ function Portfolio() {
 
         <section
           id="formacion"
+          data-reveal
           className="py-24 border-b border-border-dim"
         >
           <SectionHeader number="04" title="Certificaciones" />
@@ -453,7 +460,7 @@ function Portfolio() {
         </section>
 
 
-        <section id="cursos" className="py-24 border-b border-border-dim">
+        <section id="cursos" data-reveal className="py-24 border-b border-border-dim">
           <SectionHeader number="05" title="Cursos Completados" />
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
             Ruta cronológica · {COURSES.length} cursos
@@ -480,19 +487,19 @@ function Portfolio() {
                 </span>
               </li>
             ))}
-            <li className="bg-background p-6 flex items-start gap-5 border border-dashed border-accent/40 -m-px">
-              <span className="font-display text-3xl font-bold text-accent/30 leading-none">
+            <li className="bg-background p-6 flex items-start gap-5 border border-dashed border-[var(--accent-amber)]/40 -m-px progress-shimmer">
+              <span className="font-display text-3xl font-bold text-[var(--accent-amber)]/40 leading-none">
                 10
               </span>
               <div className="flex-1 min-w-0">
-                <h4 className="font-bold uppercase text-base leading-tight text-muted-foreground">
+                <h4 className="caret-amber font-bold uppercase text-base leading-tight text-muted-foreground inline-block">
                   Curso en proceso
                 </h4>
                 <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground/70 mt-1 block">
                    PRÓXIMAMENTE
                 </span>
               </div>
-              <span className="font-display text-[10px] tracking-widest text-accent/70 border border-dashed border-accent/40 px-2 py-1 whitespace-nowrap">
+              <span className="font-display text-[10px] tracking-widest text-[var(--accent-amber)] border border-dashed border-[var(--accent-amber)]/50 px-2 py-1 whitespace-nowrap">
                 ◌ EN PROCESO
               </span>
             </li>
@@ -500,6 +507,7 @@ function Portfolio() {
         </section>
 
         <ContactSection />
+        <Footer />
       </main>
 
       <LogBar />
@@ -507,15 +515,96 @@ function Portfolio() {
   );
 }
 
+function BackgroundFX() {
+  return (
+    <div aria-hidden className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-[0.18]"
+        style={{
+          backgroundImage:
+            "linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          maskImage:
+            "radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 100%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 100%)",
+        }}
+      />
+      <div
+        className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, color-mix(in oklab, var(--accent) 12%, transparent) 0%, transparent 60%)",
+        }}
+      />
+    </div>
+  );
+}
+
+function useRevealOnView() {
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    els.forEach((el) => el.classList.add("reveal-on-view"));
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in-view");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+}
+
+function Footer() {
+  const year = new Date().getFullYear();
+  return (
+    <footer className="py-16 border-t border-border-dim font-display text-[10px] uppercase tracking-widest text-muted-foreground/70">
+      <pre className="text-accent/40 text-[10px] leading-tight mb-4 overflow-x-auto">{`  ____ ___  ____      ____  _              _____                     
+ / ___/ _ \\/ ___|    | __ )| |_   _  ___  |_   _|__  __ _ _ __ ___  
+ \\___ \\ | | | |      |  _ \\| | | | |/ _ \\   | |/ _ \\/ _\` | '_ \` _ \\ 
+  ___) | |_| | |___  | |_) | | |_| |  __/   | |  __/ (_| | | | | | |
+ |____/\\___/ \\____|  |____/|_|\\__,_|\\___|   |_|\\___|\\__,_|_| |_| |_|`}</pre>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <span>// EOF · Santiago Sandili · {year}</span>
+        <span className="text-accent/70">$ exit 0_</span>
+      </div>
+    </footer>
+  );
+}
+
+
 function Nav() {
   const links = [
-    { href: "#proyectos", label: "Proyectos" },
-    { href: "#investigaciones", label: "Labs" },
-    { href: "#stack", label: "Stack" },
-    { href: "#formacion", label: "Certs" },
-    { href: "#cursos", label: "Cursos" },
-    { href: "#contacto", label: "Contacto" },
+    { href: "#proyectos", id: "proyectos", label: "Proyectos" },
+    { href: "#investigaciones", id: "investigaciones", label: "Labs" },
+    { href: "#stack", id: "stack", label: "Stack" },
+    { href: "#formacion", id: "formacion", label: "Certs" },
+    { href: "#cursos", id: "cursos", label: "Cursos" },
+    { href: "#contacto", id: "contacto", label: "Contacto" },
   ];
+  const [active, setActive] = useState<string>("");
+  useEffect(() => {
+    const sections = links
+      .map((l) => document.getElementById(l.id))
+      .filter((el): el is HTMLElement => Boolean(el));
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) setActive(e.target.id);
+        });
+      },
+      { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
+    );
+    sections.forEach((s) => obs.observe(s));
+    return () => obs.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   return (
     <nav className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border-dim">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between font-display text-xs tracking-widest">
@@ -523,59 +612,105 @@ function Nav() {
           SANTIAGO // BLUE TEAM
         </a>
         <div className="hidden md:flex gap-8 uppercase">
-          {links.map((l) => (
-            <a
-              key={l.href}
-              href={l.href}
-              className="hover:text-accent transition-colors"
-            >
-              {l.label}
-            </a>
-          ))}
+          {links.map((l) => {
+            const isActive = active === l.id;
+            return (
+              <a
+                key={l.href}
+                href={l.href}
+                className={`relative pb-1 transition-colors ${isActive ? "text-accent" : "hover:text-accent"}`}
+              >
+                {l.label}
+                <span
+                  className={`absolute left-0 -bottom-0.5 h-px bg-accent transition-all ${isActive ? "w-full" : "w-0"}`}
+                />
+              </a>
+            );
+          })}
         </div>
       </div>
     </nav>
   );
 }
 
-function RotatingRole() {
+
+function TypewriterRole() {
+  const [text, setText] = useState("");
   const [idx, setIdx] = useState(0);
+  const [phase, setPhase] = useState<"typing" | "holding" | "deleting">("typing");
   useEffect(() => {
-    const id = setInterval(() => setIdx((i) => (i + 1) % ROLES.length), 2200);
-    return () => clearInterval(id);
-  }, []);
+    const word = ROLES[idx];
+    let timeout: ReturnType<typeof setTimeout>;
+    if (phase === "typing") {
+      if (text.length < word.length) {
+        timeout = setTimeout(() => setText(word.slice(0, text.length + 1)), 80);
+      } else {
+        timeout = setTimeout(() => setPhase("deleting"), 1400);
+      }
+    } else if (phase === "deleting") {
+      if (text.length > 0) {
+        timeout = setTimeout(() => setText(word.slice(0, text.length - 1)), 40);
+      } else {
+        setIdx((i) => (i + 1) % ROLES.length);
+        setPhase("typing");
+      }
+    }
+    return () => clearTimeout(timeout);
+  }, [text, phase, idx]);
   return (
-    <span
-      key={idx}
-      className="px-2 py-0.5 border border-accent uppercase tracking-widest animate-reveal min-w-[10ch] text-center"
-    >
-      {ROLES[idx]}
+    <span className="px-2 py-0.5 border border-accent uppercase tracking-widest min-w-[18ch] inline-flex items-center">
+      <span>{text}</span>
+      <span className="ml-0.5 animate-pulse">█</span>
     </span>
   );
+}
+
+function Counter({ to, suffix = "" }: { to: number; suffix?: string }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    const start = performance.now();
+    const dur = 1200;
+    let raf = 0;
+    const tick = (t: number) => {
+      const p = Math.min(1, (t - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setN(Math.round(to * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [to]);
+  return <span>{n}{suffix}</span>;
 }
 
 function Hero() {
   return (
     <section
       id="top"
-      className="py-28 md:py-44 flex flex-col items-start border-b border-border-dim overflow-hidden"
+      className="relative py-28 md:py-44 flex flex-col items-start border-b border-border-dim overflow-hidden"
     >
-      <div className="flex items-center gap-4 text-accent font-display text-sm md:text-base mb-6 animate-reveal">
-        <RotatingRole />
+      <div className="scanline" />
+      <div className="flex items-center gap-4 text-accent font-display text-sm md:text-base mb-6 animate-reveal flex-wrap">
+        <TypewriterRole />
         <span className="flex items-center gap-2">
           <span className="size-2 bg-accent animate-pulse" />
           ACTIVE_SESSION
         </span>
+        <span className="flex items-center gap-2 text-[var(--accent-green)]">
+          <span className="size-2 rounded-full bg-[var(--accent-green)] animate-pulse" />
+          AVAILABLE
+        </span>
       </div>
 
       <h1
-        className="font-display font-bold uppercase tracking-tighter leading-[0.85] text-6xl md:text-[9rem] lg:text-[12rem] mb-12 animate-reveal"
+        className="glitch-on font-display font-bold uppercase tracking-tighter leading-[0.85] text-6xl md:text-[9rem] lg:text-[12rem] mb-12 animate-reveal"
         style={{ animationDelay: "100ms" }}
       >
         Santiago
         <br />
         Sandili
       </h1>
+
 
       <div
         className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full animate-reveal"
@@ -593,7 +728,28 @@ function Hero() {
             operaciones de defensa reales. Este portfolio es la bitácora de ese
             recorrido.
           </p>
+          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border-dim max-w-md">
+            <div>
+              <div className="font-display text-3xl md:text-4xl font-bold text-accent leading-none">
+                <Counter to={15} />
+              </div>
+              <div className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Writeups</div>
+            </div>
+            <div>
+              <div className="font-display text-3xl md:text-4xl font-bold text-accent leading-none">
+                <Counter to={9} />
+              </div>
+              <div className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Cursos</div>
+            </div>
+            <div>
+              <div className="font-display text-3xl md:text-4xl font-bold text-accent leading-none">
+                <Counter to={1} />
+              </div>
+              <div className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Cert</div>
+            </div>
+          </div>
         </div>
+
         <div className="flex flex-col items-start gap-4">
           <a
             href="https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf"
@@ -639,7 +795,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="py-24 border-b border-border-dim">
+    <section id={id} data-reveal className="py-24 border-b border-border-dim">
       <SectionHeader number={number} title={title} />
       {children}
     </section>
@@ -652,12 +808,13 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
       <span className="font-display font-bold text-5xl md:text-7xl text-accent/20">
         {number}
       </span>
-      <h2 className="font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
+      <h2 className="caret font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
         {title}
       </h2>
     </div>
   );
 }
+
 
 function ProjectRow({ project }: { project: Project }) {
   return (
@@ -665,7 +822,7 @@ function ProjectRow({ project }: { project: Project }) {
       href={project.href}
       target="_blank"
       rel="noreferrer"
-      className="group py-10 border-t border-border-dim flex flex-col md:flex-row gap-8 hover:bg-surface/40 transition-colors px-4 -mx-4"
+      className="group py-10 border-t border-border-dim flex flex-col md:flex-row gap-8 hover:bg-surface/40 hover:shadow-[0_0_40px_-10px_var(--accent)] transition-all px-4 -mx-4"
     >
       <div className="w-full md:w-1/3">
         <div className="w-full aspect-video bg-surface border border-border-dim group-hover:border-accent/60 transition-colors relative overflow-hidden">
@@ -713,7 +870,7 @@ function InvestigationCard({ item }: { item: Investigation }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="bg-background p-7 flex flex-col group hover:bg-accent/5 transition-colors"
+      className="bg-background p-7 flex flex-col group hover:bg-accent/5 hover:shadow-[inset_0_0_0_1px_var(--accent)] transition-all"
     >
       <div className="flex items-center justify-between mb-5">
         <span className="font-display text-[11px] text-accent tracking-widest">
@@ -768,9 +925,9 @@ function InProgressRow({
   description: string;
 }) {
   return (
-    <div className="py-10 border-t border-dashed border-accent/30 flex flex-col md:flex-row gap-8 px-4 -mx-4">
+    <div className="py-10 border-t border-dashed border-[var(--accent-amber)]/40 flex flex-col md:flex-row gap-8 px-4 -mx-4 progress-shimmer">
       <div className="w-full md:w-1/3">
-        <div className="w-full aspect-video bg-surface/40 border border-dashed border-accent/30 relative overflow-hidden flex items-center justify-center">
+        <div className="w-full aspect-video bg-surface/40 border border-dashed border-[var(--accent-amber)]/40 relative overflow-hidden flex items-center justify-center">
           <div
             aria-hidden
             className="absolute inset-0"
@@ -781,22 +938,22 @@ function InProgressRow({
               opacity: 0.25,
             }}
           />
-          <span className="relative font-display text-[10px] uppercase tracking-[0.3em] text-accent/70">
+          <span className="relative font-display text-[10px] uppercase tracking-[0.3em] text-[var(--accent-amber)]">
             ◌ EN PROCESO
           </span>
-          <span className="absolute top-2 left-2 font-display text-[10px] uppercase tracking-widest text-accent/70 bg-background/80 px-2 py-1 border border-dashed border-accent/40">
+          <span className="absolute top-2 left-2 font-display text-[10px] uppercase tracking-widest text-[var(--accent-amber)] bg-background/80 px-2 py-1 border border-dashed border-[var(--accent-amber)]/50">
             {label}
           </span>
         </div>
       </div>
       <div className="flex-1">
-        <h3 className="font-display text-2xl uppercase font-bold text-muted-foreground mb-4">
+        <h3 className="caret-amber font-display text-2xl uppercase font-bold text-muted-foreground mb-4 inline-block">
           {title}
         </h3>
         <p className="text-foreground/60 mb-6 max-w-2xl text-pretty">
           {description}
         </p>
-        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent/70">
+        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-[var(--accent-amber)]">
           Próximamente <span className="text-base">→</span>
         </span>
       </div>
@@ -814,26 +971,26 @@ function InProgressCard({
   hint: string;
 }) {
   return (
-    <div className="bg-background p-7 flex flex-col border border-dashed border-accent/30 -m-px">
+    <div className="bg-background p-7 flex flex-col border border-dashed border-[var(--accent-amber)]/40 -m-px progress-shimmer">
       <div className="flex items-center justify-between mb-5">
-        <span className="font-display text-[11px] text-accent/70 tracking-widest">
+        <span className="font-display text-[11px] text-[var(--accent-amber)] tracking-widest">
           {code}
         </span>
-        <span className="font-display text-[10px] tracking-widest px-2 py-1 border border-dashed border-accent/40 text-accent/70">
+        <span className="font-display text-[10px] tracking-widest px-2 py-1 border border-dashed border-[var(--accent-amber)]/50 text-[var(--accent-amber)]">
           ◌ EN PROCESO
         </span>
       </div>
-      <h3 className="font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight">
+      <h3 className="caret-amber font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight inline-block">
         {title}
       </h3>
       <p className="text-sm text-foreground/50 leading-relaxed mb-6 text-pretty">
         {hint}
       </p>
-      <div className="flex items-center justify-between border-t border-dashed border-accent/30 pt-4 mt-auto">
+      <div className="flex items-center justify-between border-t border-dashed border-[var(--accent-amber)]/30 pt-4 mt-auto">
         <span className="font-display text-[10px] tracking-widest text-muted-foreground/70">
           PENDING.MD
         </span>
-        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent/70">
+        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-[var(--accent-amber)]">
           Próximamente <span className="text-base">→</span>
         </span>
       </div>
@@ -872,42 +1029,14 @@ function ContactSection() {
     },
   ];
   return (
-    <section id="contacto" className="py-24 border-t border-border-dim">
+    <section id="contacto" data-reveal className="py-24 border-t border-border-dim">
       <SectionHeader number="06" title="Contacto" />
       <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
         ¡CONECTEMOS!
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
         {channels.map((c) => (
-          <a
-            key={c.code}
-            href={c.href}
-            {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
-            className="group bg-background p-8 flex flex-col hover:bg-accent/5 transition-colors"
-          >
-            <div className="flex items-center justify-between mb-8">
-              <span className="font-display text-[10px] uppercase tracking-widest text-accent">
-                {c.code}
-              </span>
-              <span className="text-accent group-hover:scale-110 transition-transform">
-                {c.icon}
-              </span>
-            </div>
-            <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-              {c.label}
-            </span>
-            <h3 className="font-display text-xl md:text-2xl font-bold mb-8 group-hover:text-accent transition-colors break-all">
-              {c.value}
-            </h3>
-            <div className="flex items-center justify-between border-t border-border-dim pt-5 mt-auto">
-              <span className="font-display text-[10px] tracking-widest text-muted-foreground">
-                {c.external ? "EXTERNAL.LINK" : "MAILTO"}
-              </span>
-              <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent group-hover:gap-3 transition-all">
-                {c.cta} <span className="text-base">→</span>
-              </span>
-            </div>
-          </a>
+          <MagneticContactCard key={c.code} channel={c} />
         ))}
       </div>
       <div className="mt-10 flex justify-center">
@@ -921,6 +1050,64 @@ function ContactSection() {
         </a>
       </div>
     </section>
+  );
+}
+
+type Channel = {
+  code: string;
+  label: string;
+  value: string;
+  href: string;
+  cta: string;
+  external: boolean;
+  icon: React.ReactNode;
+};
+
+function MagneticContactCard({ channel: c }: { channel: Channel }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const onMove = (e: React.MouseEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 14;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 14;
+    el.style.transform = `translate(${x}px, ${y}px)`;
+  };
+  const onLeave = () => {
+    if (ref.current) ref.current.style.transform = "translate(0,0)";
+  };
+  return (
+    <a
+      ref={ref}
+      href={c.href}
+      {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      className="border-beam group bg-background p-8 flex flex-col hover:bg-accent/5 transition-all duration-200 ease-out will-change-transform"
+    >
+      <div className="flex items-center justify-between mb-8">
+        <span className="font-display text-[10px] uppercase tracking-widest text-accent">
+          {c.code}
+        </span>
+        <span className="text-accent transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[6deg]">
+          {c.icon}
+        </span>
+      </div>
+      <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+        {c.label}
+      </span>
+      <h3 className="font-display text-xl md:text-2xl font-bold mb-8 group-hover:text-accent transition-colors break-all">
+        {c.value}
+      </h3>
+      <div className="flex items-center justify-between border-t border-border-dim pt-5 mt-auto">
+        <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+          {c.external ? "EXTERNAL.LINK" : "MAILTO"}
+        </span>
+        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent group-hover:gap-3 transition-all">
+          {c.cta} <span className="text-base">→</span>
+        </span>
+      </div>
+    </a>
   );
 }
 
