@@ -492,8 +492,9 @@ function Portfolio() {
                 10
               </span>
               <div className="flex-1 min-w-0">
-                <h4 className="caret-dim font-bold uppercase text-base leading-tight text-muted-foreground inline-block">
-                  Curso en proceso
+                <h4 className="font-bold uppercase text-base leading-tight text-muted-foreground inline-block">
+                  <span>Curso en proceso</span>
+                  <TerminalCaret dim />
                 </h4>
                 <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground/70 mt-1 block">
                    PRÓXIMAMENTE
@@ -660,7 +661,7 @@ function TypewriterRole() {
   return (
     <span className="px-2 py-0.5 border border-accent uppercase tracking-widest min-w-[18ch] inline-flex items-center">
       <span>{text}</span>
-      <span className="ml-0.5 animate-pulse">█</span>
+      <TerminalCaret />
     </span>
   );
 }
@@ -771,10 +772,31 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
       <span className="font-display font-bold text-5xl md:text-7xl text-accent/20">
         {number}
       </span>
-      <h2 className="caret font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
-        {title}
+      <h2 className="font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
+        <span>{title}</span>
+        <TerminalCaret />
       </h2>
     </div>
+  );
+}
+
+function TerminalCaret({ dim = false }: { dim?: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`terminal-caret${dim ? " terminal-caret-dim" : ""}`}
+      style={{
+        animation: `caret-blink ${dim ? "1.1s" : "1s"} steps(1, end) infinite`,
+        color: dim
+          ? "color-mix(in oklab, var(--accent) 70%, transparent)"
+          : "var(--accent)",
+        display: "inline-block",
+        lineHeight: 1,
+        marginLeft: "0.15em",
+      }}
+    >
+      ▊
+    </span>
   );
 }
 
@@ -910,8 +932,9 @@ function InProgressRow({
         </div>
       </div>
       <div className="flex-1">
-        <h3 className="caret-dim font-display text-2xl uppercase font-bold text-muted-foreground mb-4 inline-block">
-          {title}
+        <h3 className="font-display text-2xl uppercase font-bold text-muted-foreground mb-4 inline-block">
+          <span>{title}</span>
+          <TerminalCaret dim />
         </h3>
         <p className="text-foreground/60 mb-6 max-w-2xl text-pretty">
           {description}
@@ -943,8 +966,9 @@ function InProgressCard({
           ◌ EN PROCESO
         </span>
       </div>
-      <h3 className="caret-dim font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight inline-block">
-        {title}
+      <h3 className="font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight inline-block">
+        <span>{title}</span>
+        <TerminalCaret dim />
       </h3>
       <p className="text-sm text-foreground/50 leading-relaxed mb-6 text-pretty">
         {hint}
