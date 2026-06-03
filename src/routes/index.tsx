@@ -766,16 +766,19 @@ function Section({
 
 function SectionHeader({ number, title }: { number: string; title: string }) {
   return (
-    <div className="flex items-baseline gap-4 mb-12">
-      <span className="font-display font-bold text-5xl md:text-7xl text-accent/20">
+    <div className="flex items-center gap-5 md:gap-6 mb-16">
+      <span className="font-mono text-xs md:text-sm text-accent/70 tracking-[0.2em]">
         {number}
       </span>
-      <h2 className="font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
-        <span>{title}</span>
+      <span aria-hidden className="h-px flex-none w-10 md:w-16 bg-gradient-to-r from-accent/60 to-transparent" />
+      <h2 className="font-display text-3xl md:text-5xl uppercase font-semibold tracking-tight text-foreground leading-none">
+        {title}
       </h2>
     </div>
   );
 }
+
+
 
 
 
