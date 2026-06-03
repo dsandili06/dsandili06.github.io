@@ -20,15 +20,15 @@
 }
 
 :root {
-  --background: #0c2340;
-  --foreground: #e8eef4;
-  --surface: #11304d;
-  --border-dim: #1a4a6e;
-  --border: #1a4a6e;
-  --accent: #5cbdb9;
-  --accent-secondary: #2d8a9e;
-  --accent-foreground: #0c2340;
-  --muted-foreground: #8aa4bd;
+  --background: #0d1117;
+  --foreground: #d0d7de;
+  --surface: #161b22;
+  --border-dim: #21262d;
+  --border: #21262d;
+  --accent: #58a6ff;
+  --accent-secondary: #79c0ff;
+  --accent-foreground: #0d1117;
+  --muted-foreground: #7d8590;
 }
 
 @keyframes slide-up {
