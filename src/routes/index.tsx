@@ -505,12 +505,77 @@ function Portfolio() {
         </section>
 
         <ContactSection />
+        <Footer />
       </main>
 
       <LogBar />
     </div>
   );
 }
+
+function BackgroundFX() {
+  return (
+    <div aria-hidden className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <div
+        className="absolute inset-0 opacity-[0.18]"
+        style={{
+          backgroundImage:
+            "linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+          maskImage:
+            "radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 100%)",
+          WebkitMaskImage:
+            "radial-gradient(ellipse 80% 60% at 50% 30%, #000 40%, transparent 100%)",
+        }}
+      />
+      <div
+        className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[900px] rounded-full blur-3xl"
+        style={{
+          background:
+            "radial-gradient(circle, color-mix(in oklab, var(--accent) 12%, transparent) 0%, transparent 60%)",
+        }}
+      />
+    </div>
+  );
+}
+
+function useRevealOnView() {
+  useEffect(() => {
+    const els = document.querySelectorAll<HTMLElement>("[data-reveal]");
+    els.forEach((el) => el.classList.add("reveal-on-view"));
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("in-view");
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 },
+    );
+    els.forEach((el) => obs.observe(el));
+    return () => obs.disconnect();
+  }, []);
+}
+
+function Footer() {
+  const year = new Date().getFullYear();
+  return (
+    <footer className="py-16 border-t border-border-dim font-display text-[10px] uppercase tracking-widest text-muted-foreground/70">
+      <pre className="text-accent/40 text-[10px] leading-tight mb-4 overflow-x-auto">{`  ____ ___  ____      ____  _              _____                     
+ / ___/ _ \\/ ___|    | __ )| |_   _  ___  |_   _|__  __ _ _ __ ___  
+ \\___ \\ | | | |      |  _ \\| | | | |/ _ \\   | |/ _ \\/ _\` | '_ \` _ \\ 
+  ___) | |_| | |___  | |_) | | |_| |  __/   | |  __/ (_| | | | | | |
+ |____/\\___/ \\____|  |____/|_|\\__,_|\\___|   |_|\\___|\\__,_|_| |_| |_|`}</pre>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <span>// EOF · Santiago Sandili · {year}</span>
+        <span className="text-accent/70">$ exit 0_</span>
+      </div>
+    </footer>
+  );
+}
+
 
 function Nav() {
   const links = [
