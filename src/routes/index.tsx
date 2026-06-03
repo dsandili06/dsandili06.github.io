@@ -30,13 +30,15 @@ type Project = {
   description: string;
   href: string;
   label: string;
+  image: string;
 };
 
 type Investigation = {
   id: string;
   title: string;
   platform: string;
-  tags: string[];
+  summary: string;
+  categories: string[];
   href: string;
 };
 
