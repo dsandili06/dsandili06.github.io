@@ -758,47 +758,172 @@ function InvestigationCard({ item }: { item: Investigation }) {
   );
 }
 
-function ContactFooter() {
+function InProgressRow({
+  label,
+  title,
+  description,
+}: {
+  label: string;
+  title: string;
+  description: string;
+}) {
   return (
-    <footer id="contacto" className="pt-24 pb-40 border-t border-border-dim">
-      <div className="flex flex-col items-center text-center">
-        <span className="font-display text-xs text-accent mb-8 uppercase tracking-[0.3em]">
-          Establecer Conexión
-        </span>
-        <a
-          href={`mailto:${EMAIL}`}
-          className="font-display text-3xl md:text-6xl lg:text-7xl font-bold uppercase hover:text-accent transition-colors break-all underline decoration-accent/30 decoration-4 underline-offset-8"
-        >
-          {EMAIL}
-        </a>
-        <div className="mt-16 flex flex-wrap justify-center gap-10 font-display text-sm uppercase tracking-widest">
-          <a
-            href={LINKEDIN}
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-accent transition-colors"
-          >
-            LinkedIn
-          </a>
-          <a
-            href={GITHUB}
-            target="_blank"
-            rel="noreferrer"
-            className="hover:text-accent transition-colors"
-          >
-            GitHub
-          </a>
-          <a
-            href={`mailto:${EMAIL}`}
-            className="hover:text-accent transition-colors"
-          >
-            Email
-          </a>
+    <div className="py-10 border-t border-dashed border-accent/30 flex flex-col md:flex-row gap-8 px-4 -mx-4">
+      <div className="w-full md:w-1/3">
+        <div className="w-full aspect-video bg-surface/40 border border-dashed border-accent/30 relative overflow-hidden flex items-center justify-center">
+          <div
+            aria-hidden
+            className="absolute inset-0"
+            style={{
+              backgroundImage:
+                "linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px)",
+              backgroundSize: "24px 24px",
+              opacity: 0.25,
+            }}
+          />
+          <span className="relative font-display text-[10px] uppercase tracking-[0.3em] text-accent/70">
+            ◌ EN PROCESO
+          </span>
+          <span className="absolute top-2 left-2 font-display text-[10px] uppercase tracking-widest text-accent/70 bg-background/80 px-2 py-1 border border-dashed border-accent/40">
+            {label}
+          </span>
         </div>
       </div>
-    </footer>
+      <div className="flex-1">
+        <h3 className="font-display text-2xl uppercase font-bold text-muted-foreground mb-4">
+          {title}
+        </h3>
+        <p className="text-foreground/60 mb-6 max-w-2xl text-pretty">
+          {description}
+        </p>
+        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent/70">
+          Próximamente <span className="text-base">→</span>
+        </span>
+      </div>
+    </div>
   );
 }
+
+function InProgressCard({
+  code,
+  title,
+  hint,
+}: {
+  code: string;
+  title: string;
+  hint: string;
+}) {
+  return (
+    <div className="bg-background p-7 flex flex-col border border-dashed border-accent/30 -m-px">
+      <div className="flex items-center justify-between mb-5">
+        <span className="font-display text-[11px] text-accent/70 tracking-widest">
+          {code}
+        </span>
+        <span className="font-display text-[10px] tracking-widest px-2 py-1 border border-dashed border-accent/40 text-accent/70">
+          ◌ EN PROCESO
+        </span>
+      </div>
+      <h3 className="font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight">
+        {title}
+      </h3>
+      <p className="text-sm text-foreground/50 leading-relaxed mb-6 text-pretty">
+        {hint}
+      </p>
+      <div className="flex items-center justify-between border-t border-dashed border-accent/30 pt-4 mt-auto">
+        <span className="font-display text-[10px] tracking-widest text-muted-foreground/70">
+          PENDING.MD
+        </span>
+        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent/70">
+          Próximamente <span className="text-base">→</span>
+        </span>
+      </div>
+    </div>
+  );
+}
+
+function ContactSection() {
+  const channels = [
+    {
+      code: "CHANNEL_01",
+      label: "LinkedIn",
+      value: "/in/santiagodsandili",
+      href: LINKEDIN,
+      cta: "Ver perfil",
+      external: true,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="currentColor" className="w-7 h-7">
+          <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.95v5.66H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 11.01-4.12 2.06 2.06 0 010 4.12zm1.78 13.02H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.72v20.56C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.72V1.72C24 .77 23.2 0 22.22 0z" />
+        </svg>
+      ),
+    },
+    {
+      code: "CHANNEL_02",
+      label: "Email",
+      value: EMAIL,
+      href: `mailto:${EMAIL}`,
+      cta: "Enviar mensaje",
+      external: false,
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-7 h-7">
+          <rect x="3" y="5" width="18" height="14" />
+          <path d="M3 7l9 6 9-6" />
+        </svg>
+      ),
+    },
+  ];
+  return (
+    <section id="contacto" className="py-24 border-t border-border-dim">
+      <SectionHeader number="06" title="Contacto" />
+      <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
+        Canales abiertos · respuesta en 24-48hs
+      </p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
+        {channels.map((c) => (
+          <a
+            key={c.code}
+            href={c.href}
+            {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
+            className="group bg-background p-8 flex flex-col hover:bg-accent/5 transition-colors"
+          >
+            <div className="flex items-center justify-between mb-8">
+              <span className="font-display text-[10px] uppercase tracking-widest text-accent">
+                {c.code}
+              </span>
+              <span className="text-accent group-hover:scale-110 transition-transform">
+                {c.icon}
+              </span>
+            </div>
+            <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+              {c.label}
+            </span>
+            <h3 className="font-display text-xl md:text-2xl font-bold mb-8 group-hover:text-accent transition-colors break-all">
+              {c.value}
+            </h3>
+            <div className="flex items-center justify-between border-t border-border-dim pt-5 mt-auto">
+              <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+                {c.external ? "EXTERNAL.LINK" : "MAILTO"}
+              </span>
+              <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent group-hover:gap-3 transition-all">
+                {c.cta} <span className="text-base">→</span>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div className="mt-10 flex justify-center">
+        <a
+          href={GITHUB}
+          target="_blank"
+          rel="noreferrer"
+          className="font-display text-[11px] uppercase tracking-[0.3em] text-muted-foreground hover:text-accent transition-colors"
+        >
+          GitHub · github.com/dsandili06 →
+        </a>
+      </div>
+    </section>
+  );
+}
+
 
 function LogBar() {
   const items = [
