@@ -259,18 +259,30 @@ const STACK: { category: string; items: string[] }[] = [
   },
 ];
 
-const FORMATION = [
+const CERTIFICATIONS: {
+  code: string;
+  title: string;
+  org: string;
+  year: string;
+  score?: string;
+  status: "OBTENIDA" | "EN PREPARACIÓN";
+  href?: string;
+}[] = [
   {
-    title: "TryHackMe SOC Analyst Level 1",
-    org: "TryHackMe · 2024",
-    status: "COMPLETO",
-    accent: true,
+    code: "SAL1",
+    title: "SOC Analyst Level 1",
+    org: "TryHackMe",
+    year: "2024",
+    score: "948 / 1000",
+    status: "OBTENIDA",
     href: "https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf",
   },
   {
-    title: "CompTIA Security+ (SY0-701)",
-    org: "En progreso",
-    status: "[EN CURSO]",
+    code: "SY0-701",
+    title: "CompTIA Security+",
+    org: "CompTIA",
+    year: "2025",
+    status: "EN PREPARACIÓN",
   },
 ];
 
@@ -566,17 +578,26 @@ function ProjectRow({ project }: { project: Project }) {
       className="group py-10 border-t border-border-dim flex flex-col md:flex-row gap-8 hover:bg-surface/40 transition-colors px-4 -mx-4"
     >
       <div className="w-full md:w-1/3">
-        <div className="w-full aspect-video bg-border-dim/20 grid place-items-center border border-border-dim group-hover:border-accent/50 transition-colors relative overflow-hidden">
+        <div className="w-full aspect-video bg-surface border border-border-dim group-hover:border-accent/60 transition-colors relative overflow-hidden">
+          <img
+            src={project.image}
+            alt={project.title}
+            loading="lazy"
+            width={1280}
+            height={720}
+            className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity grayscale-[20%] group-hover:grayscale-0"
+          />
           <div
             aria-hidden
-            className="absolute inset-0 opacity-30"
+            className="absolute inset-0 mix-blend-multiply"
             style={{
               backgroundImage:
                 "linear-gradient(var(--border-dim) 1px, transparent 1px), linear-gradient(90deg, var(--border-dim) 1px, transparent 1px)",
               backgroundSize: "24px 24px",
+              opacity: 0.25,
             }}
           />
-          <span className="relative text-[10px] font-display uppercase tracking-widest text-foreground/40">
+          <span className="absolute top-2 left-2 font-display text-[10px] uppercase tracking-widest text-accent bg-background/80 px-2 py-1 border border-accent/40">
             {project.label}
           </span>
         </div>
@@ -618,23 +639,27 @@ function InvestigationCard({ item }: { item: Investigation }) {
         </span>
       </div>
 
-      <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-        {item.platform}
-      </span>
-      <h3 className="font-display text-lg uppercase font-bold mb-5 group-hover:text-accent transition-colors leading-tight">
-        {item.title}
-      </h3>
-
-      <div className="flex flex-wrap gap-1.5 mb-6">
-        {item.tags.map((t) => (
+      <div className="flex flex-wrap gap-1.5 mb-4">
+        {item.categories.map((c) => (
           <span
-            key={t}
-            className="px-2 py-1 bg-surface text-[10px] font-display tracking-widest border-l-2 border-accent/60"
+            key={c}
+            className="px-2 py-1 bg-accent/10 text-[10px] font-display font-bold tracking-widest uppercase border border-accent/40 text-accent"
           >
-            {t}
+            {c}
           </span>
         ))}
       </div>
+
+      <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+        {item.platform}
+      </span>
+      <h3 className="font-display text-lg uppercase font-bold mb-3 group-hover:text-accent transition-colors leading-tight">
+        {item.title}
+      </h3>
+
+      <p className="text-sm text-foreground/70 leading-relaxed mb-6 text-pretty">
+        {item.summary}
+      </p>
 
       <div className="flex items-center justify-between border-t border-border-dim pt-4 mt-auto">
         <span className="font-display text-[10px] tracking-widest text-muted-foreground">
