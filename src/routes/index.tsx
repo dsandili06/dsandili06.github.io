@@ -343,7 +343,7 @@ function Portfolio() {
 
         <Section id="investigaciones" number="02" title="Investigaciones">
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
-            Writeups · CyberDefenders Labs · {INVESTIGATIONS.length} reportes · formación continua
+            WRITEUPS · INVESTIGACIONES
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border-dim border border-border-dim">
             {INVESTIGATIONS.map((i) => (
@@ -463,7 +463,7 @@ function Portfolio() {
         <section id="cursos" data-reveal className="py-24 border-b border-border-dim">
           <SectionHeader number="05" title="Cursos Completados" />
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
-            Ruta cronológica · {COURSES.length} cursos
+            ORGANIZADO CRONOLÓGICAMENTE
           </p>
           <ol className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
             {COURSES.map((c) => (
@@ -571,7 +571,7 @@ function Footer() {
   ___) | |_| | |___  | |_) | | |_| |  __/   | |  __/ (_| | | | | | |
  |____/\\___/ \\____|  |____/|_|\\__,_|\\___|   |_|\\___|\\__,_|_| |_| |_|`}</pre>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <span>// EOF · Santiago Sandili · {year}</span>
+        <span>{"\n"}</span>
         <span className="text-accent/70">$ exit 0_</span>
       </div>
     </footer>
@@ -702,13 +702,11 @@ function Hero() {
           <p className="text-xl md:text-2xl font-light text-pretty">
             Oriundo del interior del país, apasionado por la ciberseguridad y
             por aprender algo nuevo cada día. Enfocado en{" "}
-            <span className="text-accent">Blue Team</span>: DFIR, threat hunting
-            y análisis de malware.
+            <span className="text-accent">Blue Team</span>: DFIR, SOC Operations y Malware Analysis.
           </p>
           <p className="text-sm text-muted-foreground leading-relaxed">
             Construyendo un camino desde laboratorios y scripts hacia
-            operaciones de defensa reales. Este portfolio es la bitácora de ese
-            recorrido.
+            operaciones de defensa reales.
           </p>
         </div>
 
@@ -736,7 +734,7 @@ function Hero() {
             </div>
           </a>
           <div className="flex flex-col gap-1 font-display text-xs text-muted-foreground">
-            <span>STATUS: DEFENSIVE_OPERATIONS</span>
+            <span>STATUS: DISPONIBLE</span>
             <span>BASE: TUC, AR.</span>
           </div>
         </div>
