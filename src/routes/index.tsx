@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
 import socLabsImg from "@/assets/project-soc-labs.jpg";
 import blueteamScriptsImg from "@/assets/project-blueteam-scripts.jpg";
 
@@ -28,7 +29,6 @@ export const Route = createFileRoute("/")({
 type Project = {
   id: string;
   title: string;
-  stack: string;
   description: string;
   href: string;
   label: string;
@@ -54,7 +54,6 @@ const PROJECTS: Project[] = [
   {
     id: "01",
     title: "SOC Practitioner Labs",
-    stack: "WAZUH / ELK / SPLUNK",
     description:
       "Compilado de laboratorios prácticos de SOC: investigación de incidentes, análisis de alertas, detección de TTPs y ejercicios de threat hunting sobre entornos simulados.",
     href: "https://github.com/dsandili06/SOC-Practitioner-Labs",
@@ -64,7 +63,6 @@ const PROJECTS: Project[] = [
   {
     id: "02",
     title: "Blue Team Automation Scripts",
-    stack: "POWERSHELL / PYTHON / BASH",
     description:
       "Scripts operacionales para DFIR y SOC: triage de endpoints, enumeración local, parseo de logs, integración con threat intel y plantillas de investigación rápida.",
     href: "https://github.com/dsandili06/blueteam-scripts",
@@ -79,56 +77,56 @@ const CD_BASE =
 const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_001",
-    title: "3CX Supply Chain",
-    platform: "CyberDefenders",
-    summary:
-      "Análisis del ataque de cadena de suministro al cliente 3CX: trazado del binario troyanizado, C2 e IOCs asociados a la campaña.",
-    categories: ["Threat Intel", "Malware Analysis"],
-    href: CD_BASE + "3CX-Supply%20Chain.md",
-  },
-  {
-    id: "LAB_002",
-    title: "Brave",
-    platform: "CyberDefenders",
-    summary:
-      "Forense sobre artefactos del navegador Brave para reconstruir la actividad del usuario: historial, descargas y sesiones.",
-    categories: ["Endpoint Forensics"],
-    href: CD_BASE + "Brave.md",
-  },
-  {
-    id: "LAB_003",
     title: "FakeGPT",
     platform: "CyberDefenders",
     summary:
-      "Investigación de una extensión maliciosa que se hace pasar por ChatGPT, análisis estático del paquete y exfiltración de cookies.",
-    categories: ["Malware Analysis", "Threat Intel"],
+      "Análisis de malware en extensión de navegador que simula ser ChatGPT para interceptar credenciales y sesiones web. Identificación de Image Beacons y exfiltración cifrada.",
+    categories: ["Malware Analysis"],
     href: CD_BASE + "FakeGPT.md",
   },
   {
-    id: "LAB_004",
+    id: "LAB_002",
+    title: "3CX Supply Chain",
+    platform: "CyberDefenders",
+    summary:
+      "Investigación basada en CTI de un instalador oficial comprometido de 3CX. Análisis de payloads maliciosos, técnicas de evasión (T1497) y DLL Side-Loading (T1574).",
+    categories: ["Threat Intel"],
+    href: CD_BASE + "3CX-Supply%20Chain.md",
+  },
+  {
+    id: "LAB_003",
     title: "Insider",
     platform: "CyberDefenders",
     summary:
-      "Caso de amenaza interna: análisis de artefactos del endpoint para reconstruir las acciones del empleado y la fuga de información.",
+      "Forense en imagen de Kali Linux para investigar actividad de una amenaza interna. Análisis de .bash_history, extracción de herramientas ofensivas y trazabilidad de eventos.",
     categories: ["Endpoint Forensics"],
     href: CD_BASE + "Insider.md",
   },
   {
-    id: "LAB_005",
+    id: "LAB_004",
     title: "Kraken Keylogger",
     platform: "CyberDefenders",
     summary:
-      "Análisis dinámico y estático de un keylogger .NET: persistencia, captura de teclas y canal de exfiltración por SMTP.",
-    categories: ["Malware Analysis"],
+      "Análisis de un vector inicial LNK distribuido por mensajería web. Reconstrucción de persistencia abusando de software legítimo (Greenshot) y exfiltración de red.",
+    categories: ["Endpoint Forensics"],
     href: CD_BASE + "KrakenKeylogger.md",
+  },
+  {
+    id: "LAB_005",
+    title: "Silent Breach",
+    platform: "CyberDefenders",
+    summary:
+      "Investigación de una imagen de disco tras ataque de ransomware. Extracción de artefactos de navegador/correo, deofuscación de script PowerShell y descifrado de evidencia.",
+    categories: ["Endpoint Forensics"],
+    href: CD_BASE + "Silent%20Breach.md",
   },
   {
     id: "LAB_006",
     title: "Lockdown",
     platform: "CyberDefenders",
     summary:
-      "Triage de un host comprometido por ransomware: identificación de la familia, vector de entrada y artefactos de cifrado.",
-    categories: ["Endpoint Forensics", "Malware Analysis"],
+      "Análisis forense de red y memoria sobre una intrusión en servidor IIS. Detección de webshells SMB2, persistencia en Startup y análisis de malware AgentTesla ofuscado con UPX.",
+    categories: ["Network Forensics", "Endpoint Forensics"],
     href: CD_BASE + "Lockdown.md",
   },
   {
@@ -136,8 +134,8 @@ const INVESTIGATIONS: Investigation[] = [
     title: "Oski",
     platform: "CyberDefenders",
     summary:
-      "Análisis de memoria con Volatility sobre una infección de Oski Stealer: procesos, conexiones y credenciales robadas.",
-    categories: ["Malware Analysis"],
+      "Análisis de comportamiento de un infostealer (Oski Stealer). Identificación de C2, uso de sqlite3.dll para robo de credenciales, exfiltración de datos y técnicas de auto-borrado.",
+    categories: ["Threat Intel"],
     href: CD_BASE + "Oski.md",
   },
   {
@@ -145,8 +143,8 @@ const INVESTIGATIONS: Investigation[] = [
     title: "PsExec Hunt",
     platform: "CyberDefenders",
     summary:
-      "Threat hunting de movimiento lateral con PsExec: detección de servicios, eventos 4624/7045 y mapeo a MITRE ATT&CK.",
-    categories: ["Endpoint Forensics", "Threat Hunting"],
+      "Investigación sobre el abuso de herramientas legítimas (PsExec) para movimiento lateral. Análisis de tráfico SMB2, shares administrativos (ADMIN$) y extracción de credenciales NTLM.",
+    categories: ["Network Forensics"],
     href: CD_BASE + "PsExec-Hunt.md",
   },
   {
@@ -154,8 +152,8 @@ const INVESTIGATIONS: Investigation[] = [
     title: "RamnIt",
     platform: "CyberDefenders",
     summary:
-      "Estudio del worm Ramnit: mecanismos de propagación, infección de ejecutables y comunicación con su C2.",
-    categories: ["Malware Analysis"],
+      "Análisis forense de memoria sobre una infección del gusano bancario Ramnit. Identificación de procesos anómalos (ChromeSetup.exe), geolocalización de C2 y extracción de hashes.",
+    categories: ["Endpoint Forensics"],
     href: CD_BASE + "RamnIt.md",
   },
   {
@@ -163,52 +161,52 @@ const INVESTIGATIONS: Investigation[] = [
     title: "Red Stealer",
     platform: "CyberDefenders",
     summary:
-      "Análisis del infostealer Red Line: extracción de configuración, navegadores objetivo y datos exfiltrados.",
-    categories: ["Malware Analysis"],
+      "Análisis del malware RedLine Stealer distribuido como wextract.exe. Mapeo de técnicas de recolección de datos (T1005), escalación de privilegios e infraestructura C2.",
+    categories: ["Threat Intel"],
     href: CD_BASE + "Red%20Stealer.md",
   },
   {
     id: "LAB_011",
-    title: "Silent Breach",
+    title: "Web Investigation",
     platform: "CyberDefenders",
     summary:
-      "Análisis de PCAPs para reconstruir una intrusión silenciosa: protocolos sospechosos, beaconing y exfiltración.",
+      "Investigación de un compromiso a servidor web. Detección de SQL Injection, enumeración con GoBuster, bypass de panel de administración y despliegue de webshell.",
     categories: ["Network Forensics"],
-    href: CD_BASE + "Silent%20Breach.md",
+    href: CD_BASE + "Web%20Investigation.md",
   },
   {
     id: "LAB_012",
+    title: "Brave",
+    platform: "CyberDefenders",
+    summary:
+      "Análisis forense de memoria de host Windows sospechoso de exfiltración. Identificación de conexiones, sesiones web cifradas (T1071.001) y uso de LOLApps. Reconstrucción de actividad vía UserAssist.",
+    categories: ["Endpoint Forensics"],
+    href: CD_BASE + "Brave.md",
+  },
+  {
+    id: "LAB_013",
     title: "SysInternals",
     platform: "CyberDefenders",
     summary:
-      "Uso de la suite SysInternals para triage de un endpoint Windows: procesos, autoruns y handles sospechosos.",
+      "Investigación forense de un endpoint Windows comprometido usando la suite Sysinternals. Análisis de artefactos de registro, prefetch y reconstrucción de la cadena de ejecución.",
     categories: ["Endpoint Forensics"],
     href: CD_BASE + "SysInternals.md",
   },
   {
-    id: "LAB_013",
+    id: "LAB_014",
     title: "TheCrime",
     platform: "CyberDefenders",
     summary:
-      "Investigación forense de un caso criminal a partir de la imagen del disco: timeline, archivos eliminados y evidencia clave.",
-    categories: ["Endpoint Forensics"],
+      "Análisis forense de dispositivo Android para investigar un crimen. Recuperación de evidencia borrada, análisis de metadatos de archivos y reconstrucción de actividad del usuario mediante artefactos.",
+    categories: ["Android Forensics"],
     href: CD_BASE + "TheCrime.md",
-  },
-  {
-    id: "LAB_014",
-    title: "Web Investigation",
-    platform: "CyberDefenders",
-    summary:
-      "Análisis de logs de servidor web para identificar enumeración, payloads de explotación y origen del atacante.",
-    categories: ["Network Forensics"],
-    href: CD_BASE + "Web%20Investigation.md",
   },
   {
     id: "LAB_015",
     title: "WebStrike",
     platform: "CyberDefenders",
     summary:
-      "Investigación de un ataque web sobre PCAP: identificación del vector, payload entregado y reconstrucción de la sesión.",
+      "Análisis de captura de tráfico HTTP tras ataque a aplicación web. Detección de file upload malicioso, despliegue de webshell PHP y extracción de IOCs desde logs de servidor.",
     categories: ["Network Forensics"],
     href: CD_BASE + "WebStrike.md",
   },
@@ -305,6 +303,8 @@ const COURSES: Course[] = [
   },
   { n: "09", title: "SOC L1 BOOTCAMP", org: "ComunidadDojo" },
 ];
+
+const ROLES = ["DFIR ANALYST", "MALWARE ANALYST", "BLUE TEAM"];
 
 const EMAIL = "sdsandili06@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/santiagodsandili/";
@@ -493,7 +493,7 @@ function Nav() {
     <nav className="sticky top-0 z-50 bg-background/85 backdrop-blur-md border-b border-border-dim">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between font-display text-xs tracking-widest">
         <a href="#top" className="text-accent font-bold">
-          SANDILI // BLUE TEAM
+          SANTIAGO // BLUE TEAM
         </a>
         <div className="hidden md:flex gap-8 uppercase">
           {links.map((l) => (
@@ -511,6 +511,22 @@ function Nav() {
   );
 }
 
+function RotatingRole() {
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setIdx((i) => (i + 1) % ROLES.length), 2200);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span
+      key={idx}
+      className="px-2 py-0.5 border border-accent uppercase tracking-widest animate-reveal min-w-[10ch] text-center"
+    >
+      {ROLES[idx]}
+    </span>
+  );
+}
+
 function Hero() {
   return (
     <section
@@ -518,9 +534,7 @@ function Hero() {
       className="py-28 md:py-44 flex flex-col items-start border-b border-border-dim overflow-hidden"
     >
       <div className="flex items-center gap-4 text-accent font-display text-sm md:text-base mb-6 animate-reveal">
-        <span className="px-2 py-0.5 border border-accent uppercase tracking-widest">
-          SOC Analyst
-        </span>
+        <RotatingRole />
         <span className="flex items-center gap-2">
           <span className="size-2 bg-accent animate-pulse" />
           ACTIVE_SESSION
@@ -553,19 +567,33 @@ function Hero() {
             recorrido.
           </p>
         </div>
-        <div className="flex flex-col gap-2 font-display text-sm text-muted-foreground">
-          <span>LAT: -34.6037</span>
-          <span>LONG: -58.3816</span>
-          <span>SECTOR: BUENOS_AIRES_AR</span>
-          <span>STATUS: DEFENSIVE_OPERATIONS</span>
+        <div className="flex flex-col items-start gap-4">
           <a
             href="https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf"
             target="_blank"
             rel="noreferrer"
-            className="mt-4 inline-flex w-fit items-center gap-2 border border-accent text-accent px-3 py-1.5 uppercase tracking-widest text-xs hover:bg-accent hover:text-background transition-colors"
+            className="group relative block border-2 border-accent bg-accent/10 px-6 py-5 hover:bg-accent hover:text-background transition-colors w-full max-w-sm"
           >
-            THM SAL1 · Certificado →
+            <div className="flex items-center gap-2 mb-2">
+              <span className="size-2 bg-accent group-hover:bg-background animate-pulse" />
+              <span className="font-display text-[10px] uppercase tracking-[0.3em] text-accent group-hover:text-background">
+                Certified
+              </span>
+            </div>
+            <div className="font-display text-3xl md:text-4xl font-bold uppercase tracking-tight leading-none">
+              SAL1
+            </div>
+            <div className="mt-2 font-display text-xs uppercase tracking-widest text-muted-foreground group-hover:text-background/80">
+              TryHackMe · SOC Analyst Lvl 1
+            </div>
+            <div className="mt-3 font-display text-xs uppercase tracking-widest text-accent group-hover:text-background">
+              Score 948 / 1000 →
+            </div>
           </a>
+          <div className="flex flex-col gap-1 font-display text-xs text-muted-foreground">
+            <span>STATUS: DEFENSIVE_OPERATIONS</span>
+            <span>BASE: BUENOS_AIRES_AR</span>
+          </div>
         </div>
       </div>
     </section>
@@ -638,14 +666,9 @@ function ProjectRow({ project }: { project: Project }) {
         </div>
       </div>
       <div className="flex-1">
-        <div className="flex justify-between items-start mb-4 gap-4">
-          <h3 className="font-display text-2xl uppercase font-bold group-hover:text-accent transition-colors">
-            {project.title}
-          </h3>
-          <span className="font-display text-xs text-muted-foreground mt-2 whitespace-nowrap">
-            {project.stack}
-          </span>
-        </div>
+        <h3 className="font-display text-2xl uppercase font-bold group-hover:text-accent transition-colors mb-4">
+          {project.title}
+        </h3>
         <p className="text-foreground/75 mb-6 max-w-2xl text-pretty">
           {project.description}
         </p>
@@ -757,7 +780,7 @@ function LogBar() {
     "THREAT_LEVEL: LOW",
     "ENCRYPTED_COMMS_ENABLED",
     "SANTIAGO_SANDILI_PORTFOLIO_V2.0.0",
-    `© ${new Date().getFullYear()} SANTIAGO SANDILI`,
+    "© SANTIAGO SANDILI",
   ];
   const loop = [...items, ...items, ...items, ...items];
   return (
