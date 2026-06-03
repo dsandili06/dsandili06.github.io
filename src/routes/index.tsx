@@ -67,21 +67,34 @@ const PROJECTS: Project[] = [
 const INVESTIGATIONS: Investigation[] = [
   {
     id: "DFIR-LAB_001",
+    topic: "DFIR / Threat Hunting",
     title: "Análisis de incidentes en SOC Practitioner Labs",
     description:
-      "Recorrido por los laboratorios completados: triage, correlación de eventos y reconstrucción de la línea de tiempo del atacante.",
+      "Recorrido por los laboratorios completados: triage de alertas, correlación de eventos en SIEM y reconstrucción de la línea de tiempo del atacante.",
     date: "EN PROGRESO",
-    tag: "LAB",
-    tagAccent: true,
+    status: "EN PROGRESO",
+    tags: ["SIEM", "TRIAGE", "MITRE ATT&CK"],
     href: "https://github.com/dsandili06/SOC-Practitioner-Labs",
   },
   {
-    id: "PLACEHOLDER_000",
-    title: "Próximo writeup en preparación",
+    id: "MALWARE_002",
+    topic: "Malware Analysis",
+    title: "Próximo writeup: análisis estático y dinámico",
     description:
-      "Se está trabajando en un nuevo informe de laboratorio o herramienta SOC. Esta sección se actualizará cuando esté listo para publicación.",
+      "Informe en preparación sobre análisis de una muestra de malware: extracción de IOCs, comportamiento en sandbox y mapeo a técnicas ATT&CK.",
     date: "PRONTO",
-    tag: "DRAFT",
+    status: "DRAFT",
+    tags: ["MALWARE", "IOC", "SANDBOX"],
+  },
+  {
+    id: "BLUE-TEAM_003",
+    topic: "Blue Team Automation",
+    title: "Placeholder writeup automatización defensiva",
+    description:
+      "Espacio reservado para documentar un script o pipeline de detección. Se completará cuando el writeup esté listo para publicación.",
+    date: "PRONTO",
+    status: "DRAFT",
+    tags: ["POWERSHELL", "DETECTION", "AUTOMATION"],
   },
 ];
 
