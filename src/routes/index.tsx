@@ -480,10 +480,33 @@ function Portfolio() {
                 </span>
               </li>
             ))}
+            <li className="bg-background p-6 flex items-start gap-5 border border-dashed border-accent/40 -m-px">
+              <span className="font-display text-3xl font-bold text-accent/30 leading-none">
+                10
+              </span>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-bold uppercase text-base leading-tight text-muted-foreground">
+                  Curso en proceso
+                </h4>
+                <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground/70 mt-1 block">
+                  Formación continua · próximamente
+                </span>
+              </div>
+              <span className="font-display text-[10px] tracking-widest text-accent/70 border border-dashed border-accent/40 px-2 py-1 whitespace-nowrap">
+                ◌ EN PROCESO
+              </span>
+            </li>
           </ol>
         </section>
 
-        <ContactFooter />
+        <ContactSection />
+      </main>
+
+      <LogBar />
+    </div>
+  );
+}
+
       </main>
 
       <LogBar />
