@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { ArrowUp } from "lucide-react";
 import socLabsImg from "@/assets/project-soc-labs.jpg";
 import blueteamScriptsImg from "@/assets/project-blueteam-scripts.jpg";
 
@@ -510,6 +511,7 @@ function Portfolio() {
         <Footer />
       </main>
 
+      <ScrollToTop />
     </div>
   );
 }
@@ -629,6 +631,38 @@ function Footer() {
   );
 }
 
+function ScrollToTop() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 400);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const handleClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      aria-label="Volver arriba"
+      className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50
+        w-12 h-12 rounded-full
+        bg-background/80 backdrop-blur-md
+        border border-accent/40
+        flex items-center justify-center
+        transition-all duration-300 ease-out
+        hover:border-accent hover:bg-accent/10
+        hover:shadow-[0_0_24px_-4px_color-mix(in_oklab,var(--accent)_50%,transparent)]
+        ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}
+      `}
+    >
+      <ArrowUp size={20} strokeWidth={1.5} className="text-accent" />
+    </button>
+  );
+}
 
 function Nav() {
   const links = [
