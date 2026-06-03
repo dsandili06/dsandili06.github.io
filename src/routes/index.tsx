@@ -510,7 +510,6 @@ function Portfolio() {
         <Footer />
       </main>
 
-      <LogBar />
     </div>
   );
 }
