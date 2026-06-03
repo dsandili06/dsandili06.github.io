@@ -313,8 +313,10 @@ const LINKEDIN = "https://www.linkedin.com/in/santiagodsandili/";
 const GITHUB = "https://github.com/dsandili06";
 
 function Portfolio() {
+  useRevealOnView();
   return (
-    <div className="min-h-screen bg-background text-foreground font-body">
+    <div className="min-h-screen bg-background text-foreground font-body relative">
+      <BackgroundFX />
       <div
         aria-hidden
         className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-7xl border-x border-border-dim/40 pointer-events-none z-40"
@@ -324,6 +326,7 @@ function Portfolio() {
 
       <main className="max-w-7xl mx-auto px-6 relative z-10">
         <Hero />
+
 
         <Section id="proyectos" number="01" title="Proyectos">
           <div className="flex flex-col">
