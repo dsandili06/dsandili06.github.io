@@ -822,7 +822,7 @@ function ProjectRow({ project }: { project: Project }) {
       href={project.href}
       target="_blank"
       rel="noreferrer"
-      className="group py-10 border-t border-border-dim flex flex-col md:flex-row gap-8 hover:bg-surface/40 transition-colors px-4 -mx-4"
+      className="group py-10 border-t border-border-dim flex flex-col md:flex-row gap-8 hover:bg-surface/40 hover:shadow-[0_0_40px_-10px_var(--accent)] transition-all px-4 -mx-4"
     >
       <div className="w-full md:w-1/3">
         <div className="w-full aspect-video bg-surface border border-border-dim group-hover:border-accent/60 transition-colors relative overflow-hidden">
@@ -870,7 +870,7 @@ function InvestigationCard({ item }: { item: Investigation }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="bg-background p-7 flex flex-col group hover:bg-accent/5 transition-colors"
+      className="bg-background p-7 flex flex-col group hover:bg-accent/5 hover:shadow-[inset_0_0_0_1px_var(--accent)] transition-all"
     >
       <div className="flex items-center justify-between mb-5">
         <span className="font-display text-[11px] text-accent tracking-widest">
@@ -925,9 +925,9 @@ function InProgressRow({
   description: string;
 }) {
   return (
-    <div className="py-10 border-t border-dashed border-accent/30 flex flex-col md:flex-row gap-8 px-4 -mx-4">
+    <div className="py-10 border-t border-dashed border-[var(--accent-amber)]/40 flex flex-col md:flex-row gap-8 px-4 -mx-4 progress-shimmer">
       <div className="w-full md:w-1/3">
-        <div className="w-full aspect-video bg-surface/40 border border-dashed border-accent/30 relative overflow-hidden flex items-center justify-center">
+        <div className="w-full aspect-video bg-surface/40 border border-dashed border-[var(--accent-amber)]/40 relative overflow-hidden flex items-center justify-center">
           <div
             aria-hidden
             className="absolute inset-0"
@@ -938,22 +938,22 @@ function InProgressRow({
               opacity: 0.25,
             }}
           />
-          <span className="relative font-display text-[10px] uppercase tracking-[0.3em] text-accent/70">
+          <span className="relative font-display text-[10px] uppercase tracking-[0.3em] text-[var(--accent-amber)]">
             ◌ EN PROCESO
           </span>
-          <span className="absolute top-2 left-2 font-display text-[10px] uppercase tracking-widest text-accent/70 bg-background/80 px-2 py-1 border border-dashed border-accent/40">
+          <span className="absolute top-2 left-2 font-display text-[10px] uppercase tracking-widest text-[var(--accent-amber)] bg-background/80 px-2 py-1 border border-dashed border-[var(--accent-amber)]/50">
             {label}
           </span>
         </div>
       </div>
       <div className="flex-1">
-        <h3 className="font-display text-2xl uppercase font-bold text-muted-foreground mb-4">
+        <h3 className="caret-amber font-display text-2xl uppercase font-bold text-muted-foreground mb-4 inline-block">
           {title}
         </h3>
         <p className="text-foreground/60 mb-6 max-w-2xl text-pretty">
           {description}
         </p>
-        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent/70">
+        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-[var(--accent-amber)]">
           Próximamente <span className="text-base">→</span>
         </span>
       </div>
@@ -971,26 +971,26 @@ function InProgressCard({
   hint: string;
 }) {
   return (
-    <div className="bg-background p-7 flex flex-col border border-dashed border-accent/30 -m-px">
+    <div className="bg-background p-7 flex flex-col border border-dashed border-[var(--accent-amber)]/40 -m-px progress-shimmer">
       <div className="flex items-center justify-between mb-5">
-        <span className="font-display text-[11px] text-accent/70 tracking-widest">
+        <span className="font-display text-[11px] text-[var(--accent-amber)] tracking-widest">
           {code}
         </span>
-        <span className="font-display text-[10px] tracking-widest px-2 py-1 border border-dashed border-accent/40 text-accent/70">
+        <span className="font-display text-[10px] tracking-widest px-2 py-1 border border-dashed border-[var(--accent-amber)]/50 text-[var(--accent-amber)]">
           ◌ EN PROCESO
         </span>
       </div>
-      <h3 className="font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight">
+      <h3 className="caret-amber font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight inline-block">
         {title}
       </h3>
       <p className="text-sm text-foreground/50 leading-relaxed mb-6 text-pretty">
         {hint}
       </p>
-      <div className="flex items-center justify-between border-t border-dashed border-accent/30 pt-4 mt-auto">
+      <div className="flex items-center justify-between border-t border-dashed border-[var(--accent-amber)]/30 pt-4 mt-auto">
         <span className="font-display text-[10px] tracking-widest text-muted-foreground/70">
           PENDING.MD
         </span>
-        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent/70">
+        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-[var(--accent-amber)]">
           Próximamente <span className="text-base">→</span>
         </span>
       </div>
