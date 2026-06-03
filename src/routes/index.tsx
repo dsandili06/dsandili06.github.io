@@ -483,8 +483,9 @@ function Portfolio() {
 function Nav() {
   const links = [
     { href: "#proyectos", label: "Proyectos" },
-    { href: "#investigaciones", label: "Investigaciones" },
+    { href: "#investigaciones", label: "Labs" },
     { href: "#stack", label: "Stack" },
+    { href: "#formacion", label: "Certs" },
     { href: "#cursos", label: "Cursos" },
     { href: "#contacto", label: "Contacto" },
   ];
