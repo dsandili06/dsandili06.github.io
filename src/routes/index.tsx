@@ -1110,7 +1110,7 @@ function ContactSection() {
   ];
   return (
     <section id="contacto" data-reveal className="py-24 border-t border-border-dim">
-      <SectionHeader number="06" title="Contacto" />
+      <SectionHeader number="07" title="Contacto" />
       <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
         ¡CONECTEMOS!
       </p>
