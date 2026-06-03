@@ -1,53 +1,56 @@
-## Rediseño portfolio — Manifesto Brutalist
+## Refresco visual y ajustes de secciones
 
-Tomo como referencia estructural el prototipo elegido y lo construyo sobre el stack actual (TanStack Start + Tailwind v4).
+### 1. Paleta — Ocean Deep (más sutil)
 
-### Dirección visual (fija)
+Reemplazo el rojo brutalist por azules profundos + teal. Bajo el contraste agresivo y subo legibilidad.
 
-- Paleta: `#0a0a0a` background, `#171717` surface, `#2d1416` border-dim, `#ef4444` accent rojo, `#e5e5e5` foreground.
-- Tipografía: Space Mono (display/headings, uppercase, tracking ajustado) + Rubik (body).
-- Tratamiento brutalista: bordes duros (sin radius), grids visibles, números de sección gigantes, tipografía masiva en hero, hover en rojo, sin glassmorphism ni gradientes suaves.
+Tokens nuevos en `src/styles.css`:
+- `--background: #0c2340` (navy profundo)
+- `--surface: #11304d` (superficie elevada)
+- `--border-dim: #1a4a6e` (bordes/grids)
+- `--accent: #5cbdb9` (teal — reemplaza el rojo)
+- `--accent-secondary: #2d8a9e` (azul medio para hovers/badges)
+- `--foreground: #e8eef4` (texto principal)
+- `--muted-foreground: #8aa4bd`
 
-### Estructura de la home (una sola página, `src/routes/index.tsx`)
+Eliminación del rojo: barra inferior de logs pasa a `accent` teal sobre navy, badges/links del mismo color, selección de texto teal.
 
-1. Nav sticky con marca `SANDILI // BLUE TEAM` + anchors a secciones.
-2. Hero: chip `SOC ANALYST`, indicador `ACTIVE_SESSION`, nombre en Space Mono 10–13rem, descripción + bloque mono de coordenadas/estado.
-3. `01 Proyectos`: lista vertical con filas `imagen | texto`. Arranco con los dos proyectos reales del sitio actual (Blue Team Scripts → repo GitHub, y "Proyecto en progreso").
-4. `02 Investigaciones`: grid 2 columnas tipo informes DFIR (placeholders editables).
-5. `03 Stack` + `04 Formación` en grid 2 columnas. Formación con THM SAL1 (completo, link al certificado real) y CompTIA Sec+ (en proceso).
-6. Footer/Contacto: email gigante + links a LinkedIn/GitHub.
-7. Barra inferior tipo log con texto en marquesina sutil.
+### 2. Tipografía — Sora (display) + Manrope (body)
 
-### Implementación técnica
+- En `__root.tsx`: reemplazo el link de Google Fonts (Space Mono + Rubik) por `Sora` 400/600/700 + `Manrope` 300/400/500/700.
+- En `styles.css`: `--font-display: "Sora"`, `--font-body: "Manrope"`.
+- Bajo el `tracking-tighter` y `uppercase` masivo del hero a un peso más calmo (Sora se ve mejor sin uppercase forzado en el H1). Mantengo uppercase en labels técnicos pequeños.
 
-- `src/styles.css`: agrego tokens del prototipo (`--color-accent`, `--color-surface`, `--color-border-dim`, fuentes Space Mono/Rubik vía Google Fonts en `__root.tsx` head links), mantengo la estructura `@theme inline` existente y sobrescribo los semánticos para que el tema oscuro brutalist sea el único modo.
-- `src/routes/__root.tsx`: agrego preconnect + stylesheet de Google Fonts, actualizo meta title/description/og a "Santiago Daniel Sandili — SOC Analyst / Blue Team".
-- `src/routes/index.tsx`: reemplazo el placeholder por la página completa. Componentes locales para `Nav`, `Hero`, `ProjectRow`, `InvestigationCard`, `LogBar` (todo en el mismo archivo o partido a `src/components/portfolio/` si crece).
-- Animaciones: keyframes `slide-up` y `pulse` definidos en `styles.css` con `@theme` + clases utilitarias. Sin librerías nuevas.
-- Imágenes: por ahora dejo divs con borde y label monoespaciado en vez de generar fotos (más fiel al brutalismo técnico). Si querés que genere artwork temático después, lo agrego.
-- Datos reales que conservo del sitio actual:
-  - Bio en español (Buenos Aires / interior, pasión por ciberseguridad, Blue Team).
-  - Repo `github.com/dsandili06/blueteam-scripts`.
-  - Cert THM SAL1 con link al PDF oficial.
-  - CompTIA Sec+ en progreso.
-  - Email/links de contacto: dejo placeholders (`#`) si no me los pasás.
+### 3. Sección de contacto — rediseño
 
-### Lo que NO hago en esta iteración
+En `ContactFooter`:
+- Quito el header "Establecer Conexión" → uso el mismo patrón `SectionHeader` con número `06` y título `Contacto`.
+- Quito el email gigante.
+- Dos tarjetas en grid 2 columnas, mismo estilo que el resto del sitio (borde fino, hover teal):
+  - **LinkedIn** — `/in/santiagodsandili` + CTA "Ver perfil →"
+  - **Email** — `sdsandili06@gmail.com` + CTA "Enviar mensaje →"
+- Cada tarjeta con icono SVG inline (mantengo dependencias intactas), label técnico arriba (`CHANNEL_01`, `CHANNEL_02`), título, handle/dirección, CTA.
 
-- No agrego CMS ni backend (Lovable Cloud).
-- No genero imágenes IA todavía.
-- No creo rutas separadas por sección — todo single-page con anchors, como el prototipo.
+### 4. Placeholders "en proceso"
 
-### Pregunto si querés ajustar antes de construir
+Agrego una tarjeta extra al final de cada listado, con estilo distinto (borde punteado, sin link, texto muted, badge `◌ EN PROCESO`):
 
-- ¿Querés que use tu email real y tus URLs de LinkedIn/GitHub/Twitter? Si sí, pasámelos.
-  [https://www.linkedin.com/in/santiagodsandili/](https://www.linkedin.com/in/santiagodsandili/)
-  [https://github.com/dsandili06](https://github.com/dsandili06)
-  sdsandili06@gmail.com
-- ¿Las "Investigaciones" las dejo como placeholders editables o tenés writeups específicos para listar?
-  Solo debe haber 1 placeholder, tienen que estar todos los laboratorios realizados en mi github   
-  [https://github.com/dsandili06/SOC-Practitioner-Labs](https://github.com/dsandili06/SOC-Practitioner-Labs)
+- **Proyectos** → tarjeta "Próximo proyecto en construcción" (lab personal de detección).
+- **Investigaciones / Labs** → "Investigación en proceso" (próximo writeup CyberDefenders).
+- **Cursos** → "Curso en proceso" (CompTIA Security+ SY0-701 / formación continua).
+- **Certificaciones** → la card de Security+ ya marca `EN PREPARACIÓN`, así que no agrego otra ahí.
 
-También tengo un proyecto de blue team automation, con scripts básicos de powershell.
+Estos placeholders refuerzan la idea de formación constante sin ensuciar los datos reales.
 
-[https://github.com/dsandili06/blueteam-scripts](https://github.com/dsandili06/blueteam-scripts)
+### Archivos a tocar
+
+- `src/styles.css` — tokens de color + fuentes.
+- `src/routes/__root.tsx` — link de Google Fonts.
+- `src/routes/index.tsx` — `ContactFooter` rediseñado, tarjeta "en proceso" en Proyectos / Labs / Cursos, número de sección `06` para Contacto, ajustes menores de uppercase/tracking si la Sora pide aire.
+
+### Lo que NO cambio
+
+- Estructura general (single-page, nav sticky, secciones numeradas, LogBar).
+- Datos reales (labs, certs, cursos, links).
+- Hero rotando entre DFIR/MALWARE/BLUE TEAM y el bloque SAL1 Certified.
+- Imágenes de proyectos generadas.

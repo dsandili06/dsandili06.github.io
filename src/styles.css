@@ -8,25 +8,27 @@
   --color-surface: var(--surface);
   --color-border-dim: var(--border-dim);
   --color-accent: var(--accent);
+  --color-accent-secondary: var(--accent-secondary);
   --color-accent-foreground: var(--accent-foreground);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --font-display: "Space Mono", ui-monospace, monospace;
-  --font-body: "Rubik", system-ui, sans-serif;
+  --font-display: "Sora", system-ui, sans-serif;
+  --font-body: "Manrope", system-ui, sans-serif;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --animate-reveal: slide-up 0.8s var(--ease-out-expo) both;
   --animate-marquee: marquee 40s linear infinite;
 }
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #e5e5e5;
-  --surface: #171717;
-  --border-dim: #2d1416;
-  --border: #2d1416;
-  --accent: #ef4444;
-  --accent-foreground: #0a0a0a;
-  --muted-foreground: #a3a3a3;
+  --background: #0c2340;
+  --foreground: #e8eef4;
+  --surface: #11304d;
+  --border-dim: #1a4a6e;
+  --border: #1a4a6e;
+  --accent: #5cbdb9;
+  --accent-secondary: #2d8a9e;
+  --accent-foreground: #0c2340;
+  --muted-foreground: #8aa4bd;
 }
 
 @keyframes slide-up {
