@@ -848,7 +848,7 @@ function Hero() {
               SAL1
             </div>
             <div className="mt-2 font-display text-xs uppercase tracking-widest text-muted-foreground group-hover:text-background/80">
-              TryHackMe · SOC Analyst Lvl 1
+              TryHackMe · Security Analyst L1
             </div>
             <div className="mt-3 font-display text-xs uppercase tracking-widest text-accent group-hover:text-background">
               Score 948 / 1000 →
