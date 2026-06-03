@@ -660,7 +660,6 @@ function TypewriterRole() {
   return (
     <span className="px-2 py-0.5 border border-accent uppercase tracking-widest min-w-[18ch] inline-flex items-center">
       <span>{text}</span>
-      <TerminalCaret />
     </span>
   );
 }
@@ -933,7 +932,6 @@ function InProgressRow({
       <div className="flex-1">
         <h3 className="font-display text-2xl uppercase font-bold text-muted-foreground mb-4 inline-block">
           <span>{title}</span>
-          <TerminalCaret dim />
         </h3>
         <p className="text-foreground/60 mb-6 max-w-2xl text-pretty">
           {description}
@@ -967,7 +965,6 @@ function InProgressCard({
       </div>
       <h3 className="font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight inline-block">
         <span>{title}</span>
-        <TerminalCaret dim />
       </h3>
       <p className="text-sm text-foreground/50 leading-relaxed mb-6 text-pretty">
         {hint}
