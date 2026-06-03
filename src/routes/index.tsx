@@ -34,11 +34,12 @@ type Project = {
 
 type Investigation = {
   id: string;
+  topic: string;
   title: string;
   description: string;
   date: string;
-  tag: string;
-  tagAccent?: boolean;
+  status: "PUBLICADO" | "EN PROGRESO" | "DRAFT";
+  tags: string[];
   href?: string;
 };
 
