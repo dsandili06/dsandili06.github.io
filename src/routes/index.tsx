@@ -151,12 +151,13 @@ function Portfolio() {
         </Section>
 
         <Section id="investigaciones" number="02" title="Investigaciones">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border-dim border border-border-dim">
             {INVESTIGATIONS.map((i) => (
               <InvestigationCard key={i.id} item={i} />
             ))}
           </div>
         </Section>
+
 
         <section
           id="stack"
