@@ -1,4 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
+import socLabsImg from "@/assets/project-soc-labs.jpg";
+import blueteamScriptsImg from "@/assets/project-blueteam-scripts.jpg";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -57,6 +59,7 @@ const PROJECTS: Project[] = [
       "Compilado de laboratorios prácticos de SOC: investigación de incidentes, análisis de alertas, detección de TTPs y ejercicios de threat hunting sobre entornos simulados.",
     href: "https://github.com/dsandili06/SOC-Practitioner-Labs",
     label: "LABS_SOC.REPO",
+    image: socLabsImg,
   },
   {
     id: "02",
@@ -66,6 +69,7 @@ const PROJECTS: Project[] = [
       "Scripts operacionales para DFIR y SOC: triage de endpoints, enumeración local, parseo de logs, integración con threat intel y plantillas de investigación rápida.",
     href: "https://github.com/dsandili06/blueteam-scripts",
     label: "AUTOMATION_BT.REPO",
+    image: blueteamScriptsImg,
   },
 ];
 
@@ -77,105 +81,135 @@ const INVESTIGATIONS: Investigation[] = [
     id: "LAB_001",
     title: "3CX Supply Chain",
     platform: "CyberDefenders",
-    tags: ["SUPPLY CHAIN", "MALWARE", "DFIR"],
+    summary:
+      "Análisis del ataque de cadena de suministro al cliente 3CX: trazado del binario troyanizado, C2 e IOCs asociados a la campaña.",
+    categories: ["Threat Intel", "Malware Analysis"],
     href: CD_BASE + "3CX-Supply%20Chain.md",
   },
   {
     id: "LAB_002",
     title: "Brave",
     platform: "CyberDefenders",
-    tags: ["BROWSER", "FORENSICS"],
+    summary:
+      "Forense sobre artefactos del navegador Brave para reconstruir la actividad del usuario: historial, descargas y sesiones.",
+    categories: ["Endpoint Forensics"],
     href: CD_BASE + "Brave.md",
   },
   {
     id: "LAB_003",
     title: "FakeGPT",
     platform: "CyberDefenders",
-    tags: ["PHISHING", "BROWSER EXT", "OSINT"],
+    summary:
+      "Investigación de una extensión maliciosa que se hace pasar por ChatGPT, análisis estático del paquete y exfiltración de cookies.",
+    categories: ["Malware Analysis", "Threat Intel"],
     href: CD_BASE + "FakeGPT.md",
   },
   {
     id: "LAB_004",
     title: "Insider",
     platform: "CyberDefenders",
-    tags: ["INSIDER THREAT", "DFIR"],
+    summary:
+      "Caso de amenaza interna: análisis de artefactos del endpoint para reconstruir las acciones del empleado y la fuga de información.",
+    categories: ["Endpoint Forensics"],
     href: CD_BASE + "Insider.md",
   },
   {
     id: "LAB_005",
     title: "Kraken Keylogger",
     platform: "CyberDefenders",
-    tags: ["MALWARE", "KEYLOGGER", "SANDBOX"],
+    summary:
+      "Análisis dinámico y estático de un keylogger .NET: persistencia, captura de teclas y canal de exfiltración por SMTP.",
+    categories: ["Malware Analysis"],
     href: CD_BASE + "KrakenKeylogger.md",
   },
   {
     id: "LAB_006",
     title: "Lockdown",
     platform: "CyberDefenders",
-    tags: ["RANSOMWARE", "DFIR"],
+    summary:
+      "Triage de un host comprometido por ransomware: identificación de la familia, vector de entrada y artefactos de cifrado.",
+    categories: ["Endpoint Forensics", "Malware Analysis"],
     href: CD_BASE + "Lockdown.md",
   },
   {
     id: "LAB_007",
     title: "Oski",
     platform: "CyberDefenders",
-    tags: ["MALWARE", "STEALER", "MEMORY"],
+    summary:
+      "Análisis de memoria con Volatility sobre una infección de Oski Stealer: procesos, conexiones y credenciales robadas.",
+    categories: ["Malware Analysis"],
     href: CD_BASE + "Oski.md",
   },
   {
     id: "LAB_008",
     title: "PsExec Hunt",
     platform: "CyberDefenders",
-    tags: ["THREAT HUNTING", "LATERAL MOVEMENT", "MITRE ATT&CK"],
+    summary:
+      "Threat hunting de movimiento lateral con PsExec: detección de servicios, eventos 4624/7045 y mapeo a MITRE ATT&CK.",
+    categories: ["Endpoint Forensics", "Threat Hunting"],
     href: CD_BASE + "PsExec-Hunt.md",
   },
   {
     id: "LAB_009",
     title: "RamnIt",
     platform: "CyberDefenders",
-    tags: ["MALWARE", "WORM", "DFIR"],
+    summary:
+      "Estudio del worm Ramnit: mecanismos de propagación, infección de ejecutables y comunicación con su C2.",
+    categories: ["Malware Analysis"],
     href: CD_BASE + "RamnIt.md",
   },
   {
     id: "LAB_010",
     title: "Red Stealer",
     platform: "CyberDefenders",
-    tags: ["MALWARE", "INFOSTEALER"],
+    summary:
+      "Análisis del infostealer Red Line: extracción de configuración, navegadores objetivo y datos exfiltrados.",
+    categories: ["Malware Analysis"],
     href: CD_BASE + "Red%20Stealer.md",
   },
   {
     id: "LAB_011",
     title: "Silent Breach",
     platform: "CyberDefenders",
-    tags: ["DFIR", "NETWORK", "PCAP"],
+    summary:
+      "Análisis de PCAPs para reconstruir una intrusión silenciosa: protocolos sospechosos, beaconing y exfiltración.",
+    categories: ["Network Forensics"],
     href: CD_BASE + "Silent%20Breach.md",
   },
   {
     id: "LAB_012",
     title: "SysInternals",
     platform: "CyberDefenders",
-    tags: ["WINDOWS", "FORENSICS", "TRIAGE"],
+    summary:
+      "Uso de la suite SysInternals para triage de un endpoint Windows: procesos, autoruns y handles sospechosos.",
+    categories: ["Endpoint Forensics"],
     href: CD_BASE + "SysInternals.md",
   },
   {
     id: "LAB_013",
     title: "TheCrime",
     platform: "CyberDefenders",
-    tags: ["DFIR", "INVESTIGATION"],
+    summary:
+      "Investigación forense de un caso criminal a partir de la imagen del disco: timeline, archivos eliminados y evidencia clave.",
+    categories: ["Endpoint Forensics"],
     href: CD_BASE + "TheCrime.md",
   },
   {
     id: "LAB_014",
     title: "Web Investigation",
     platform: "CyberDefenders",
-    tags: ["WEB", "LOGS", "DFIR"],
+    summary:
+      "Análisis de logs de servidor web para identificar enumeración, payloads de explotación y origen del atacante.",
+    categories: ["Network Forensics"],
     href: CD_BASE + "Web%20Investigation.md",
   },
   {
     id: "LAB_015",
     title: "WebStrike",
     platform: "CyberDefenders",
-    tags: ["WEB ATTACK", "DFIR", "PCAP"],
+    summary:
+      "Investigación de un ataque web sobre PCAP: identificación del vector, payload entregado y reconstrucción de la sesión.",
+    categories: ["Network Forensics"],
     href: CD_BASE + "WebStrike.md",
   },
 ];
