@@ -507,13 +507,6 @@ function Portfolio() {
   );
 }
 
-      </main>
-
-      <LogBar />
-    </div>
-  );
-}
-
 function Nav() {
   const links = [
     { href: "#proyectos", label: "Proyectos" },
