@@ -331,7 +331,7 @@ function Portfolio() {
             <InProgressRow
               label="NEXT_PROJECT.WIP"
               title="Próximo proyecto en construcción"
-              description="Laboratorio personal de detección + reglas Sigma propias. Más detalles cuando esté listo para publicar."
+              description="Más detalles cuando esté listo para publicar."
             />
           </div>
         </Section>
