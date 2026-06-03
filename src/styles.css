@@ -100,20 +100,6 @@ html { scroll-behavior: smooth; }
 }
 
 
-@layer utilities {
-  .terminal-caret {
-    display: inline-block;
-    margin-left: 0.15em;
-    color: var(--accent);
-    line-height: 1;
-    animation: caret-blink 1s steps(1, end) infinite;
-  }
-
-  .terminal-caret-dim {
-    color: color-mix(in oklab, var(--accent) 70%, transparent);
-    animation-duration: 1.1s;
-  }
-}
 
 @utility glitch-on {
   animation: glitch 8s infinite;
