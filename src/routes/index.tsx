@@ -793,7 +793,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} className="py-24 border-b border-border-dim">
+    <section id={id} data-reveal className="py-24 border-b border-border-dim">
       <SectionHeader number={number} title={title} />
       {children}
     </section>
@@ -806,12 +806,13 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
       <span className="font-display font-bold text-5xl md:text-7xl text-accent/20">
         {number}
       </span>
-      <h2 className="font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
+      <h2 className="caret font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
         {title}
       </h2>
     </div>
   );
 }
+
 
 function ProjectRow({ project }: { project: Project }) {
   return (
