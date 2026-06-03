@@ -1070,27 +1070,3 @@ function MagneticContactCard({ channel: c }: { channel: Channel }) {
   );
 }
 
-
-function LogBar() {
-  const items = [
-    "SYSTEM READY",
-    "DEFENSIVE_MODE: ON",
-    "THREAT_LEVEL: LOW",
-    "ENCRYPTED_COMMS_ENABLED",
-    "SANTIAGO_SANDILI_PORTFOLIO_V2.0.0",
-    "© SANTIAGO SANDILI",
-  ];
-  const loop = [...items, ...items, ...items, ...items];
-  return (
-    <div className="fixed bottom-0 left-0 w-full bg-accent text-background z-50 overflow-hidden border-t border-accent">
-      <div
-        className="whitespace-nowrap font-display text-[10px] font-bold flex gap-8 py-1 px-4"
-        style={{ animation: "marquee 40s linear infinite", width: "max-content" }}
-      >
-        {loop.map((t, i) => (
-          <span key={i}>{t}</span>
-        ))}
-      </div>
-    </div>
-  );
-}
