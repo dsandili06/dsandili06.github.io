@@ -428,7 +428,7 @@ function Portfolio() {
                           : "border-muted-foreground/40 text-muted-foreground"
                       }`}
                     >
-                      {obtained ? "✓ OBTENIDA" : "◌ EN PREPARACIÓN"}
+                      {c.badge}
                     </span>
                     <span className="font-display text-[10px] tracking-widest text-muted-foreground">
                       {c.year}
