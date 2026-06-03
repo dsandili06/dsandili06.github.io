@@ -726,7 +726,28 @@ function Hero() {
             operaciones de defensa reales. Este portfolio es la bitácora de ese
             recorrido.
           </p>
+          <div className="grid grid-cols-3 gap-4 pt-4 border-t border-border-dim max-w-md">
+            <div>
+              <div className="font-display text-3xl md:text-4xl font-bold text-accent leading-none">
+                <Counter to={15} />
+              </div>
+              <div className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Writeups</div>
+            </div>
+            <div>
+              <div className="font-display text-3xl md:text-4xl font-bold text-accent leading-none">
+                <Counter to={9} />
+              </div>
+              <div className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Cursos</div>
+            </div>
+            <div>
+              <div className="font-display text-3xl md:text-4xl font-bold text-accent leading-none">
+                <Counter to={1} />
+              </div>
+              <div className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Cert</div>
+            </div>
+          </div>
         </div>
+
         <div className="flex flex-col items-start gap-4">
           <a
             href="https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf"
