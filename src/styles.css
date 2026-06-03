@@ -156,15 +156,15 @@ html { scroll-behavior: smooth; }
   }
 }
 
-@utility reveal-on-view {
+.reveal-on-view {
   opacity: 0;
   transform: translate3d(0, 24px, 0);
   will-change: transform, opacity;
   contain: layout paint;
   backface-visibility: hidden;
-  &.in-view {
-    animation: reveal-up 0.7s var(--ease-out-expo) both;
-  }
+}
+.reveal-on-view.in-view {
+  animation: reveal-up 0.7s var(--ease-out-expo) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
