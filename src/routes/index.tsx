@@ -826,10 +826,10 @@ function Hero() {
             Soy Santiago Daniel Sandili, analista SOC Jr. orientado a{" "}
             <span className="text-accent">Blue Team</span>, DFIR y análisis de malware. Me fui formando de manera práctica con laboratorios, writeups y herramientas reales para desarrollar una base sólida en detección, triage y respuesta a incidentes.
           </p>
-          <p className="text-sm md:text-base text-foreground/75 leading-relaxed text-pretty">
+          <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
             Con el tiempo empecé a inclinarme cada vez más por la parte defensiva de la ciberseguridad: análisis forense, investigación de memoria, revisión de logs, tráfico de red y comportamiento de malware. Ahí fue donde encontré el área en la que quiero crecer profesionalmente.
           </p>
-          <p className="text-sm text-muted-foreground leading-relaxed text-pretty">
+          <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
             Este portfolio reúne parte de ese recorrido: certificaciones, laboratorios, proyectos y documentación técnica que fui construyendo mientras desarrollo mi perfil en ciberseguridad.
           </p>
         </div>
