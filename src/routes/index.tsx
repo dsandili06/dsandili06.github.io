@@ -389,39 +389,71 @@ function ProjectRow({ project }: { project: Project }) {
 }
 
 function InvestigationCard({ item }: { item: Investigation }) {
-  const Wrapper: React.ElementType = item.href ? "a" : "div";
-  const wrapperProps = item.href
-    ? { href: item.href, target: "_blank", rel: "noreferrer" }
-    : {};
+  const statusClass =
+    item.status === "PUBLICADO"
+      ? "text-accent border-accent"
+      : item.status === "EN PROGRESO"
+        ? "text-accent/80 border-accent/40"
+        : "text-muted-foreground border-border-dim";
+
   return (
-    <Wrapper
-      {...wrapperProps}
-      className="bg-background p-8 group hover:bg-accent/5 transition-colors block"
-    >
-      <span className="font-display text-xs text-accent mb-4 block tracking-widest">
-        {item.id}
-      </span>
-      <h3 className="font-display text-xl uppercase font-bold mb-4 group-hover:text-accent transition-colors">
-        {item.title}
-      </h3>
-      <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-        {item.description}
-      </p>
-      <div className="flex gap-3">
-        <span className="px-2 py-1 bg-surface text-[10px] font-display tracking-widest">
-          {item.date}
+    <article className="bg-background p-8 flex flex-col group hover:bg-accent/5 transition-colors">
+      <div className="flex items-center justify-between mb-6">
+        <span className="font-display text-xs text-accent tracking-widest">
+          {item.id}
         </span>
         <span
-          className={`px-2 py-1 bg-surface text-[10px] font-display tracking-widest ${
-            item.tagAccent ? "text-accent font-bold" : ""
-          }`}
+          className={`font-display text-[10px] tracking-widest px-2 py-1 border ${statusClass}`}
         >
-          {item.tag}
+          {item.status}
         </span>
       </div>
-    </Wrapper>
+
+      <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+        {item.topic}
+      </span>
+      <h3 className="font-display text-xl uppercase font-bold mb-4 group-hover:text-accent transition-colors leading-tight">
+        {item.title}
+      </h3>
+      <p className="text-sm text-muted-foreground mb-6 leading-relaxed flex-1">
+        {item.description}
+      </p>
+
+      <div className="flex flex-wrap gap-2 mb-6">
+        {item.tags.map((t) => (
+          <span
+            key={t}
+            className="px-2 py-1 bg-surface text-[10px] font-display tracking-widest border-l-2 border-accent/60"
+          >
+            {t}
+          </span>
+        ))}
+      </div>
+
+      <div className="flex items-center justify-between border-t border-border-dim pt-4 mt-auto">
+        <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+          {item.date}
+        </span>
+        {item.href ? (
+          <a
+            href={item.href}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent hover:gap-3 transition-all"
+          >
+            Ver writeup <span className="text-base">→</span>
+          </a>
+        ) : (
+          <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+            [WRITEUP PENDIENTE]
+          </span>
+        )}
+      </div>
+    </article>
   );
 }
+
+
 
 function ContactFooter() {
   return (
