@@ -1029,42 +1029,14 @@ function ContactSection() {
     },
   ];
   return (
-    <section id="contacto" className="py-24 border-t border-border-dim">
+    <section id="contacto" data-reveal className="py-24 border-t border-border-dim">
       <SectionHeader number="06" title="Contacto" />
       <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
         ¡CONECTEMOS!
       </p>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
         {channels.map((c) => (
-          <a
-            key={c.code}
-            href={c.href}
-            {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
-            className="group bg-background p-8 flex flex-col hover:bg-accent/5 transition-colors"
-          >
-            <div className="flex items-center justify-between mb-8">
-              <span className="font-display text-[10px] uppercase tracking-widest text-accent">
-                {c.code}
-              </span>
-              <span className="text-accent group-hover:scale-110 transition-transform">
-                {c.icon}
-              </span>
-            </div>
-            <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-              {c.label}
-            </span>
-            <h3 className="font-display text-xl md:text-2xl font-bold mb-8 group-hover:text-accent transition-colors break-all">
-              {c.value}
-            </h3>
-            <div className="flex items-center justify-between border-t border-border-dim pt-5 mt-auto">
-              <span className="font-display text-[10px] tracking-widest text-muted-foreground">
-                {c.external ? "EXTERNAL.LINK" : "MAILTO"}
-              </span>
-              <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent group-hover:gap-3 transition-all">
-                {c.cta} <span className="text-base">→</span>
-              </span>
-            </div>
-          </a>
+          <MagneticContactCard key={c.code} channel={c} />
         ))}
       </div>
       <div className="mt-10 flex justify-center">
@@ -1078,6 +1050,64 @@ function ContactSection() {
         </a>
       </div>
     </section>
+  );
+}
+
+type Channel = {
+  code: string;
+  label: string;
+  value: string;
+  href: string;
+  cta: string;
+  external: boolean;
+  icon: React.ReactNode;
+};
+
+function MagneticContactCard({ channel: c }: { channel: Channel }) {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const onMove = (e: React.MouseEvent) => {
+    const el = ref.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 14;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 14;
+    el.style.transform = `translate(${x}px, ${y}px)`;
+  };
+  const onLeave = () => {
+    if (ref.current) ref.current.style.transform = "translate(0,0)";
+  };
+  return (
+    <a
+      ref={ref}
+      href={c.href}
+      {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
+      onMouseMove={onMove}
+      onMouseLeave={onLeave}
+      className="border-beam group bg-background p-8 flex flex-col hover:bg-accent/5 transition-all duration-200 ease-out will-change-transform"
+    >
+      <div className="flex items-center justify-between mb-8">
+        <span className="font-display text-[10px] uppercase tracking-widest text-accent">
+          {c.code}
+        </span>
+        <span className="text-accent transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[6deg]">
+          {c.icon}
+        </span>
+      </div>
+      <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+        {c.label}
+      </span>
+      <h3 className="font-display text-xl md:text-2xl font-bold mb-8 group-hover:text-accent transition-colors break-all">
+        {c.value}
+      </h3>
+      <div className="flex items-center justify-between border-t border-border-dim pt-5 mt-auto">
+        <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+          {c.external ? "EXTERNAL.LINK" : "MAILTO"}
+        </span>
+        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent group-hover:gap-3 transition-all">
+          {c.cta} <span className="text-base">→</span>
+        </span>
+      </div>
+    </a>
   );
 }
 
