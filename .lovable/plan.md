@@ -1,56 +1,46 @@
-## Refresco visual y ajustes de secciones
+## Diagnóstico
 
-### 1. Paleta — Ocean Deep (más sutil)
+Verifiqué el preview y confirmé el problema:
 
-Reemplazo el rojo brutalist por azules profundos + teal. Bajo el contraste agresivo y subo legibilidad.
+1. **Las secciones no animan**: en `src/styles.css` la animación está definida como `@utility reveal-on-view { ... }`. En Tailwind v4, `@utility` es "on-demand": solo se emite si el escáner detecta la clase como literal en el código fuente. Como `reveal-on-view` y `in-view` se agregan dinámicamente con `classList.add(...)` desde JS (`src/routes/index.tsx` línea 548 y 553), Tailwind no las detecta de forma confiable y **no las compila en el bundle final**. Resultado: el elemento nunca recibe `opacity: 0` ni el `@keyframes reveal-up`, así que aparece de golpe sin animación.
 
-Tokens nuevos en `src/styles.css`:
-- `--background: #0c2340` (navy profundo)
-- `--surface: #11304d` (superficie elevada)
-- `--border-dim: #1a4a6e` (bordes/grids)
-- `--accent: #5cbdb9` (teal — reemplaza el rojo)
-- `--accent-secondary: #2d8a9e` (azul medio para hovers/badges)
-- `--foreground: #e8eef4` (texto principal)
-- `--muted-foreground: #8aa4bd`
+2. **El scroll no se siente suave**: `html { scroll-behavior: smooth }` sí está en el CSS, pero el botón "volver arriba" usa `window.scrollTo({ behavior: "smooth" })` y los anchors del nav dependen del navegador. Conviene asegurar que la regla CSS llegue al bundle y que la navegación por hash también dispare scroll suave programáticamente.
 
-Eliminación del rojo: barra inferior de logs pasa a `accent` teal sobre navy, badges/links del mismo color, selección de texto teal.
+## Cambios propuestos en `src/styles.css`
 
-### 2. Tipografía — Sora (display) + Manrope (body)
+- **Reemplazar `@utility reveal-on-view`** por reglas CSS planas en `@layer base` (o fuera de cualquier capa on-demand), de modo que SIEMPRE se incluyan en el bundle, independientemente del escáner:
 
-- En `__root.tsx`: reemplazo el link de Google Fonts (Space Mono + Rubik) por `Sora` 400/600/700 + `Manrope` 300/400/500/700.
-- En `styles.css`: `--font-display: "Sora"`, `--font-body: "Manrope"`.
-- Bajo el `tracking-tighter` y `uppercase` masivo del hero a un peso más calmo (Sora se ve mejor sin uppercase forzado en el H1). Mantengo uppercase en labels técnicos pequeños.
+```css
+.reveal-on-view {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  will-change: transform, opacity;
+  contain: layout paint;
+  backface-visibility: hidden;
+}
+.reveal-on-view.in-view {
+  animation: reveal-up 0.7s var(--ease-out-expo) both;
+}
+```
 
-### 3. Sección de contacto — rediseño
+- Mantener el bloque `@media (prefers-reduced-motion: reduce)` que ya neutraliza el efecto.
 
-En `ContactFooter`:
-- Quito el header "Establecer Conexión" → uso el mismo patrón `SectionHeader` con número `06` y título `Contacto`.
-- Quito el email gigante.
-- Dos tarjetas en grid 2 columnas, mismo estilo que el resto del sitio (borde fino, hover teal):
-  - **LinkedIn** — `/in/santiagodsandili` + CTA "Ver perfil →"
-  - **Email** — `sdsandili06@gmail.com` + CTA "Enviar mensaje →"
-- Cada tarjeta con icono SVG inline (mantengo dependencias intactas), label técnico arriba (`CHANNEL_01`, `CHANNEL_02`), título, handle/dirección, CTA.
+- Como cinturón y tirantes, agregar `@source inline("reveal-on-view in-view");` cerca del top del CSS para que Tailwind tampoco intente eliminar nada relacionado.
 
-### 4. Placeholders "en proceso"
+## Cambios propuestos en `src/routes/index.tsx`
 
-Agrego una tarjeta extra al final de cada listado, con estilo distinto (borde punteado, sin link, texto muted, badge `◌ EN PROCESO`):
+- **Scroll suave para enlaces del nav**: interceptar clicks en `<a href="#...">` del `Nav` y hacer `document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })`. Esto garantiza scroll suave aún si el navegador ignora `scroll-behavior: smooth` por algún motivo (extensiones, settings de accesibilidad activas).
+- Mantener `useRevealOnView` como está (ya quedó bien con `requestAnimationFrame` y soporte de reduce-motion).
 
-- **Proyectos** → tarjeta "Próximo proyecto en construcción" (lab personal de detección).
-- **Investigaciones / Labs** → "Investigación en proceso" (próximo writeup CyberDefenders).
-- **Cursos** → "Curso en proceso" (CompTIA Security+ SY0-701 / formación continua).
-- **Certificaciones** → la card de Security+ ya marca `EN PREPARACIÓN`, así que no agrego otra ahí.
+## Verificación post-cambio
 
-Estos placeholders refuerzan la idea de formación constante sin ensuciar los datos reales.
+1. Recargar el preview en `/`.
+2. Confirmar que al cargar, las secciones bajo el fold empiezan invisibles y aparecen con fade+slide al scrollear.
+3. Click en "PROYECTOS", "CONTACTO", etc. del nav → scroll suave.
+4. Click en botón "volver arriba" → scroll suave hasta el tope.
+5. Activar `prefers-reduced-motion` en el OS → secciones visibles instantáneamente, scroll instantáneo.
 
-### Archivos a tocar
+## Archivos a modificar
 
-- `src/styles.css` — tokens de color + fuentes.
-- `src/routes/__root.tsx` — link de Google Fonts.
-- `src/routes/index.tsx` — `ContactFooter` rediseñado, tarjeta "en proceso" en Proyectos / Labs / Cursos, número de sección `06` para Contacto, ajustes menores de uppercase/tracking si la Sora pide aire.
-
-### Lo que NO cambio
-
-- Estructura general (single-page, nav sticky, secciones numeradas, LogBar).
-- Datos reales (labs, certs, cursos, links).
-- Hero rotando entre DFIR/MALWARE/BLUE TEAM y el bloque SAL1 Certified.
-- Imágenes de proyectos generadas.
+- `src/styles.css` — convertir `@utility reveal-on-view` en CSS plano y agregar safelist.
+- `src/routes/index.tsx` — handler de scroll suave en el Nav.
