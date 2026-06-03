@@ -771,10 +771,22 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
       <span className="font-display font-bold text-5xl md:text-7xl text-accent/20">
         {number}
       </span>
-      <h2 className="caret font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
-        {title}
+      <h2 className="font-display text-2xl md:text-4xl uppercase font-bold tracking-tight">
+        <span>{title}</span>
+        <TerminalCaret />
       </h2>
     </div>
+  );
+}
+
+function TerminalCaret({ dim = false }: { dim?: boolean }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`terminal-caret${dim ? " terminal-caret-dim" : ""}`}
+    >
+      ▊
+    </span>
   );
 }
 
@@ -910,8 +922,9 @@ function InProgressRow({
         </div>
       </div>
       <div className="flex-1">
-        <h3 className="caret-dim font-display text-2xl uppercase font-bold text-muted-foreground mb-4 inline-block">
-          {title}
+        <h3 className="font-display text-2xl uppercase font-bold text-muted-foreground mb-4 inline-block">
+          <span>{title}</span>
+          <TerminalCaret dim />
         </h3>
         <p className="text-foreground/60 mb-6 max-w-2xl text-pretty">
           {description}
@@ -943,8 +956,9 @@ function InProgressCard({
           ◌ EN PROCESO
         </span>
       </div>
-      <h3 className="caret-dim font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight inline-block">
-        {title}
+      <h3 className="font-display text-lg uppercase font-bold mb-3 text-muted-foreground leading-tight inline-block">
+        <span>{title}</span>
+        <TerminalCaret dim />
       </h3>
       <p className="text-sm text-foreground/50 leading-relaxed mb-6 text-pretty">
         {hint}
