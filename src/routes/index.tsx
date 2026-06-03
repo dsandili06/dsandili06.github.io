@@ -511,7 +511,7 @@ function Portfolio() {
         <Footer />
       </main>
 
-      <ScrollToTop />
+      
     </div>
   );
 }
@@ -563,106 +563,37 @@ function useRevealOnView() {
 }
 
 function Footer() {
+  const handleClick = () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   return (
-    <footer aria-hidden className="relative mt-24 select-none">
-      {/* Top hairline with glow */}
-      <div className="relative h-px w-full overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent to-transparent blur-sm opacity-50" />
+    <footer className="relative mt-24 select-none">
+      {/* Scroll-to-top button above the hairline */}
+      <div className="flex justify-center pb-6">
+        <button
+          onClick={handleClick}
+          aria-label="Volver arriba"
+          className="w-12 h-12 rounded-full
+            bg-background/80 backdrop-blur-md
+            border border-accent/40
+            flex items-center justify-center
+            transition-all duration-300 ease-out
+            hover:border-accent hover:bg-accent/10
+            hover:shadow-[0_0_24px_-4px_color-mix(in_oklab,var(--accent)_50%,transparent)]"
+        >
+          <ArrowUp size={20} strokeWidth={1.5} className="text-accent" />
+        </button>
       </div>
 
-      {/* Grid + radial glow stage */}
-      <div
-        className="relative h-56 md:h-72 w-full overflow-hidden"
-        style={{
-          backgroundImage:
-            "linear-gradient(to right, color-mix(in oklab, var(--accent) 10%, transparent) 1px, transparent 1px), linear-gradient(to bottom, color-mix(in oklab, var(--accent) 10%, transparent) 1px, transparent 1px)",
-          backgroundSize: "32px 32px",
-          maskImage:
-            "radial-gradient(ellipse at 50% 100%, black 0%, transparent 75%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse at 50% 100%, black 0%, transparent 75%)",
-        }}
-      >
-        {/* Centered glow */}
-        <div
-          className="absolute left-1/2 bottom-0 -translate-x-1/2 translate-y-1/2 w-[140%] aspect-square rounded-full"
-          style={{
-            background:
-              "radial-gradient(circle, color-mix(in oklab, var(--accent) 35%, transparent) 0%, transparent 60%)",
-          }}
-        />
-
-        {/* Concentric geometric mark */}
-        <svg
-          viewBox="0 0 200 200"
-          className="absolute left-1/2 bottom-6 md:bottom-10 -translate-x-1/2 w-28 md:w-36 text-accent"
-        >
-          <defs>
-            <linearGradient id="footerStroke" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="currentColor" stopOpacity="0.9" />
-              <stop offset="100%" stopColor="currentColor" stopOpacity="0.2" />
-            </linearGradient>
-          </defs>
-          <g fill="none" stroke="url(#footerStroke)" strokeWidth="1">
-            <circle cx="100" cy="100" r="88">
-              <animate attributeName="r" values="86;90;86" dur="6s" repeatCount="indefinite" />
-            </circle>
-            <circle cx="100" cy="100" r="64" opacity="0.7" />
-            <circle cx="100" cy="100" r="40" opacity="0.5" />
-            <polygon points="100,30 170,140 30,140" opacity="0.8" />
-          </g>
-          <circle cx="100" cy="100" r="4" fill="currentColor">
-            <animate attributeName="opacity" values="1;0.3;1" dur="2s" repeatCount="indefinite" />
-          </circle>
-        </svg>
-
-        {/* Scanline */}
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.06]"
-          style={{
-            backgroundImage:
-              "repeating-linear-gradient(to bottom, transparent 0px, transparent 2px, currentColor 2px, currentColor 3px)",
-            color: "var(--accent)",
-          }}
-        />
+      {/* Hairline with glow */}
+      <div aria-hidden className="relative h-px w-full overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-accent to-transparent blur-sm opacity-50" />
       </div>
     </footer>
   );
 }
 
-function ScrollToTop() {
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY > 400);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  const handleClick = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  return (
-    <button
-      onClick={handleClick}
-      aria-label="Volver arriba"
-      className={`fixed bottom-6 right-6 md:bottom-10 md:right-10 z-50
-        w-12 h-12 rounded-full
-        bg-background/80 backdrop-blur-md
-        border border-accent/40
-        flex items-center justify-center
-        transition-all duration-300 ease-out
-        hover:border-accent hover:bg-accent/10
-        hover:shadow-[0_0_24px_-4px_color-mix(in_oklab,var(--accent)_50%,transparent)]
-        ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"}
-      `}
-    >
-      <ArrowUp size={20} strokeWidth={1.5} className="text-accent" />
-    </button>
-  );
-}
 
 function Nav() {
   const links = [
