@@ -494,7 +494,7 @@ function Portfolio() {
                   </span>
                 </div>
                 <span className="font-display text-[10px] tracking-widest text-accent border border-accent/40 px-2 py-1 whitespace-nowrap">
-                  ✓ COMPLETO
+                  ✓ COMPLETADO
                 </span>
               </li>
             ))}
