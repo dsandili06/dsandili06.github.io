@@ -34,13 +34,16 @@ type Project = {
 
 type Investigation = {
   id: string;
-  topic: string;
   title: string;
-  description: string;
-  date: string;
-  status: "PUBLICADO" | "EN PROGRESO" | "DRAFT";
+  platform: string;
   tags: string[];
-  href?: string;
+  href: string;
+};
+
+type Course = {
+  n: string;
+  title: string;
+  org: string;
 };
 
 const PROJECTS: Project[] = [
@@ -64,49 +67,160 @@ const PROJECTS: Project[] = [
   },
 ];
 
+const CD_BASE =
+  "https://github.com/dsandili06/SOC-Practitioner-Labs/blob/main/Writeups/CyberDefenders/";
+
 const INVESTIGATIONS: Investigation[] = [
   {
-    id: "DFIR-LAB_001",
-    topic: "DFIR / Threat Hunting",
-    title: "Análisis de incidentes en SOC Practitioner Labs",
-    description:
-      "Recorrido por los laboratorios completados: triage de alertas, correlación de eventos en SIEM y reconstrucción de la línea de tiempo del atacante.",
-    date: "EN PROGRESO",
-    status: "EN PROGRESO",
-    tags: ["SIEM", "TRIAGE", "MITRE ATT&CK"],
-    href: "https://github.com/dsandili06/SOC-Practitioner-Labs",
+    id: "LAB_001",
+    title: "3CX Supply Chain",
+    platform: "CyberDefenders",
+    tags: ["SUPPLY CHAIN", "MALWARE", "DFIR"],
+    href: CD_BASE + "3CX-Supply%20Chain.md",
   },
   {
-    id: "MALWARE_002",
-    topic: "Malware Analysis",
-    title: "Próximo writeup: análisis estático y dinámico",
-    description:
-      "Informe en preparación sobre análisis de una muestra de malware: extracción de IOCs, comportamiento en sandbox y mapeo a técnicas ATT&CK.",
-    date: "PRONTO",
-    status: "DRAFT",
-    tags: ["MALWARE", "IOC", "SANDBOX"],
+    id: "LAB_002",
+    title: "Brave",
+    platform: "CyberDefenders",
+    tags: ["BROWSER", "FORENSICS"],
+    href: CD_BASE + "Brave.md",
   },
   {
-    id: "BLUE-TEAM_003",
-    topic: "Blue Team Automation",
-    title: "Placeholder writeup automatización defensiva",
-    description:
-      "Espacio reservado para documentar un script o pipeline de detección. Se completará cuando el writeup esté listo para publicación.",
-    date: "PRONTO",
-    status: "DRAFT",
-    tags: ["POWERSHELL", "DETECTION", "AUTOMATION"],
+    id: "LAB_003",
+    title: "FakeGPT",
+    platform: "CyberDefenders",
+    tags: ["PHISHING", "BROWSER EXT", "OSINT"],
+    href: CD_BASE + "FakeGPT.md",
+  },
+  {
+    id: "LAB_004",
+    title: "Insider",
+    platform: "CyberDefenders",
+    tags: ["INSIDER THREAT", "DFIR"],
+    href: CD_BASE + "Insider.md",
+  },
+  {
+    id: "LAB_005",
+    title: "Kraken Keylogger",
+    platform: "CyberDefenders",
+    tags: ["MALWARE", "KEYLOGGER", "SANDBOX"],
+    href: CD_BASE + "KrakenKeylogger.md",
+  },
+  {
+    id: "LAB_006",
+    title: "Lockdown",
+    platform: "CyberDefenders",
+    tags: ["RANSOMWARE", "DFIR"],
+    href: CD_BASE + "Lockdown.md",
+  },
+  {
+    id: "LAB_007",
+    title: "Oski",
+    platform: "CyberDefenders",
+    tags: ["MALWARE", "STEALER", "MEMORY"],
+    href: CD_BASE + "Oski.md",
+  },
+  {
+    id: "LAB_008",
+    title: "PsExec Hunt",
+    platform: "CyberDefenders",
+    tags: ["THREAT HUNTING", "LATERAL MOVEMENT", "MITRE ATT&CK"],
+    href: CD_BASE + "PsExec-Hunt.md",
+  },
+  {
+    id: "LAB_009",
+    title: "RamnIt",
+    platform: "CyberDefenders",
+    tags: ["MALWARE", "WORM", "DFIR"],
+    href: CD_BASE + "RamnIt.md",
+  },
+  {
+    id: "LAB_010",
+    title: "Red Stealer",
+    platform: "CyberDefenders",
+    tags: ["MALWARE", "INFOSTEALER"],
+    href: CD_BASE + "Red%20Stealer.md",
+  },
+  {
+    id: "LAB_011",
+    title: "Silent Breach",
+    platform: "CyberDefenders",
+    tags: ["DFIR", "NETWORK", "PCAP"],
+    href: CD_BASE + "Silent%20Breach.md",
+  },
+  {
+    id: "LAB_012",
+    title: "SysInternals",
+    platform: "CyberDefenders",
+    tags: ["WINDOWS", "FORENSICS", "TRIAGE"],
+    href: CD_BASE + "SysInternals.md",
+  },
+  {
+    id: "LAB_013",
+    title: "TheCrime",
+    platform: "CyberDefenders",
+    tags: ["DFIR", "INVESTIGATION"],
+    href: CD_BASE + "TheCrime.md",
+  },
+  {
+    id: "LAB_014",
+    title: "Web Investigation",
+    platform: "CyberDefenders",
+    tags: ["WEB", "LOGS", "DFIR"],
+    href: CD_BASE + "Web%20Investigation.md",
+  },
+  {
+    id: "LAB_015",
+    title: "WebStrike",
+    platform: "CyberDefenders",
+    tags: ["WEB ATTACK", "DFIR", "PCAP"],
+    href: CD_BASE + "WebStrike.md",
   },
 ];
 
-const STACK = [
-  "PYTHON",
-  "POWERSHELL",
-  "BASH",
-  "SPLUNK / ELK",
-  "WAZUH",
-  "WIRESHARK",
-  "MITRE ATT&CK",
-  "LINUX HARDENING",
+const STACK: { category: string; items: string[] }[] = [
+  {
+    category: "Forense & Triage",
+    items: [
+      "Zimmerman Tools",
+      "Autopsy",
+      "Volatility 3",
+      "FTK Imager",
+      "Velociraptor",
+      "Timeline Explorer",
+      "DB Browser (SQLite)",
+    ],
+  },
+  {
+    category: "Malware Analysis",
+    items: ["dnSpy", "ExtAnalysis", "CRX Viewer", "Hybrid Analysis", "Any.Run"],
+  },
+  {
+    category: "SIEM & Network",
+    items: [
+      "Splunk SPL",
+      "ELK Stack",
+      "Kibana",
+      "Wireshark",
+      "TShark",
+      "Suricata",
+      "Snort",
+    ],
+  },
+  {
+    category: "Scripting, OSINT & Threat Intel",
+    items: [
+      "Python",
+      "Bash",
+      "PowerShell",
+      "Shodan",
+      "VirusTotal",
+      "AbuseIPDB",
+      "MalwareBazaar",
+      "ThreatFox",
+      "CyberChef",
+    ],
+  },
 ];
 
 const FORMATION = [
@@ -118,10 +232,30 @@ const FORMATION = [
     href: "https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf",
   },
   {
-    title: "CompTIA Security+",
+    title: "CompTIA Security+ (SY0-701)",
     org: "En progreso",
     status: "[EN CURSO]",
   },
+];
+
+const COURSES: Course[] = [
+  { n: "01", title: "Networking Basics", org: "Cisco" },
+  { n: "02", title: "Introduction to Cybersecurity", org: "Cisco" },
+  { n: "03", title: "Network Security Fundamentals", org: "Palo Alto Networks" },
+  { n: "04", title: "Pre Security", org: "TryHackMe" },
+  { n: "05", title: "Cyber Security 101", org: "TryHackMe" },
+  { n: "06", title: "SOC L1 Path", org: "TryHackMe" },
+  {
+    n: "07",
+    title: "Cyber Incident Response and Digital Forensics",
+    org: "LinkedIn Learning",
+  },
+  {
+    n: "08",
+    title: "CompTIA Security+ (SY0-701) Cert Prep",
+    org: "LinkedIn Learning",
+  },
+  { n: "09", title: "SOC L1 BOOTCAMP", org: "ComunidadDojo" },
 ];
 
 const EMAIL = "sdsandili06@gmail.com";
@@ -131,7 +265,6 @@ const GITHUB = "https://github.com/dsandili06";
 function Portfolio() {
   return (
     <div className="min-h-screen bg-background text-foreground font-body">
-      {/* Decorative vertical rails */}
       <div
         aria-hidden
         className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-7xl border-x border-border-dim/40 pointer-events-none z-40"
@@ -151,6 +284,9 @@ function Portfolio() {
         </Section>
 
         <Section id="investigaciones" number="02" title="Investigaciones">
+          <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
+            Writeups · CyberDefenders Labs · {INVESTIGATIONS.length} reportes
+          </p>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border-dim border border-border-dim">
             {INVESTIGATIONS.map((i) => (
               <InvestigationCard key={i.id} item={i} />
@@ -158,60 +294,100 @@ function Portfolio() {
           </div>
         </Section>
 
-
         <section
           id="stack"
-          className="py-24 border-b border-border-dim grid grid-cols-1 lg:grid-cols-2 gap-16"
+          className="py-24 border-b border-border-dim"
         >
-          <div>
-            <SectionHeader number="03" title="Stack Técnico" />
-            <div className="grid grid-cols-2 gap-3 font-display text-sm">
-              {STACK.map((s) => (
-                <div
-                  key={s}
-                  className="border-l-2 border-accent pl-4 py-2 bg-surface/40 uppercase tracking-wider"
-                >
-                  {s}
-                </div>
-              ))}
-            </div>
+          <SectionHeader number="03" title="Stack Técnico" />
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border-dim border border-border-dim">
+            {STACK.map((cat) => (
+              <div key={cat.category} className="bg-background p-6 flex flex-col">
+                <h3 className="font-display text-[11px] uppercase tracking-widest text-accent mb-5 border-b border-border-dim pb-3">
+                  {cat.category}
+                </h3>
+                <ul className="flex flex-col gap-2">
+                  {cat.items.map((item) => (
+                    <li
+                      key={item}
+                      className="border-l-2 border-accent/60 pl-3 py-1.5 bg-surface/40 font-display text-xs uppercase tracking-wider hover:border-accent hover:bg-surface transition-colors"
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div id="formacion">
-            <SectionHeader number="04" title="Formación" />
-            <ul className="flex flex-col">
-              {FORMATION.map((f) => (
-                <li
-                  key={f.title}
-                  className="flex justify-between items-start border-b border-border-dim py-5 gap-6"
-                >
-                  <div>
-                    {f.href ? (
-                      <a
-                        href={f.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-bold uppercase hover:text-accent transition-colors"
-                      >
-                        {f.title}
-                      </a>
-                    ) : (
-                      <h4 className="font-bold uppercase">{f.title}</h4>
-                    )}
-                    <span className="block text-xs text-muted-foreground font-display mt-1">
-                      {f.org}
-                    </span>
-                  </div>
-                  <span
-                    className={`text-xs font-display font-bold whitespace-nowrap ${
-                      f.accent ? "text-accent" : "text-muted-foreground"
-                    }`}
-                  >
-                    {f.status}
+        </section>
+
+        <section
+          id="formacion"
+          className="py-24 border-b border-border-dim"
+        >
+          <SectionHeader number="04" title="Formación" />
+          <ul className="flex flex-col">
+            {FORMATION.map((f) => (
+              <li
+                key={f.title}
+                className="flex justify-between items-start border-b border-border-dim py-5 gap-6"
+              >
+                <div>
+                  {f.href ? (
+                    <a
+                      href={f.href}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-bold uppercase hover:text-accent transition-colors"
+                    >
+                      {f.title}
+                    </a>
+                  ) : (
+                    <h4 className="font-bold uppercase">{f.title}</h4>
+                  )}
+                  <span className="block text-xs text-muted-foreground font-display mt-1">
+                    {f.org}
                   </span>
-                </li>
-              ))}
-            </ul>
-          </div>
+                </div>
+                <span
+                  className={`text-xs font-display font-bold whitespace-nowrap ${
+                    f.accent ? "text-accent" : "text-muted-foreground"
+                  }`}
+                >
+                  {f.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section id="cursos" className="py-24 border-b border-border-dim">
+          <SectionHeader number="05" title="Cursos Completados" />
+          <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
+            Ruta cronológica · {COURSES.length} cursos
+          </p>
+          <ol className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
+            {COURSES.map((c) => (
+              <li
+                key={c.n}
+                className="bg-background p-6 flex items-start gap-5 group hover:bg-accent/5 transition-colors"
+              >
+                <span className="font-display text-3xl font-bold text-accent/30 group-hover:text-accent/70 transition-colors leading-none">
+                  {c.n}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-bold uppercase text-base leading-tight">
+                    {c.title}
+                  </h4>
+                  <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1 block">
+                    {c.org}
+                  </span>
+                </div>
+                <span className="font-display text-[10px] tracking-widest text-accent border border-accent/40 px-2 py-1 whitespace-nowrap">
+                  ✓ COMPLETO
+                </span>
+              </li>
+            ))}
+          </ol>
         </section>
 
         <ContactFooter />
@@ -227,6 +403,7 @@ function Nav() {
     { href: "#proyectos", label: "Proyectos" },
     { href: "#investigaciones", label: "Investigaciones" },
     { href: "#stack", label: "Stack" },
+    { href: "#cursos", label: "Cursos" },
     { href: "#contacto", label: "Contacto" },
   ];
   return (
@@ -389,37 +566,30 @@ function ProjectRow({ project }: { project: Project }) {
 }
 
 function InvestigationCard({ item }: { item: Investigation }) {
-  const statusClass =
-    item.status === "PUBLICADO"
-      ? "text-accent border-accent"
-      : item.status === "EN PROGRESO"
-        ? "text-accent/80 border-accent/40"
-        : "text-muted-foreground border-border-dim";
-
   return (
-    <article className="bg-background p-8 flex flex-col group hover:bg-accent/5 transition-colors">
-      <div className="flex items-center justify-between mb-6">
-        <span className="font-display text-xs text-accent tracking-widest">
+    <a
+      href={item.href}
+      target="_blank"
+      rel="noreferrer"
+      className="bg-background p-7 flex flex-col group hover:bg-accent/5 transition-colors"
+    >
+      <div className="flex items-center justify-between mb-5">
+        <span className="font-display text-[11px] text-accent tracking-widest">
           {item.id}
         </span>
-        <span
-          className={`font-display text-[10px] tracking-widest px-2 py-1 border ${statusClass}`}
-        >
-          {item.status}
+        <span className="font-display text-[10px] tracking-widest px-2 py-1 border border-accent/40 text-accent/80">
+          PUBLICADO
         </span>
       </div>
 
       <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
-        {item.topic}
+        {item.platform}
       </span>
-      <h3 className="font-display text-xl uppercase font-bold mb-4 group-hover:text-accent transition-colors leading-tight">
+      <h3 className="font-display text-lg uppercase font-bold mb-5 group-hover:text-accent transition-colors leading-tight">
         {item.title}
       </h3>
-      <p className="text-sm text-muted-foreground mb-6 leading-relaxed flex-1">
-        {item.description}
-      </p>
 
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-1.5 mb-6">
         {item.tags.map((t) => (
           <span
             key={t}
@@ -432,28 +602,15 @@ function InvestigationCard({ item }: { item: Investigation }) {
 
       <div className="flex items-center justify-between border-t border-border-dim pt-4 mt-auto">
         <span className="font-display text-[10px] tracking-widest text-muted-foreground">
-          {item.date}
+          GITHUB.MD
         </span>
-        {item.href ? (
-          <a
-            href={item.href}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent hover:gap-3 transition-all"
-          >
-            Ver writeup <span className="text-base">→</span>
-          </a>
-        ) : (
-          <span className="font-display text-[10px] tracking-widest text-muted-foreground">
-            [WRITEUP PENDIENTE]
-          </span>
-        )}
+        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent group-hover:gap-3 transition-all">
+          Ver writeup <span className="text-base">→</span>
+        </span>
       </div>
-    </article>
+    </a>
   );
 }
-
-
 
 function ContactFooter() {
   return (
