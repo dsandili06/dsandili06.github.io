@@ -858,34 +858,40 @@ function Hero() {
         </div>
 
         <div className="flex flex-col items-start gap-5">
-          <a
-            href="https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="group relative block border border-accent/60 bg-accent/[0.04] px-6 py-5 w-full max-w-sm tactical-corner transition-all duration-300 hover:border-accent hover:bg-accent/[0.08] hover:shadow-[0_0_40px_-12px_color-mix(in_oklab,var(--accent)_60%,transparent)]"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="size-1.5 bg-accent animate-pulse" />
-                <span className="font-display text-[10px] uppercase tracking-[0.3em] text-accent">
-                  Certified · 2026
-                </span>
-              </div>
-              <span className="font-display text-[10px] tracking-widest text-muted-foreground">
-                ✓ VERIFIED
-              </span>
-            </div>
-            <div className="font-display text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none text-foreground">
-              SAL1
-            </div>
-            <div className="mt-3 font-display text-[11px] uppercase tracking-widest text-muted-foreground">
-              TryHackMe · Security Analyst L1
-            </div>
-            <div className="mt-4 pt-3 border-t border-border-dim flex items-center justify-between font-display text-[11px] uppercase tracking-widest">
-              <span className="text-muted-foreground">Score</span>
-              <span className="text-accent">948 / 1000 →</span>
-            </div>
-          </a>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.a
+                href="https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf"
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ y: -2 }}
+                transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                className="group relative block border border-accent/60 bg-accent/[0.04] px-6 py-5 w-full max-w-sm tactical-corner transition-colors duration-300 hover:border-accent hover:bg-accent/[0.08] hover:shadow-[0_0_40px_-12px_color-mix(in_oklab,var(--accent)_60%,transparent)]"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <Badge variant="tactical" dot pulse>
+                    Certified · 2026
+                  </Badge>
+                  <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+                    ✓ VERIFIED
+                  </span>
+                </div>
+                <div className="font-display text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none text-foreground">
+                  SAL1
+                </div>
+                <div className="mt-3 font-display text-[11px] uppercase tracking-widest text-muted-foreground">
+                  TryHackMe · Security Analyst L1
+                </div>
+                <div className="mt-4 pt-3 border-t border-border-dim flex items-center justify-between font-display text-[11px] uppercase tracking-widest">
+                  <span className="text-muted-foreground">Score</span>
+                  <span className="text-accent">948 / 1000 →</span>
+                </div>
+              </motion.a>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="font-display text-[10px] uppercase tracking-widest">
+              Abrir certificado oficial (PDF)
+            </TooltipContent>
+          </Tooltip>
           <div className="grid grid-cols-2 gap-px bg-border-dim border border-border-dim w-full max-w-sm font-display text-[10px] uppercase tracking-widest">
             <div className="bg-background px-3 py-2.5">
               <div className="text-muted-foreground/70 mb-1">Status</div>
