@@ -1,21 +1,16 @@
 import { motion } from "motion/react";
 
-/**
- * BackgroundPaths
- * SVG flowing paths used as a subtle hero background.
- * Paleta plana: rgba(59,130,246,0.06).
- */
 function Paths({ position }: { position: number }) {
-  const paths = Array.from({ length: 36 }, (_, i) => ({
+  const paths = Array.from({ length: 24 }, (_, i) => ({
     id: i,
     d: `M-${380 - i * 5 * position} -${189 + i * 6}C-${380 - i * 5 * position} -${189 + i * 6} -${312 - i * 5 * position} ${216 - i * 6} ${152 - i * 5 * position} ${343 - i * 6}C${616 - i * 5 * position} ${470 - i * 6} ${684 - i * 5 * position} ${875 - i * 6} ${684 - i * 5 * position} ${875 - i * 6}`,
-    width: 0.5 + i * 0.03,
+    width: 0.8 + i * 0.04,
   }));
 
   return (
     <svg
       className="w-full h-full"
-      viewBox="0 0 696 316"
+      viewBox="-200 -200 1200 800"
       fill="none"
       preserveAspectRatio="xMidYMid slice"
     >
@@ -24,19 +19,18 @@ function Paths({ position }: { position: number }) {
         <motion.path
           key={path.id}
           d={path.d}
-          stroke="rgba(59,130,246,0.06)"
+          stroke="rgba(59,130,246,1)"
           strokeWidth={path.width}
-          strokeOpacity={0.4 + path.id * 0.015}
-          initial={{ pathLength: 0.3, opacity: 0.6 }}
+          initial={{ pathLength: 0, opacity: 0 }}
           animate={{
-            pathLength: 1,
-            opacity: [0.3, 0.6, 0.3],
-            pathOffset: [0, 1, 0],
+            pathLength: [0, 1],
+            opacity: [0, 0.15 + path.id * 0.005, 0],
           }}
           transition={{
-            duration: 20 + Math.random() * 10,
-            repeat: Number.POSITIVE_INFINITY,
+            duration: 12 + path.id * 0.8,
+            repeat: Infinity,
             ease: "linear",
+            delay: path.id * 0.3,
           }}
         />
       ))}
@@ -46,7 +40,7 @@ function Paths({ position }: { position: number }) {
 
 export function BackgroundPaths() {
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none z-0">
       <Paths position={1} />
       <Paths position={-1} />
     </div>
