@@ -517,10 +517,9 @@ function Portfolio() {
                     {c.org}
                   </span>
                 </div>
-                <span className="font-display text-[10px] tracking-[0.25em] text-[var(--accent-green)] border border-[var(--accent-green)]/40 px-2 py-1 whitespace-nowrap flex items-center gap-1.5">
-                  <span className="size-1 rounded-full bg-[var(--accent-green)]" />
+                <Badge variant="success" dot>
                   COMPLETADO
-                </span>
+                </Badge>
               </li>
             ))}
             <li className="bg-background p-5 md:p-6 flex items-center gap-5 border border-dashed border-[var(--accent)]/30 -m-px progress-shimmer">
