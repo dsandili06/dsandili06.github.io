@@ -381,14 +381,15 @@ function Portfolio() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border-dim border border-border-dim">
             {STACK.map((cat) => (
               <div key={cat.category} className="bg-background p-6 flex flex-col">
-                <h3 className="font-display text-[11px] uppercase tracking-widest text-accent mb-5 border-b border-border-dim pb-3">
+                <h3 className="font-display text-[10px] uppercase tracking-[0.3em] text-accent mb-5 pb-3 border-b border-border-dim flex items-center gap-2">
+                  <span className="size-1 bg-accent" />
                   {cat.category}
                 </h3>
-                <ul className="flex flex-col gap-2">
+                <ul className="flex flex-col gap-1.5">
                   {cat.items.map((item) => (
                     <li
                       key={item}
-                      className="border-l-2 border-accent/60 pl-3 py-1.5 bg-surface/40 font-display text-xs uppercase tracking-wider hover:border-accent hover:bg-surface transition-colors"
+                      className="font-display text-[11px] uppercase tracking-[0.15em] text-foreground/80 py-1.5 pl-3 border-l border-border-dim hover:border-accent hover:text-accent hover:bg-accent/[0.04] transition-all duration-200"
                     >
                       {item}
                     </li>
