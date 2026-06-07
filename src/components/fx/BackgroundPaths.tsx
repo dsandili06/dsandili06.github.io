@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 /**
  * BackgroundPaths
  * SVG flowing paths used as a subtle hero background.
- * Paleta plana: rgba(232,162,48,0.06).
+ * Paleta plana: rgba(59,130,246,0.06).
  */
 function Paths({ position }: { position: number }) {
   const paths = Array.from({ length: 36 }, (_, i) => ({
@@ -24,7 +24,7 @@ function Paths({ position }: { position: number }) {
         <motion.path
           key={path.id}
           d={path.d}
-          stroke="rgba(232,162,48,0.06)"
+          stroke="rgba(59,130,246,0.06)"
           strokeWidth={path.width}
           strokeOpacity={0.4 + path.id * 0.015}
           initial={{ pathLength: 0.3, opacity: 0.6 }}
