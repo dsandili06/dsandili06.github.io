@@ -315,6 +315,9 @@ function Hero() {
       id="top"
       className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden border-b border-border-dim grid-bg"
     >
+      <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden>
+        <BackgroundPaths />
+      </div>
       {/* Top: badges */}
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-24 md:pt-28">
         <div className="flex items-center gap-3 flex-wrap">
