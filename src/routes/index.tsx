@@ -925,17 +925,17 @@ function ProjectRow({ project }: { project: Project }) {
       href={project.href}
       target="_blank"
       rel="noreferrer"
-      className="group py-10 border-t border-border-dim flex flex-col md:flex-row gap-8 hover:bg-surface/40 glow-progressive px-4 -mx-4"
+      className="group py-10 border-t border-border-dim flex flex-col md:flex-row gap-8 hover:bg-surface/30 transition-colors duration-300 px-4 -mx-4"
     >
       <div className="w-full md:w-1/3">
-        <div className="w-full aspect-video bg-surface border border-border-dim group-hover:border-accent/60 transition-colors relative overflow-hidden">
+        <div className="w-full aspect-video bg-surface border border-border-dim group-hover:border-accent/60 transition-colors duration-300 relative overflow-hidden tactical-corner">
           <img
             src={project.image}
             alt={project.title}
             loading="lazy"
             width={1280}
             height={720}
-            className="absolute inset-0 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity grayscale-[20%] group-hover:grayscale-0"
+            className="absolute inset-0 w-full h-full object-cover opacity-65 group-hover:opacity-95 transition-opacity duration-500 grayscale-[30%] group-hover:grayscale-0"
           />
           <div
             aria-hidden
@@ -947,20 +947,23 @@ function ProjectRow({ project }: { project: Project }) {
               opacity: 0.25,
             }}
           />
-          <span className="absolute top-2 left-2 font-display text-[10px] uppercase tracking-widest text-accent bg-background/80 px-2 py-1 border border-accent/40">
+          <span className="absolute top-2 left-2 font-display text-[10px] uppercase tracking-widest text-accent bg-background/85 px-2 py-1 border border-accent/40">
             {project.label}
           </span>
         </div>
       </div>
-      <div className="flex-1">
-        <h3 className="font-display text-2xl uppercase font-bold group-hover:text-accent transition-colors mb-4">
+      <div className="flex-1 flex flex-col">
+        <span className="font-display text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">
+          PROJECT · {project.id}
+        </span>
+        <h3 className="font-display text-xl md:text-2xl uppercase font-bold group-hover:text-accent transition-colors mb-4 tracking-tight">
           {project.title}
         </h3>
-        <p className="text-foreground/75 mb-6 max-w-2xl text-pretty">
+        <p className="text-foreground/70 mb-6 max-w-2xl text-pretty leading-relaxed">
           {project.description}
         </p>
-        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest group-hover:gap-4 transition-all">
-          Ver repositorio <span className="text-accent text-xl">→</span>
+        <span className="inline-flex items-center gap-2 font-display text-[11px] uppercase tracking-[0.25em] text-accent group-hover:gap-3 transition-all mt-auto">
+          Ver repositorio <span className="text-base">→</span>
         </span>
       </div>
     </a>
@@ -973,45 +976,46 @@ function InvestigationCard({ item }: { item: Investigation }) {
       href={item.href}
       target="_blank"
       rel="noreferrer"
-      className="bg-background p-7 flex flex-col group hover:bg-accent/5 glow-progressive"
+      className="bg-background p-6 flex flex-col group hover:bg-accent/[0.03] transition-colors duration-300 relative"
     >
       <div className="flex items-center justify-between mb-5">
-        <span className="font-display text-[11px] text-accent tracking-widest">
+        <span className="font-display text-[11px] text-accent tracking-[0.25em] tabular-nums">
           {item.id}
         </span>
-        <span className="font-display text-[10px] tracking-widest px-2 py-1 border border-accent/40 text-accent/80">
+        <span className="font-display text-[9px] tracking-[0.25em] px-1.5 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] flex items-center gap-1.5">
+          <span className="size-1 rounded-full bg-[var(--accent-green)]" />
           PUBLICADO
         </span>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 mb-4">
+      <div className="flex flex-wrap gap-1.5 mb-5">
         {item.categories.map((c) => (
           <span
             key={c}
-            className="px-2 py-1 bg-accent/10 text-[10px] font-display font-bold tracking-widest uppercase border border-accent/40 text-accent"
+            className="px-1.5 py-0.5 text-[9px] font-display font-semibold tracking-[0.2em] uppercase border border-accent/30 text-accent/90"
           >
             {c}
           </span>
         ))}
       </div>
 
-      <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+      <span className="font-display text-[10px] uppercase tracking-[0.25em] text-muted-foreground mb-1.5">
         {item.platform}
       </span>
-      <h3 className="font-display text-lg uppercase font-bold mb-3 group-hover:text-accent transition-colors leading-tight">
+      <h3 className="font-display text-lg uppercase font-bold mb-3 group-hover:text-accent transition-colors leading-tight tracking-tight">
         {item.title}
       </h3>
 
-      <p className="text-sm text-foreground/70 leading-relaxed mb-6 text-pretty">
+      <p className="text-sm text-foreground/65 leading-relaxed mb-6 text-pretty">
         {item.summary}
       </p>
 
       <div className="flex items-center justify-between border-t border-border-dim pt-4 mt-auto">
-        <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+        <span className="font-display text-[10px] tracking-[0.25em] text-muted-foreground">
           GITHUB.MD
         </span>
-        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent group-hover:gap-3 transition-all">
-          Ver writeup <span className="text-base">→</span>
+        <span className="inline-flex items-center gap-2 font-display text-[11px] uppercase tracking-[0.25em] text-accent group-hover:gap-3 transition-all">
+          Ver writeup <span className="text-sm">→</span>
         </span>
       </div>
     </a>
