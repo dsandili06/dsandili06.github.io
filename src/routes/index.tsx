@@ -243,9 +243,9 @@ function Nav() {
           className="group font-mono text-[11px] sm:text-xs leading-none flex items-center gap-1 whitespace-nowrap"
         >
           <span className="text-[var(--muted-foreground)]">[</span>
-          <span className="text-[var(--accent)]">sandili</span>
+          <span className="text-[var(--accent)]">artif4kt</span>
           <span className="text-[var(--muted-foreground)]">@</span>
-          <span className="text-foreground">soc</span>
+          <span className="text-foreground">analyst</span>
           <span className="text-[var(--muted-foreground)]"> ~]</span>
           <span className="text-[var(--accent)] ml-1">$</span>
           <span className="ml-0.5 inline-block w-1.5 h-3 bg-[var(--accent)] animate-pulse" aria-hidden />
@@ -350,7 +350,6 @@ function Hero() {
             <span className="text-[var(--accent)]">Santiago</span>
             <br />
             Sandili
-            <span className="inline-block w-[2px] h-[0.85em] bg-[var(--accent)] align-baseline ml-2 animate-[blink_1s_steps(2)_infinite]" />
           </motion.h1>
 
           <motion.p
