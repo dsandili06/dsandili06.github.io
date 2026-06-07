@@ -328,14 +328,16 @@ const GITHUB = "https://github.com/dsandili06";
 function Portfolio() {
   useRevealOnView();
   return (
-    <div className="min-h-screen bg-background text-foreground font-body relative">
-      <BackgroundFX />
-      <div
-        aria-hidden
-        className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-7xl border-x border-border-dim/40 pointer-events-none z-40"
-      />
+    <TooltipProvider delayDuration={150}>
+      <div className="min-h-screen bg-background text-foreground font-body relative">
+        <BackgroundFX />
+        <div
+          aria-hidden
+          className="fixed inset-y-0 left-1/2 -translate-x-1/2 w-full max-w-7xl border-x border-border-dim/40 pointer-events-none z-40"
+        />
 
-      <Nav />
+        <Nav />
+
 
       <main className="max-w-7xl mx-auto px-6 relative z-10">
         <Hero />
