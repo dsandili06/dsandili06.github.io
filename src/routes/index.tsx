@@ -199,18 +199,30 @@ function Nav() {
 
   useEffect(() => {
     const sections = links
-      .map((l) => document.getElementById(l.id))
-      .filter((el): el is HTMLElement => Boolean(el));
-    const obs = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id);
-        });
-      },
-      { rootMargin: "-40% 0px -55% 0px", threshold: 0 },
-    );
-    sections.forEach((s) => obs.observe(s));
-    return () => obs.disconnect();
+      .map((l) => ({ id: l.id, el: document.getElementById(l.id) }))
+      .filter((s): s is { id: string; el: HTMLElement } => Boolean(s.el));
+
+    const onScroll = () => {
+      const probe = 120; // px from top
+      let current = sections[0]?.id ?? "";
+      for (const s of sections) {
+        const top = s.el.getBoundingClientRect().top;
+        if (top - probe <= 0) current = s.id;
+        else break;
+      }
+      // Special-case: at the very bottom, force last section
+      if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 4) {
+        current = sections[sections.length - 1]?.id ?? current;
+      }
+      setActive(current);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -227,9 +239,15 @@ function Nav() {
         <a
           href="#top"
           aria-label="Inicio"
-          className="font-display font-bold text-[1.5rem] leading-none text-[var(--accent)] tracking-tight"
+          className="group font-mono text-[11px] sm:text-xs leading-none flex items-center gap-1 whitespace-nowrap"
         >
-          SS<span className="text-[var(--muted-foreground)]">.</span>
+          <span className="text-[var(--muted-foreground)]">[</span>
+          <span className="text-[var(--accent)]">sandili</span>
+          <span className="text-[var(--muted-foreground)]">@</span>
+          <span className="text-foreground">soc</span>
+          <span className="text-[var(--muted-foreground)]"> ~]</span>
+          <span className="text-[var(--accent)] ml-1">$</span>
+          <span className="ml-0.5 inline-block w-1.5 h-3 bg-[var(--accent)] animate-pulse" aria-hidden />
         </a>
 
         <div className="hidden md:flex items-center gap-9 font-mono text-[11px] uppercase tracking-[0.18em]">

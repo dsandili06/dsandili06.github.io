@@ -15,7 +15,7 @@
   --color-accent-green: var(--accent-green);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --font-display: "Boska", "Sora", ui-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;
   --font-body: "Inter", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -25,16 +25,16 @@
 }
 
 :root {
-  /* Incident Room palette */
+  /* Incident Room palette — Cyber Blue */
   --background: #080C0E;
   --foreground: #E8E6E1;
   --surface: #0E1416;
   --border-dim: rgba(255, 255, 255, 0.06);
   --border: rgba(255, 255, 255, 0.06);
-  --accent: #E8A230;          /* amber — hero/headings only */
-  --accent-secondary: #E8A230;
+  --accent: #58A6FF;          /* electric blue — primary accent */
+  --accent-secondary: #79C0FF;
   --accent-foreground: #080C0E;
-  --accent-amber: #E8A230;
+  --accent-amber: #58A6FF;
   --accent-green: #4DFFB4;    /* status badges only */
   --muted-foreground: #5A6068;
 }
