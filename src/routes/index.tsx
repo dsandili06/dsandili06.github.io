@@ -484,21 +484,23 @@ function Portfolio() {
             {COURSES.map((c) => (
               <li
                 key={c.n}
-                className="bg-background p-6 flex items-start gap-5 group hover:bg-accent/5 transition-colors"
+                className="bg-background p-5 md:p-6 flex items-center gap-5 group hover:bg-accent/[0.03] transition-colors"
               >
-                <span className="font-display text-3xl font-bold text-accent/30 group-hover:text-accent/70 transition-colors leading-none">
+                <span className="font-display text-xl font-semibold text-accent/40 group-hover:text-accent transition-colors leading-none tabular-nums w-8">
                   {c.n}
                 </span>
+                <span aria-hidden className="h-8 w-px bg-border-dim" />
                 <div className="flex-1 min-w-0">
-                  <h4 className="font-bold uppercase text-base leading-tight">
+                  <h4 className="font-display font-semibold uppercase text-sm md:text-base leading-tight tracking-tight">
                     {c.title}
                   </h4>
-                  <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mt-1 block">
+                  <span className="font-display text-[10px] uppercase tracking-[0.25em] text-muted-foreground mt-1.5 block">
                     {c.org}
                   </span>
                 </div>
-                <span className="font-display text-[10px] tracking-widest text-accent border border-accent/40 px-2 py-1 whitespace-nowrap">
-                  ✓ COMPLETADO
+                <span className="font-display text-[10px] tracking-[0.25em] text-[var(--accent-green)] border border-[var(--accent-green)]/40 px-2 py-1 whitespace-nowrap flex items-center gap-1.5">
+                  <span className="size-1 rounded-full bg-[var(--accent-green)]" />
+                  COMPLETADO
                 </span>
               </li>
             ))}
