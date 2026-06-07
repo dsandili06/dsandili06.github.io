@@ -535,10 +535,9 @@ function Portfolio() {
                   PRÓXIMAMENTE
                 </span>
               </div>
-              <span className="font-display text-[10px] tracking-[0.25em] text-[var(--accent)] border border-dashed border-[var(--accent)]/40 px-2 py-1 whitespace-nowrap flex items-center gap-1.5">
-                <span className="size-1 rounded-full bg-[var(--accent)]" />
+              <Badge variant="process" dot>
                 EN PROCESO
-              </span>
+              </Badge>
             </li>
           </ol>
         </section>
