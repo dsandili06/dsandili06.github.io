@@ -879,7 +879,7 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <section id={id} data-reveal className="py-24 border-b border-border-dim">
+    <section id={id} data-reveal className="py-20 md:py-28 border-b border-border-dim">
       <SectionHeader number={number} title={title} />
       {children}
     </section>
