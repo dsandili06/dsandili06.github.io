@@ -248,7 +248,6 @@ function Nav() {
           <span className="text-foreground">analyst</span>
           <span className="text-[var(--muted-foreground)]"> ~]</span>
           <span className="text-[var(--accent)] ml-1">$</span>
-          <span className="ml-0.5 inline-block w-1.5 h-3 bg-[var(--accent)] animate-pulse" aria-hidden />
         </a>
 
         <div className="hidden md:flex items-center gap-9 font-mono text-[11px] uppercase tracking-[0.18em]">
