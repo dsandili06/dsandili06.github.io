@@ -504,20 +504,22 @@ function Portfolio() {
                 </span>
               </li>
             ))}
-            <li className="bg-background p-6 flex items-start gap-5 border border-dashed border-[var(--accent)]/40 -m-px progress-shimmer">
-              <span className="font-display text-3xl font-bold text-[var(--accent)]/40 leading-none">
+            <li className="bg-background p-5 md:p-6 flex items-center gap-5 border border-dashed border-[var(--accent)]/30 -m-px progress-shimmer">
+              <span className="font-display text-xl font-semibold text-[var(--accent)]/40 leading-none tabular-nums w-8">
                 10
               </span>
+              <span aria-hidden className="h-8 w-px bg-border-dim" />
               <div className="flex-1 min-w-0">
-                <h4 className="font-bold uppercase text-base leading-tight text-muted-foreground inline-block">
-                  <span>Curso en proceso</span>
+                <h4 className="font-display font-semibold uppercase text-sm md:text-base leading-tight text-muted-foreground tracking-tight">
+                  Curso en proceso
                 </h4>
-                <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground/70 mt-1 block">
-                   PRÓXIMAMENTE
+                <span className="font-display text-[10px] uppercase tracking-[0.25em] text-muted-foreground/70 mt-1.5 block">
+                  PRÓXIMAMENTE
                 </span>
               </div>
-              <span className="font-display text-[10px] tracking-widest text-[var(--accent)] border border-dashed border-[var(--accent)]/50 px-2 py-1 whitespace-nowrap">
-                ◌ EN PROCESO
+              <span className="font-display text-[10px] tracking-[0.25em] text-[var(--accent)] border border-dashed border-[var(--accent)]/40 px-2 py-1 whitespace-nowrap flex items-center gap-1.5">
+                <span className="size-1 rounded-full bg-[var(--accent)]" />
+                EN PROCESO
               </span>
             </li>
           </ol>
