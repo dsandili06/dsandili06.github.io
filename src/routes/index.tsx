@@ -689,16 +689,51 @@ function Investigaciones() {
 
 /* ---------- Stack ---------- */
 
+const STACK_GROUPS: { title: string; items: string[] }[] = [
+  { title: "FORENSE & TRIAGE", items: ["Volatility 3", "Autopsy", "FTK Imager", "Zimmerman Tools", "Velociraptor", "Timeline Explorer", "DB Browser"] },
+  { title: "MALWARE ANALYSIS", items: ["dnSpy", "ExtAnalysis", "CRX Viewer", "Hybrid Analysis", "Any.Run"] },
+  { title: "SIEM & NETWORK", items: ["Splunk SPL", "ELK Stack", "Kibana", "Wireshark", "TShark", "Suricata", "Snort"] },
+  { title: "SCRIPTING & OSINT", items: ["Python", "Bash", "PowerShell", "Shodan", "VirusTotal", "AbuseIPDB", "MalwareBazaar", "ThreatFox", "CyberChef"] },
+];
+
 function Stack() {
-  const nodes: OrbitalNode[] = STACK.map((cat, i) => ({
-    id: `cat-${i}`,
-    code: String(i + 1).padStart(2, "0"),
-    title: cat.category,
-    items: cat.items,
-  }));
   return (
     <Section id="stack" number="04" title="Stack Técnico" kicker="TOOLING">
-      <RadialOrbital nodes={nodes} />
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+        {STACK_GROUPS.map((group) => (
+          <div key={group.title}>
+            <h3
+              className="font-mono uppercase mb-4 pb-3"
+              style={{
+                color: "#3B82F6",
+                letterSpacing: "0.15em",
+                fontSize: "0.7rem",
+                borderBottom: "1px solid rgba(59,130,246,0.2)",
+              }}
+            >
+              {group.title}
+            </h3>
+            <div className="flex flex-wrap" style={{ gap: 8 }}>
+              {group.items.map((item) => (
+                <span
+                  key={item}
+                  className="stack-chip font-mono transition-all duration-150 ease-out cursor-default"
+                  style={{
+                    background: "#0B1118",
+                    border: "1px solid rgba(59,130,246,0.15)",
+                    color: "#E2E8F0",
+                    fontSize: "0.72rem",
+                    padding: "4px 10px",
+                    borderRadius: 3,
+                  }}
+                >
+                  {item}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </Section>
   );
 }
@@ -861,9 +896,9 @@ function Contacto() {
       <div className="mb-14 md:mb-20">
         <h2
           className="font-display font-bold leading-[0.95] tracking-tight"
-          style={{ color: "#E8A230", fontSize: "clamp(3rem, 7vw, 5.5rem)" }}
+          style={{ color: "#3B82F6", fontSize: "clamp(3rem, 7vw, 5.5rem)" }}
         >
-          ESTABLISH CONNECTION
+          CONTACTO
         </h2>
         <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
           [SECURE_CHANNEL] · Tiempo de respuesta: &lt; 24h

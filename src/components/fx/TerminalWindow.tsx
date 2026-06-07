@@ -6,13 +6,13 @@ type Line = { text: string; color: string };
 const LINES: Line[] = [
   { text: "$ volatility3 -f memory.raw windows.pslist", color: "#5A6068" },
   { text: "[*] Analyzing process list...", color: "#E8E6E1" },
-  { text: "[+] 87 processes found", color: "#4DFFB4" },
+  { text: "[+] 87 processes found", color: "#22D3EE" },
   { text: '$ strings malware.exe | grep -i "http"', color: "#5A6068" },
-  { text: "[!] C2 detected: 185.220.101.47", color: "#E8A230" },
+  { text: "[!] C2 detected: 185.220.101.47", color: "#3B82F6" },
   { text: '$ splunk search "EventCode=4625"', color: "#5A6068" },
-  { text: "[+] 847 failed logons — threshold exceeded", color: "#4DFFB4" },
-  { text: "[ALERT] Escalating to T1 analyst...", color: "#E8A230" },
-  { text: "analyst@soc-lab:~$ ", color: "#4DFFB4" },
+  { text: "[+] 847 failed logons — threshold exceeded", color: "#22D3EE" },
+  { text: "[ALERT] Escalating to T1 analyst...", color: "#3B82F6" },
+  { text: "analyst@soc-lab:~$ ", color: "#22D3EE" },
 ];
 
 const CHAR_MS = 35;
@@ -91,7 +91,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
             {l.text.endsWith("$ ") && i === LINES.length - 1 && (
               <span
                 className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]"
-                style={{ width: "0.6em", height: "1em", background: "#4DFFB4" }}
+                style={{ width: "0.6em", height: "1em", background: "#22D3EE" }}
               />
             )}
           </div>

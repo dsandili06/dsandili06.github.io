@@ -11,7 +11,7 @@ export type OrbitalNode = {
 /**
  * RadialOrbital
  * 4 categorías orbitando un centro. Click expande la card lateral con sus items.
- * Paleta flat: #E8A230 nodos, #4DFFB4 nodo activo, líneas rgba(255,255,255,0.08).
+ * Paleta flat: #3B82F6 nodos, #22D3EE nodo activo, líneas rgba(255,255,255,0.08).
  */
 export function RadialOrbital({ nodes }: { nodes: OrbitalNode[] }) {
   const [activeId, setActiveId] = useState<string>(nodes[0]?.id ?? "");
@@ -36,7 +36,7 @@ export function RadialOrbital({ nodes }: { nodes: OrbitalNode[] }) {
       className="relative w-full h-[480px] md:h-[560px] flex items-center justify-center select-none"
       onMouseEnter={() => setAutoRotate(false)}
       onMouseLeave={() => setAutoRotate(true)}
-      style={{ background: "#080C0E" }}
+      style={{ background: "#060A10" }}
     >
       {/* Anillo */}
       <div
@@ -62,8 +62,8 @@ export function RadialOrbital({ nodes }: { nodes: OrbitalNode[] }) {
         style={{
           width: 88,
           height: 88,
-          background: "#0E1416",
-          border: "1px solid rgba(232,162,48,0.4)",
+          background: "#0B1118",
+          border: "1px solid rgba(59,130,246,0.4)",
         }}
       >
         <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
@@ -93,16 +93,16 @@ export function RadialOrbital({ nodes }: { nodes: OrbitalNode[] }) {
               style={{
                 width: 56,
                 height: 56,
-                background: "#0E1416",
-                border: `1.5px solid ${isActive ? "#4DFFB4" : "#E8A230"}`,
-                color: isActive ? "#4DFFB4" : "#E8A230",
+                background: "#0B1118",
+                border: `1.5px solid ${isActive ? "#22D3EE" : "#3B82F6"}`,
+                color: isActive ? "#22D3EE" : "#3B82F6",
               }}
             >
               <span className="font-mono text-[11px] font-bold">{node.code}</span>
             </div>
             <span
               className="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] whitespace-nowrap"
-              style={{ color: isActive ? "#4DFFB4" : "rgba(255,255,255,0.5)" }}
+              style={{ color: isActive ? "#22D3EE" : "rgba(255,255,255,0.5)" }}
             >
               {node.title}
             </span>
@@ -121,7 +121,7 @@ export function RadialOrbital({ nodes }: { nodes: OrbitalNode[] }) {
             transition={{ duration: 0.2 }}
             className="absolute bottom-4 left-1/2 -translate-x-1/2 w-[min(92%,520px)] p-5"
             style={{
-              background: "#0E1416",
+              background: "#0B1118",
               border: "1px solid rgba(255,255,255,0.06)",
               borderRadius: 4,
             }}
@@ -140,7 +140,7 @@ export function RadialOrbital({ nodes }: { nodes: OrbitalNode[] }) {
                   key={it}
                   className="font-mono text-[11px] text-foreground px-2.5 py-1.5"
                   style={{
-                    background: "#080C0E",
+                    background: "#060A10",
                     border: "1px solid rgba(255,255,255,0.06)",
                   }}
                 >
