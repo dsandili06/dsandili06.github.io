@@ -45,7 +45,7 @@ export function BootSequence({ onDone }: { onDone?: () => void }) {
       {!done && (
         <div>
           {current}
-          <span className="inline-block w-[0.55em] h-[1em] bg-[var(--accent)] align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]" />
+          <span className="inline-block w-[2px] h-[1em] bg-[var(--accent)] align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]" />
         </div>
       )}
     </pre>
