@@ -724,9 +724,13 @@ function Nav() {
                 className={`relative pb-1 transition-colors ${isActive ? "text-accent" : "hover:text-accent"}`}
               >
                 {l.label}
-                <span
-                  className={`absolute left-0 -bottom-0.5 h-px bg-accent transition-all ${isActive ? "w-full" : "w-0"}`}
-                />
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-active-underline"
+                    className="absolute left-0 right-0 -bottom-0.5 h-px bg-accent"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </a>
             );
           })}
