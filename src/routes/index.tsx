@@ -888,14 +888,15 @@ function Section({
 
 function SectionHeader({ number, title }: { number: string; title: string }) {
   return (
-    <div className="flex items-center gap-5 md:gap-6 mb-16">
-      <span className="font-mono text-xs md:text-sm text-accent/70 tracking-[0.2em]">
-        {number}
+    <div className="flex items-baseline gap-4 md:gap-6 mb-14 pb-6 border-b border-border-dim">
+      <span className="font-display text-[10px] md:text-xs text-accent/80 tracking-[0.3em] tabular-nums">
+        [ {number} ]
       </span>
-      <span aria-hidden className="h-px flex-none w-10 md:w-16 bg-gradient-to-r from-accent/60 to-transparent" />
-      <h2 className="font-display text-3xl md:text-5xl uppercase font-semibold tracking-tight text-foreground leading-none">
+      <h2 className="font-display text-2xl md:text-4xl uppercase font-semibold tracking-tight text-foreground leading-none">
         {title}
       </h2>
+      <span aria-hidden className="flex-1 h-px bg-border-dim self-center" />
+      <span aria-hidden className="hidden md:inline-block size-1.5 bg-accent/70 self-center" />
     </div>
   );
 }
