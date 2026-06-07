@@ -350,7 +350,7 @@ function Hero() {
             <span className="text-[var(--accent)]">Santiago</span>
             <br />
             Sandili
-            <span className="inline-block w-[0.5em] h-[0.85em] bg-[var(--accent)] align-baseline ml-3 animate-[blink_1s_steps(2)_infinite]" />
+            <span className="inline-block w-[2px] h-[0.85em] bg-[var(--accent)] align-baseline ml-2 animate-[blink_1s_steps(2)_infinite]" />
           </motion.h1>
 
           <motion.p
