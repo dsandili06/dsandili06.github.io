@@ -989,7 +989,7 @@ function ProjectRow({ project }: { project: Project }) {
           Ver repositorio <span className="text-base">→</span>
         </span>
       </div>
-    </a>
+    </motion.a>
   );
 }
 
