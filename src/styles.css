@@ -26,17 +26,18 @@
 
 :root {
   /* Incident Room palette — Cyber Blue */
-  --background: #080C0E;
-  --foreground: #E8E6E1;
-  --surface: #0E1416;
-  --border-dim: rgba(255, 255, 255, 0.06);
-  --border: rgba(255, 255, 255, 0.06);
-  --accent: #58A6FF;          /* electric blue — primary accent */
-  --accent-secondary: #79C0FF;
-  --accent-foreground: #080C0E;
-  --accent-amber: #58A6FF;
-  --accent-green: #4DFFB4;    /* status badges only */
-  --muted-foreground: #5A6068;
+  --background: #060A10;
+  --foreground: #E2E8F0;
+  --surface: #0B1118;
+  --surface-2: #101823;
+  --border-dim: rgba(59, 130, 246, 0.12);
+  --border: rgba(59, 130, 246, 0.12);
+  --accent: #3B82F6;          /* electric blue — primary accent */
+  --accent-secondary: #60A5FA;
+  --accent-foreground: #060A10;
+  --accent-amber: #3B82F6;
+  --accent-green: #22D3EE;    /* status badges only — cyan */
+  --muted-foreground: #475569;
 }
 
 html { scroll-behavior: auto; scroll-padding-top: 64px; }
@@ -104,8 +105,8 @@ html { scroll-behavior: auto; scroll-padding-top: 64px; }
 /* Grid background — Incident Room */
 @utility grid-bg {
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
   background-size: 40px 40px;
 }
 
@@ -153,8 +154,8 @@ html { scroll-behavior: auto; scroll-padding-top: 64px; }
 }
 
 .channel-card:hover {
-  border-left-color: #E8A230 !important;
-  background: rgba(232, 162, 48, 0.03) !important;
+  border-left-color: #3B82F6 !important;
+  background: rgba(59, 130, 246, 0.06) !important;
 }
 
 .reveal-on-view {
