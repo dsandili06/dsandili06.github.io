@@ -334,32 +334,38 @@ function Hero() {
       </div>
 
       {/* Center: boot + name */}
-      <div className="max-w-7xl w-full mx-auto px-6 md:px-10 flex-1 flex flex-col justify-center py-12">
-        <div className="mb-8 min-h-[5.5rem]">
-          <BootSequence onDone={() => setBootDone(true)} />
+      <div className="max-w-7xl w-full mx-auto px-6 md:px-10 flex-1 grid grid-cols-1 md:grid-cols-[1fr_minmax(0,440px)] gap-10 md:gap-12 items-center py-12">
+        <div className="flex flex-col">
+          <div className="mb-8 min-h-[5.5rem]">
+            <BootSequence onDone={() => setBootDone(true)} />
+          </div>
+
+          <motion.h1
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: bootDone ? 1 : 0, y: bootDone ? 0 : 24 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="font-display font-bold leading-[0.88] tracking-[-0.025em] text-foreground"
+            style={{ fontSize: "clamp(3.5rem, 8vw, 9rem)" }}
+          >
+            <span className="text-[var(--accent)]">Santiago</span>
+            <br />
+            Sandili
+            <span className="inline-block w-[0.5em] h-[0.85em] bg-[var(--accent)] align-baseline ml-3 animate-[blink_1s_steps(2)_infinite]" />
+          </motion.h1>
+
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: bootDone ? 1 : 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+            className="mt-8 font-mono text-xs md:text-sm uppercase tracking-[0.25em] text-[var(--muted-foreground)]"
+          >
+            SOC Analyst Jr. <span className="text-foreground/60">·</span> Blue Team <span className="text-foreground/60">·</span> DFIR
+          </motion.p>
         </div>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: bootDone ? 1 : 0, y: bootDone ? 0 : 24 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-display font-bold leading-[0.88] tracking-[-0.025em] text-foreground"
-          style={{ fontSize: "clamp(3.5rem, 8vw, 9rem)" }}
-        >
-          <span className="text-[var(--accent)]">Santiago</span>
-          <br />
-          Sandili
-          <span className="inline-block w-[0.5em] h-[0.85em] bg-[var(--accent)] align-baseline ml-3 animate-[blink_1s_steps(2)_infinite]" />
-        </motion.h1>
-
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: bootDone ? 1 : 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
-          className="mt-8 font-mono text-xs md:text-sm uppercase tracking-[0.25em] text-[var(--muted-foreground)]"
-        >
-          SOC Analyst Jr. <span className="text-foreground/60">·</span> Blue Team <span className="text-foreground/60">·</span> DFIR
-        </motion.p>
+        <div className="hidden md:block">
+          <TerminalWindow start={bootDone} />
+        </div>
       </div>
 
       {/* Bottom: status corner */}
