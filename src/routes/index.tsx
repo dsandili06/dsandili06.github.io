@@ -817,14 +817,12 @@ function Hero() {
       <div className="scanline" />
       <div className="flex items-center gap-3 md:gap-4 text-accent font-display text-xs md:text-sm mb-8 animate-reveal flex-wrap tracking-widest uppercase">
         <TypewriterRole />
-        <span className="flex items-center gap-2 px-2 py-1 border border-border-dim">
-          <span className="size-1.5 bg-accent animate-pulse" />
+        <Badge variant="tactical" dot pulse size="lg">
           ACTIVE_SESSION
-        </span>
-        <span className="flex items-center gap-2 px-2 py-1 border border-border-dim text-[var(--accent-green)]">
-          <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
+        </Badge>
+        <Badge variant="success" dot pulse size="lg">
           AVAILABLE
-        </span>
+        </Badge>
       </div>
 
       <h1
