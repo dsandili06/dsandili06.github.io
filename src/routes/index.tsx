@@ -607,15 +607,9 @@ function Footer() {
         <button
           onClick={handleClick}
           aria-label="Volver arriba"
-          className="w-12 h-12 rounded-full
-            bg-background/80 backdrop-blur-md
-            border border-accent/40
-            flex items-center justify-center
-            transition-all duration-300 ease-out
-            hover:border-accent hover:bg-accent/10
-            hover:shadow-[0_0_24px_-4px_color-mix(in_oklab,var(--accent)_50%,transparent)]"
+          className="group relative w-11 h-11 bg-background/80 backdrop-blur-md border border-accent/40 flex items-center justify-center transition-all duration-300 ease-out hover:border-accent hover:bg-accent/10 hover:shadow-[0_0_24px_-4px_color-mix(in_oklab,var(--accent)_50%,transparent)] tactical-corner"
         >
-          <ArrowUp size={20} strokeWidth={1.5} className="text-accent" />
+          <ArrowUp size={16} strokeWidth={1.5} className="text-accent group-hover:-translate-y-0.5 transition-transform" />
         </button>
       </div>
 
