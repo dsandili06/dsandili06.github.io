@@ -240,14 +240,9 @@ function Nav() {
         <a
           href="#top"
           aria-label="Inicio"
-          className="group font-mono text-[11px] sm:text-xs leading-none flex items-center gap-1 whitespace-nowrap"
+          className="group font-mono text-[11px] sm:text-xs leading-none flex items-center whitespace-nowrap"
         >
-          <span className="text-[var(--muted-foreground)]">[</span>
-          <span className="text-[var(--accent)]">artif4kt</span>
-          <span className="text-[var(--muted-foreground)]">@</span>
-          <span className="text-foreground">analyst</span>
-          <span className="text-[var(--muted-foreground)]"> ~]</span>
-          <span className="text-[var(--accent)] ml-1">$</span>
+          <span className="text-[var(--muted-foreground)]">[</span><span className="text-[var(--accent)]">artif4kt</span><span className="text-[var(--muted-foreground)]">@</span><span className="text-foreground">analyst</span><span className="text-[var(--muted-foreground)]"> ~]</span><span className="text-[var(--accent)] ml-1">$</span>
         </a>
 
         <div className="hidden md:flex items-center gap-9 font-mono text-[11px] uppercase tracking-[0.18em]">
