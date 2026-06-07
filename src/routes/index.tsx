@@ -8,6 +8,8 @@ import { LenisProvider } from "@/components/fx/LenisProvider";
 import { CustomCursor } from "@/components/fx/CustomCursor";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
+import { BackgroundPaths } from "@/components/fx/BackgroundPaths";
+import { RadialOrbital, type OrbitalNode } from "@/components/fx/RadialOrbital";
 
 export const Route = createFileRoute("/")(({
   head: () => ({
@@ -148,7 +150,7 @@ function Portfolio() {
             <Cursos />
             <Contacto />
           </div>
-          <Footer />
+          
         </main>
       </div>
     </TooltipProvider>
