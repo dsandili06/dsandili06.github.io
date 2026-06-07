@@ -789,23 +789,23 @@ function Hero() {
   return (
     <section
       id="top"
-      className="relative py-28 md:py-44 flex flex-col items-start border-b border-border-dim overflow-hidden"
+      className="relative pt-24 pb-24 md:pt-36 md:pb-32 flex flex-col items-start border-b border-border-dim overflow-hidden"
     >
       <div className="scanline" />
-      <div className="flex items-center gap-4 text-accent font-display text-sm md:text-base mb-6 animate-reveal flex-wrap">
+      <div className="flex items-center gap-3 md:gap-4 text-accent font-display text-xs md:text-sm mb-8 animate-reveal flex-wrap tracking-widest uppercase">
         <TypewriterRole />
-        <span className="flex items-center gap-2">
-          <span className="size-2 bg-accent animate-pulse" />
+        <span className="flex items-center gap-2 px-2 py-1 border border-border-dim">
+          <span className="size-1.5 bg-accent animate-pulse" />
           ACTIVE_SESSION
         </span>
-        <span className="flex items-center gap-2 text-[var(--accent-green)]">
-          <span className="size-2 rounded-full bg-[var(--accent-green)] animate-pulse" />
+        <span className="flex items-center gap-2 px-2 py-1 border border-border-dim text-[var(--accent-green)]">
+          <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
           AVAILABLE
         </span>
       </div>
 
       <h1
-        className="font-display font-bold uppercase tracking-tighter leading-[0.85] text-6xl md:text-[9rem] lg:text-[12rem] mb-12 animate-reveal"
+        className="font-display font-bold uppercase tracking-[-0.04em] leading-[0.85] text-[3.5rem] sm:text-7xl md:text-[8.5rem] lg:text-[10.5rem] mb-14 animate-reveal"
         style={{ animationDelay: "100ms" }}
       >
         <span className="glitch-on">Santiago</span>
@@ -815,51 +815,65 @@ function Hero() {
 
 
       <div
-        className="grid grid-cols-1 md:grid-cols-2 gap-12 w-full animate-reveal"
+        className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 w-full animate-reveal"
         style={{ animationDelay: "200ms" }}
       >
-        <div className="space-y-5 max-w-[52ch]">
-          <p className="font-display text-[11px] md:text-xs uppercase tracking-[0.25em] text-accent">
+        <div className="space-y-5 max-w-[54ch]">
+          <p className="font-display text-[11px] md:text-xs uppercase tracking-[0.3em] text-accent border-l border-accent pl-3">
             SOC Analyst Jr. · Blue Team · DFIR · Malware Analysis
           </p>
-          <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
+          <p className="text-base md:text-lg font-light text-foreground/85 text-pretty leading-relaxed">
             Soy Santiago Daniel Sandili, analista SOC Jr. orientado a{" "}
-            <span className="text-accent">Blue Team</span> y DFIR . Me fui formando de manera práctica con laboratorios, writeups y herramientas reales para desarrollar una base sólida en detección, triage y respuesta a incidentes.
+            <span className="text-accent">Blue Team</span> y DFIR. Me fui formando de manera práctica con laboratorios, writeups y herramientas reales para desarrollar una base sólida en detección, triage y respuesta a incidentes.
           </p>
-          <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
+          <p className="text-base md:text-lg font-light text-foreground/85 text-pretty leading-relaxed">
             Con el tiempo empecé a inclinarme cada vez más por la parte defensiva de la ciberseguridad: análisis forense, investigación de memoria, revisión de logs, tráfico de red y comportamiento de malware.{" "}
           </p>
-          <p className="text-lg md:text-xl font-light text-pretty leading-relaxed">
+          <p className="text-base md:text-lg font-light text-foreground/85 text-pretty leading-relaxed">
             Este portfolio reúne parte de ese recorrido: certificaciones, laboratorios, proyectos y documentación técnica que fui construyendo mientras desarrollo mi perfil en ciberseguridad.
           </p>
         </div>
 
-        <div className="flex flex-col items-start gap-4">
+        <div className="flex flex-col items-start gap-5">
           <a
             href="https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf"
             target="_blank"
             rel="noreferrer"
-            className="group relative block border-2 border-accent bg-accent/10 px-6 py-5 hover:bg-accent hover:text-background transition-colors w-full max-w-sm"
+            className="group relative block border border-accent/60 bg-accent/[0.04] px-6 py-5 w-full max-w-sm tactical-corner transition-all duration-300 hover:border-accent hover:bg-accent/[0.08] hover:shadow-[0_0_40px_-12px_color-mix(in_oklab,var(--accent)_60%,transparent)]"
           >
-            <div className="flex items-center gap-2 mb-2">
-              <span className="size-2 bg-accent group-hover:bg-background animate-pulse" />
-              <span className="font-display text-[10px] uppercase tracking-[0.3em] text-accent group-hover:text-background">
-                Certified
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span className="size-1.5 bg-accent animate-pulse" />
+                <span className="font-display text-[10px] uppercase tracking-[0.3em] text-accent">
+                  Certified · 2026
+                </span>
+              </div>
+              <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+                ✓ VERIFIED
               </span>
             </div>
-            <div className="font-display text-3xl md:text-4xl font-bold uppercase tracking-tight leading-none">
+            <div className="font-display text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none text-foreground">
               SAL1
             </div>
-            <div className="mt-2 font-display text-xs uppercase tracking-widest text-muted-foreground group-hover:text-background/80">
+            <div className="mt-3 font-display text-[11px] uppercase tracking-widest text-muted-foreground">
               TryHackMe · Security Analyst L1
             </div>
-            <div className="mt-3 font-display text-xs uppercase tracking-widest text-accent group-hover:text-background">
-              Score 948 / 1000 →
+            <div className="mt-4 pt-3 border-t border-border-dim flex items-center justify-between font-display text-[11px] uppercase tracking-widest">
+              <span className="text-muted-foreground">Score</span>
+              <span className="text-accent">948 / 1000 →</span>
             </div>
           </a>
-          <div className="flex flex-col gap-1 font-display text-xs text-muted-foreground">
-            <span>STATUS: DISPONIBLE</span>
-            <span>BASE: TUC, AR.</span>
+          <div className="grid grid-cols-2 gap-px bg-border-dim border border-border-dim w-full max-w-sm font-display text-[10px] uppercase tracking-widest">
+            <div className="bg-background px-3 py-2.5">
+              <div className="text-muted-foreground/70 mb-1">Status</div>
+              <div className="text-[var(--accent-green)] flex items-center gap-1.5">
+                <span className="size-1.5 rounded-full bg-[var(--accent-green)]" /> Disponible
+              </div>
+            </div>
+            <div className="bg-background px-3 py-2.5">
+              <div className="text-muted-foreground/70 mb-1">Base</div>
+              <div className="text-foreground">TUC · AR</div>
+            </div>
           </div>
         </div>
       </div>
