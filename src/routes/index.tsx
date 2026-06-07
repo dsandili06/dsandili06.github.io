@@ -543,6 +543,7 @@ function Portfolio() {
 
       
     </div>
+    </TooltipProvider>
   );
 }
 
