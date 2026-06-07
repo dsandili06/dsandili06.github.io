@@ -8,6 +8,8 @@ import { LenisProvider } from "@/components/fx/LenisProvider";
 import { CustomCursor } from "@/components/fx/CustomCursor";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
+import { BackgroundPaths } from "@/components/fx/BackgroundPaths";
+import { RadialOrbital, type OrbitalNode } from "@/components/fx/RadialOrbital";
 
 export const Route = createFileRoute("/")(({
   head: () => ({
@@ -148,7 +150,7 @@ function Portfolio() {
             <Cursos />
             <Contacto />
           </div>
-          <Footer />
+          
         </main>
       </div>
     </TooltipProvider>
@@ -313,6 +315,9 @@ function Hero() {
       id="top"
       className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden border-b border-border-dim grid-bg"
     >
+      <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden>
+        <BackgroundPaths />
+      </div>
       {/* Top: badges */}
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-24 md:pt-28">
         <div className="flex items-center gap-3 flex-wrap">
@@ -685,27 +690,15 @@ function Investigaciones() {
 /* ---------- Stack ---------- */
 
 function Stack() {
+  const nodes: OrbitalNode[] = STACK.map((cat, i) => ({
+    id: `cat-${i}`,
+    code: String(i + 1).padStart(2, "0"),
+    title: cat.category,
+    items: cat.items,
+  }));
   return (
     <Section id="stack" number="04" title="Stack Técnico" kicker="TOOLING">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
-        {STACK.map((cat) => (
-          <div key={cat.category}>
-            <h3 className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--accent)] mb-5 pb-3 border-b border-border-dim">
-              {cat.category}
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {cat.items.map((item) => (
-                <span
-                  key={item}
-                  className="font-mono text-[11px] text-foreground px-2.5 py-1.5 bg-[var(--surface)] border border-border-dim transition-all duration-150 ease-out hover:border-[var(--accent)]/50 hover:scale-[1.02] cursor-default"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+      <RadialOrbital nodes={nodes} />
     </Section>
   );
 }
@@ -830,72 +823,146 @@ function Cursos() {
 
 function Contacto() {
   const channels = [
-    { code: "01", label: "LinkedIn", value: "/in/santiagodsandili", href: LINKEDIN, external: true },
-    { code: "02", label: "Email", value: EMAIL, href: `mailto:${EMAIL}`, external: false },
+    {
+      code: "01",
+      label: "LinkedIn",
+      value: "/in/santiagodsandili",
+      href: "https://linkedin.com/in/santiagodsandili",
+      cta: "Ver perfil →",
+      external: true,
+    },
+    {
+      code: "02",
+      label: "Email",
+      value: "sdsandili06@gmail.com",
+      href: "mailto:sdsandili06@gmail.com",
+      cta: "Enviar mensaje →",
+      external: false,
+    },
+    {
+      code: "03",
+      label: "GitHub",
+      value: "github.com/dsandili06",
+      href: "https://github.com/dsandili06",
+      cta: "Ver repositorios →",
+      external: true,
+    },
   ];
-  return (
-    <Section id="contacto" number="07" title="¡Conectemos!" kicker="OPEN_CHANNEL">
-      <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-12 lg:gap-20 items-start">
-        <p className="text-[15px] md:text-base text-foreground/75 leading-relaxed max-w-[52ch]">
-          Si estás armando equipo de SOC, DFIR o Blue Team, o querés intercambiar sobre investigación, escribime. Respondo todos los mensajes.
-        </p>
 
-        <ul className="flex flex-col w-full">
-          {channels.map((c) => (
-            <li key={c.code}>
-              <a
-                href={c.href}
-                {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
-                className="group grid grid-cols-[40px_1fr_auto] items-center gap-4 py-6 border-t border-border-dim last:border-b last:border-b-border-dim transition-colors hover:bg-[color-mix(in_oklab,var(--accent)_3%,transparent)] px-2 -mx-2"
-              >
-                <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--muted-foreground)]">
-                  {c.code}
-                </span>
-                <div className="min-w-0">
-                  <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-1">
-                    {c.label}
-                  </div>
-                  <div className="font-display font-semibold text-xl md:text-2xl tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors break-all">
-                    {c.value}
-                  </div>
-                </div>
-                <span className="font-display text-2xl text-[var(--accent)] opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all">
-                  →
-                </span>
-              </a>
-            </li>
-          ))}
-        </ul>
+  const meta = [
+    { k: "UBICACIÓN", v: "Tucumán, Argentina" },
+    { k: "MODALIDAD", v: "Remoto / Híbrido" },
+    { k: "RESPUESTA", v: "< 24 horas" },
+  ];
+
+  return (
+    <section id="contacto" data-reveal className="relative py-24 md:py-32 border-b border-border-dim">
+      {/* Header */}
+      <div className="mb-14 md:mb-20">
+        <h2
+          className="font-display font-bold leading-[0.95] tracking-tight"
+          style={{ color: "#E8A230", fontSize: "clamp(3rem, 7vw, 5.5rem)" }}
+        >
+          ESTABLISH CONNECTION
+        </h2>
+        <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+          [SECURE_CHANNEL] · Tiempo de respuesta: &lt; 24h
+        </p>
       </div>
 
-      <div className="mt-12 pt-8 border-t border-border-dim flex justify-between items-center flex-wrap gap-4">
-        <a
-          href={GITHUB}
-          target="_blank"
-          rel="noreferrer"
-          className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] hover:text-[var(--accent)] transition-colors"
+      {/* Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
+        {/* Col izquierda — Status card */}
+        <div
+          className="w-full"
+          style={{
+            background: "#0E1416",
+            border: "1px solid rgba(255,255,255,0.06)",
+            borderRadius: 4,
+            padding: 32,
+          }}
         >
-          GitHub · github.com/dsandili06 →
-        </a>
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-6">
+            ANALYST STATUS
+          </div>
+
+          <div className="flex items-center gap-3 mb-8">
+            <span className="relative flex items-center justify-center" style={{ width: 16, height: 16 }}>
+              <motion.span
+                className="absolute rounded-full"
+                style={{ width: 16, height: 16, background: "#4DFFB4" }}
+                animate={{ scale: [1, 1.4], opacity: [1, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
+              />
+              <span
+                className="relative rounded-full"
+                style={{ width: 10, height: 10, background: "#4DFFB4" }}
+              />
+            </span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground">
+              DISPONIBLE PARA OPORTUNIDADES
+            </span>
+          </div>
+
+          <div className="flex flex-col">
+            {meta.map((m) => (
+              <div
+                key={m.k}
+                className="flex items-center justify-between py-4"
+                style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
+              >
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+                  {m.k}
+                </span>
+                <span className="text-foreground text-sm">{m.v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Col derecha — Channels */}
+        <div className="flex flex-col gap-3">
+          {channels.map((c) => (
+            <a
+              key={c.code}
+              href={c.href}
+              {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
+              className="channel-card group block px-6 py-5 transition-all duration-200"
+              style={{
+                background: "#0E1416",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderLeft: "2px solid transparent",
+                borderRadius: 4,
+              }}
+            >
+              <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-2">
+                CHANNEL_{c.code} · {c.label}
+              </div>
+              <div className="flex items-center justify-between gap-4 flex-wrap">
+                <span className="font-semibold text-base md:text-lg text-foreground break-all">
+                  {c.value}
+                </span>
+                <span
+                  className="font-mono text-[11px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{ color: "#E8A230" }}
+                >
+                  {c.cta}
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div
+        className="mt-16 pt-6 text-center"
+        style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
+      >
         <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-          UPTIME: 100%
+          © 2026 Santiago Daniel Sandili · Construido con criterio técnico
         </span>
       </div>
-    </Section>
-  );
-}
-
-/* ---------- Footer ---------- */
-
-function Footer() {
-  return (
-    <footer className="border-t border-border-dim">
-      <div className="max-w-7xl mx-auto px-6 md:px-10 py-8 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] gap-4 flex-wrap">
-        <span>© 2026 SANTIAGO SANDILI · INCIDENT ROOM</span>
-        <a href="#top" className="hover:text-[var(--accent)] transition-colors">
-          ↑ BACK TO TOP
-        </a>
-      </div>
-    </footer>
+    </section>
   );
 }

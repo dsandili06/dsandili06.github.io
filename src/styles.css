@@ -152,6 +152,11 @@ html { scroll-behavior: auto; scroll-padding-top: 64px; }
   }
 }
 
+.channel-card:hover {
+  border-left-color: #E8A230 !important;
+  background: rgba(232, 162, 48, 0.03) !important;
+}
+
 .reveal-on-view {
   opacity: 0;
   transform: translate3d(0, 16px, 0);
