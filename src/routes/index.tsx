@@ -1013,20 +1013,16 @@ function InvestigationCard({ item }: { item: Investigation }) {
         <span className="font-display text-[11px] text-accent tracking-[0.25em] tabular-nums">
           {item.id}
         </span>
-        <span className="font-display text-[9px] tracking-[0.25em] px-1.5 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] flex items-center gap-1.5">
-          <span className="size-1 rounded-full bg-[var(--accent-green)]" />
+        <Badge variant="success" size="sm" dot>
           PUBLICADO
-        </span>
+        </Badge>
       </div>
 
       <div className="flex flex-wrap gap-1.5 mb-5">
         {item.categories.map((c) => (
-          <span
-            key={c}
-            className="px-1.5 py-0.5 text-[9px] font-display font-semibold tracking-[0.2em] uppercase border border-accent/30 text-accent/90"
-          >
+          <Badge key={c} variant="tactical" size="sm">
             {c}
-          </span>
+          </Badge>
         ))}
       </div>
 
