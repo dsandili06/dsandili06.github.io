@@ -940,10 +940,14 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
 
 function ProjectRow({ project }: { project: Project }) {
   return (
-    <a
+    <motion.a
       href={project.href}
       target="_blank"
       rel="noreferrer"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2, margin: "0px 0px -10% 0px" }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
       className="group py-10 border-t border-border-dim flex flex-col md:flex-row gap-8 hover:bg-surface/30 transition-colors duration-300 px-4 -mx-4"
     >
       <div className="w-full md:w-1/3">
