@@ -1,8 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { ArrowUp, Menu, X } from "lucide-react";
+import { motion } from "motion/react";
 import socLabsImg from "@/assets/project-soc-labs.jpg";
 import blueteamScriptsImg from "@/assets/project-blueteam-scripts.jpg";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Reveal, StaggerGroup, StaggerItem } from "@/components/motion/Reveal";
 
 
 
@@ -319,6 +328,7 @@ const GITHUB = "https://github.com/dsandili06";
 function Portfolio() {
   useRevealOnView();
   return (
+    <TooltipProvider delayDuration={150}>
     <div className="min-h-screen bg-background text-foreground font-body relative">
       <BackgroundFX />
       <div
@@ -327,6 +337,8 @@ function Portfolio() {
       />
 
       <Nav />
+
+
 
       <main className="max-w-7xl mx-auto px-6 relative z-10">
         <Hero />
@@ -359,16 +371,23 @@ function Portfolio() {
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
             WRITEUPS · INVESTIGACIONES
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border-dim border border-border-dim">
+          <StaggerGroup
+            stagger={0.04}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border-dim border border-border-dim"
+          >
             {INVESTIGATIONS.map((i) => (
-              <InvestigationCard key={i.id} item={i} />
+              <StaggerItem key={i.id}>
+                <InvestigationCard item={i} />
+              </StaggerItem>
             ))}
-            <InProgressCard
-              code="LAB_016"
-              title="Investigación en proceso"
-              hint="Próximo writeup CyberDefenders en análisis."
-            />
-          </div>
+            <StaggerItem>
+              <InProgressCard
+                code="LAB_016"
+                title="Investigación en proceso"
+                hint="Próximo writeup CyberDefenders en análisis."
+              />
+            </StaggerItem>
+          </StaggerGroup>
         </Section>
 
 
@@ -498,10 +517,9 @@ function Portfolio() {
                     {c.org}
                   </span>
                 </div>
-                <span className="font-display text-[10px] tracking-[0.25em] text-[var(--accent-green)] border border-[var(--accent-green)]/40 px-2 py-1 whitespace-nowrap flex items-center gap-1.5">
-                  <span className="size-1 rounded-full bg-[var(--accent-green)]" />
+                <Badge variant="success" dot>
                   COMPLETADO
-                </span>
+                </Badge>
               </li>
             ))}
             <li className="bg-background p-5 md:p-6 flex items-center gap-5 border border-dashed border-[var(--accent)]/30 -m-px progress-shimmer">
@@ -517,10 +535,9 @@ function Portfolio() {
                   PRÓXIMAMENTE
                 </span>
               </div>
-              <span className="font-display text-[10px] tracking-[0.25em] text-[var(--accent)] border border-dashed border-[var(--accent)]/40 px-2 py-1 whitespace-nowrap flex items-center gap-1.5">
-                <span className="size-1 rounded-full bg-[var(--accent)]" />
+              <Badge variant="process" dot>
                 EN PROCESO
-              </span>
+              </Badge>
             </li>
           </ol>
         </section>
@@ -531,6 +548,7 @@ function Portfolio() {
 
       
     </div>
+    </TooltipProvider>
   );
 }
 
@@ -704,9 +722,13 @@ function Nav() {
                 className={`relative pb-1 transition-colors ${isActive ? "text-accent" : "hover:text-accent"}`}
               >
                 {l.label}
-                <span
-                  className={`absolute left-0 -bottom-0.5 h-px bg-accent transition-all ${isActive ? "w-full" : "w-0"}`}
-                />
+                {isActive && (
+                  <motion.span
+                    layoutId="nav-active-underline"
+                    className="absolute left-0 right-0 -bottom-0.5 h-px bg-accent"
+                    transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                  />
+                )}
               </a>
             );
           })}
@@ -793,14 +815,12 @@ function Hero() {
       <div className="scanline" />
       <div className="flex items-center gap-3 md:gap-4 text-accent font-display text-xs md:text-sm mb-8 animate-reveal flex-wrap tracking-widest uppercase">
         <TypewriterRole />
-        <span className="flex items-center gap-2 px-2 py-1 border border-border-dim">
-          <span className="size-1.5 bg-accent animate-pulse" />
+        <Badge variant="tactical" dot pulse size="lg">
           ACTIVE_SESSION
-        </span>
-        <span className="flex items-center gap-2 px-2 py-1 border border-border-dim text-[var(--accent-green)]">
-          <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
+        </Badge>
+        <Badge variant="success" dot pulse size="lg">
           AVAILABLE
-        </span>
+        </Badge>
       </div>
 
       <h1
@@ -834,34 +854,40 @@ function Hero() {
         </div>
 
         <div className="flex flex-col items-start gap-5">
-          <a
-            href="https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf"
-            target="_blank"
-            rel="noreferrer"
-            className="group relative block border border-accent/60 bg-accent/[0.04] px-6 py-5 w-full max-w-sm tactical-corner transition-all duration-300 hover:border-accent hover:bg-accent/[0.08] hover:shadow-[0_0_40px_-12px_color-mix(in_oklab,var(--accent)_60%,transparent)]"
-          >
-            <div className="flex items-center justify-between mb-3">
-              <div className="flex items-center gap-2">
-                <span className="size-1.5 bg-accent animate-pulse" />
-                <span className="font-display text-[10px] uppercase tracking-[0.3em] text-accent">
-                  Certified · 2026
-                </span>
-              </div>
-              <span className="font-display text-[10px] tracking-widest text-muted-foreground">
-                ✓ VERIFIED
-              </span>
-            </div>
-            <div className="font-display text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none text-foreground">
-              SAL1
-            </div>
-            <div className="mt-3 font-display text-[11px] uppercase tracking-widest text-muted-foreground">
-              TryHackMe · Security Analyst L1
-            </div>
-            <div className="mt-4 pt-3 border-t border-border-dim flex items-center justify-between font-display text-[11px] uppercase tracking-widest">
-              <span className="text-muted-foreground">Score</span>
-              <span className="text-accent">948 / 1000 →</span>
-            </div>
-          </a>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <motion.a
+                href="https://assets.tryhackme.com/certification-certificate/69bb156d56eed3cbe3a712a6.pdf"
+                target="_blank"
+                rel="noreferrer"
+                whileHover={{ y: -2 }}
+                transition={{ type: "spring", stiffness: 320, damping: 22 }}
+                className="group relative block border border-accent/60 bg-accent/[0.04] px-6 py-5 w-full max-w-sm tactical-corner transition-colors duration-300 hover:border-accent hover:bg-accent/[0.08] hover:shadow-[0_0_40px_-12px_color-mix(in_oklab,var(--accent)_60%,transparent)]"
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <Badge variant="tactical" dot pulse>
+                    Certified · 2026
+                  </Badge>
+                  <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+                    ✓ VERIFIED
+                  </span>
+                </div>
+                <div className="font-display text-4xl md:text-5xl font-bold uppercase tracking-tighter leading-none text-foreground">
+                  SAL1
+                </div>
+                <div className="mt-3 font-display text-[11px] uppercase tracking-widest text-muted-foreground">
+                  TryHackMe · Security Analyst L1
+                </div>
+                <div className="mt-4 pt-3 border-t border-border-dim flex items-center justify-between font-display text-[11px] uppercase tracking-widest">
+                  <span className="text-muted-foreground">Score</span>
+                  <span className="text-accent">948 / 1000 →</span>
+                </div>
+              </motion.a>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="font-display text-[10px] uppercase tracking-widest">
+              Abrir certificado oficial (PDF)
+            </TooltipContent>
+          </Tooltip>
           <div className="grid grid-cols-2 gap-px bg-border-dim border border-border-dim w-full max-w-sm font-display text-[10px] uppercase tracking-widest">
             <div className="bg-background px-3 py-2.5">
               <div className="text-muted-foreground/70 mb-1">Status</div>
@@ -920,10 +946,14 @@ function SectionHeader({ number, title }: { number: string; title: string }) {
 
 function ProjectRow({ project }: { project: Project }) {
   return (
-    <a
+    <motion.a
       href={project.href}
       target="_blank"
       rel="noreferrer"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2, margin: "0px 0px -10% 0px" }}
+      transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
       className="group py-10 border-t border-border-dim flex flex-col md:flex-row gap-8 hover:bg-surface/30 transition-colors duration-300 px-4 -mx-4"
     >
       <div className="w-full md:w-1/3">
@@ -965,7 +995,7 @@ function ProjectRow({ project }: { project: Project }) {
           Ver repositorio <span className="text-base">→</span>
         </span>
       </div>
-    </a>
+    </motion.a>
   );
 }
 
@@ -981,20 +1011,16 @@ function InvestigationCard({ item }: { item: Investigation }) {
         <span className="font-display text-[11px] text-accent tracking-[0.25em] tabular-nums">
           {item.id}
         </span>
-        <span className="font-display text-[9px] tracking-[0.25em] px-1.5 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] flex items-center gap-1.5">
-          <span className="size-1 rounded-full bg-[var(--accent-green)]" />
+        <Badge variant="success" size="sm" dot>
           PUBLICADO
-        </span>
+        </Badge>
       </div>
 
       <div className="flex flex-wrap gap-1.5 mb-5">
         {item.categories.map((c) => (
-          <span
-            key={c}
-            className="px-1.5 py-0.5 text-[9px] font-display font-semibold tracking-[0.2em] uppercase border border-accent/30 text-accent/90"
-          >
+          <Badge key={c} variant="tactical" size="sm">
             {c}
-          </span>
+          </Badge>
         ))}
       </div>
 
