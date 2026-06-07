@@ -332,7 +332,7 @@ function Portfolio() {
         <Hero />
 
         <Section id="about" number="01" title="About Me">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-14 max-w-5xl">
             <p className="text-base md:text-lg text-foreground/80 leading-relaxed text-pretty">
               Vengo del interior del país (Argentina) y estoy construyendo mi camino en ciberseguridad desde un enfoque práctico. Mi interés principal está en entender cómo se detecta, investiga y contiene una amenaza a partir de evidencia real.
             </p>
