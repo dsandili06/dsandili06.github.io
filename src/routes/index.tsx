@@ -375,7 +375,7 @@ function Portfolio() {
         <section
           id="stack"
           data-reveal
-          className="py-24 border-b border-border-dim"
+          className="py-20 md:py-28 border-b border-border-dim"
         >
           <SectionHeader number="04" title="Stack Técnico" />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border-dim border border-border-dim">
@@ -402,7 +402,7 @@ function Portfolio() {
         <section
           id="formacion"
           data-reveal
-          className="py-24 border-b border-border-dim"
+          className="py-20 md:py-28 border-b border-border-dim"
         >
           <SectionHeader number="05" title="Certificaciones" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border-dim border border-border-dim">
@@ -474,7 +474,7 @@ function Portfolio() {
         </section>
 
 
-        <section id="cursos" data-reveal className="py-24 border-b border-border-dim">
+        <section id="cursos" data-reveal className="py-20 md:py-28 border-b border-border-dim">
           <SectionHeader number="06" title="Cursos Completados" />
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
             ORGANIZADO CRONOLÓGICAMENTE
@@ -1118,7 +1118,7 @@ function ContactSection() {
     },
   ];
   return (
-    <section id="contacto" data-reveal className="py-24 border-t border-border-dim">
+    <section id="contacto" data-reveal className="py-20 md:py-28 border-t border-border-dim">
       <SectionHeader number="07" title="Contacto" />
       <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
         ¡CONECTEMOS!
