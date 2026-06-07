@@ -371,16 +371,23 @@ function Portfolio() {
           <p className="font-display text-xs text-muted-foreground uppercase tracking-widest mb-8">
             WRITEUPS · INVESTIGACIONES
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border-dim border border-border-dim">
+          <StaggerGroup
+            stagger={0.04}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border-dim border border-border-dim"
+          >
             {INVESTIGATIONS.map((i) => (
-              <InvestigationCard key={i.id} item={i} />
+              <StaggerItem key={i.id}>
+                <InvestigationCard item={i} />
+              </StaggerItem>
             ))}
-            <InProgressCard
-              code="LAB_016"
-              title="Investigación en proceso"
-              hint="Próximo writeup CyberDefenders en análisis."
-            />
-          </div>
+            <StaggerItem>
+              <InProgressCard
+                code="LAB_016"
+                title="Investigación en proceso"
+                hint="Próximo writeup CyberDefenders en análisis."
+              />
+            </StaggerItem>
+          </StaggerGroup>
         </Section>
 
 
