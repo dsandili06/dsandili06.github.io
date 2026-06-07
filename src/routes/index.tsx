@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { LenisProvider } from "@/components/fx/LenisProvider";
 import { CustomCursor } from "@/components/fx/CustomCursor";
 import { BootSequence } from "@/components/fx/BootSequence";
+import { TerminalWindow } from "@/components/fx/TerminalWindow";
 
 export const Route = createFileRoute("/")(({
   head: () => ({
