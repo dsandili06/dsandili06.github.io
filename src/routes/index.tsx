@@ -1189,28 +1189,29 @@ function MagneticContactCard({ channel: c }: { channel: Channel }) {
       {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className="border-beam group bg-background p-8 flex flex-col hover:bg-accent/5 transition-all duration-200 ease-out will-change-transform"
+      className="group bg-background p-7 md:p-8 flex flex-col hover:bg-accent/[0.03] transition-all duration-200 ease-out will-change-transform tactical-corner"
     >
       <div className="flex items-center justify-between mb-8">
-        <span className="font-display text-[10px] uppercase tracking-widest text-accent">
+        <span className="font-display text-[10px] uppercase tracking-[0.3em] text-accent flex items-center gap-2">
+          <span className="size-1 bg-accent" />
           {c.code}
         </span>
-        <span className="text-accent transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[6deg]">
+        <span className="text-accent/70 group-hover:text-accent transition-all duration-300 group-hover:scale-105">
           {c.icon}
         </span>
       </div>
-      <span className="font-display text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
+      <span className="font-display text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-2">
         {c.label}
       </span>
-      <h3 className="font-display text-xl md:text-2xl font-bold mb-8 group-hover:text-accent transition-colors break-all">
+      <h3 className="font-display text-lg md:text-xl font-semibold mb-8 group-hover:text-accent transition-colors break-all tracking-tight">
         {c.value}
       </h3>
       <div className="flex items-center justify-between border-t border-border-dim pt-5 mt-auto">
-        <span className="font-display text-[10px] tracking-widest text-muted-foreground">
+        <span className="font-display text-[10px] tracking-[0.25em] text-muted-foreground">
           {c.external ? "EXTERNAL.LINK" : "MAILTO"}
         </span>
-        <span className="inline-flex items-center gap-2 font-display text-xs uppercase tracking-widest text-accent group-hover:gap-3 transition-all">
-          {c.cta} <span className="text-base">→</span>
+        <span className="inline-flex items-center gap-2 font-display text-[11px] uppercase tracking-[0.25em] text-accent group-hover:gap-3 transition-all">
+          {c.cta} <span className="text-sm">→</span>
         </span>
       </div>
     </a>
