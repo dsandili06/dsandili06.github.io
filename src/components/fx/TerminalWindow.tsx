@@ -4,12 +4,12 @@ import { motion } from "motion/react";
 type Line = { text: string; color: string };
 
 const LINES: Line[] = [
-  { text: "$ volatility3 -f memory.raw windows.pslist", color: "#5A6068" },
-  { text: "[*] Analyzing process list...", color: "#E8E6E1" },
+  { text: "$ volatility3 -f memory.raw windows.pslist", color: "#475569" },
+  { text: "[*] Analyzing process list...", color: "#E2E8F0" },
   { text: "[+] 87 processes found", color: "#22D3EE" },
-  { text: '$ strings malware.exe | grep -i "http"', color: "#5A6068" },
+  { text: '$ strings malware.exe | grep -i "http"', color: "#475569" },
   { text: "[!] C2 detected: 185.220.101.47", color: "#3B82F6" },
-  { text: '$ splunk search "EventCode=4625"', color: "#5A6068" },
+  { text: '$ splunk search "EventCode=4625"', color: "#475569" },
   { text: "[+] 847 failed logons — threshold exceeded", color: "#22D3EE" },
   { text: "[ALERT] Escalating to T1 analyst...", color: "#3B82F6" },
   { text: "analyst@soc-lab:~$ ", color: "#22D3EE" },
