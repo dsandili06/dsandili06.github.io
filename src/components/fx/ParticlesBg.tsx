@@ -30,8 +30,6 @@ export function ParticlesBg({
 }: ParticlesBgProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const animRef = useRef<number>(0);
-  const particlesRef = useRef<Particle[]>([]);
 
   useEffect(() => {
     const wrapper = wrapperRef.current;
@@ -40,7 +38,10 @@ export function ParticlesBg({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const setSize = () => {
+    // alive flag — when cleanup runs this flips to false and the rAF loop stops itself
+    let alive = true;
+
+    const setSize = (): boolean => {
       const { width, height } = wrapper.getBoundingClientRect();
       if (width === 0 || height === 0) return false;
       canvas.width = width;
@@ -48,8 +49,10 @@ export function ParticlesBg({
       return true;
     };
 
+    let particles: Particle[] = [];
+
     const initParticles = () => {
-      particlesRef.current = Array.from({ length: count }, () => ({
+      particles = Array.from({ length: count }, () => ({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
         vx: (Math.random() - 0.5) * speed,
@@ -60,10 +63,12 @@ export function ParticlesBg({
     };
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const pts = particlesRef.current;
+      // if component unmounted, stop the loop — no cancelAnimationFrame needed
+      if (!alive) return;
 
-      for (const p of pts) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      for (const p of particles) {
         p.x += p.vx;
         p.y += p.vy;
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
@@ -74,16 +79,16 @@ export function ParticlesBg({
         ctx.fill();
       }
 
-      for (let i = 0; i < pts.length; i++) {
-        for (let j = i + 1; j < pts.length; j++) {
-          const dx = pts[i].x - pts[j].x;
-          const dy = pts[i].y - pts[j].y;
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < connectionDistance) {
             const alpha = (1 - dist / connectionDistance) * maxLineOpacity;
             ctx.beginPath();
-            ctx.moveTo(pts[i].x, pts[i].y);
-            ctx.lineTo(pts[j].x, pts[j].y);
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
             ctx.strokeStyle = `rgba(${lineColor},${alpha})`;
             ctx.lineWidth = 0.6;
             ctx.stroke();
@@ -91,11 +96,12 @@ export function ParticlesBg({
         }
       }
 
-      animRef.current = requestAnimationFrame(draw);
+      requestAnimationFrame(draw);
     };
 
-    // defer one frame so the parent has layout
-    const rafId = requestAnimationFrame(() => {
+    // defer one frame so the wrapper has layout dimensions
+    requestAnimationFrame(() => {
+      if (!alive) return;
       if (setSize()) {
         initParticles();
         draw();
@@ -103,17 +109,16 @@ export function ParticlesBg({
     });
 
     const ro = new ResizeObserver(() => {
-      if (setSize()) {
-        initParticles();
-      }
+      if (!alive) return;
+      if (setSize()) initParticles();
     });
     ro.observe(wrapper);
 
     return () => {
-      cancelAnimationFrame(rafId);
-      cancelAnimationFrame(animRef.current);
+      alive = false;
       ro.disconnect();
     };
+  // props are stable primitives — safe to list all
   }, [count, connectionDistance, particleColor, lineColor, maxOpacity, maxLineOpacity, speed]);
 
   return (
