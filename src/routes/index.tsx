@@ -7,7 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { LenisProvider } from "@/components/fx/LenisProvider";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
-import { BackgroundPaths } from "@/components/fx/BackgroundPaths";
+import { ParticlesBg } from "@/components/fx/ParticlesBg";
 
 
 export const Route = createFileRoute("/")({
@@ -204,14 +204,13 @@ function Nav() {
       .filter((s): s is { id: string; el: HTMLElement } => Boolean(s.el));
 
     const onScroll = () => {
-      const probe = 120; // px from top
+      const probe = 120;
       let current = sections[0]?.id ?? "";
       for (const s of sections) {
         const top = s.el.getBoundingClientRect().top;
         if (top - probe <= 0) current = s.id;
         else break;
       }
-      // Special-case: at the very bottom, force last section
       if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 4) {
         current = sections[sections.length - 1]?.id ?? current;
       }
@@ -313,9 +312,19 @@ function Hero() {
       id="top"
       className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden border-b border-border-dim grid-bg"
     >
+      {/* Particles background */}
       <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden>
-        <BackgroundPaths />
+        <ParticlesBg
+          count={90}
+          connectionDistance={130}
+          particleColor="59,130,246"
+          lineColor="59,130,246"
+          maxOpacity={0.25}
+          maxLineOpacity={0.08}
+          speed={0.25}
+        />
       </div>
+
       {/* Top: badges */}
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-24 md:pt-28">
         <div className="flex items-center gap-3 flex-wrap">
@@ -414,7 +423,6 @@ function SectionHeader({
 }) {
   return (
     <div className="relative mb-14 md:mb-20">
-      {/* Watermark */}
       <span
         aria-hidden
         className="absolute -top-6 md:-top-10 -left-2 md:-left-6 font-display font-bold leading-none text-[var(--surface)] select-none pointer-events-none"
