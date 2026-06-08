@@ -10,7 +10,7 @@ import { TerminalWindow } from "@/components/fx/TerminalWindow";
 import { BackgroundPaths } from "@/components/fx/BackgroundPaths";
 
 
-export const Route = createFileRoute("/")((({
+export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team" },
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/")((({
     ],
   }),
   component: Portfolio,
-}));
+});
 
 type Project = {
   id: string;
