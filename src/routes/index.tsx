@@ -5,13 +5,12 @@ import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LenisProvider } from "@/components/fx/LenisProvider";
-import { CustomCursor } from "@/components/fx/CustomCursor";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
 import { BackgroundPaths } from "@/components/fx/BackgroundPaths";
 
 
-export const Route = createFileRoute("/")(({
+export const Route = createFileRoute("/")((({
   head: () => ({
     meta: [
       { title: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team" },
@@ -136,7 +135,6 @@ function Portfolio() {
   return (
     <TooltipProvider delayDuration={150}>
       <LenisProvider />
-      <CustomCursor />
       <div className="min-h-screen bg-background text-foreground font-body relative selection:bg-accent selection:text-[var(--accent-foreground)]">
         <Nav />
         <main>
