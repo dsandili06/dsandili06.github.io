@@ -1,4 +1,3 @@
-"use client";
 import { useEffect, useRef } from "react";
 
 interface Particle {
@@ -11,44 +10,42 @@ interface Particle {
 }
 
 interface ParticlesBgProps {
-  /** Number of particles. Default: 80 */
   count?: number;
-  /** Max connection distance in px. Default: 120 */
   connectionDistance?: number;
-  /** Particle color (RGB). Default: "59,130,246" (accent blue) */
   particleColor?: string;
-  /** Line color (RGB). Default: "59,130,246" */
   lineColor?: string;
-  /** Max particle opacity. Default: 0.35 */
   maxOpacity?: number;
-  /** Max line opacity. Default: 0.12 */
   maxLineOpacity?: number;
-  /** Speed multiplier. Default: 0.3 */
   speed?: number;
 }
 
 export function ParticlesBg({
-  count = 80,
-  connectionDistance = 120,
+  count = 90,
+  connectionDistance = 130,
   particleColor = "59,130,246",
   lineColor = "59,130,246",
-  maxOpacity = 0.35,
-  maxLineOpacity = 0.12,
-  speed = 0.3,
+  maxOpacity = 0.25,
+  maxLineOpacity = 0.08,
+  speed = 0.25,
 }: ParticlesBgProps) {
+  const wrapperRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animRef = useRef<number>(0);
   const particlesRef = useRef<Particle[]>([]);
 
   useEffect(() => {
+    const wrapper = wrapperRef.current;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!wrapper || !canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
+    const setSize = () => {
+      const { width, height } = wrapper.getBoundingClientRect();
+      if (width === 0 || height === 0) return false;
+      canvas.width = width;
+      canvas.height = height;
+      return true;
     };
 
     const initParticles = () => {
@@ -64,32 +61,29 @@ export function ParticlesBg({
 
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const particles = particlesRef.current;
+      const pts = particlesRef.current;
 
-      // update + draw particles
-      for (const p of particles) {
+      for (const p of pts) {
         p.x += p.vx;
         p.y += p.vy;
         if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
         if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${particleColor},${p.opacity})`;
         ctx.fill();
       }
 
-      // draw connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
+      for (let i = 0; i < pts.length; i++) {
+        for (let j = i + 1; j < pts.length; j++) {
+          const dx = pts[i].x - pts[j].x;
+          const dy = pts[i].y - pts[j].y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < connectionDistance) {
             const alpha = (1 - dist / connectionDistance) * maxLineOpacity;
             ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.moveTo(pts[i].x, pts[i].y);
+            ctx.lineTo(pts[j].x, pts[j].y);
             ctx.strokeStyle = `rgba(${lineColor},${alpha})`;
             ctx.lineWidth = 0.6;
             ctx.stroke();
@@ -100,27 +94,34 @@ export function ParticlesBg({
       animRef.current = requestAnimationFrame(draw);
     };
 
-    resize();
-    initParticles();
-    draw();
+    // defer one frame so the parent has layout
+    const rafId = requestAnimationFrame(() => {
+      if (setSize()) {
+        initParticles();
+        draw();
+      }
+    });
 
     const ro = new ResizeObserver(() => {
-      resize();
-      initParticles();
+      if (setSize()) {
+        initParticles();
+      }
     });
-    ro.observe(canvas);
+    ro.observe(wrapper);
 
     return () => {
+      cancelAnimationFrame(rafId);
       cancelAnimationFrame(animRef.current);
       ro.disconnect();
     };
   }, [count, connectionDistance, particleColor, lineColor, maxOpacity, maxLineOpacity, speed]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      className="absolute inset-0 w-full h-full"
-      style={{ display: "block" }}
-    />
+    <div ref={wrapperRef} className="absolute inset-0 w-full h-full">
+      <canvas
+        ref={canvasRef}
+        style={{ display: "block", width: "100%", height: "100%" }}
+      />
+    </div>
   );
 }
