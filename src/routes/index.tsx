@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LenisProvider } from "@/components/fx/LenisProvider";
@@ -49,7 +49,7 @@ type Investigation = {
   href: string;
 };
 
-type Course = { n: string; title: string; org: string };
+type Course = { n: string; title: string; org: string; cert?: string };
 
 const PROJECTS: Project[] = [
   {
@@ -113,27 +113,123 @@ const CERTIFICATIONS: {
 ];
 
 const COURSES: Course[] = [
-  { n: "01", title: "Networking Basics", org: "Cisco" },
-  { n: "02", title: "Introduction to Cybersecurity", org: "Cisco" },
-  { n: "03", title: "Network Security Fundamentals", org: "Palo Alto Networks" },
-  { n: "04", title: "Pre Security", org: "TryHackMe" },
-  { n: "05", title: "Cyber Security 101", org: "TryHackMe" },
-  { n: "06", title: "SOC L1 Path", org: "TryHackMe" },
-  { n: "07", title: "SOC L1 BOOTCAMP", org: "DOJO COMMUNITY" },
-  { n: "08", title: "CompTIA Security+ (SY0-701) Cert Prep", org: "LinkedIn Learning" },
-  { n: "09", title: "CYBER INCIDENT RESPONSE AND DIGITAL FORENSICS", org: "LINKEDIN LEARNING" },
-  { n: "10", title: "Foundations of Cybersecurity", org: "Google" },
-  { n: "11", title: "Play It Safe: Manage Security Risks", org: "Google" },
-  { n: "12", title: "Connect and Protect: Networks and Network Security", org: "Google" },
-  { n: "13", title: "Tools of the Trade: Linux and SQL", org: "Google" },
-  { n: "14", title: "Assets, Threats, and Vulnerabilities", org: "Google" },
-  { n: "15", title: "Sound the Alarm: Detection and Response", org: "Google" },
-  { n: "16", title: "Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta", org: "Academia de Capacitación en Ciberseguridad" },
+  { n: "01", title: "Networking Basics",                                         org: "Cisco",                                   cert: "/certs/Networking_Basics_certificate_CISCO.pdf" },
+  { n: "02", title: "Introduction to Cybersecurity",                             org: "Cisco",                                   cert: "/certs/_certificate_introduction_to_cybersecurity_CISCO.pdf" },
+  { n: "03", title: "Network Security Fundamentals",                             org: "Palo Alto Networks",                       cert: "/certs/Palo Alto Networks Course Certificate of Completion - Network Security Fundamentals.pdf" },
+  { n: "04", title: "Pre Security",                                              org: "TryHackMe" },
+  { n: "05", title: "Cyber Security 101",                                        org: "TryHackMe" },
+  { n: "06", title: "SOC L1 Path",                                               org: "TryHackMe",                               cert: "/certs/THM-SOC L1 PATH.pdf" },
+  { n: "07", title: "SOC L1 BOOTCAMP",                                           org: "DOJO COMMUNITY",                          cert: "/certs/Captura de pantalla 2026-07-30 124141.png" },
+  { n: "08", title: "CompTIA Security+ (SY0-701) Cert Prep",                    org: "LinkedIn Learning",                       cert: "/certs/CertificateOfCompletion_CompTIA Security SY0701 Cert Prep by Infosec.pdf" },
+  { n: "09", title: "Cyber Incident Response and Digital Forensics",             org: "LinkedIn Learning",                       cert: "/certs/CertificateOfCompletion_Learning Cyber Incident Response and Digital Forensics.pdf" },
+  { n: "10", title: "Foundations of Cybersecurity",                             org: "Google",                                  cert: "/certs/Coursera - Foundations of Cybersecurity.pdf" },
+  { n: "11", title: "Play It Safe: Manage Security Risks",                      org: "Google",                                  cert: "/certs/Coursera Play It Safe Manage Security Risks.pdf" },
+  { n: "12", title: "Connect and Protect: Networks and Network Security",        org: "Google",                                  cert: "/certs/Coursera Connect and Protect Networks and Network.pdf" },
+  { n: "13", title: "Tools of the Trade: Linux and SQL",                        org: "Google",                                  cert: "/certs/Coursera Tools of the Trade Linux and SQL.pdf" },
+  { n: "14", title: "Assets, Threats, and Vulnerabilities",                     org: "Google",                                  cert: "/certs/Coursera Assets, Threats, and Vulnerabilities.pdf" },
+  { n: "15", title: "Sound the Alarm: Detection and Response",                  org: "Google",                                  cert: "/certs/Coursera - Sound the Alarm Detection and Response.pdf" },
+  { n: "16", title: "Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta", org: "Academia de Capacitación en Ciberseguridad", cert: "/certs/Certificado_de_Aprobacion -  ACAD DE CIBERSEGURIDAD.pdf" },
+  { n: "17", title: "NSE 1 Network Security Associate",                         org: "Fortinet",                                cert: "/certs/Fortinet NSE 1 Certified in Cybersecurity.pdf" },
+  { n: "18", title: "NSE 2 Network Security Associate",                         org: "Fortinet",                                cert: "/certs/Fortinet NSE 2 Certified in Cybersecurity.pdf" },
 ];
 
 const EMAIL = "sdsandili06@gmail.com";
 const LINKEDIN = "https://www.linkedin.com/in/santiagodsandili/";
 const GITHUB = "https://github.com/dsandili06";
+
+/* ---------- Cert Modal ---------- */
+
+function CertModal({ cert, title, onClose }: { cert: string; title: string; onClose: () => void }) {
+  const isImage = /\.(png|jpg|jpeg|webp)$/i.test(cert);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [onClose]);
+
+  return (
+    <AnimatePresence>
+      <motion.div
+        key="cert-modal-backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.2 }}
+        className="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 md:p-8"
+        style={{ background: "rgba(0,0,0,0.88)", backdropFilter: "blur(8px)" }}
+        onClick={onClose}
+      >
+        <motion.div
+          key="cert-modal-panel"
+          initial={{ opacity: 0, scale: 0.96, y: 16 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.96, y: 16 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-4xl flex flex-col"
+          style={{ maxHeight: "90dvh" }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">CERTIFICADO</span>
+              <h3 className="font-display font-semibold text-base text-foreground leading-snug mt-0.5">{title}</h3>
+            </div>
+            <button
+              onClick={onClose}
+              aria-label="Cerrar"
+              className="ml-4 shrink-0 flex items-center justify-center w-9 h-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+            >
+              <X size={16} strokeWidth={1.5} />
+            </button>
+          </div>
+
+          {/* Content */}
+          <div
+            className="flex-1 border border-border-dim overflow-hidden"
+            style={{ background: "#0b1118", minHeight: 0 }}
+          >
+            {isImage ? (
+              <img
+                src={cert}
+                alt={title}
+                className="w-full h-full object-contain"
+                style={{ maxHeight: "78dvh" }}
+              />
+            ) : (
+              <iframe
+                src={cert}
+                title={title}
+                className="w-full"
+                style={{ height: "78dvh", border: "none" }}
+              />
+            )}
+          </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-between mt-3">
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+              ESC para cerrar
+            </span>
+            <a
+              href={cert}
+              target="_blank"
+              rel="noreferrer"
+              className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline"
+            >
+              Abrir en nueva pestaña →
+            </a>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
 
 /* ---------- Root ---------- */
 
@@ -319,7 +415,6 @@ function Hero() {
       id="top"
       className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden border-b border-border-dim grid-bg"
     >
-      {/* Particles background */}
       <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden>
         <ParticlesBg
           count={90}
@@ -332,7 +427,6 @@ function Hero() {
         />
       </div>
 
-      {/* Top: badges */}
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-24 md:pt-28">
         <div className="flex items-center gap-3 flex-wrap">
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2.5 py-1 border border-[var(--accent-green)]/50 text-[var(--accent-green)] inline-flex items-center gap-2">
@@ -346,7 +440,6 @@ function Hero() {
         </div>
       </div>
 
-      {/* Center: boot + name */}
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 flex-1 grid grid-cols-1 md:grid-cols-[1fr_minmax(0,440px)] gap-10 md:gap-12 items-center py-12">
         <div className="flex flex-col">
           <div className="mb-8 min-h-[5.5rem]">
@@ -380,7 +473,6 @@ function Hero() {
         </div>
       </div>
 
-      {/* Bottom: status corner */}
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pb-10 flex items-end justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] gap-6 flex-wrap">
         <div className="flex items-center gap-6">
           <span>SCROLL ↓</span>
@@ -578,12 +670,11 @@ function Proyectos() {
   );
 }
 
-/* ---------- Investigaciones (table) ---------- */
+/* ---------- Investigaciones ---------- */
 
 function Investigaciones() {
   return (
     <Section id="investigaciones" number="03" title="Investigaciones" kicker="CASE_LOG">
-      {/* Desktop table */}
       <div className="hidden md:block border border-border-dim">
         <div className="grid grid-cols-[64px_1.4fr_1fr_140px_120px_60px] gap-4 px-5 py-3 border-b border-border-dim font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
           <div>N°</div>
@@ -614,84 +705,43 @@ function Investigaciones() {
             </div>
             <div className="flex flex-wrap gap-1.5">
               {i.categories.map((c) => (
-                <span
-                  key={c}
-                  className="font-mono text-[9px] uppercase tracking-[0.2em] px-1.5 py-0.5 border border-border-dim text-foreground/70"
-                >
+                <span key={c} className="font-mono text-[9px] uppercase tracking-[0.2em] px-1.5 py-0.5 border border-border-dim text-foreground/70">
                   {c}
                 </span>
               ))}
             </div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-              {i.platform}
-            </div>
-            <div>
-              <Badge variant="success" dot>
-                PUBLICADO
-              </Badge>
-            </div>
-            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity text-right">
-              VER →
-            </div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">{i.platform}</div>
+            <div><Badge variant="success" dot>PUBLICADO</Badge></div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity text-right">VER →</div>
           </motion.a>
         ))}
-        {/* LAB_016 in process */}
         <div className="grid grid-cols-[64px_1.4fr_1fr_140px_120px_60px] gap-4 items-center px-5 py-4 border-t border-dashed border-[var(--accent)]/30 opacity-50">
-          <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--accent)] tabular-nums">
-            016
-          </div>
-          <div className="font-display font-semibold text-foreground/70 text-[15px] tracking-tight">
-            Próximo writeup
-          </div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-            —
-          </div>
-          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-            CyberDefenders
-          </div>
-          <div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">
-              EN PROCESO
-            </span>
-          </div>
+          <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--accent)] tabular-nums">016</div>
+          <div className="font-display font-semibold text-foreground/70 text-[15px] tracking-tight">Próximo writeup</div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">—</div>
+          <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">CyberDefenders</div>
+          <div><span className="font-mono text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">EN PROCESO</span></div>
           <div></div>
         </div>
       </div>
 
-      {/* Mobile stack */}
       <div className="md:hidden flex flex-col">
         {INVESTIGATIONS.map((i) => (
-          <a
-            key={i.id}
-            href={i.href}
-            target="_blank"
-            rel="noreferrer"
-            className="border-t border-border-dim py-5 first:border-t-0"
-          >
+          <a key={i.id} href={i.href} target="_blank" rel="noreferrer" className="border-t border-border-dim py-5 first:border-t-0">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--muted-foreground)]">
-                {i.id}
-              </span>
-              <Badge variant="success" dot>
-                PUBLICADO
-              </Badge>
+              <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--muted-foreground)]">{i.id}</span>
+              <Badge variant="success" dot>PUBLICADO</Badge>
             </div>
             <h3 className="font-display font-semibold text-lg tracking-tight mb-1">{i.title}</h3>
-            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-3">
-              {i.platform} · {i.categories.join(" · ")}
-            </div>
+            <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-3">{i.platform} · {i.categories.join(" · ")}</div>
             <p className="text-sm text-foreground/65 leading-relaxed">{i.summary}</p>
-            <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-              Ver writeup →
-            </div>
+            <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">Ver writeup →</div>
           </a>
         ))}
         <div className="border-t border-dashed border-[var(--accent)]/30 py-5 opacity-60">
           <div className="flex items-center justify-between mb-2">
             <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)]">LAB_016</span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">
-              EN PROCESO
-            </span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">EN PROCESO</span>
           </div>
           <h3 className="font-display font-semibold text-lg tracking-tight">Próximo writeup CyberDefenders</h3>
         </div>
@@ -715,31 +765,12 @@ function Stack() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
         {STACK_GROUPS.map((group) => (
           <div key={group.title}>
-            <h3
-              className="font-mono uppercase mb-4 pb-3"
-              style={{
-                color: "#3B82F6",
-                letterSpacing: "0.15em",
-                fontSize: "0.7rem",
-                borderBottom: "1px solid rgba(59,130,246,0.2)",
-              }}
-            >
+            <h3 className="font-mono uppercase mb-4 pb-3" style={{ color: "#3B82F6", letterSpacing: "0.15em", fontSize: "0.7rem", borderBottom: "1px solid rgba(59,130,246,0.2)" }}>
               {group.title}
             </h3>
             <div className="flex flex-wrap" style={{ gap: 8 }}>
               {group.items.map((item) => (
-                <span
-                  key={item}
-                  className="stack-chip font-mono transition-all duration-150 ease-out cursor-default"
-                  style={{
-                    background: "#0B1118",
-                    border: "1px solid rgba(59,130,246,0.15)",
-                    color: "#E2E8F0",
-                    fontSize: "0.72rem",
-                    padding: "4px 10px",
-                    borderRadius: 3,
-                  }}
-                >
+                <span key={item} className="stack-chip font-mono transition-all duration-150 ease-out cursor-default" style={{ background: "#0B1118", border: "1px solid rgba(59,130,246,0.15)", color: "#E2E8F0", fontSize: "0.72rem", padding: "4px 10px", borderRadius: 3 }}>
                   {item}
                 </span>
               ))}
@@ -761,56 +792,36 @@ function Certs() {
           const obtained = c.status === "OBTENIDA";
           const accentColor = obtained ? "var(--accent-green)" : "var(--accent)";
           const Wrapper: React.ElementType = c.href ? "a" : "div";
-          const wrapperProps = c.href
-            ? { href: c.href, target: "_blank", rel: "noreferrer" }
-            : {};
+          const wrapperProps = c.href ? { href: c.href, target: "_blank", rel: "noreferrer" } : {};
           return (
             <Wrapper
               key={c.code}
               {...wrapperProps}
-              className={`group bg-background p-7 md:p-9 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center transition-colors ${
-                c.href ? "hover:bg-[color-mix(in_oklab,var(--accent)_3%,transparent)]" : ""
-              }`}
+              className={`group bg-background p-7 md:p-9 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center transition-colors ${ c.href ? "hover:bg-[color-mix(in_oklab,var(--accent)_3%,transparent)]" : "" }`}
               style={{ borderLeft: `3px solid ${obtained ? accentColor : "color-mix(in oklab, var(--accent) 40%, transparent)"}` }}
             >
               <div>
                 <div className="flex items-center gap-3 mb-4">
                   {obtained ? (
-                    <Badge variant="success" dot>
-                      {c.badge}
-                    </Badge>
+                    <Badge variant="success" dot>{c.badge}</Badge>
                   ) : (
-                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">
-                      {c.badge}
-                    </span>
+                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">{c.badge}</span>
                   )}
-                  <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-                    {c.org} · {c.code} · {c.year}
-                  </span>
+                  <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">{c.org} · {c.code} · {c.year}</span>
                 </div>
-                <h3 className="font-display font-bold text-2xl md:text-[2.25rem] leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
-                  {c.title}
-                </h3>
+                <h3 className="font-display font-bold text-2xl md:text-[2.25rem] leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">{c.title}</h3>
               </div>
               <div className="md:text-right">
                 {c.score ? (
                   <>
-                    <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mb-1">
-                      SCORE
-                    </div>
-                    <div className="font-display font-bold text-4xl md:text-5xl text-[var(--accent)] leading-none">
-                      {c.score}
-                    </div>
+                    <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mb-1">SCORE</div>
+                    <div className="font-display font-bold text-4xl md:text-5xl text-[var(--accent)] leading-none">{c.score}</div>
                     {c.href && (
-                      <span className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-70 group-hover:opacity-100 transition-opacity">
-                        VER CERTIFICADO →
-                      </span>
+                      <span className="mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-70 group-hover:opacity-100 transition-opacity">VER CERTIFICADO →</span>
                     )}
                   </>
                 ) : (
-                  <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-                    ESTUDIO EN CURSO
-                  </div>
+                  <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">ESTUDIO EN CURSO</div>
                 )}
               </div>
             </Wrapper>
@@ -824,6 +835,8 @@ function Certs() {
 /* ---------- Cursos ---------- */
 
 function Cursos() {
+  const [activeCert, setActiveCert] = useState<{ cert: string; title: string } | null>(null);
+
   return (
     <Section id="cursos" number="06" title="Cursos Completados" kicker="LEARNING_LOG">
       {/* Stats row */}
@@ -833,39 +846,58 @@ function Cursos() {
           <span className="text-[var(--accent)] font-bold text-sm">{COURSES.length}</span>
         </span>
         <span className="h-px flex-1 bg-border-dim" />
-        <Badge variant="success" dot>
-          TODOS COMPLETADOS
-        </Badge>
+        <Badge variant="success" dot>TODOS COMPLETADOS</Badge>
       </div>
 
       {/* Cards grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-        {COURSES.map((c, idx) => (
-          <motion.div
-            key={c.n}
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ duration: 0.35, delay: (idx % 6) * 0.05, ease: [0.16, 1, 0.3, 1] }}
-            className="group flex flex-col justify-between gap-3 p-5 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/40 hover:bg-[color-mix(in_oklab,var(--accent)_3%,var(--surface))] transition-all duration-200"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <span className="font-mono text-[10px] tracking-[0.2em] text-[var(--accent)]/60 tabular-nums mt-0.5">
-                {c.n}
-              </span>
-              <span className="size-1.5 bg-[var(--accent-green)] rounded-full mt-1.5 shrink-0" />
-            </div>
-            <div className="flex-1">
-              <h4 className="font-display font-semibold text-[14px] leading-snug tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
-                {c.title}
-              </h4>
-            </div>
-            <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] pt-2 border-t border-border-dim">
-              {c.org}
-            </div>
-          </motion.div>
-        ))}
+        {COURSES.map((c, idx) => {
+          const hasCert = Boolean(c.cert);
+          const Card = (
+            <motion.div
+              key={c.n}
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.1 }}
+              transition={{ duration: 0.35, delay: (idx % 6) * 0.05, ease: [0.16, 1, 0.3, 1] }}
+              onClick={hasCert ? () => setActiveCert({ cert: c.cert!, title: c.title }) : undefined}
+              className={`group flex flex-col justify-between gap-3 p-5 bg-[var(--surface)] border border-border-dim transition-all duration-200 ${
+                hasCert
+                  ? "cursor-pointer hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))]"
+                  : "opacity-70"
+              }`}
+            >
+              <div className="flex items-start justify-between gap-3">
+                <span className="font-mono text-[10px] tracking-[0.2em] text-[var(--accent)]/60 tabular-nums mt-0.5">{c.n}</span>
+                <span className={`size-1.5 rounded-full mt-1.5 shrink-0 ${ hasCert ? "bg-[var(--accent-green)]" : "bg-[var(--muted-foreground)]/40" }`} />
+              </div>
+              <div className="flex-1">
+                <h4 className={`font-display font-semibold text-[14px] leading-snug tracking-tight transition-colors ${ hasCert ? "text-foreground group-hover:text-[var(--accent)]" : "text-foreground/60" }`}>
+                  {c.title}
+                </h4>
+              </div>
+              <div className="flex items-center justify-between pt-2 border-t border-border-dim">
+                <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">{c.org}</span>
+                {hasCert && (
+                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity">
+                    VER CERT →
+                  </span>
+                )}
+              </div>
+            </motion.div>
+          );
+          return Card;
+        })}
       </div>
+
+      {/* Modal */}
+      {activeCert && (
+        <CertModal
+          cert={activeCert.cert}
+          title={activeCert.title}
+          onClose={() => setActiveCert(null)}
+        />
+      )}
     </Section>
   );
 }
@@ -874,30 +906,9 @@ function Cursos() {
 
 function Contacto() {
   const channels = [
-    {
-      code: "01",
-      label: "LinkedIn",
-      value: "/in/santiagodsandili",
-      href: "https://linkedin.com/in/santiagodsandili",
-      cta: "Ver perfil →",
-      external: true,
-    },
-    {
-      code: "02",
-      label: "Email",
-      value: "sdsandili06@gmail.com",
-      href: "mailto:sdsandili06@gmail.com",
-      cta: "Enviar mensaje →",
-      external: false,
-    },
-    {
-      code: "03",
-      label: "GitHub",
-      value: "github.com/dsandili06",
-      href: "https://github.com/dsandili06",
-      cta: "Ver repositorios →",
-      external: true,
-    },
+    { code: "01", label: "LinkedIn", value: "/in/santiagodsandili", href: "https://linkedin.com/in/santiagodsandili", cta: "Ver perfil →", external: true },
+    { code: "02", label: "Email", value: "sdsandili06@gmail.com", href: "mailto:sdsandili06@gmail.com", cta: "Enviar mensaje →", external: false },
+    { code: "03", label: "GitHub", value: "github.com/dsandili06", href: "https://github.com/dsandili06", cta: "Ver repositorios →", external: true },
   ];
 
   const meta = [
@@ -908,111 +919,46 @@ function Contacto() {
 
   return (
     <section id="contacto" data-reveal className="relative py-24 md:py-32 border-b border-border-dim">
-      {/* Header */}
       <div className="mb-14 md:mb-20">
-        <h2
-          className="font-display font-bold leading-[0.95] tracking-tight"
-          style={{ color: "#3B82F6", fontSize: "clamp(3rem, 7vw, 5.5rem)" }}
-        >
-          CONTACTO
-        </h2>
-        <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-          [SECURE_CHANNEL] · Tiempo de respuesta: &lt; 24h
-        </p>
+        <h2 className="font-display font-bold leading-[0.95] tracking-tight" style={{ color: "#3B82F6", fontSize: "clamp(3rem, 7vw, 5.5rem)" }}>CONTACTO</h2>
+        <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">[SECURE_CHANNEL] · Tiempo de respuesta: &lt; 24h</p>
       </div>
 
-      {/* Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
-        {/* Col izquierda — Status card */}
-        <div
-          className="w-full"
-          style={{
-            background: "#0E1416",
-            border: "1px solid rgba(255,255,255,0.06)",
-            borderRadius: 4,
-            padding: 32,
-          }}
-        >
-          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-6">
-            ANALYST STATUS
-          </div>
-
+        <div className="w-full" style={{ background: "#0E1416", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 4, padding: 32 }}>
+          <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-6">ANALYST STATUS</div>
           <div className="flex items-center gap-3 mb-8">
             <span className="relative flex items-center justify-center" style={{ width: 16, height: 16 }}>
-              <motion.span
-                className="absolute rounded-full"
-                style={{ width: 16, height: 16, background: "#4DFFB4" }}
-                animate={{ scale: [1, 1.4], opacity: [1, 0] }}
-                transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }}
-              />
-              <span
-                className="relative rounded-full"
-                style={{ width: 10, height: 10, background: "#4DFFB4" }}
-              />
+              <motion.span className="absolute rounded-full" style={{ width: 16, height: 16, background: "#4DFFB4" }} animate={{ scale: [1, 1.4], opacity: [1, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }} />
+              <span className="relative rounded-full" style={{ width: 10, height: 10, background: "#4DFFB4" }} />
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground">
-              DISPONIBLE PARA OPORTUNIDADES
-            </span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground">DISPONIBLE PARA OPORTUNIDADES</span>
           </div>
-
           <div className="flex flex-col">
             {meta.map((m) => (
-              <div
-                key={m.k}
-                className="flex items-center justify-between py-4"
-                style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
-              >
-                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-                  {m.k}
-                </span>
+              <div key={m.k} className="flex items-center justify-between py-4" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">{m.k}</span>
                 <span className="text-foreground text-sm">{m.v}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Col derecha — Channels */}
         <div className="flex flex-col gap-3">
           {channels.map((c) => (
-            <a
-              key={c.code}
-              href={c.href}
-              {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
-              className="channel-card group block px-6 py-5 transition-all duration-200"
-              style={{
-                background: "#0E1416",
-                border: "1px solid rgba(255,255,255,0.06)",
-                borderLeft: "2px solid transparent",
-                borderRadius: 4,
-              }}
-            >
-              <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-2">
-                CHANNEL_{c.code} · {c.label}
-              </div>
+            <a key={c.code} href={c.href} {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})} className="channel-card group block px-6 py-5 transition-all duration-200" style={{ background: "#0E1416", border: "1px solid rgba(255,255,255,0.06)", borderLeft: "2px solid transparent", borderRadius: 4 }}>
+              <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-2">CHANNEL_{c.code} · {c.label}</div>
               <div className="flex items-center justify-between gap-4 flex-wrap">
-                <span className="font-semibold text-base md:text-lg text-foreground break-all">
-                  {c.value}
-                </span>
-                <span
-                  className="font-mono text-[11px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity"
-                  style={{ color: "#E8A230" }}
-                >
-                  {c.cta}
-                </span>
+                <span className="font-semibold text-base md:text-lg text-foreground break-all">{c.value}</span>
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#E8A230" }}>{c.cta}</span>
               </div>
             </a>
           ))}
         </div>
       </div>
 
-      {/* Footer */}
-      <div
-        className="mt-16 pt-6 text-center"
-        style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}
-      >
-        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-          © 2026 Santiago Daniel Sandili · Construido con criterio técnico
-        </span>
+      <div className="mt-16 pt-6 text-center" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+        <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">© 2026 Santiago Daniel Sandili · Construido con criterio técnico</span>
       </div>
     </section>
   );
