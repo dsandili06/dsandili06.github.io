@@ -8,13 +8,26 @@ import { LenisProvider } from "@/components/fx/LenisProvider";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
 import { ParticlesBg } from "@/components/fx/ParticlesBg";
-import { Document, Page, pdfjs } from "react-pdf";
-import "react-pdf/dist/Page/AnnotationLayer.css";
-import "react-pdf/dist/Page/TextLayer.css";
-
-import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
-
-pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
+const COURSES: Course[] = [
+  { n: "01", title: "Networking Basics",                                         org: "Cisco",                                   cert: "/certs/Networking_Basics_certificate_CISCO.png" },
+  { n: "02", title: "Introduction to Cybersecurity",                             org: "Cisco",                                   cert: "/certs/_certificate_introduction_to_cybersecurity_CISCO.png" },
+  { n: "03", title: "Network Security Fundamentals",                             org: "Palo Alto Networks",                       cert: "/certs/Palo Alto Networks Course Certificate of Completion - Network Security Fundamentals.png" },
+  { n: "04", title: "Pre Security",                                              org: "TryHackMe",                               cert: "/certs/THM-PRESECURITY.jpg" },
+  { n: "05", title: "Cyber Security 101",                                        org: "TryHackMe",                               cert: "/certs/THM-Cyber-Security-101.jpg" },
+  { n: "06", title: "SOC L1 Path",                                               org: "TryHackMe",                               cert: "/certs/THM-SOC L1 PATH.png" },
+  { n: "07", title: "SOC L1 BOOTCAMP",                                           org: "DOJO COMMUNITY",                          cert: "/certs/Captura de pantalla 2026-07-30 124141.png" },
+  { n: "08", title: "CompTIA Security+ (SY0-701) Cert Prep",                    org: "LinkedIn Learning",                       cert: "/certs/CertificateOfCompletion_CompTIA Security SY0701 Cert Prep by Infosec.png" },
+  { n: "09", title: "Cyber Incident Response and Digital Forensics",             org: "LinkedIn Learning",                       cert: "/certs/CertificateOfCompletion_Learning Cyber Incident Response and Digital Forensics.png" },
+  { n: "10", title: "Foundations of Cybersecurity",                             org: "Google",                                  cert: "/certs/Coursera - Foundations of Cybersecurity.png" },
+  { n: "11", title: "Play It Safe: Manage Security Risks",                      org: "Google",                                  cert: "/certs/Coursera Play It Safe Manage Security Risks.png" },
+  { n: "12", title: "Connect and Protect: Networks and Network Security",        org: "Google",                                  cert: "/certs/Coursera Connect and Protect Networks and Network.png" },
+  { n: "13", title: "Tools of the Trade: Linux and SQL",                        org: "Google",                                  cert: "/certs/Coursera Tools of the Trade Linux and SQL.png" },
+  { n: "14", title: "Assets, Threats, and Vulnerabilities",                     org: "Google",                                  cert: "/certs/Coursera Assets, Threats, and Vulnerabilities.png" },
+  { n: "15", title: "Sound the Alarm: Detection and Response",                  org: "Google",                                  cert: "/certs/Coursera - Sound the Alarm Detection and Response.png" },
+  { n: "16", title: "Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta", org: "Academia de Capacitación en Ciberseguridad", cert: "/certs/Certificado_de_Aprobacion -  ACAD DE CIBERSEGURIDAD.png" },
+  { n: "17", title: "NSE 1 Network Security Associate",                         org: "Fortinet",                                cert: "/certs/Fortinet NSE 1 Certified in Cybersecurity.png" },
+  { n: "18", title: "NSE 2 Network Security Associate",                         org: "Fortinet",                                cert: "/certs/Fortinet NSE 2 Certified in Cybersecurity.png" },
+];
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -118,117 +131,9 @@ const CERTIFICATIONS: {
   { code: "SY0-701", title: "CompTIA Security+", org: "CompTIA", year: "2026", status: "EN PREPARACIÓN", badge: "EN PREPARACIÓN" },
 ];
 
-const COURSES: Course[] = [
-  { n: "01", title: "Networking Basics",                                         org: "Cisco",                                   cert: "/certs/Networking_Basics_certificate_CISCO.pdf" },
-  { n: "02", title: "Introduction to Cybersecurity",                             org: "Cisco",                                   cert: "/certs/_certificate_introduction_to_cybersecurity_CISCO.pdf" },
-  { n: "03", title: "Network Security Fundamentals",                             org: "Palo Alto Networks",                       cert: "/certs/Palo Alto Networks Course Certificate of Completion - Network Security Fundamentals.pdf" },
-  { n: "04", title: "Pre Security",                                              org: "TryHackMe",                               cert: "/certs/THM-PRESECURITY.jpg" },
-  { n: "05", title: "Cyber Security 101",                                        org: "TryHackMe",                               cert: "/certs/THM-Cyber-Security-101.jpg" },
-  { n: "06", title: "SOC L1 Path",                                               org: "TryHackMe",                               cert: "/certs/THM-SOC L1 PATH.pdf" },
-  { n: "07", title: "SOC L1 BOOTCAMP",                                           org: "DOJO COMMUNITY",                          cert: "/certs/Captura de pantalla 2026-07-30 124141.png" },
-  { n: "08", title: "CompTIA Security+ (SY0-701) Cert Prep",                    org: "LinkedIn Learning",                       cert: "/certs/CertificateOfCompletion_CompTIA Security SY0701 Cert Prep by Infosec.pdf" },
-  { n: "09", title: "Cyber Incident Response and Digital Forensics",             org: "LinkedIn Learning",                       cert: "/certs/CertificateOfCompletion_Learning Cyber Incident Response and Digital Forensics.pdf" },
-  { n: "10", title: "Foundations of Cybersecurity",                             org: "Google",                                  cert: "/certs/Coursera - Foundations of Cybersecurity.pdf" },
-  { n: "11", title: "Play It Safe: Manage Security Risks",                      org: "Google",                                  cert: "/certs/Coursera Play It Safe Manage Security Risks.pdf" },
-  { n: "12", title: "Connect and Protect: Networks and Network Security",        org: "Google",                                  cert: "/certs/Coursera Connect and Protect Networks and Network.pdf" },
-  { n: "13", title: "Tools of the Trade: Linux and SQL",                        org: "Google",                                  cert: "/certs/Coursera Tools of the Trade Linux and SQL.pdf" },
-  { n: "14", title: "Assets, Threats, and Vulnerabilities",                     org: "Google",                                  cert: "/certs/Coursera Assets, Threats, and Vulnerabilities.pdf" },
-  { n: "15", title: "Sound the Alarm: Detection and Response",                  org: "Google",                                  cert: "/certs/Coursera - Sound the Alarm Detection and Response.pdf" },
-  { n: "16", title: "Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta", org: "Academia de Capacitación en Ciberseguridad", cert: "/certs/Certificado_de_Aprobacion -  ACAD DE CIBERSEGURIDAD.pdf" },
-  { n: "17", title: "NSE 1 Network Security Associate",                         org: "Fortinet",                                cert: "/certs/Fortinet NSE 1 Certified in Cybersecurity.pdf" },
-  { n: "18", title: "NSE 2 Network Security Associate",                         org: "Fortinet",                                cert: "/certs/Fortinet NSE 2 Certified in Cybersecurity.pdf" },
-];
-
-const EMAIL = "sdsandili06@gmail.com";
-const LINKEDIN = "https://www.linkedin.com/in/santiagodsandili/";
-const GITHUB = "https://github.com/dsandili06";
-
 /* ---------- Cert Modal ---------- */
 
-function PdfViewer({ src }: { src: string }) {
-  const [numPages, setNumPages] = useState<number>(0);
-  const [page, setPage] = useState(1);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState<number>(800);
-
-  useEffect(() => {
-    const update = () => {
-      if (containerRef.current) {
-        const w = containerRef.current.clientWidth;
-        setWidth(w > 0 ? w : 800);
-      }
-    };
-    update();
-    const ro = new ResizeObserver(update);
-    if (containerRef.current) ro.observe(containerRef.current);
-    return () => ro.disconnect();
-  }, [src]);
-
-  const encodedSrc = encodeURI(src);
-
-  return (
-    <div ref={containerRef} className="w-full flex flex-col items-center justify-center min-h-[300px] py-2">
-      <Document
-        file={encodedSrc}
-        onLoadSuccess={({ numPages }) => {
-          setNumPages(numPages);
-          setPage(1);
-        }}
-        onLoadError={(err) => {
-          console.error("Error al cargar PDF con React-PDF:", err);
-        }}
-        loading={
-          <div className="flex items-center justify-center py-20">
-            <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--accent)] animate-pulse">
-              CARGANDO CERTIFICADO...
-            </span>
-          </div>
-        }
-        error={
-          <div className="flex items-center justify-center py-20">
-            <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-red-500">
-              ERROR AL CARGAR EL PDF
-            </span>
-          </div>
-        }
-      >
-        <Page
-          pageNumber={page}
-          width={width}
-          renderAnnotationLayer={false}
-          renderTextLayer={false}
-          className="shadow-2xl rounded overflow-hidden"
-        />
-      </Document>
-
-      {numPages > 1 && (
-        <div className="flex items-center gap-4 mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page <= 1}
-            className="flex items-center justify-center w-8 h-8 border border-border-dim disabled:opacity-30 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors rounded"
-          >
-            <ChevronLeft size={16} />
-          </button>
-          <span>
-            {page} / {numPages}
-          </span>
-          <button
-            onClick={() => setPage((p) => Math.min(numPages, p + 1))}
-            disabled={page >= numPages}
-            className="flex items-center justify-center w-8 h-8 border border-border-dim disabled:opacity-30 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors rounded"
-          >
-            <ChevronRight size={16} />
-          </button>
-        </div>
-      )}
-    </div>
-  );
-}
-
 function CertModal({ cert, title, onClose }: { cert: string; title: string; onClose: () => void }) {
-  const isImage = /\.(png|jpg|jpeg|webp)$/i.test(cert);
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
     document.addEventListener("keydown", onKey);
@@ -278,21 +183,15 @@ function CertModal({ cert, title, onClose }: { cert: string; title: string; onCl
 
           {/* Content */}
           <div
-            className="flex-1 border border-border-dim overflow-y-auto"
+            className="flex-1 border border-border-dim overflow-hidden flex items-center justify-center p-2 rounded"
             style={{ background: "#0b1118", minHeight: 0 }}
           >
-            {isImage ? (
-              <img
-                src={cert}
-                alt={title}
-                className="w-full h-full object-contain"
-                style={{ maxHeight: "78dvh" }}
-              />
-            ) : (
-              <div className="p-2">
-                <PdfViewer src={cert} />
-              </div>
-            )}
+            <img
+              src={cert}
+              alt={title}
+              className="w-full h-full object-contain rounded"
+              style={{ maxHeight: "78dvh" }}
+            />
           </div>
 
           {/* Footer */}
