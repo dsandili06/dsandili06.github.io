@@ -10,7 +10,7 @@ import { TerminalWindow } from "@/components/fx/TerminalWindow";
 import { ParticlesBg } from "@/components/fx/ParticlesBg";
 
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/")(({
   head: () => ({
     meta: [
       { title: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team" },
@@ -30,7 +30,7 @@ export const Route = createFileRoute("/")({
     ],
   }),
   component: Portfolio,
-});
+}));
 
 type Project = {
   id: string;
@@ -116,8 +116,8 @@ const COURSES: Course[] = [
   { n: "01", title: "Networking Basics",                                         org: "Cisco",                                   cert: "/certs/Networking_Basics_certificate_CISCO.pdf" },
   { n: "02", title: "Introduction to Cybersecurity",                             org: "Cisco",                                   cert: "/certs/_certificate_introduction_to_cybersecurity_CISCO.pdf" },
   { n: "03", title: "Network Security Fundamentals",                             org: "Palo Alto Networks",                       cert: "/certs/Palo Alto Networks Course Certificate of Completion - Network Security Fundamentals.pdf" },
-  { n: "04", title: "Pre Security",                                              org: "TryHackMe" },
-  { n: "05", title: "Cyber Security 101",                                        org: "TryHackMe" },
+  { n: "04", title: "Pre Security",                                              org: "TryHackMe",                               cert: "/certs/THM-PRESECURITY.jpg" },
+  { n: "05", title: "Cyber Security 101",                                        org: "TryHackMe",                               cert: "/certs/THM-Cyber-Security-101.jpg" },
   { n: "06", title: "SOC L1 Path",                                               org: "TryHackMe",                               cert: "/certs/THM-SOC L1 PATH.pdf" },
   { n: "07", title: "SOC L1 BOOTCAMP",                                           org: "DOJO COMMUNITY",                          cert: "/certs/Captura de pantalla 2026-07-30 124141.png" },
   { n: "08", title: "CompTIA Security+ (SY0-701) Cert Prep",                    org: "LinkedIn Learning",                       cert: "/certs/CertificateOfCompletion_CompTIA Security SY0701 Cert Prep by Infosec.pdf" },
