@@ -12,7 +12,10 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+  "pdfjs-dist/build/pdf.worker.min.mjs",
+  import.meta.url
+).toString();
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -162,8 +165,9 @@ function PdfViewer({ src }: { src: string }) {
   return (
     <div ref={containerRef} className="w-full flex flex-col items-center" style={{ minHeight: 200 }}>
       <Document
-        file={src}
+        file={encodeURI(src)}
         onLoadSuccess={({ numPages }) => { setNumPages(numPages); setPage(1); }}
+        onLoadError={(error) => console.error("PDF load error:", error)}
         loading={
           <div className="flex items-center justify-center py-16">
             <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] animate-pulse">LOADING PDF...</span>
