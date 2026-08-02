@@ -122,6 +122,13 @@ const COURSES: Course[] = [
   { n: "07", title: "SOC L1 BOOTCAMP", org: "DOJO COMMUNITY" },
   { n: "08", title: "CompTIA Security+ (SY0-701) Cert Prep", org: "LinkedIn Learning" },
   { n: "09", title: "CYBER INCIDENT RESPONSE AND DIGITAL FORENSICS", org: "LINKEDIN LEARNING" },
+  { n: "10", title: "Foundations of Cybersecurity", org: "Google" },
+  { n: "11", title: "Play It Safe: Manage Security Risks", org: "Google" },
+  { n: "12", title: "Connect and Protect: Networks and Network Security", org: "Google" },
+  { n: "13", title: "Tools of the Trade: Linux and SQL", org: "Google" },
+  { n: "14", title: "Assets, Threats, and Vulnerabilities", org: "Google" },
+  { n: "15", title: "Sound the Alarm: Detection and Response", org: "Google" },
+  { n: "16", title: "Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta", org: "Academia de Capacitación en Ciberseguridad" },
 ];
 
 const EMAIL = "sdsandili06@gmail.com";
@@ -819,43 +826,46 @@ function Certs() {
 function Cursos() {
   return (
     <Section id="cursos" number="06" title="Cursos Completados" kicker="LEARNING_LOG">
-      <ol className="border-t border-border-dim">
-        {COURSES.map((c) => (
-          <li
+      {/* Stats row */}
+      <div className="flex items-center gap-6 mb-10 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+        <span>
+          TOTAL{" "}
+          <span className="text-[var(--accent)] font-bold text-sm">{COURSES.length}</span>
+        </span>
+        <span className="h-px flex-1 bg-border-dim" />
+        <Badge variant="success" dot>
+          TODOS COMPLETADOS
+        </Badge>
+      </div>
+
+      {/* Cards grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {COURSES.map((c, idx) => (
+          <motion.div
             key={c.n}
-            className="grid grid-cols-[48px_1fr_auto] gap-6 items-center py-5 border-b border-border-dim group hover:bg-[color-mix(in_oklab,var(--accent)_3%,transparent)] transition-colors px-2 -mx-2"
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.35, delay: (idx % 6) * 0.05, ease: [0.16, 1, 0.3, 1] }}
+            className="group flex flex-col justify-between gap-3 p-5 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/40 hover:bg-[color-mix(in_oklab,var(--accent)_3%,var(--surface))] transition-all duration-200"
           >
-            <span className="font-mono text-[11px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums">
-              {c.n}
-            </span>
-            <div className="min-w-0">
-              <h4 className="font-display font-semibold text-base md:text-lg leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
+            <div className="flex items-start justify-between gap-3">
+              <span className="font-mono text-[10px] tracking-[0.2em] text-[var(--accent)]/60 tabular-nums mt-0.5">
+                {c.n}
+              </span>
+              <span className="size-1.5 bg-[var(--accent-green)] rounded-full mt-1.5 shrink-0" />
+            </div>
+            <div className="flex-1">
+              <h4 className="font-display font-semibold text-[14px] leading-snug tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
                 {c.title}
               </h4>
-              <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mt-1 block">
-                {c.org}
-              </span>
             </div>
-            <Badge variant="success" dot>
-              COMPLETADO
-            </Badge>
-          </li>
+            <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] pt-2 border-t border-border-dim">
+              {c.org}
+            </div>
+          </motion.div>
         ))}
-        <li className="grid grid-cols-[48px_1fr_auto] gap-6 items-center py-5 border-b border-dashed border-[var(--accent)]/30 opacity-60 progress-shimmer px-2 -mx-2">
-          <span className="font-mono text-[11px] tracking-[0.2em] text-[var(--accent)] tabular-nums">10</span>
-          <div className="min-w-0">
-            <h4 className="font-display font-semibold text-base md:text-lg leading-tight tracking-tight text-foreground/70">
-              Curso en proceso
-            </h4>
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mt-1 block">
-              PRÓXIMAMENTE
-            </span>
-          </div>
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">
-            EN PROCESO
-          </span>
-        </li>
-      </ol>
+      </div>
     </Section>
   );
 }
