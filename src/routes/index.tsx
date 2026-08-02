@@ -12,7 +12,9 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
+import pdfWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+
+pdfjs.GlobalWorkerOptions.workerSrc = pdfWorker;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -147,13 +149,14 @@ function PdfViewer({ src }: { src: string }) {
   const [numPages, setNumPages] = useState<number>(0);
   const [page, setPage] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
-  const [width, setWidth] = useState(800);
-  const [hasError, setHasError] = useState(false);
+  const [width, setWidth] = useState<number>(800);
 
   useEffect(() => {
-    setHasError(false);
     const update = () => {
-      if (containerRef.current) setWidth(containerRef.current.clientWidth);
+      if (containerRef.current) {
+        const w = containerRef.current.clientWidth;
+        setWidth(w > 0 ? w : 800);
+      }
     };
     update();
     const ro = new ResizeObserver(update);
@@ -163,26 +166,8 @@ function PdfViewer({ src }: { src: string }) {
 
   const encodedSrc = encodeURI(src);
 
-  if (hasError) {
-    return (
-      <div className="w-full h-[72vh] min-h-[400px] flex flex-col items-center justify-center bg-[#0b1118]">
-        <object
-          data={encodedSrc}
-          type="application/pdf"
-          className="w-full h-full rounded border border-border-dim"
-        >
-          <iframe
-            src={encodedSrc}
-            title="Visor PDF"
-            className="w-full h-full border-0"
-          />
-        </object>
-      </div>
-    );
-  }
-
   return (
-    <div ref={containerRef} className="w-full flex flex-col items-center" style={{ minHeight: 200 }}>
+    <div ref={containerRef} className="w-full flex flex-col items-center justify-center min-h-[300px] py-2">
       <Document
         file={encodedSrc}
         onLoadSuccess={({ numPages }) => {
@@ -190,34 +175,40 @@ function PdfViewer({ src }: { src: string }) {
           setPage(1);
         }}
         onLoadError={(err) => {
-          console.warn("React-PDF error, usando visor nativo de respaldo:", err);
-          setHasError(true);
+          console.error("Error al cargar PDF con React-PDF:", err);
         }}
         loading={
-          <div className="flex items-center justify-center py-16">
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] animate-pulse">
-              CARGANDO PDF...
+          <div className="flex items-center justify-center py-20">
+            <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--accent)] animate-pulse">
+              CARGANDO CERTIFICADO...
             </span>
           </div>
         }
-        error={null}
+        error={
+          <div className="flex items-center justify-center py-20">
+            <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-red-500">
+              ERROR AL CARGAR EL PDF
+            </span>
+          </div>
+        }
       >
         <Page
           pageNumber={page}
-          width={width ? Math.min(width, 900) : 800}
+          width={width}
           renderAnnotationLayer={false}
           renderTextLayer={false}
+          className="shadow-2xl rounded overflow-hidden"
         />
       </Document>
 
       {numPages > 1 && (
-        <div className="flex items-center gap-4 mt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+        <div className="flex items-center gap-4 mt-4 font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
           <button
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             disabled={page <= 1}
-            className="flex items-center justify-center w-7 h-7 border border-border-dim disabled:opacity-30 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+            className="flex items-center justify-center w-8 h-8 border border-border-dim disabled:opacity-30 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors rounded"
           >
-            <ChevronLeft size={14} />
+            <ChevronLeft size={16} />
           </button>
           <span>
             {page} / {numPages}
@@ -225,9 +216,9 @@ function PdfViewer({ src }: { src: string }) {
           <button
             onClick={() => setPage((p) => Math.min(numPages, p + 1))}
             disabled={page >= numPages}
-            className="flex items-center justify-center w-7 h-7 border border-border-dim disabled:opacity-30 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+            className="flex items-center justify-center w-8 h-8 border border-border-dim disabled:opacity-30 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors rounded"
           >
-            <ChevronRight size={14} />
+            <ChevronRight size={16} />
           </button>
         </div>
       )}
