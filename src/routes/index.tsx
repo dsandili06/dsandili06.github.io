@@ -12,10 +12,7 @@ import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/Page/AnnotationLayer.css";
 import "react-pdf/dist/Page/TextLayer.css";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -151,8 +148,10 @@ function PdfViewer({ src }: { src: string }) {
   const [page, setPage] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
   const [width, setWidth] = useState(800);
+  const [hasError, setHasError] = useState(false);
 
   useEffect(() => {
+    setHasError(false);
     const update = () => {
       if (containerRef.current) setWidth(containerRef.current.clientWidth);
     };
@@ -160,28 +159,52 @@ function PdfViewer({ src }: { src: string }) {
     const ro = new ResizeObserver(update);
     if (containerRef.current) ro.observe(containerRef.current);
     return () => ro.disconnect();
-  }, []);
+  }, [src]);
+
+  const encodedSrc = encodeURI(src);
+
+  if (hasError) {
+    return (
+      <div className="w-full h-[72vh] min-h-[400px] flex flex-col items-center justify-center bg-[#0b1118]">
+        <object
+          data={encodedSrc}
+          type="application/pdf"
+          className="w-full h-full rounded border border-border-dim"
+        >
+          <iframe
+            src={encodedSrc}
+            title="Visor PDF"
+            className="w-full h-full border-0"
+          />
+        </object>
+      </div>
+    );
+  }
 
   return (
     <div ref={containerRef} className="w-full flex flex-col items-center" style={{ minHeight: 200 }}>
       <Document
-        file={encodeURI(src)}
-        onLoadSuccess={({ numPages }) => { setNumPages(numPages); setPage(1); }}
-        onLoadError={(error) => console.error("PDF load error:", error)}
+        file={encodedSrc}
+        onLoadSuccess={({ numPages }) => {
+          setNumPages(numPages);
+          setPage(1);
+        }}
+        onLoadError={(err) => {
+          console.warn("React-PDF error, usando visor nativo de respaldo:", err);
+          setHasError(true);
+        }}
         loading={
           <div className="flex items-center justify-center py-16">
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] animate-pulse">LOADING PDF...</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] animate-pulse">
+              CARGANDO PDF...
+            </span>
           </div>
         }
-        error={
-          <div className="flex items-center justify-center py-16">
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-red-500">ERROR AL CARGAR EL PDF</span>
-          </div>
-        }
+        error={null}
       >
         <Page
           pageNumber={page}
-          width={width}
+          width={width ? Math.min(width, 900) : 800}
           renderAnnotationLayer={false}
           renderTextLayer={false}
         />
@@ -196,7 +219,9 @@ function PdfViewer({ src }: { src: string }) {
           >
             <ChevronLeft size={14} />
           </button>
-          <span>{page} / {numPages}</span>
+          <span>
+            {page} / {numPages}
+          </span>
           <button
             onClick={() => setPage((p) => Math.min(numPages, p + 1))}
             disabled={page >= numPages}
