@@ -25,19 +25,19 @@
 }
 
 :root {
-  /* Incident Room palette — Cyber Blue */
-  --background: #060A10;
-  --foreground: #E2E8F0;
-  --surface: #0B1118;
-  --surface-2: #101823;
-  --border-dim: rgba(59, 130, 246, 0.12);
-  --border: rgba(59, 130, 246, 0.12);
-  --accent: #3B82F6;          /* electric blue — primary accent */
+  /* Dark Editorial High-Contrast Palette */
+  --background: #07080A;
+  --foreground: #F8FAFC;
+  --surface: #11141C;
+  --surface-2: #161B26;
+  --border-dim: #1E2430;
+  --border: #1E2430;
+  --accent: #3B82F6;          /* Blue Team Electric Blue */
   --accent-secondary: #60A5FA;
-  --accent-foreground: #060A10;
-  --accent-amber: #3B82F6;
-  --accent-green: #22D3EE;    /* status badges only — cyan */
-  --muted-foreground: #475569;
+  --accent-foreground: #07080A;
+  --accent-amber: #F59E0B;
+  --accent-green: #10B981;    /* Terminal Emerald Green */
+  --muted-foreground: #64748B;
 }
 
 html { scroll-behavior: auto; scroll-padding-top: 64px; }
@@ -102,12 +102,9 @@ html { scroll-behavior: auto; scroll-padding-top: 64px; }
   }
 }
 
-/* Grid background — Incident Room */
+/* Solid background without grid lines */
 @utility grid-bg {
-  background-image:
-    linear-gradient(rgba(59, 130, 246, 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(59, 130, 246, 0.04) 1px, transparent 1px);
-  background-size: 40px 40px;
+  background-color: var(--background);
 }
 
 @utility tactical-corner {
