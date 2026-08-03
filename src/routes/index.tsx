@@ -730,10 +730,12 @@ function Stack() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
         {STACK_GROUPS.map((group) => (
           <div key={group.title}>
-            <h3 className="font-mono uppercase mb-4 pb-3" style={{ color: "#3B82F6", letterSpacing: "0.15em", fontSize: "0.7rem", borderBottom: "1px solid rgba(59,130,246,0.2)" }}>{group.title}</h3>
-            <div className="flex flex-wrap" style={{ gap: 8 }}>
+            <h3 className="font-mono uppercase mb-4 pb-3 text-[var(--accent)] tracking-[0.15em] text-[11px] border-b border-border-dim">{group.title}</h3>
+            <div className="flex flex-wrap gap-2">
               {group.items.map((item) => (
-                <span key={item} className="stack-chip font-mono transition-all duration-150 ease-out cursor-default" style={{ background: "#0B1118", border: "1px solid rgba(59,130,246,0.15)", color: "#E2E8F0", fontSize: "0.72rem", padding: "4px 10px", borderRadius: 3 }}>{item}</span>
+                <span key={item} className="stack-chip font-mono transition-all duration-150 ease-out cursor-default bg-[var(--surface)] border border-border-dim text-[#E2E8F0] text-[11px] px-2.5 py-1 rounded-xs hover:border-[var(--accent)] hover:text-[var(--accent)]">
+                  {item}
+                </span>
               ))}
             </div>
           </div>
@@ -755,7 +757,7 @@ function Certs() {
           const Wrapper: React.ElementType = c.href ? "a" : "div";
           const wrapperProps = c.href ? { href: c.href, target: "_blank", rel: "noreferrer" } : {};
           return (
-            <Wrapper key={c.code} {...wrapperProps} className={`group bg-background p-7 md:p-9 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center transition-colors ${c.href ? "hover:bg-[color-mix(in_oklab,var(--accent)_3%,transparent)]" : ""}`} style={{ borderLeft: `3px solid ${obtained ? accentColor : "color-mix(in oklab, var(--accent) 40%, transparent)"}` }}>
+            <Wrapper key={c.code} {...wrapperProps} className={`group bg-[var(--surface)] p-7 md:p-9 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center transition-colors ${c.href ? "hover:bg-[var(--surface-2)]" : ""}`} style={{ borderLeft: `3px solid ${accentColor}` }}>
               <div>
                 <div className="flex items-center gap-3 mb-4">
                   {obtained ? (<Badge variant="success" dot>{c.badge}</Badge>) : (<span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">{c.badge}</span>)}
@@ -845,41 +847,41 @@ function Contacto() {
   return (
     <section id="contacto" data-reveal className="relative py-24 md:py-32 border-b border-border-dim">
       <div className="mb-14 md:mb-20">
-        <h2 className="font-display font-bold leading-[0.95] tracking-tight" style={{ color: "#3B82F6", fontSize: "clamp(3rem, 7vw, 5.5rem)" }}>CONTACTO</h2>
+        <h2 className="font-display font-bold leading-[0.95] tracking-tight text-[var(--accent)]" style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)" }}>CONTACTO</h2>
         <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">[SECURE_CHANNEL] · Tiempo de respuesta: &lt; 24h</p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
-        <div className="w-full" style={{ background: "#0E1416", border: "1px solid rgba(255,255,255,0.06)", borderRadius: 4, padding: 32 }}>
+        <div className="w-full bg-[var(--surface)] border border-border-dim rounded p-8">
           <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-6">ANALYST STATUS</div>
           <div className="flex items-center gap-3 mb-8">
-            <span className="relative flex items-center justify-center" style={{ width: 16, height: 16 }}>
-              <motion.span className="absolute rounded-full" style={{ width: 16, height: 16, background: "#4DFFB4" }} animate={{ scale: [1, 1.4], opacity: [1, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }} />
-              <span className="relative rounded-full" style={{ width: 10, height: 10, background: "#4DFFB4" }} />
+            <span className="relative flex items-center justify-center size-4">
+              <motion.span className="absolute rounded-full size-4 bg-[var(--accent-green)]" animate={{ scale: [1, 1.4], opacity: [1, 0] }} transition={{ duration: 1.5, repeat: Infinity, ease: "easeOut" }} />
+              <span className="relative rounded-full size-2.5 bg-[var(--accent-green)]" />
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground">DISPONIBLE PARA OPORTUNIDADES</span>
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground font-semibold">DISPONIBLE PARA OPORTUNIDADES</span>
           </div>
           <div className="flex flex-col">
             {meta.map((m) => (
-              <div key={m.k} className="flex items-center justify-between py-4" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+              <div key={m.k} className="flex items-center justify-between py-4 border-t border-border-dim">
                 <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">{m.k}</span>
-                <span className="text-foreground text-sm">{m.v}</span>
+                <span className="text-foreground text-sm font-medium">{m.v}</span>
               </div>
             ))}
           </div>
         </div>
         <div className="flex flex-col gap-3">
           {channels.map((c) => (
-            <a key={c.code} href={c.href} {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})} className="channel-card group block px-6 py-5 transition-all duration-200" style={{ background: "#0E1416", border: "1px solid rgba(255,255,255,0.06)", borderLeft: "2px solid transparent", borderRadius: 4 }}>
+            <a key={c.code} href={c.href} {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})} className="group block px-6 py-5 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)] transition-all duration-200 rounded">
               <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-2">CHANNEL_{c.code} · {c.label}</div>
               <div className="flex items-center justify-between gap-4 flex-wrap">
-                <span className="font-semibold text-base md:text-lg text-foreground break-all">{c.value}</span>
-                <span className="font-mono text-[11px] uppercase tracking-[0.2em] opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "#E8A230" }}>{c.cta}</span>
+                <span className="font-semibold text-base md:text-lg text-foreground group-hover:text-[var(--accent)] transition-colors break-all">{c.value}</span>
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">{c.cta}</span>
               </div>
             </a>
           ))}
         </div>
       </div>
-      <div className="mt-16 pt-6 text-center" style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
+      <div className="mt-16 pt-6 text-center border-t border-border-dim">
         <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">© 2026 Santiago Daniel Sandili · Construido con criterio técnico</span>
       </div>
     </section>
