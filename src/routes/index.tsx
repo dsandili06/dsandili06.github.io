@@ -320,7 +320,7 @@ function Nav() {
   }, [menuOpen]);
 
   return (
-    <nav className="sticky top-0 z-50 bg-[color-mix(in_oklab,var(--background)_88%,transparent)] backdrop-blur-[12px] border-b border-border-dim">
+    <nav className="sticky top-0 z-50 bg-[#07080A] border-b border-border-dim">
       <div className="max-w-7xl mx-auto px-6 md:px-10 h-14 sm:h-16 flex items-center justify-between">
         <a
           href="#top"
@@ -346,7 +346,7 @@ function Nav() {
           {menuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
         </button>
       </div>
-      <div className={`md:hidden overflow-hidden border-t border-border-dim bg-background/95 backdrop-blur-md transition-[max-height,opacity] duration-300 ${menuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}>
+      <div className={`md:hidden overflow-hidden border-t border-border-dim bg-[#07080A] transition-[max-height,opacity] duration-300 ${menuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}>
         <ul className="flex flex-col px-6 py-2 font-mono text-xs uppercase tracking-[0.2em]">
           {links.map((l) => (
             <li key={l.href}>
