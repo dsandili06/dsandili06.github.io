@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Menu, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Badge } from "@/components/ui/badge";
@@ -144,7 +145,7 @@ function CertModal({ cert, title, onClose }: { cert: string; title: string; onCl
     };
   }, [onClose]);
 
-  return (
+  return createPortal(
     <AnimatePresence>
       <motion.div
         key="cert-modal-backdrop"
@@ -152,7 +153,7 @@ function CertModal({ cert, title, onClose }: { cert: string; title: string; onCl
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="fixed inset-0 z-[200] flex flex-col items-center justify-center p-4 md:p-8"
+        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 md:p-8"
         style={{ background: "rgba(0,0,0,0.88)", backdropFilter: "blur(8px)" }}
         onClick={onClose}
       >
@@ -210,7 +211,8 @@ function CertModal({ cert, title, onClose }: { cert: string; title: string; onCl
           </div>
         </motion.div>
       </motion.div>
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 
