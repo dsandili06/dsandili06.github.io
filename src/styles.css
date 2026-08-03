@@ -25,19 +25,19 @@
 }
 
 :root {
-  /* Dark Editorial High-Contrast Palette */
-  --background: #07080A;
-  --foreground: #F8FAFC;
-  --surface: #11141C;
-  --surface-2: #161B26;
-  --border-dim: #1E2430;
-  --border: #1E2430;
-  --accent: #3B82F6;          /* Blue Team Electric Blue */
+  /* Cyber Blue / Incident Room Palette */
+  --background: #060A10;
+  --foreground: #E2E8F0;
+  --surface: #0B1118;
+  --surface-2: #101823;
+  --border-dim: rgba(59, 130, 246, 0.15);
+  --border: rgba(59, 130, 246, 0.15);
+  --accent: #3B82F6;          /* Electric Blue — primary accent */
   --accent-secondary: #60A5FA;
-  --accent-foreground: #07080A;
+  --accent-foreground: #060A10;
   --accent-amber: #F59E0B;
-  --accent-green: #10B981;    /* Terminal Emerald Green */
-  --muted-foreground: #64748B;
+  --accent-green: #22D3EE;    /* Cyan Status Badges */
+  --muted-foreground: #475569;
 }
 
 html { scroll-behavior: auto; scroll-padding-top: 64px; }

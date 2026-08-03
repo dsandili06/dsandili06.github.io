@@ -500,8 +500,6 @@ function Proyectos() {
 
 /* ---------- Investigaciones ---------- */
 
-/* ---------- Investigaciones ---------- */
-
 function Investigaciones() {
   const [viewMode, setViewMode] = useState<"carousel" | "table">("carousel");
 
