@@ -77,7 +77,7 @@ const PROJECTS: Project[] = [
     id: "01",
     title: "Artifakt Labs",
     description:
-      "Compilado de laboratorios prácticos de SOC: investigación de incidentes, análisis de alertas, detección de TTPs y ejercicios de threat hunting sobre entornos simulados.",
+      "Repositorio de laboratorios prácticos de SOC que reúne investigaciones de incidentes, análisis de alertas, detección de TTPs y ejercicios de threat hunting sobre entornos simulados.",
     href: "https://github.com/dsandili06/Artifakt-Labs",
     label: "LABS_SOC.REPO",
   },
@@ -85,7 +85,7 @@ const PROJECTS: Project[] = [
     id: "02",
     title: "Blue Team Automation Scripts",
     description:
-      "Repositorio de scripts orientados a tareas operativas de SOC y DFIR. La idea es ir documentando utilidades que me sirvan para triage, parsing, recolección de evidencia y automatización de tareas repetitivas.",
+      "Colección de scripts para tareas operativas de SOC y DFIR, con utilidades para triage, parsing, recolección de evidencia y automatización de tareas repetitivas.",
     href: "https://github.com/dsandili06/blueteam-scripts",
     label: "AUTOMATION_BT.REPO",
   },
@@ -111,6 +111,10 @@ const INVESTIGATIONS: Investigation[] = [
   { id: "LAB_014", title: "TheCrime", platform: "CyberDefenders", summary: "Análisis forense de dispositivo Android para investigar un crimen. Recuperación de evidencia borrada, análisis de metadatos de archivos y reconstrucción de actividad del usuario mediante artefactos.", categories: ["Android Forensics"], href: CD_BASE + "TheCrime.md" },
   { id: "LAB_015", title: "WebStrike", platform: "CyberDefenders", summary: "Análisis de captura de tráfico HTTP tras ataque a aplicación web. Detección de file upload malicioso, despliegue de webshell PHP y extracción de IOCs desde logs de servidor.", categories: ["Network Forensics"], href: CD_BASE + "WebStrike.md" },
 ];
+
+const FEATURED_INVESTIGATIONS = ["LAB_001", "LAB_012", "LAB_003"]
+  .map((id) => INVESTIGATIONS.find((i) => i.id === id))
+  .filter((i): i is Investigation => Boolean(i));
 
 const STACK: { category: string; items: string[] }[] = [
   { category: "Forense & Triage", items: ["Zimmerman Tools", "Autopsy", "Volatility 3", "FTK Imager", "Velociraptor", "Timeline Explorer", "DB Browser (SQLite)"] },
@@ -166,13 +170,16 @@ function CertModal({ cert, title, onClose }: { cert: string; title: string; onCl
           transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
           className="relative w-full max-w-4xl flex flex-col"
           style={{ maxHeight: "90dvh" }}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="certificate-title"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="flex items-center justify-between mb-3">
             <div>
               <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">CERTIFICADO</span>
-              <h3 className="font-display font-semibold text-base text-foreground leading-snug mt-0.5">{title}</h3>
+              <h3 id="certificate-title" className="font-display font-semibold text-base text-foreground leading-snug mt-0.5">{title}</h3>
             </div>
             <button
               onClick={onClose}
@@ -365,7 +372,6 @@ function Nav() {
 /* ---------- Hero ---------- */
 
 function Hero() {
-  const [bootDone, setBootDone] = useState(false);
   return (
     <section id="top" className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden border-b border-border-dim grid-bg">
       <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden>
@@ -386,17 +392,17 @@ function Hero() {
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 flex-1 grid grid-cols-1 md:grid-cols-[1fr_minmax(0,440px)] gap-10 md:gap-12 items-center py-12">
         <div className="flex flex-col">
           <div className="mb-8 min-h-[5.5rem]">
-            <BootSequence onDone={() => setBootDone(true)} />
+            <BootSequence />
           </div>
-          <motion.h1 initial={{ opacity: 0, y: 24 }} animate={{ opacity: bootDone ? 1 : 0, y: bootDone ? 0 : 24 }} transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold leading-[0.88] tracking-[-0.025em] text-foreground" style={{ fontSize: "clamp(3.5rem, 8vw, 9rem)" }}>
+          <motion.h1 initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }} className="font-display font-bold leading-[0.88] tracking-[-0.025em] text-foreground" style={{ fontSize: "clamp(3.5rem, 8vw, 9rem)" }}>
             <span className="text-[var(--accent)]">Santiago</span><br />Sandili
           </motion.h1>
-          <motion.p initial={{ opacity: 0 }} animate={{ opacity: bootDone ? 1 : 0 }} transition={{ delay: 0.4, duration: 0.6 }} className="mt-8 font-mono text-xs md:text-sm uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+          <motion.p initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15, duration: 0.5 }} className="mt-8 font-mono text-xs md:text-sm uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
             SOC Analyst Jr. <span className="text-foreground/60">·</span> Blue Team <span className="text-foreground/60">·</span> DFIR
           </motion.p>
         </div>
         <div className="hidden md:block">
-          <TerminalWindow start={bootDone} />
+          <TerminalWindow start />
         </div>
       </div>
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pb-10 flex items-end justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] gap-6 flex-wrap">
@@ -532,11 +538,55 @@ function Investigaciones() {
 
   return (
     <Section id="investigaciones" number="03" title="Investigaciones" kicker="CASE_LOG">
+      <div className="mb-14 md:mb-16">
+        <div className="flex items-center gap-4 mb-5">
+          <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">FEATURED_CASES</span>
+          <span className="h-px flex-1 bg-border-dim" />
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">HANDPICKED // 03</span>
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          {FEATURED_INVESTIGATIONS.map((i, idx) => (
+            <a
+              key={i.id}
+              href={i.href}
+              target="_blank"
+              rel="noreferrer"
+              className="group flex flex-col justify-between min-h-[270px] p-6 bg-[var(--surface)] border border-[var(--accent)]/30 hover:border-[var(--accent)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] transition-all duration-200"
+            >
+              <div>
+                <div className="flex items-center justify-between gap-3 mb-5">
+                  <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold">SPOTLIGHT_0{idx + 1}</span>
+                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)]">{i.id}</span>
+                </div>
+                <h3 className="font-display font-bold text-2xl leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors mb-3">{i.title}</h3>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {i.categories.map((c) => (
+                    <span key={c} className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-border-dim text-foreground/70">{c}</span>
+                  ))}
+                </div>
+                <p className="text-sm text-foreground/70 leading-relaxed">{i.summary}</p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
+                <span className="text-[var(--muted-foreground)]">{i.platform}</span>
+                <span className="text-[var(--accent)] group-hover:translate-x-1 transition-transform">VER WRITEUP →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 mb-8">
+        <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)]">FULL_CASE_LOG</span>
+        <span className="h-px flex-1 bg-border-dim" />
+      </div>
+
       {/* Top Bar / Controls */}
       <div className="flex items-center justify-between mb-8 flex-wrap gap-4">
         <div className="flex items-center gap-2 border border-border-dim p-1 bg-[var(--surface)]">
           <button
+            type="button"
             onClick={() => setViewMode("carousel")}
+            aria-pressed={viewMode === "carousel"}
             className={`flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
               viewMode === "carousel"
                 ? "bg-[var(--accent)] text-[var(--accent-foreground)] font-bold"
@@ -547,7 +597,9 @@ function Investigaciones() {
             <span>Carrusel</span>
           </button>
           <button
+            type="button"
             onClick={() => setViewMode("table")}
+            aria-pressed={viewMode === "table"}
             className={`flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
               viewMode === "table"
                 ? "bg-[var(--accent)] text-[var(--accent-foreground)] font-bold"
@@ -566,6 +618,7 @@ function Investigaciones() {
             </span>
             <div className="flex items-center gap-2">
               <button
+                type="button"
                 onClick={scrollPrev}
                 disabled={!canScrollPrev}
                 aria-label="Anterior"
@@ -574,6 +627,7 @@ function Investigaciones() {
                 <ChevronLeft size={16} />
               </button>
               <button
+                type="button"
                 onClick={scrollNext}
                 disabled={!canScrollNext}
                 aria-label="Siguiente"
@@ -805,7 +859,16 @@ function Cursos() {
               viewport={{ once: true, amount: 0.1 }}
               transition={{ duration: 0.35, delay: (idx % 6) * 0.05, ease: [0.16, 1, 0.3, 1] }}
               onClick={hasCert ? () => setActiveCert({ cert: c.cert!, title: c.title }) : undefined}
-              className={`group flex flex-col justify-between gap-3 p-5 bg-[var(--surface)] border border-border-dim transition-all duration-200 ${hasCert ? "cursor-pointer hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))]" : "opacity-70"}`}
+              role={hasCert ? "button" : undefined}
+              tabIndex={hasCert ? 0 : undefined}
+              onKeyDown={hasCert ? (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  setActiveCert({ cert: c.cert!, title: c.title });
+                }
+              } : undefined}
+              aria-label={hasCert ? `Ver certificado: ${c.title}` : `${c.title}, certificado pendiente`}
+              className={`group flex w-full flex-col justify-between gap-3 p-5 text-left bg-[var(--surface)] border border-border-dim transition-all duration-200 ${hasCert ? "cursor-pointer hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))]" : "opacity-70 cursor-default"}`}
             >
               <div className="flex items-start justify-between gap-3">
                 <span className="font-mono text-[10px] tracking-[0.2em] text-[var(--accent)]/60 tabular-nums mt-0.5">{c.n}</span>
