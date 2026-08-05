@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Menu, X, ChevronLeft, ChevronRight, LayoutGrid, Table } from "lucide-react";
+import { Menu, X, ChevronLeft, ChevronRight, ChevronDown, LayoutGrid, Table } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { motion, AnimatePresence } from "motion/react";
 import { Badge } from "@/components/ui/badge";
@@ -31,6 +31,15 @@ const COURSES: Course[] = [
   { n: "18", title: "NSE 2 Network Security Associate",                         org: "Fortinet",                                cert: "/certs/Fortinet NSE 2 Certified in Cybersecurity.png" },
 ];
 
+const COURSE_GROUPS = COURSES.reduce<{ org: string; courses: Course[] }[]>((groups, course) => {
+  const group = groups.find((item) => item.org === course.org);
+  if (group) {
+    group.courses.push(course);
+  } else {
+    groups.push({ org: course.org, courses: [course] });
+  }
+  return groups;
+}, []);
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -838,17 +847,47 @@ function Certs() {
 
 /* ---------- Cursos ---------- */
 
+function CourseRow({ course, onOpen, index }: { course: Course; onOpen: (course: Course) => void; index: number }) {
+  const hasCert = Boolean(course.cert);
+
+  return (
+    <motion.button
+      type="button"
+      initial={{ opacity: 0, y: 8 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.25, delay: index * 0.035, ease: [0.16, 1, 0.3, 1] }}
+      onClick={hasCert ? () => onOpen(course) : undefined}
+      disabled={!hasCert}
+      aria-label={hasCert ? `Ver certificado: ${course.title}` : `${course.title}, certificado pendiente`}
+      className={`group/row flex w-full items-center gap-3 border-t border-border-dim py-3 text-left first:border-t-0 ${hasCert ? "cursor-pointer" : "cursor-default opacity-60"}`}
+    >
+      <span className="w-6 shrink-0 font-mono text-[10px] tracking-[0.16em] text-[var(--accent)]/60 tabular-nums">{course.n}</span>
+      <span className={`min-w-0 flex-1 text-[13px] font-medium leading-snug ${hasCert ? "text-foreground group-hover/row:text-[var(--accent)]" : "text-foreground/60"}`}>
+        {course.title}
+      </span>
+      <span className="hidden max-w-[28%] truncate font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted-foreground)] sm:block">{course.org}</span>
+      {hasCert && <ChevronRight size={14} className="shrink-0 text-[var(--accent)] opacity-40 transition-all group-hover/row:translate-x-0.5 group-hover/row:opacity-100" />}
+    </motion.button>
+  );
+}
+
 function Cursos() {
   const [activeCert, setActiveCert] = useState<{ cert: string; title: string } | null>(null);
+  const openCertificate = (course: Course) => {
+    if (course.cert) setActiveCert({ cert: course.cert, title: course.title });
+  };
 
   return (
     <Section id="cursos" number="06" title="Cursos Completados" kicker="LEARNING_LOG">
-      <div className="flex items-center gap-6 mb-10 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+      <div className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] md:mb-10">
         <span>TOTAL <span className="text-[var(--accent)] font-bold text-sm">{COURSES.length}</span></span>
-        <span className="h-px flex-1 bg-border-dim" />
+        <span>INSTITUCIONES <span className="text-[var(--accent)] font-bold text-sm">{COURSE_GROUPS.length}</span></span>
+        <span className="hidden h-px min-w-10 flex-1 bg-border-dim sm:block" />
         <Badge variant="success" dot>TODOS COMPLETADOS</Badge>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+
+      <div className="hidden gap-3 md:grid md:grid-cols-2 lg:grid-cols-3">
         {COURSES.map((c, idx) => {
           const hasCert = Boolean(c.cert);
           return (
@@ -885,6 +924,30 @@ function Cursos() {
           );
         })}
       </div>
+
+      <div className="md:hidden">
+        <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+          Seleccioná una institución para ver sus certificados
+        </p>
+        <div className="border border-border-dim bg-[var(--surface)]">
+          {COURSE_GROUPS.map((group) => (
+            <details key={group.org} className="group border-b border-border-dim last:border-b-0">
+              <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-4 [&::-webkit-details-marker]:hidden">
+                <span className="size-1.5 shrink-0 rounded-full bg-[var(--accent-green)]" />
+                <span className="min-w-0 flex-1 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground">{group.org}</span>
+                <span className="font-mono text-[10px] text-[var(--muted-foreground)]">{String(group.courses.length).padStart(2, "0")}</span>
+                <ChevronDown size={15} className="shrink-0 text-[var(--muted-foreground)] transition-transform group-open:rotate-180" />
+              </summary>
+              <div className="px-4 pb-3">
+                {group.courses.map((course, index) => (
+                  <CourseRow key={course.n} course={course} onOpen={openCertificate} index={index} />
+                ))}
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
       {activeCert && (
         <CertModal cert={activeCert.cert} title={activeCert.title} onClose={() => setActiveCert(null)} />
       )}
