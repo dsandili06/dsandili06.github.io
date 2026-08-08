@@ -38,6 +38,9 @@ export function ParticlesBg({
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    // Respect prefers-reduced-motion — render static frame without animation loop
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     // alive flag — when cleanup runs this flips to false and the rAF loop stops itself
     let alive = true;
 
@@ -96,7 +99,10 @@ export function ParticlesBg({
         }
       }
 
-      requestAnimationFrame(draw);
+      // If user prefers reduced motion, render one static frame and stop the loop
+      if (!prefersReduced) {
+        requestAnimationFrame(draw);
+      }
     };
 
     // defer one frame so the wrapper has layout dimensions
@@ -118,15 +124,12 @@ export function ParticlesBg({
       alive = false;
       ro.disconnect();
     };
-  // props are stable primitives — safe to list all
+    // props are stable primitives — safe to list all
   }, [count, connectionDistance, particleColor, lineColor, maxOpacity, maxLineOpacity, speed]);
 
   return (
     <div ref={wrapperRef} className="absolute inset-0 w-full h-full">
-      <canvas
-        ref={canvasRef}
-        style={{ display: "block", width: "100%", height: "100%" }}
-      />
+      <canvas ref={canvasRef} style={{ display: "block", width: "100%", height: "100%" }} />
     </div>
   );
 }

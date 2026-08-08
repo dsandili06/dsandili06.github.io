@@ -33,10 +33,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
     }
     const full = LINES[lineIdx].text;
     if (current.length < full.length) {
-      const t = setTimeout(
-        () => setCurrent(full.slice(0, current.length + 1)),
-        CHAR_MS,
-      );
+      const t = setTimeout(() => setCurrent(full.slice(0, current.length + 1)), CHAR_MS);
       return () => clearTimeout(t);
     }
     const t = setTimeout(() => {
