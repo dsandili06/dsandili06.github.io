@@ -249,12 +249,73 @@ html.lenis body {
   overflow: hidden;
 }
 
+/* Custom scrollbar — theme-aware */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: color-mix(in oklab, var(--accent) 30%, var(--surface));
+  border: 2px solid var(--background);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in oklab, var(--accent) 55%, var(--surface));
+}
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--accent) 30%, var(--surface)) var(--background);
+}
+
+/* Glitch effect — RGB split, fires briefly every 8s */
+@keyframes glitch-shadow {
+  0%,
+  92%,
+  100% {
+    text-shadow: none;
+    transform: translate(0);
+  }
+  93% {
+    text-shadow:
+      -3px 0 var(--accent-green),
+      3px 0 var(--accent-amber);
+    transform: translateX(2px);
+  }
+  94% {
+    text-shadow:
+      3px 0 var(--accent-green),
+      -3px 0 var(--accent-amber);
+    transform: translateX(-2px);
+  }
+  95% {
+    text-shadow:
+      -2px 0 var(--accent-green),
+      2px 0 var(--accent-amber);
+    transform: translate(1px, -1px);
+  }
+  96% {
+    text-shadow: none;
+    transform: translate(0);
+  }
+}
+
+.glitch {
+  animation: glitch-shadow 8s linear infinite;
+  will-change: text-shadow;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scanline {
     animation: none !important;
   }
   .animate-marquee,
   [class*="marquee"] {
+    animation: none !important;
+  }
+  .glitch {
     animation: none !important;
   }
   html {

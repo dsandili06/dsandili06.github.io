@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 
 type SectionProps = {
   id: string;
@@ -24,15 +26,25 @@ type SectionHeaderProps = {
 };
 
 export function SectionHeader({ number, title, kicker }: SectionHeaderProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const prefersReduced = useReducedMotion();
+
+  // Parallax — the giant background number drifts slower than the scroll
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start end", "end start"],
+  });
+  const y = useTransform(scrollYProgress, [0, 1], prefersReduced ? [0, 0] : [48, -48]);
+
   return (
-    <div className="relative mb-14 md:mb-20">
-      <span
+    <div ref={ref} className="relative mb-14 md:mb-20">
+      <motion.span
         aria-hidden
         className="absolute -top-6 md:-top-10 -left-2 md:-left-6 font-display font-bold leading-none text-[var(--surface)] select-none pointer-events-none"
-        style={{ fontSize: "clamp(5rem, 14vw, 12rem)" }}
+        style={{ fontSize: "clamp(5rem, 14vw, 12rem)", y }}
       >
         {number}
-      </span>
+      </motion.span>
       <div className="relative flex items-end justify-between gap-6 pb-5 border-b border-border-dim">
         <div>
           <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-3">

@@ -10,6 +10,7 @@ import { Footer } from "@/components/sections/Footer";
 import { useRevealOnView } from "@/hooks/useRevealOnView";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { MatrixRain } from "@/components/fx/MatrixRain";
+import { ScrollProgress } from "@/components/fx/ScrollProgress";
 
 // Lazy load below-the-fold sections for better initial load performance
 const Investigaciones = lazy(() =>
@@ -63,6 +64,7 @@ function Portfolio() {
         >
           Saltar al contenido
         </a>
+        <ScrollProgress />
         <Nav />
         <main id="main-content">
           <Hero />

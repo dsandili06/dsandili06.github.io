@@ -2,6 +2,7 @@ import { motion } from "motion/react";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
 import { ParticlesBg } from "@/components/fx/ParticlesBg";
+import { TextScramble } from "@/components/fx/TextScramble";
 
 export function Hero() {
   return (
@@ -65,12 +66,14 @@ export function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display font-bold leading-[0.88] tracking-[-0.025em] text-foreground"
+            className="glitch font-display font-bold leading-[0.88] tracking-[-0.025em] text-foreground"
             style={{ fontSize: "clamp(3.5rem, 8vw, 9rem)" }}
           >
-            <span className="text-[var(--accent)]">Santiago</span>
+            <span className="text-[var(--accent)]">
+              <TextScramble text="Santiago" />
+            </span>
             <br />
-            Sandili
+            <TextScramble text="Sandili" />
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 8 }}
