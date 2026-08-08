@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 const KONAMI_CODE = [
   "ArrowUp",
@@ -14,8 +14,14 @@ const KONAMI_CODE = [
 ];
 
 export function useKonamiCode(onActivate: () => void) {
-  const [keys, setKeys] = useState<string[]>([]);
+  const keysRef = useRef<string[]>([]);
   const activatedRef = useRef(false);
+  const onActivateRef = useRef(onActivate);
+
+  // Keep the callback ref updated without re-creating the listener
+  useEffect(() => {
+    onActivateRef.current = onActivate;
+  }, [onActivate]);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -27,8 +33,8 @@ export function useKonamiCode(onActivate: () => void) {
         return;
       }
 
-      const newKeys = [...keys, e.key].slice(-KONAMI_CODE.length);
-      setKeys(newKeys);
+      const newKeys = [...keysRef.current, e.key].slice(-KONAMI_CODE.length);
+      keysRef.current = newKeys;
 
       if (
         newKeys.length === KONAMI_CODE.length &&
@@ -36,11 +42,11 @@ export function useKonamiCode(onActivate: () => void) {
       ) {
         if (!activatedRef.current) {
           activatedRef.current = true;
-          onActivate();
+          onActivateRef.current();
           // Reset after activation
           setTimeout(() => {
             activatedRef.current = false;
-            setKeys([]);
+            keysRef.current = [];
           }, 100);
         }
       }
@@ -48,7 +54,5 @@ export function useKonamiCode(onActivate: () => void) {
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [keys, onActivate]);
-
-  return keys;
+  }, []); // Empty deps — listener is stable, no re-creation on keystroke
 }
