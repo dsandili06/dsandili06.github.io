@@ -1,17 +1,28 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense, useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LenisProvider } from "@/components/fx/LenisProvider";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
 import { Proyectos } from "@/components/sections/Proyectos";
-import { Investigaciones } from "@/components/sections/Investigaciones";
-import { Stack } from "@/components/sections/Stack";
-import { Certs } from "@/components/sections/Certs";
-import { Cursos } from "@/components/sections/Cursos";
-import { Contacto } from "@/components/sections/Contacto";
 import { Footer } from "@/components/sections/Footer";
 import { useRevealOnView } from "@/hooks/useRevealOnView";
+import { useKonamiCode } from "@/hooks/useKonamiCode";
+import { MatrixRain } from "@/components/fx/MatrixRain";
+
+// Lazy load below-the-fold sections for better initial load performance
+const Investigaciones = lazy(() =>
+  import("@/components/sections/Investigaciones").then((m) => ({ default: m.Investigaciones })),
+);
+const Stack = lazy(() => import("@/components/sections/Stack").then((m) => ({ default: m.Stack })));
+const Certs = lazy(() => import("@/components/sections/Certs").then((m) => ({ default: m.Certs })));
+const Cursos = lazy(() =>
+  import("@/components/sections/Cursos").then((m) => ({ default: m.Cursos })),
+);
+const Contacto = lazy(() =>
+  import("@/components/sections/Contacto").then((m) => ({ default: m.Contacto })),
+);
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -37,6 +48,10 @@ export const Route = createFileRoute("/")({
 
 function Portfolio() {
   useRevealOnView();
+  const [matrixActive, setMatrixActive] = useState(false);
+
+  useKonamiCode(() => setMatrixActive(true));
+
   return (
     <TooltipProvider delayDuration={150}>
       <LenisProvider />
@@ -54,15 +69,44 @@ function Portfolio() {
           <div className="max-w-7xl mx-auto px-6 md:px-10">
             <About />
             <Proyectos />
-            <Investigaciones />
-            <Stack />
-            <Certs />
-            <Cursos />
-            <Contacto />
+            <Suspense fallback={<SectionSkeleton />}>
+              <Investigaciones />
+            </Suspense>
+            <Suspense fallback={<SectionSkeleton />}>
+              <Stack />
+            </Suspense>
+            <Suspense fallback={<SectionSkeleton />}>
+              <Certs />
+            </Suspense>
+            <Suspense fallback={<SectionSkeleton />}>
+              <Cursos />
+            </Suspense>
+            <Suspense fallback={<SectionSkeleton />}>
+              <Contacto />
+            </Suspense>
           </div>
         </main>
         <Footer />
+        <MatrixRain active={matrixActive} onClose={() => setMatrixActive(false)} />
       </div>
     </TooltipProvider>
+  );
+}
+
+/* ---------- Suspense fallback ---------- */
+
+function SectionSkeleton() {
+  return (
+    <div className="py-24 md:py-32 border-b border-border-dim">
+      <div className="mb-14 md:mb-20">
+        <div className="h-8 w-32 bg-[var(--surface)] rounded animate-pulse" />
+        <div className="mt-3 h-12 w-64 bg-[var(--surface)] rounded animate-pulse" />
+      </div>
+      <div className="space-y-4">
+        <div className="h-24 bg-[var(--surface)] rounded animate-pulse" />
+        <div className="h-24 bg-[var(--surface)] rounded animate-pulse" />
+        <div className="h-24 bg-[var(--surface)] rounded animate-pulse" />
+      </div>
+    </div>
   );
 }

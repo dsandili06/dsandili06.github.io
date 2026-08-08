@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3B82F6;stop-opacity:0.15" />
+      <stop offset="100%" style="stop-color:#060A10;stop-opacity:0" />
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M 48 0 L 0 0 0 48" fill="none" stroke="#3B82F6" stroke-width="0.5" opacity="0.06"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#060A10"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Scanline accent -->
+  <rect x="0" y="315" width="1200" height="1" fill="#3B82F6" opacity="0.3"/>
+
+  <!-- Content -->
+  <g transform="translate(100, 200)">
+    <!-- Terminal prompt -->
+    <text x="0" y="0" font-family="JetBrains Mono, monospace" font-size="18" fill="#475569">
+      [artif4kt@analyst ~]$
+    </text>
+
+    <!-- Name -->
+    <text x="0" y="80" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="72" fill="#E2E8F0">
+      Santiago <tspan fill="#3B82F6">Sandili</tspan>
+    </text>
+
+    <!-- Title -->
+    <text x="0" y="140" font-family="JetBrains Mono, monospace" font-size="24" fill="#475569" letter-spacing="4">
+      SOC ANALYST JR. · BLUE TEAM · DFIR
+    </text>
+
+    <!-- Status badges -->
+    <g transform="translate(0, 180)">
+      <rect x="0" y="0" width="140" height="28" fill="none" stroke="#22D3EE" stroke-width="1" opacity="0.5"/>
+      <circle cx="14" cy="14" r="4" fill="#22D3EE"/>
+      <text x="28" y="19" font-family="JetBrains Mono, monospace" font-size="12" fill="#22D3EE">ACTIVE_SESSION</text>
+
+      <rect x="160" y="0" width="110" height="28" fill="none" stroke="#22D3EE" stroke-width="1" opacity="0.5"/>
+      <circle cx="174" cy="14" r="4" fill="#22D3EE"/>
+      <text x="188" y="19" font-family="JetBrains Mono, monospace" font-size="12" fill="#22D3EE">AVAILABLE</text>
+    </g>
+  </g>
+
+  <!-- Bottom accent line -->
+  <rect x="100" y="530" width="200" height="2" fill="#3B82F6"/>
+</svg>
