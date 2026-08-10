@@ -43,7 +43,6 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
 export function Cursos() {
   const [activeCert, setActiveCert] = useState<{ cert: string; title: string } | null>(null);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState(COURSE_GROUPS[0]?.org ?? "");
   const openCertificate = (course: Course) => {
     if (course.cert) setActiveCert({ cert: course.cert, title: course.title });
   };
@@ -64,47 +63,8 @@ export function Cursos() {
         </Badge>
       </div>
 
-      {/* Desktop — tabs por institución */}
-      <div className="hidden md:block">
-        {/* Tab buttons */}
-        <div className="flex flex-wrap gap-2 mb-6 border-b border-border-dim pb-3">
-          {COURSE_GROUPS.map((group) => {
-            const isActive = activeTab === group.org;
-            return (
-              <button
-                key={group.org}
-                type="button"
-                onClick={() => setActiveTab(group.org)}
-                aria-pressed={isActive}
-                className={`flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors border ${
-                  isActive
-                    ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] font-bold"
-                    : "border-border-dim text-[var(--muted-foreground)] hover:text-foreground hover:border-[var(--accent)]/40"
-                }`}
-              >
-                <span>{group.org}</span>
-                <span
-                  className={`text-[9px] ${isActive ? "text-[var(--accent)]" : "text-[var(--muted-foreground)]"}`}
-                >
-                  {String(group.courses.length).padStart(2, "0")}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {/* Tab content — lista de cursos de la institución activa */}
-        <div className="border border-border-dim bg-[var(--surface)]">
-          {COURSE_GROUPS.filter((g) => g.org === activeTab).map((group) =>
-            group.courses.map((course) => (
-              <CourseRow key={course.n} course={course} onOpen={openCertificate} />
-            )),
-          )}
-        </div>
-      </div>
-
-      {/* Mobile — single-open accordion with smooth height animation */}
-      <div className="md:hidden">
+      {/* Accordion — single-open, visible en todas las resoluciones */}
+      <div>
         <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
           Seleccioná una institución para ver sus certificados
         </p>
