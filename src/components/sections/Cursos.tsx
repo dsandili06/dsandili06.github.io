@@ -7,24 +7,12 @@ import { CertModal } from "@/components/CertModal";
 import { COURSES, COURSE_GROUPS } from "@/data/courses";
 import type { Course } from "@/types";
 
-function CourseRow({
-  course,
-  onOpen,
-  index,
-}: {
-  course: Course;
-  onOpen: (course: Course) => void;
-  index: number;
-}) {
+function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course) => void }) {
   const hasCert = Boolean(course.cert);
 
   return (
-    <motion.button
+    <button
       type="button"
-      initial={{ opacity: 0, y: 8 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{ duration: 0.25, delay: index * 0.035, ease: [0.16, 1, 0.3, 1] }}
       onClick={hasCert ? () => onOpen(course) : undefined}
       disabled={!hasCert}
       aria-label={
@@ -49,12 +37,13 @@ function CourseRow({
           className="shrink-0 text-[var(--accent)] opacity-40 transition-all group-hover/row:translate-x-0.5 group-hover/row:opacity-100"
         />
       )}
-    </motion.button>
+    </button>
   );
 }
 
 export function Cursos() {
   const [activeCert, setActiveCert] = useState<{ cert: string; title: string } | null>(null);
+  const [openGroup, setOpenGroup] = useState<string | null>(null);
   const openCertificate = (course: Course) => {
     if (course.cert) setActiveCert({ cert: course.cert, title: course.title });
   };
@@ -75,6 +64,7 @@ export function Cursos() {
         </Badge>
       </div>
 
+      {/* Desktop grid — unchanged */}
       <div className="hidden gap-3 md:grid md:grid-cols-2 lg:grid-cols-3">
         {COURSES.map((c, idx) => {
           const hasCert = Boolean(c.cert);
@@ -133,38 +123,52 @@ export function Cursos() {
         })}
       </div>
 
+      {/* Mobile — single-open accordion with smooth height animation */}
       <div className="md:hidden">
         <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
           Seleccioná una institución para ver sus certificados
         </p>
         <div className="border border-border-dim bg-[var(--surface)]">
-          {COURSE_GROUPS.map((group) => (
-            <details key={group.org} className="group border-b border-border-dim last:border-b-0">
-              <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-4 [&::-webkit-details-marker]:hidden">
-                <span className="size-1.5 shrink-0 rounded-full bg-[var(--accent-green)]" />
-                <span className="min-w-0 flex-1 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground">
-                  {group.org}
-                </span>
-                <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
-                  {String(group.courses.length).padStart(2, "0")}
-                </span>
-                <ChevronDown
-                  size={15}
-                  className="shrink-0 text-[var(--muted-foreground)] transition-transform group-open:rotate-180"
-                />
-              </summary>
-              <div className="px-4 pb-3">
-                {group.courses.map((course, index) => (
-                  <CourseRow
-                    key={course.n}
-                    course={course}
-                    onOpen={openCertificate}
-                    index={index}
+          {COURSE_GROUPS.map((group) => {
+            const isOpen = openGroup === group.org;
+            return (
+              <div key={group.org} className="border-b border-border-dim last:border-b-0">
+                <button
+                  type="button"
+                  onClick={() => setOpenGroup(isOpen ? null : group.org)}
+                  aria-expanded={isOpen}
+                  className="flex w-full cursor-pointer items-center gap-3 px-4 py-4 text-left"
+                >
+                  <span className="size-1.5 shrink-0 rounded-full bg-[var(--accent-green)]" />
+                  <span className="min-w-0 flex-1 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground">
+                    {group.org}
+                  </span>
+                  <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
+                    {String(group.courses.length).padStart(2, "0")}
+                  </span>
+                  <ChevronDown
+                    size={15}
+                    className={`shrink-0 text-[var(--muted-foreground)] transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
                   />
-                ))}
+                </button>
+                {/* Smooth height animation via CSS grid trick */}
+                <div
+                  className="grid transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
+                  style={{
+                    gridTemplateRows: isOpen ? "1fr" : "0fr",
+                  }}
+                >
+                  <div className="overflow-hidden">
+                    <div className="px-4 pb-3">
+                      {group.courses.map((course) => (
+                        <CourseRow key={course.n} course={course} onOpen={openCertificate} />
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </details>
-          ))}
+            );
+          })}
         </div>
       </div>
 
