@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { motion } from "motion/react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/primitives/Section";
@@ -44,6 +43,7 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
 export function Cursos() {
   const [activeCert, setActiveCert] = useState<{ cert: string; title: string } | null>(null);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState(COURSE_GROUPS[0]?.org ?? "");
   const openCertificate = (course: Course) => {
     if (course.cert) setActiveCert({ cert: course.cert, title: course.title });
   };
@@ -64,63 +64,43 @@ export function Cursos() {
         </Badge>
       </div>
 
-      {/* Desktop grid — unchanged */}
-      <div className="hidden gap-3 md:grid md:grid-cols-2 lg:grid-cols-3">
-        {COURSES.map((c, idx) => {
-          const hasCert = Boolean(c.cert);
-          return (
-            <motion.div
-              key={c.n}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.1 }}
-              transition={{ duration: 0.35, delay: (idx % 6) * 0.05, ease: [0.16, 1, 0.3, 1] }}
-              onClick={hasCert ? () => setActiveCert({ cert: c.cert!, title: c.title }) : undefined}
-              role={hasCert ? "button" : undefined}
-              tabIndex={hasCert ? 0 : undefined}
-              onKeyDown={
-                hasCert
-                  ? (event) => {
-                      if (event.key === "Enter" || event.key === " ") {
-                        event.preventDefault();
-                        setActiveCert({ cert: c.cert!, title: c.title });
-                      }
-                    }
-                  : undefined
-              }
-              aria-label={
-                hasCert ? `Ver certificado: ${c.title}` : `${c.title}, certificado pendiente`
-              }
-              className={`group flex w-full flex-col justify-between gap-3 p-5 text-left bg-[var(--surface)] border border-border-dim transition-all duration-200 ${hasCert ? "cursor-pointer hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))]" : "opacity-70 cursor-default"}`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span className="font-mono text-[10px] tracking-[0.2em] text-[var(--accent)]/60 tabular-nums mt-0.5">
-                  {c.n}
-                </span>
+      {/* Desktop — tabs por institución */}
+      <div className="hidden md:block">
+        {/* Tab buttons */}
+        <div className="flex flex-wrap gap-2 mb-6 border-b border-border-dim pb-3">
+          {COURSE_GROUPS.map((group) => {
+            const isActive = activeTab === group.org;
+            return (
+              <button
+                key={group.org}
+                type="button"
+                onClick={() => setActiveTab(group.org)}
+                aria-pressed={isActive}
+                className={`flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors border ${
+                  isActive
+                    ? "border-[var(--accent)] bg-[var(--accent)]/10 text-[var(--accent)] font-bold"
+                    : "border-border-dim text-[var(--muted-foreground)] hover:text-foreground hover:border-[var(--accent)]/40"
+                }`}
+              >
+                <span>{group.org}</span>
                 <span
-                  className={`size-1.5 rounded-full mt-1.5 shrink-0 ${hasCert ? "bg-[var(--accent-green)]" : "bg-[var(--muted-foreground)]/40"}`}
-                />
-              </div>
-              <div className="flex-1">
-                <h4
-                  className={`font-display font-semibold text-[14px] leading-snug tracking-tight transition-colors ${hasCert ? "text-foreground group-hover:text-[var(--accent)]" : "text-foreground/60"}`}
+                  className={`text-[9px] ${isActive ? "text-[var(--accent)]" : "text-[var(--muted-foreground)]"}`}
                 >
-                  {c.title}
-                </h4>
-              </div>
-              <div className="flex items-center justify-between pt-2 border-t border-border-dim">
-                <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-                  {c.org}
+                  {String(group.courses.length).padStart(2, "0")}
                 </span>
-                {hasCert && (
-                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity">
-                    VER CERT →
-                  </span>
-                )}
-              </div>
-            </motion.div>
-          );
-        })}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Tab content — lista de cursos de la institución activa */}
+        <div className="border border-border-dim bg-[var(--surface)]">
+          {COURSE_GROUPS.filter((g) => g.org === activeTab).map((group) =>
+            group.courses.map((course) => (
+              <CourseRow key={course.n} course={course} onOpen={openCertificate} />
+            )),
+          )}
+        </div>
       </div>
 
       {/* Mobile — single-open accordion with smooth height animation */}
