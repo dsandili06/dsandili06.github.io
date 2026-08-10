@@ -54,8 +54,8 @@ const COMMANDS: Record<string, Line[]> = {
   ],
 };
 
-const CHAR_MS = 35;
-const LINE_DELAY = 800;
+const CHAR_MS = 12;
+const LINE_DELAY = 300;
 
 export function TerminalWindow({ start = true }: { start?: boolean }) {
   const [printed, setPrinted] = useState<Line[]>([]);
@@ -99,7 +99,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
   // Focus input when interactive
   useEffect(() => {
     if (interactive && inputRef.current) {
-      inputRef.current.focus();
+      inputRef.current.focus({ preventScroll: true });
     }
   }, [interactive]);
 
