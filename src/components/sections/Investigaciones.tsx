@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, LayoutGrid, Table } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/primitives/Section";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
+import { SpotlightCard } from "@/components/fx/SpotlightCard";
 
 export function Investigaciones() {
   const [viewMode, setViewMode] = useState<"carousel" | "table">("carousel");
@@ -50,44 +51,48 @@ export function Investigaciones() {
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {FEATURED_INVESTIGATIONS.map((i, idx) => (
-            <a
+            <SpotlightCard
               key={i.id}
-              href={i.href}
-              target="_blank"
-              rel="noreferrer"
-              className="group flex flex-col justify-between min-h-[270px] p-6 bg-[var(--surface)] border border-[var(--accent)]/30 hover:border-[var(--accent)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] transition-all duration-200 tactical-corner"
+              className="group flex flex-col justify-between min-h-[270px] border border-[var(--accent)]/30 hover:border-[var(--accent)] transition-all duration-200"
             >
-              <div>
-                <div className="flex items-center justify-between gap-3 mb-5">
-                  <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold">
-                    SPOTLIGHT_0{idx + 1}
-                  </span>
-                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)]">
-                    {i.id}
-                  </span>
-                </div>
-                <h3 className="font-display font-bold text-2xl leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors mb-3">
-                  {i.title}
-                </h3>
-                <div className="flex flex-wrap gap-1.5 mb-4">
-                  {i.categories.map((c) => (
-                    <span
-                      key={c}
-                      className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-border-dim text-foreground/70"
-                    >
-                      {c}
+              <a
+                href={i.href}
+                target="_blank"
+                rel="noreferrer"
+                className="flex flex-col justify-between h-full p-6 bg-[var(--surface)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] transition-colors"
+              >
+                <div>
+                  <div className="flex items-center justify-between gap-3 mb-5">
+                    <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold">
+                      SPOTLIGHT_0{idx + 1}
                     </span>
-                  ))}
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)]">
+                      {i.id}
+                    </span>
+                  </div>
+                  <h3 className="font-display font-bold text-2xl leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors mb-3">
+                    {i.title}
+                  </h3>
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {i.categories.map((c) => (
+                      <span
+                        key={c}
+                        className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-border-dim text-foreground/70"
+                      >
+                        {c}
+                      </span>
+                    ))}
+                  </div>
+                  <p className="text-sm text-foreground/70 leading-relaxed">{i.summary}</p>
                 </div>
-                <p className="text-sm text-foreground/70 leading-relaxed">{i.summary}</p>
-              </div>
-              <div className="mt-6 pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
-                <span className="text-[var(--muted-foreground)]">{i.platform}</span>
-                <span className="text-[var(--accent)] group-hover:translate-x-1 transition-transform">
-                  VER WRITEUP →
-                </span>
-              </div>
-            </a>
+                <div className="mt-6 pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
+                  <span className="text-[var(--muted-foreground)]">{i.platform}</span>
+                  <span className="text-[var(--accent)] group-hover:translate-x-1 transition-transform">
+                    VER WRITEUP →
+                  </span>
+                </div>
+              </a>
+            </SpotlightCard>
           ))}
         </div>
       </div>

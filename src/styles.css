@@ -307,6 +307,30 @@ html {
   will-change: text-shadow;
 }
 
+/* Spotlight card — cursor-following radial glow */
+.spotlight-card {
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+}
+.spotlight-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    400px circle at var(--mouse-x) var(--mouse-y),
+    color-mix(in oklab, var(--accent) 8%, transparent),
+    transparent 60%
+  );
+  opacity: 0;
+  transition: opacity 250ms var(--ease-out-expo);
+  pointer-events: none;
+  z-index: 1;
+}
+.spotlight-card:hover::before {
+  opacity: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scanline {
     animation: none !important;
@@ -317,6 +341,9 @@ html {
   }
   .glitch {
     animation: none !important;
+  }
+  .spotlight-card::before {
+    display: none;
   }
   html {
     scroll-behavior: auto;

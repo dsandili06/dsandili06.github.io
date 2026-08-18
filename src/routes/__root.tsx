@@ -9,21 +9,51 @@ import {
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="max-w-md text-center">
-        <h1 className="text-7xl font-bold text-foreground">404</h1>
-        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          The page you're looking for doesn't exist or has been moved.
-        </p>
-        <div className="mt-6">
-          <Link
-            to="/"
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
-          >
-            Go home
-          </Link>
+    <div className="min-h-screen bg-[#060A10] flex flex-col items-center justify-center px-4 relative overflow-hidden">
+      {/* Grid background */}
+      <div
+        className="absolute inset-0 opacity-[0.04] pointer-events-none"
+        style={{
+          backgroundImage:
+            "linear-gradient(#3B82F6 1px, transparent 1px), linear-gradient(90deg, #3B82F6 1px, transparent 1px)",
+          backgroundSize: "48px 48px",
+        }}
+      />
+      {/* Scanline */}
+      <div className="scanline" />
+
+      <div className="relative max-w-md text-center">
+        {/* Terminal-style error */}
+        <div className="font-mono text-[11px] text-[#475569] mb-6">
+          <span className="text-[#22D3EE]">analyst@soc-lab</span>:~$ cd /requested-page
         </div>
+        <div className="font-mono text-[11px] text-[#FF5F56] mb-8">
+          bash: cd: /requested-page: No such file or directory
+        </div>
+
+        {/* Glitch 404 */}
+        <h1
+          className="glitch font-display font-bold text-8xl text-[#3B82F6] leading-none tracking-tight mb-4"
+          style={{ fontSize: "clamp(5rem, 15vw, 9rem)" }}
+        >
+          404
+        </h1>
+
+        <h2 className="font-mono text-sm uppercase tracking-[0.25em] text-[#E2E8F0] mb-3">
+          PAGE_NOT_FOUND
+        </h2>
+        <p className="font-mono text-[11px] text-[#475569] mb-8 max-w-sm mx-auto leading-relaxed">
+          The page you're looking for doesn't exist or has been moved. Try going back to the main
+          terminal.
+        </p>
+
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-[#3B82F6]/30 text-[#3B82F6] hover:bg-[#3B82F6]/10 hover:border-[#3B82F6] transition-colors"
+        >
+          <span>cd ~</span>
+          <span className="text-[#22D3EE]">→</span>
+        </Link>
       </div>
     </div>
   );
@@ -34,29 +64,29 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="min-h-screen bg-[#060A10] flex flex-col items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">
-          This page didn't load
+        <h1 className="font-mono text-sm uppercase tracking-[0.25em] text-[#FF5F56] mb-4">
+          [ERROR] Session crashed
         </h1>
-        <p className="mt-2 text-sm text-muted-foreground">
+        <p className="font-mono text-[11px] text-[#475569] mb-8 max-w-sm mx-auto leading-relaxed">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
-        <div className="mt-6 flex flex-wrap justify-center gap-2">
+        <div className="flex flex-wrap justify-center gap-3">
           <button
             onClick={() => {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-[#3B82F6]/30 text-[#3B82F6] hover:bg-[#3B82F6]/10 hover:border-[#3B82F6] transition-colors"
           >
-            Try again
+            <span>retry</span>
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
+            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-[#475569]/30 text-[#475569] hover:text-[#E2E8F0] hover:border-[#475569] transition-colors"
           >
-            Go home
+            <span>cd ~</span>
           </a>
         </div>
       </div>
