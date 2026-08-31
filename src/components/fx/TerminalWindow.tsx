@@ -12,7 +12,6 @@ const BOOT_LINES: Line[] = [
   { text: '$ splunk search "EventCode=4625"', color: "#475569" },
   { text: "[+] 847 failed logons — threshold exceeded", color: "#22D3EE" },
   { text: "[ALERT] Escalating to T1 analyst...", color: "#3B82F6" },
-  { text: "analyst@soc-lab:~$ ", color: "#22D3EE" },
 ];
 
 const COMMANDS: Record<string, Line[]> = {

@@ -99,6 +99,30 @@ export const COURSES: Course[] = [
     org: "Fortinet",
     cert: "/certs/Fortinet NSE 2 Certified in Cybersecurity.png",
   },
+  {
+    n: "19",
+    title: "Automate Cybersecurity Tasks with Python",
+    org: "Google",
+    cert: "/certs/Coursera - Automate Cybersecurity Tasks with Python.png",
+  },
+  {
+    n: "20",
+    title: "Put It to Work: Prepare for Cybersecurity Jobs",
+    org: "Google",
+    cert: "/certs/Coursera - Put It to Work Prepare for Cybersecurity Jobs.png",
+  },
+  {
+    n: "21",
+    title: "Accelerate Your Job Search with AI",
+    org: "Google",
+    cert: "/certs/Coursera - Accelerate Your Job Search with AI.png",
+  },
+  {
+    n: "22",
+    title: "Google Cybersecurity Professional Certificate",
+    org: "Google",
+    cert: "/certs/Google Cybersecurity Certificate.png",
+  },
 ];
 
 export const COURSE_GROUPS = COURSES.reduce<{ org: string; courses: Course[] }[]>(

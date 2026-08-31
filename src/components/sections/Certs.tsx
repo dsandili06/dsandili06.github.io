@@ -15,14 +15,14 @@ export function Certs() {
             <Wrapper
               key={c.code}
               {...wrapperProps}
-              className={`group bg-[var(--surface)] p-7 md:p-9 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center transition-colors ${c.href ? "hover:bg-[var(--surface-2)]" : ""}`}
+              className={`group bg-[var(--surface)] p-7 md:p-9 grid grid-cols-1 md:grid-cols-[1fr_auto] gap-8 items-center transition-colors relative ${c.href ? "hover:bg-[var(--surface-2)]" : ""} ${c.featured ? "tactical-corner" : ""}`}
               style={{ borderLeft: `3px solid ${accentColor}` }}
             >
               <div>
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-4 flex-wrap">
                   {obtained ? (
                     <Badge variant="success" dot>
-                      {c.badge}
+                      {c.featured ? `★ ${c.badge}` : c.badge}
                     </Badge>
                   ) : (
                     <span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">

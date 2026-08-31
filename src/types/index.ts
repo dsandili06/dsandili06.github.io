@@ -26,6 +26,7 @@ export type Certification = {
   status: "OBTENIDA" | "EN PREPARACIÓN";
   badge: string;
   href?: string;
+  featured?: boolean;
 };
 
 export type StackGroup = { title: string; items: string[] };

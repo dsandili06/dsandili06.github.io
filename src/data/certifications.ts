@@ -2,6 +2,16 @@ import type { Certification } from "@/types";
 
 export const CERTIFICATIONS: Certification[] = [
   {
+    code: "GCC",
+    title: "GOOGLE CYBERSECURITY CERTIFICATE",
+    org: "GOOGLE · COURSERA",
+    year: "2026",
+    status: "OBTENIDA",
+    badge: "CERTIFIED",
+    featured: true,
+    href: "/certs/Google Cybersecurity Certificate.png",
+  },
+  {
     code: "SAL1",
     title: "SECURITY ANALYST L1",
     org: "TRYHACKME",
