@@ -6,9 +6,11 @@ import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/primitives/Section";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
 import { SpotlightCard } from "@/components/fx/SpotlightCard";
+import { WriteupModal } from "@/components/WriteupModal";
 
 export function Investigaciones() {
   const [viewMode, setViewMode] = useState<"carousel" | "table">("carousel");
+  const [writeupId, setWriteupId] = useState<string | null>(null);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -55,11 +57,10 @@ export function Investigaciones() {
               key={i.id}
               className="group flex flex-col justify-between min-h-[270px] border border-[var(--accent)]/30 hover:border-[var(--accent)] transition-all duration-200"
             >
-              <a
-                href={i.href}
-                target="_blank"
-                rel="noreferrer"
-                className="flex flex-col justify-between h-full p-6 bg-[var(--surface)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] transition-colors"
+              <button
+                type="button"
+                onClick={() => setWriteupId(i.id)}
+                className="flex flex-col justify-between h-full p-6 bg-[var(--surface)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] transition-colors text-left w-full"
               >
                 <div>
                   <div className="flex items-center justify-between gap-3 mb-5">
@@ -91,7 +92,7 @@ export function Investigaciones() {
                     VER WRITEUP →
                   </span>
                 </div>
-              </a>
+              </button>
             </SpotlightCard>
           ))}
         </div>
@@ -177,11 +178,10 @@ export function Investigaciones() {
                 key={i.id}
                 className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] pl-4"
               >
-                <a
-                  href={i.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex flex-col justify-between h-full p-6 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))] transition-all duration-200"
+                <button
+                  type="button"
+                  onClick={() => setWriteupId(i.id)}
+                  className="group flex flex-col justify-between h-full p-6 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))] transition-all duration-200 text-left w-full"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4 gap-2">
@@ -216,7 +216,7 @@ export function Investigaciones() {
                       VER WRITEUP →
                     </span>
                   </div>
-                </a>
+                </button>
               </div>
             ))}
 
@@ -261,11 +261,9 @@ export function Investigaciones() {
               <div></div>
             </div>
             {INVESTIGATIONS.map((i, idx) => (
-              <motion.a
-                key={i.id}
-                href={i.href}
-                target="_blank"
-                rel="noreferrer"
+              <motion.button
+                type="button"
+                onClick={() => setWriteupId(i.id)}
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.05 }}
@@ -300,7 +298,7 @@ export function Investigaciones() {
                 <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity text-right">
                   VER →
                 </div>
-              </motion.a>
+              </motion.button>
             ))}
             <div className="grid grid-cols-[64px_1.4fr_1fr_140px_120px_60px] gap-4 items-center px-5 py-4 border-t border-dashed border-[var(--accent)]/30 opacity-50">
               <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--accent)] tabular-nums">
@@ -325,12 +323,10 @@ export function Investigaciones() {
           </div>
           <div className="md:hidden flex flex-col">
             {INVESTIGATIONS.map((i) => (
-              <a
-                key={i.id}
-                href={i.href}
-                target="_blank"
-                rel="noreferrer"
-                className="border-t border-border-dim py-5 first:border-t-0"
+              <button
+                type="button"
+                onClick={() => setWriteupId(i.id)}
+                className="border-t border-border-dim py-5 first:border-t-0 text-left w-full"
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--muted-foreground)]">
@@ -350,7 +346,7 @@ export function Investigaciones() {
                 <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
                   Ver writeup →
                 </div>
-              </a>
+              </button>
             ))}
             <div className="border-t border-dashed border-[var(--accent)]/30 py-5 opacity-60">
               <div className="flex items-center justify-between mb-2">
@@ -368,6 +364,8 @@ export function Investigaciones() {
           </div>
         </>
       )}
+
+      {writeupId && <WriteupModal investigationId={writeupId} onClose={() => setWriteupId(null)} />}
     </Section>
   );
 }
