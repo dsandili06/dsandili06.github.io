@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, ExternalLink, Loader2, AlertTriangle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import type { ComponentProps } from "react";
 import { INVESTIGATIONS } from "@/data/investigations";
 import type { Investigation } from "@/types";
@@ -319,7 +320,11 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
               )}
               {md && (
                 <div className="p-6 md:p-10 max-w-none">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeRaw]}
+                    components={components}
+                  >
                     {md}
                   </ReactMarkdown>
                 </div>
