@@ -251,8 +251,8 @@ export function Investigaciones() {
       ) : (
         <>
           {/* Classic Table View */}
-          <div className="hidden md:block border border-border-dim">
-            <div className="grid grid-cols-[64px_1.4fr_1fr_140px_120px_60px] gap-4 px-5 py-3 border-b border-border-dim font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+          <div className="hidden md:block overflow-x-auto border border-border-dim">
+            <div className="grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 px-5 py-3 border-b border-border-dim font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] items-center">
               <div>N°</div>
               <div>CASO</div>
               <div>CATEGORÍA</div>
@@ -261,43 +261,43 @@ export function Investigaciones() {
               <div></div>
             </div>
             {INVESTIGATIONS.map((i) => (
-              <motion.button
+              <button
                 type="button"
                 key={i.id}
                 onClick={() => setWriteupId(i.id)}
-                className="group grid grid-cols-[64px_1.4fr_1fr_140px_120px_60px] gap-4 items-center px-5 py-4 border-b border-border-dim last:border-b-0 transition-colors hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] hover:border-l-2 hover:border-l-[var(--accent)] hover:pl-[18px]"
+                className="grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 items-start px-5 py-4 border-b border-border-dim last:border-b-0 w-full text-left transition-colors hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)]"
                 title={i.summary}
               >
-                <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums">
+                <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums pt-0.5">
                   {i.id.replace("LAB_", "")}
                 </div>
-                <div className="font-display font-semibold text-foreground text-[15px] tracking-tight group-hover:text-[var(--accent)] transition-colors">
+                <div className="font-display font-semibold text-foreground text-[15px] tracking-tight leading-snug pt-0.5">
                   {i.title}
                 </div>
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1">
                   {i.categories.map((c) => (
                     <span
                       key={c}
-                      className="font-mono text-[9px] uppercase tracking-[0.2em] px-1.5 py-0.5 border border-border-dim text-foreground/70"
+                      className="font-mono text-[9px] uppercase tracking-[0.2em] px-1.5 py-0.5 border border-border-dim text-foreground/70 leading-tight"
                     >
                       {c}
                     </span>
                   ))}
                 </div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] pt-0.5">
                   {i.platform}
                 </div>
-                <div>
-                  <Badge variant="success" dot>
+                <div className="pt-0.5">
+                  <Badge variant="success" dot className="text-[10px]">
                     PUBLICADO
                   </Badge>
                 </div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity text-right">
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity pt-0.5 text-right">
                   VER →
                 </div>
-              </motion.button>
+              </button>
             ))}
-            <div className="grid grid-cols-[64px_1.4fr_1fr_140px_120px_60px] gap-4 items-center px-5 py-4 border-t border-dashed border-[var(--accent)]/30 opacity-50">
+            <div className="grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 items-center px-5 py-4 border-t border-dashed border-[var(--accent)]/30 opacity-50">
               <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--accent)] tabular-nums">
                 016
               </div>
