@@ -78,7 +78,8 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
   // Pause Lenis smooth scroll while modal is open; resume on close
   useEffect(() => {
     const lenis = (window as unknown as Record<string, unknown>).__lenis as
-      { stop: () => void; start: () => void } | undefined;
+      | { stop: () => void; start: () => void }
+      | undefined;
     lenis?.stop();
     document.body.style.overflow = "hidden";
     return () => {
