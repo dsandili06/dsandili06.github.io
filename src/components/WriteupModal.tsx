@@ -5,9 +5,38 @@ import { X, ExternalLink, Loader2, AlertTriangle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import rehypeRaw from "rehype-raw";
 import type { ComponentProps } from "react";
 import { INVESTIGATIONS } from "@/data/investigations";
 import type { Investigation } from "@/types";
+// Scoped highlight.js github-dark styles (avoids global CSS contamination)
+const hljsCss = `
+.hljs { display: block; overflow-x: auto; padding: 1em; background: #0d1117; color: #c9d1d9; }
+.hljs-keyword { color: #ff7b72; }
+.hljs-string { color: #a5d6ff; }
+.hljs-number { color: #79c0ff; }
+.hljs-literal { color: #79c0ff; }
+.hljs-title { color: #d2a8ff; }
+.hljs-title.class_ { color: #d2a8ff; }
+.hljs-title.function_ { color: #d2a8ff; }
+.hljs-built_in { color: #ffa657; }
+.hljs-comment { color: #8b949e; font-style: italic; }
+.hljs-meta { color: #8b949e; }
+.hljs-tag { color: #7ee787; }
+.hljs-attr { color: #79c0ff; }
+.hljs-attribute { color: #ffa657; }
+.hljs-selector-tag { color: #7ee787; }
+.hljs-selector-id { color: #7ee787; }
+.hljs-selector-class { color: #7ee787; }
+.hljs-variable { color: #ffa657; }
+.hljs-variable.language_ { color: #ff7b72; }
+.hljs-params { color: #c9d1d9; }
+.hljs-property { color: #79c0ff; }
+.hljs-punctuation { color: #c9d1d9; }
+.hljs-operator { color: #ff7b72; }
+.hljs-deletion { color: #ffdcd7; background: #ffeef0; }
+.hljs-addition { color: #aff8ba; background: #ccffd8; }
+`;
 function investigationById(id: string): Investigation | undefined {
   return INVESTIGATIONS.find((i) => i.id === id);
 }
@@ -24,6 +53,16 @@ function getImageBaseUrl(githubUrl: string): string {
     .replace("/blob/", "/");
   const lastSlash = raw.lastIndexOf("/");
   return raw.slice(0, lastSlash + 1);
+}
+
+// Resolve relative image paths against the GitHub raw base.
+// Handles both relative paths: `./images/x.png`, `images/x.png`, and repo-root: `/images/x.png`
+function resolveImageUri(uri: string, githubUrl: string): string {
+  if (/^https?:\/\//.test(uri)) return uri;
+  const base = getImageBaseUrl(githubUrl);
+  // Strip leading `./` or `/`
+  const cleaned = uri.replace(/^\.?\//, "");
+  return base + cleaned;
 }
 
 type MarkdownComponents = ComponentProps<typeof ReactMarkdown>["components"];
@@ -89,8 +128,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
 
   const components: MarkdownComponents = {
     img: ({ src, alt, ...props }) => {
-      const base = investigation ? getImageBaseUrl(investigation.href) : "";
-      const resolved = src?.startsWith("http") ? src : base + (src || "");
+      const resolved = src ? resolveImageUri(src, investigation?.href || "") : src;
       return (
         <img
           src={resolved}
@@ -327,10 +365,11 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
                 </div>
               )}
               {md && (
-                <div className="p-6 md:p-10 max-w-none">
+                <div className="p-6 md:p-10 max-w-none relative">
+                  <style>{hljsCss}</style>
                   <ReactMarkdown
                     remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeHighlight]}
+                    rehypePlugins={[rehypeRaw, rehypeHighlight]}
                     components={components}
                   >
                     {md}
