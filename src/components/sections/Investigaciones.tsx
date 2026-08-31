@@ -260,14 +260,11 @@ export function Investigaciones() {
               <div>ESTADO</div>
               <div></div>
             </div>
-            {INVESTIGATIONS.map((i, idx) => (
+            {INVESTIGATIONS.map((i) => (
               <motion.button
                 type="button"
+                key={i.id}
                 onClick={() => setWriteupId(i.id)}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.05 }}
-                transition={{ duration: 0.4, delay: (idx % 4) * 0.05, ease: [0.16, 1, 0.3, 1] }}
                 className="group grid grid-cols-[64px_1.4fr_1fr_140px_120px_60px] gap-4 items-center px-5 py-4 border-b border-border-dim last:border-b-0 transition-colors hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] hover:border-l-2 hover:border-l-[var(--accent)] hover:pl-[18px]"
                 title={i.summary}
               >
@@ -325,6 +322,7 @@ export function Investigaciones() {
             {INVESTIGATIONS.map((i) => (
               <button
                 type="button"
+                key={i.id}
                 onClick={() => setWriteupId(i.id)}
                 className="border-t border-border-dim py-5 first:border-t-0 text-left w-full"
               >
