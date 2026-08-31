@@ -212,7 +212,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
         className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-        style={{ background: "rgba(0,0,0,0.94)" }}
+        style={{ background: "#0B1118" }}
         onClick={onClose}
       >
         <motion.div
