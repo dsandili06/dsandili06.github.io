@@ -277,8 +277,13 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
               </button>
             </div>
 
-            {/* Body */}
-            <div className="flex-1 overflow-y-auto px-6 pb-6">
+            {/* Body — data-lenis-prevent lets native touch scroll work inside
+                the modal while Lenis is stopped (body scroll stays locked) */}
+            <div
+              data-lenis-prevent
+              className="flex-1 overflow-y-auto px-6 pb-6"
+              style={{ WebkitOverflowScrolling: "touch" }}
+            >
               <div className="border border-border-dim rounded bg-[#0B1118] min-h-[200px] max-h-[80dvh]">
                 {loading && (
                   <div className="flex flex-col items-center justify-center gap-3 py-20 text-[var(--muted-foreground)]">
