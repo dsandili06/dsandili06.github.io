@@ -13,6 +13,9 @@ export function LenisProvider() {
       smoothWheel: true,
     });
 
+    // Expose globally so WriteupModal can pause/resume
+    (window as unknown as Record<string, unknown>).__lenis = lenis;
+
     let rafId = 0;
     const raf = (time: number) => {
       lenis.raf(time);
@@ -39,6 +42,7 @@ export function LenisProvider() {
       document.removeEventListener("click", onAnchorClick);
       cancelAnimationFrame(rafId);
       lenis.destroy();
+      delete (window as unknown as Record<string, unknown>).__lenis;
     };
   }, []);
   return null;

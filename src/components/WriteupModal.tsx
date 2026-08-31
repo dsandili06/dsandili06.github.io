@@ -4,39 +4,9 @@ import { motion, AnimatePresence } from "motion/react";
 import { X, ExternalLink, Loader2, AlertTriangle } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeHighlight from "rehype-highlight";
-import rehypeRaw from "rehype-raw";
 import type { ComponentProps } from "react";
 import { INVESTIGATIONS } from "@/data/investigations";
 import type { Investigation } from "@/types";
-// Scoped highlight.js github-dark styles (avoids global CSS contamination)
-const hljsCss = `
-.hljs { display: block; overflow-x: auto; padding: 1em; background: #0d1117; color: #c9d1d9; }
-.hljs-keyword { color: #ff7b72; }
-.hljs-string { color: #a5d6ff; }
-.hljs-number { color: #79c0ff; }
-.hljs-literal { color: #79c0ff; }
-.hljs-title { color: #d2a8ff; }
-.hljs-title.class_ { color: #d2a8ff; }
-.hljs-title.function_ { color: #d2a8ff; }
-.hljs-built_in { color: #ffa657; }
-.hljs-comment { color: #8b949e; font-style: italic; }
-.hljs-meta { color: #8b949e; }
-.hljs-tag { color: #7ee787; }
-.hljs-attr { color: #79c0ff; }
-.hljs-attribute { color: #ffa657; }
-.hljs-selector-tag { color: #7ee787; }
-.hljs-selector-id { color: #7ee787; }
-.hljs-selector-class { color: #7ee787; }
-.hljs-variable { color: #ffa657; }
-.hljs-variable.language_ { color: #ff7b72; }
-.hljs-params { color: #c9d1d9; }
-.hljs-property { color: #79c0ff; }
-.hljs-punctuation { color: #c9d1d9; }
-.hljs-operator { color: #ff7b72; }
-.hljs-deletion { color: #ffdcd7; background: #ffeef0; }
-.hljs-addition { color: #aff8ba; background: #ccffd8; }
-`;
 function investigationById(id: string): Investigation | undefined {
   return INVESTIGATIONS.find((i) => i.id === id);
 }
@@ -55,12 +25,9 @@ function getImageBaseUrl(githubUrl: string): string {
   return raw.slice(0, lastSlash + 1);
 }
 
-// Resolve relative image paths against the GitHub raw base.
-// Handles both relative paths: `./images/x.png`, `images/x.png`, and repo-root: `/images/x.png`
 function resolveImageUri(uri: string, githubUrl: string): string {
   if (/^https?:\/\//.test(uri)) return uri;
   const base = getImageBaseUrl(githubUrl);
-  // Strip leading `./` or `/`
   const cleaned = uri.replace(/^\.?\//, "");
   return base + cleaned;
 }
@@ -71,7 +38,6 @@ type WriteupModalProps = {
   investigationId: string;
   onClose: () => void;
 };
-
 export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
   const investigation = investigationById(investigationId);
   const [md, setMd] = useState<string | null>(null);
@@ -109,18 +75,26 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
     fetchWriteup();
   }, [fetchWriteup]);
 
+  // Pause Lenis smooth scroll while modal is open; resume on close
+  useEffect(() => {
+    const lenis = (window as unknown as Record<string, unknown>).__lenis as
+      { stop: () => void; start: () => void } | undefined;
+    lenis?.stop();
+    document.body.style.overflow = "hidden";
+    return () => {
+      lenis?.start();
+      document.body.style.overflow = "";
+    };
+  }, []);
+
+  // ESC to close
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
     document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
+    return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
-
   const title = investigation?.title || investigationId;
   const platform = investigation?.platform;
   const categories = investigation?.categories;
@@ -215,7 +189,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
       }
       return (
         <pre className="overflow-x-auto rounded border border-border-dim bg-[#0D1117] p-4 mb-4">
-          <code className={`font-mono text-[13px] leading-relaxed ${className || ""}`} {...props}>
+          <code className="font-mono text-[13px] leading-relaxed text-[#c9d1d9]" {...props}>
             {children}
           </code>
         </pre>
@@ -228,28 +202,6 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
         </table>
       </div>
     ),
-    th: ({ children, ...props }) => (
-      <th
-        className="border border-border-dim bg-[var(--surface)] px-3 py-2 text-left font-semibold"
-        {...props}
-      >
-        {children}
-      </th>
-    ),
-    td: ({ children, ...props }) => (
-      <td className="border border-border-dim px-3 py-2 text-foreground/85" {...props}>
-        {children}
-      </td>
-    ),
-    blockquote: ({ children, ...props }) => (
-      <blockquote
-        className="border-l-4 border-[var(--accent)] pl-4 italic text-foreground/70 mb-4"
-        {...props}
-      >
-        {children}
-      </blockquote>
-    ),
-    hr: () => <hr className="my-6 border-border-dim" />,
   };
   return createPortal(
     <AnimatePresence>
@@ -259,8 +211,8 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.2 }}
-        className="fixed inset-0 z-[9999] flex flex-col"
-        style={{ background: "rgba(0,0,0,0.92)", backdropFilter: "blur(8px)" }}
+        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+        style={{ background: "rgba(0,0,0,0.94)" }}
         onClick={onClose}
       >
         <motion.div
@@ -365,13 +317,8 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
                 </div>
               )}
               {md && (
-                <div className="p-6 md:p-10 max-w-none relative">
-                  <style>{hljsCss}</style>
-                  <ReactMarkdown
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeRaw, rehypeHighlight]}
-                    components={components}
-                  >
+                <div className="p-6 md:p-10 max-w-none">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]} components={components}>
                     {md}
                   </ReactMarkdown>
                 </div>
