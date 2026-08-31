@@ -85,7 +85,7 @@ export function Hero() {
             <span className="text-foreground/60">·</span> DFIR
           </motion.p>
         </div>
-        <div className="hidden md:block">
+        <div className="md:max-w-[440px]">
           <TerminalWindow start />
         </div>
       </div>

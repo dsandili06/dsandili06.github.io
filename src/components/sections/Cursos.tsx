@@ -48,7 +48,13 @@ export function Cursos() {
   };
 
   return (
-    <Section id="cursos" number="06" title="Cursos Completados" kicker="LEARNING_LOG">
+    <Section
+      id="cursos"
+      number="06"
+      title="Cursos Completados"
+      kicker="LEARNING_LOG"
+      reveal="stagger-items"
+    >
       <div className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] md:mb-10">
         <span>
           TOTAL <span className="text-[var(--accent)] font-bold text-sm">{COURSES.length}</span>

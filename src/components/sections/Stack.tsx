@@ -3,7 +3,7 @@ import { STACK_GROUPS } from "@/data/stack";
 
 export function Stack() {
   return (
-    <Section id="stack" number="04" title="Stack Técnico" kicker="TOOLING">
+    <Section id="stack" number="04" title="Stack Técnico" kicker="TOOLING" reveal="stagger-items">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
         {STACK_GROUPS.map((group) => (
           <div key={group.title}>

@@ -7,12 +7,17 @@ type SectionProps = {
   number: string;
   title: string;
   kicker?: string;
+  reveal?: string;
   children: ReactNode;
 };
 
-export function Section({ id, number, title, kicker, children }: SectionProps) {
+export function Section({ id, number, title, kicker, reveal, children }: SectionProps) {
   return (
-    <section id={id} data-reveal className="relative py-24 md:py-32 border-b border-border-dim">
+    <section
+      id={id}
+      data-reveal={reveal || "slide-up"}
+      className="relative py-24 md:py-32 border-b border-border-dim"
+    >
       <SectionHeader number={number} title={title} kicker={kicker} />
       {children}
     </section>

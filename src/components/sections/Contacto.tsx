@@ -37,7 +37,7 @@ export function Contacto() {
   return (
     <section
       id="contacto"
-      data-reveal
+      data-reveal="fade-scale"
       className="relative py-24 md:py-32 border-b border-border-dim"
     >
       <div className="mb-14 md:mb-20">

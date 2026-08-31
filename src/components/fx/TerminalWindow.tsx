@@ -66,6 +66,16 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
   const [history, setHistory] = useState<Line[]>([]);
   const bodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Detect mobile based on media query
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   // Auto-typing animation
   useEffect(() => {
@@ -177,8 +187,8 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
       {/* Body */}
       <div
         ref={bodyRef}
-        className="font-mono text-[12px] leading-[1.6] overflow-hidden"
-        style={{ padding: 20, height: 340 }}
+        className="font-mono text-[12px] leading-[1.6] overflow-hidden h-[220px] md:h-[260px] lg:h-[340px]"
+        style={{ padding: 20 }}
       >
         {printed.map((l, i) => (
           <div key={i} style={{ color: l.color }}>
@@ -209,7 +219,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
             {l.text}
           </div>
         ))}
-        {interactive && (
+        {interactive && !isMobile && (
           <div className="flex items-center">
             <span style={{ color: "#22D3EE" }}>analyst@soc-lab:~$ </span>
             <input
@@ -226,6 +236,12 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
               className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]"
               style={{ width: "0.6em", height: "1em", background: "#22D3EE" }}
             />
+          </div>
+        )}
+        {interactive && isMobile && (
+          <div className="flex items-center gap-2 font-mono text-[11px] text-[var(--muted-foreground)]">
+            <span className="inline-block size-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+            <span>MODO INTERACTIVO NO DISPONIBLE · Usá un navegador desktop para comandos</span>
           </div>
         )}
       </div>
