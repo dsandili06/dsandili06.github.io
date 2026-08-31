@@ -1,15 +1,29 @@
-import { motion } from "motion/react";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "motion/react";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
-import { ParticlesBg } from "@/components/fx/ParticlesBg";
+import { HeroShader } from "@/components/fx/HeroShader";
 import { TextScramble } from "@/components/fx/TextScramble";
 
 export function Hero() {
+  const sectionRef = useRef<HTMLElement>(null);
+
+  // Watermark parallax — drifts slower than scroll, fades out
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const wmY = useTransform(scrollYProgress, [0, 1], [0, 160]);
+  const wmOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+
   return (
     <section
+      ref={sectionRef}
       id="top"
       className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden border-b border-border-dim grid-bg"
     >
+      {/* WebGL fluid gradient — accent flow + pointer glow */}
+      <HeroShader />
       {/* Grid pattern overlay — subtle cyber grid for depth */}
       <div
         className="absolute inset-0 -z-20 pointer-events-none opacity-[0.04]"
@@ -23,28 +37,16 @@ export function Hero() {
             "radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 80%)",
         }}
       />
-      {/* Radial glow behind hero content — adds premium depth */}
-      <div
-        className="absolute inset-0 -z-10 pointer-events-none"
-        aria-hidden
-        style={{
-          background:
-            "radial-gradient(ellipse 60% 50% at 30% 50%, color-mix(in oklab, var(--accent) 12%, transparent), transparent 70%)",
-        }}
-      />
+      {/* Kinetic watermark — oversized outlined text with parallax */}
+      <motion.div aria-hidden className="hero-watermark" style={{ y: wmY, opacity: wmOpacity }}>
+        <span>
+          BLUE
+          <br />
+          TEAM
+        </span>
+      </motion.div>
       {/* Scanline — subtle moving line for incident room feel */}
       <div className="scanline" aria-hidden />
-      <div className="absolute inset-0 -z-10 pointer-events-none" aria-hidden>
-        <ParticlesBg
-          count={90}
-          connectionDistance={130}
-          particleColor="59,130,246"
-          lineColor="59,130,246"
-          maxOpacity={0.25}
-          maxLineOpacity={0.08}
-          speed={0.25}
-        />
-      </div>
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-24 md:pt-28">
         <div className="flex items-center gap-3 flex-wrap">
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2.5 py-1 border border-[var(--accent-green)]/50 text-[var(--accent-green)] inline-flex items-center gap-2">

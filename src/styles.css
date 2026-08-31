@@ -383,6 +383,201 @@ html {
   opacity: 1;
 }
 
+/* ── Film grain overlay ─────────────────────────────────────────── */
+.grain-overlay__layer {
+  position: absolute;
+  inset: -100%;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 0.9s steps(8) infinite;
+}
+@keyframes grain-shift {
+  0% {
+    transform: translate(0, 0);
+  }
+  12.5% {
+    transform: translate(-2%, 3%);
+  }
+  25% {
+    transform: translate(3%, -2%);
+  }
+  37.5% {
+    transform: translate(-3%, -3%);
+  }
+  50% {
+    transform: translate(2%, 2%);
+  }
+  62.5% {
+    transform: translate(-2%, 1%);
+  }
+  75% {
+    transform: translate(1%, -3%);
+  }
+  87.5% {
+    transform: translate(-1%, 2%);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+/* ── Custom cursor ──────────────────────────────────────────────── */
+/* Hide native cursor only when the custom cursor is active (JS adds .has-custom-cursor) */
+html.has-custom-cursor,
+html.has-custom-cursor a,
+html.has-custom-cursor button {
+  cursor: none;
+}
+html.has-custom-cursor input,
+html.has-custom-cursor textarea {
+  cursor: text;
+}
+.custom-cursor-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--accent);
+  transition: opacity 0.2s ease;
+}
+.custom-cursor-ring {
+  width: 34px;
+  height: 34px;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 55%, transparent);
+  transition:
+    width 0.22s var(--ease-out-expo),
+    height 0.22s var(--ease-out-expo),
+    border-color 0.22s ease,
+    background-color 0.22s ease,
+    opacity 0.2s ease;
+}
+.custom-cursor-ring[data-hover="true"] {
+  width: 56px;
+  height: 56px;
+  border-color: var(--accent);
+  background: color-mix(in oklab, var(--accent) 8%, transparent);
+}
+
+/* ── Section rail (right-side indicators) ───────────────────────── */
+.section-rail {
+  position: fixed;
+  right: 1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  display: none;
+}
+@media (min-width: 1024px) {
+  .section-rail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    align-items: flex-end;
+  }
+}
+.section-rail__item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  color: var(--muted-foreground);
+  opacity: 0.55;
+  transition:
+    opacity 0.2s ease,
+    color 0.2s ease;
+}
+.section-rail__item:hover {
+  opacity: 1;
+}
+.section-rail__line {
+  display: block;
+  height: 1px;
+  width: 14px;
+  background: var(--muted-foreground);
+  transition:
+    width 0.25s var(--ease-out-expo),
+    background-color 0.2s ease;
+}
+.section-rail__item[data-active="true"] {
+  opacity: 1;
+  color: var(--accent);
+}
+.section-rail__item[data-active="true"] .section-rail__line {
+  width: 30px;
+  background: var(--accent);
+}
+
+/* ── Hero kinetic watermark ─────────────────────────────────────── */
+.hero-watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 0.85;
+  font-size: clamp(6rem, 22vw, 22rem);
+  white-space: nowrap;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in oklab, var(--accent) 14%, transparent);
+}
+
+/* ── Mobile nav stagger ─────────────────────────────────────────── */
+.nav-mobile-link {
+  opacity: 0;
+  transform: translateX(-12px);
+  transition:
+    opacity 0.3s var(--ease-out-expo),
+    transform 0.3s var(--ease-out-expo);
+}
+.nav-mobile-open .nav-mobile-link {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ── Labs carousel ──────────────────────────────────────────────── */
+.labs-carousel__viewport {
+  overflow: hidden;
+  width: 100%;
+}
+.labs-carousel__container {
+  display: flex;
+  gap: 1rem;
+}
+.labs-carousel__slide {
+  flex: 0 0 min(78vw, 340px);
+  min-width: 0;
+}
+.labs-carousel__progress {
+  position: relative;
+  height: 2px;
+  flex: 1;
+  background: var(--border-dim);
+  overflow: hidden;
+}
+.labs-carousel__progress-fill {
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform-origin: left;
+  animation: labs-progress 3.5s linear infinite;
+}
+@keyframes labs-progress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scanline {
     animation: none !important;
@@ -396,6 +591,13 @@ html {
   }
   .spotlight-card::before {
     display: none;
+  }
+  .grain-overlay__layer {
+    animation: none !important;
+  }
+  .labs-carousel__progress-fill {
+    animation: none !important;
+    transform: scaleX(0.5);
   }
   html {
     scroll-behavior: auto;

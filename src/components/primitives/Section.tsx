@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useRef } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
+import { useSplitReveal } from "@/components/fx/useSplitReveal";
 
 type SectionProps = {
   id: string;
@@ -32,6 +33,7 @@ type SectionHeaderProps = {
 
 export function SectionHeader({ number, title, kicker }: SectionHeaderProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const titleRef = useSplitReveal<HTMLHeadingElement>();
   const prefersReduced = useReducedMotion();
 
   // Parallax — the giant background number drifts slower than the scroll
@@ -57,6 +59,7 @@ export function SectionHeader({ number, title, kicker }: SectionHeaderProps) {
             {kicker ? ` // ${kicker}` : ""}
           </div>
           <h2
+            ref={titleRef}
             className="font-display font-bold leading-none tracking-[-0.02em] text-[var(--accent)]"
             style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
           >

@@ -2,6 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { LenisProvider } from "@/components/fx/LenisProvider";
+import { GrainOverlay } from "@/components/fx/GrainOverlay";
+import { CustomCursor } from "@/components/fx/CustomCursor";
+import { SectionRail } from "@/components/fx/SectionRail";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
@@ -65,6 +68,9 @@ function Portfolio() {
           Saltar al contenido
         </a>
         <ScrollProgress />
+        <GrainOverlay />
+        <CustomCursor />
+        <SectionRail />
         <Nav />
         <main id="main-content">
           <Hero />

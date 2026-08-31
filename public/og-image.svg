@@ -20,17 +20,17 @@
   <!-- Content -->
   <g transform="translate(100, 200)">
     <!-- Terminal prompt -->
-    <text x="0" y="0" font-family="JetBrains Mono, monospace" font-size="18" fill="#475569">
+    <text x="0" y="0" font-family="Consolas, 'Courier New', monospace" font-size="18" fill="#475569">
       [artif4kt@analyst ~]$
     </text>
 
     <!-- Name -->
-    <text x="0" y="80" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="72" fill="#E2E8F0">
+    <text x="0" y="80" font-family="'Segoe UI', Arial, sans-serif" font-weight="700" font-size="72" fill="#E2E8F0">
       Santiago <tspan fill="#3B82F6">Sandili</tspan>
     </text>
 
     <!-- Title -->
-    <text x="0" y="140" font-family="JetBrains Mono, monospace" font-size="24" fill="#475569" letter-spacing="4">
+    <text x="0" y="140" font-family="Consolas, 'Courier New', monospace" font-size="24" fill="#475569" letter-spacing="4">
       SOC ANALYST JR. · BLUE TEAM · DFIR
     </text>
 
@@ -38,11 +38,11 @@
     <g transform="translate(0, 180)">
       <rect x="0" y="0" width="140" height="28" fill="none" stroke="#22D3EE" stroke-width="1" opacity="0.5"/>
       <circle cx="14" cy="14" r="4" fill="#22D3EE"/>
-      <text x="28" y="19" font-family="JetBrains Mono, monospace" font-size="12" fill="#22D3EE">ACTIVE_SESSION</text>
+      <text x="28" y="19" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#22D3EE">ACTIVE_SESSION</text>
 
       <rect x="160" y="0" width="110" height="28" fill="none" stroke="#22D3EE" stroke-width="1" opacity="0.5"/>
       <circle cx="174" cy="14" r="4" fill="#22D3EE"/>
-      <text x="188" y="19" font-family="JetBrains Mono, monospace" font-size="12" fill="#22D3EE">AVAILABLE</text>
+      <text x="188" y="19" font-family="Consolas, 'Courier New', monospace" font-size="12" fill="#22D3EE">AVAILABLE</text>
     </g>
   </g>
 

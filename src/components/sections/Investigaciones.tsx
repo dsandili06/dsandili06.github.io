@@ -5,8 +5,14 @@ import { ChevronLeft, ChevronRight, LayoutGrid, Table } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/primitives/Section";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
+import { lazy, Suspense } from "react";
 import { SpotlightCard } from "@/components/fx/SpotlightCard";
-import { WriteupModal } from "@/components/WriteupModal";
+import { LabsCarousel } from "@/components/fx/LabsCarousel";
+
+// Lazy: react-markdown (~250KB) solo se descarga al abrir un writeup
+const WriteupModal = lazy(() =>
+  import("@/components/WriteupModal").then((m) => ({ default: m.WriteupModal })),
+);
 
 export function Investigaciones() {
   const [viewMode, setViewMode] = useState<"carousel" | "table">("carousel");
@@ -97,6 +103,9 @@ export function Investigaciones() {
           ))}
         </div>
       </div>
+
+      {/* Auto-rotating carousel of ALL labs */}
+      <LabsCarousel onOpen={setWriteupId} />
 
       <div className="flex items-center gap-4 mb-8">
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)]">
@@ -363,7 +372,11 @@ export function Investigaciones() {
         </>
       )}
 
-      {writeupId && <WriteupModal investigationId={writeupId} onClose={() => setWriteupId(null)} />}
+      {writeupId && (
+        <Suspense fallback={null}>
+          <WriteupModal investigationId={writeupId} onClose={() => setWriteupId(null)} />
+        </Suspense>
+      )}
     </Section>
   );
 }

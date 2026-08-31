@@ -103,10 +103,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Portfolio de Santiago Daniel Sandili — Analista de Seguridad L1 / Blue Team. DFIR, threat hunting, malware analysis y automatización defensiva.",
       },
-      { property: "og:image", content: "https://dsandili06.github.io/og-image.svg" },
+      { property: "og:image", content: "https://dsandili06.github.io/og-image.png" },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
-      { name: "twitter:image", content: "https://dsandili06.github.io/og-image.svg" },
+      { name: "twitter:image", content: "https://dsandili06.github.io/og-image.png" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },

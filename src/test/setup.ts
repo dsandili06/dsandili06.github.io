@@ -37,6 +37,12 @@ Object.defineProperty(window, "IntersectionObserver", {
   value: MockIntersectionObserver,
 });
 
+// jsdom doesn't implement scrolling APIs used by embla/YARL — stub them
+Object.defineProperty(window, "scrollTo", { writable: true, value: () => {} });
+if (!Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {};
+}
+
 // Mock matchMedia for prefers-reduced-motion
 Object.defineProperty(window, "matchMedia", {
   writable: true,

@@ -64,15 +64,16 @@ export function Nav() {
         </button>
       </div>
       <div
-        className={`md:hidden overflow-hidden border-t border-border-dim bg-[#07080A] transition-[max-height,opacity] duration-300 ${menuOpen ? "max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}
+        className={`md:hidden overflow-hidden border-t border-border-dim bg-[#07080A] transition-[max-height,opacity] duration-300 ${menuOpen ? "nav-mobile-open max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}
       >
         <ul className="flex flex-col px-6 py-2 font-mono text-xs uppercase tracking-[0.2em]">
-          {links.map((l) => (
+          {links.map((l, i) => (
             <li key={l.href}>
               <a
                 href={l.href}
                 onClick={() => setMenuOpen(false)}
-                className="flex items-center gap-3 py-3 border-b border-border-dim/60 text-foreground/80 hover:text-[var(--accent)] transition-colors"
+                style={{ transitionDelay: menuOpen ? `${80 + i * 55}ms` : "0ms" }}
+                className="nav-mobile-link flex items-center gap-3 py-3 border-b border-border-dim/60 text-foreground/80 hover:text-[var(--accent)] transition-colors"
               >
                 <span className="text-[var(--accent)]/60">{">"}</span>
                 <span>{l.label}</span>
