@@ -43,6 +43,21 @@ if (!Element.prototype.scrollIntoView) {
   Element.prototype.scrollIntoView = () => {};
 }
 
+// jsdom lacks ResizeObserver — embla-carousel requires it
+class MockResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+Object.defineProperty(window, "ResizeObserver", {
+  writable: true,
+  value: MockResizeObserver,
+});
+Object.defineProperty(global, "ResizeObserver", {
+  writable: true,
+  value: MockResizeObserver,
+});
+
 // Mock matchMedia for prefers-reduced-motion
 Object.defineProperty(window, "matchMedia", {
   writable: true,

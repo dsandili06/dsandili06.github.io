@@ -7,7 +7,7 @@ import { Section } from "@/components/primitives/Section";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
 import { lazy, Suspense } from "react";
 import { SpotlightCard } from "@/components/fx/SpotlightCard";
-import { LabsCarousel } from "@/components/fx/LabsCarousel";
+import Autoplay from "embla-carousel-autoplay";
 
 // Lazy: react-markdown (~250KB) solo se descarga al abrir un writeup
 const WriteupModal = lazy(() =>
@@ -18,15 +18,19 @@ export function Investigaciones() {
   const [viewMode, setViewMode] = useState<"carousel" | "table">("carousel");
   const [writeupId, setWriteupId] = useState<string | null>(null);
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({
-    align: "start",
-    loop: false,
-    slidesToScroll: 1,
-  });
+  // Reduced motion: no autoplay plugin
+  const prefersReduced =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  const [canScrollPrev, setCanScrollPrev] = useState(false);
-  const [canScrollNext, setCanScrollNext] = useState(true);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { align: "start", loop: true, slidesToScroll: 1 },
+    prefersReduced
+      ? []
+      : [Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true })],
+  );
+
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [progressKey, setProgressKey] = useState(0); // restarts progress bar per slide
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -34,8 +38,7 @@ export function Investigaciones() {
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
     setSelectedIndex(emblaApi.selectedScrollSnap());
-    setCanScrollPrev(emblaApi.canScrollPrev());
-    setCanScrollNext(emblaApi.canScrollNext());
+    setProgressKey((k) => k + 1);
   }, [emblaApi]);
 
   useEffect(() => {
@@ -104,9 +107,6 @@ export function Investigaciones() {
         </div>
       </div>
 
-      {/* Auto-rotating carousel of ALL labs */}
-      <LabsCarousel onOpen={setWriteupId} />
-
       <div className="flex items-center gap-4 mb-8">
         <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)]">
           FULL_CASE_LOG
@@ -154,22 +154,30 @@ export function Investigaciones() {
               </span>{" "}
               / {String(INVESTIGATIONS.length).padStart(2, "0")}
             </span>
+            {/* Autoplay progress bar — restarts on every slide change */}
+            <div className="relative h-[2px] flex-1 bg-border-dim overflow-hidden" aria-hidden>
+              {!prefersReduced && (
+                <div
+                  key={progressKey}
+                  className="absolute inset-0 bg-[var(--accent)] origin-left"
+                  style={{ animation: "autoplay-progress 3.5s linear infinite" }}
+                />
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={scrollPrev}
-                disabled={!canScrollPrev}
                 aria-label="Anterior"
-                className="flex items-center justify-center size-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] disabled:opacity-30 disabled:hover:border-border-dim disabled:hover:text-[var(--muted-foreground)] transition-colors"
+                className="flex items-center justify-center size-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
               >
                 <ChevronLeft size={16} />
               </button>
               <button
                 type="button"
                 onClick={scrollNext}
-                disabled={!canScrollNext}
                 aria-label="Siguiente"
-                className="flex items-center justify-center size-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] disabled:opacity-30 disabled:hover:border-border-dim disabled:hover:text-[var(--muted-foreground)] transition-colors"
+                className="flex items-center justify-center size-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
               >
                 <ChevronRight size={16} />
               </button>
@@ -190,7 +198,7 @@ export function Investigaciones() {
                 <button
                   type="button"
                   onClick={() => setWriteupId(i.id)}
-                  className="group flex flex-col justify-between h-full p-6 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))] transition-all duration-200 text-left w-full"
+                  className="group flex flex-col justify-between h-full p-6 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))] transition-all duration-200 text-left w-full cursor-pointer"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4 gap-2">
@@ -274,13 +282,13 @@ export function Investigaciones() {
                 type="button"
                 key={i.id}
                 onClick={() => setWriteupId(i.id)}
-                className="grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 items-start px-5 py-4 border-b border-border-dim last:border-b-0 w-full text-left transition-colors hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)]"
+                className="group grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 items-start px-5 py-4 border-b border-border-dim last:border-b-0 w-full text-left transition-colors hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] cursor-pointer"
                 title={i.summary}
               >
                 <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums pt-0.5">
                   {i.id.replace("LAB_", "")}
                 </div>
-                <div className="font-display font-semibold text-foreground text-[15px] tracking-tight leading-snug pt-0.5">
+                <div className="font-display font-semibold text-foreground text-[15px] tracking-tight leading-snug pt-0.5 group-hover:text-[var(--accent)] transition-colors">
                   {i.title}
                 </div>
                 <div className="flex flex-wrap gap-1">
@@ -333,7 +341,7 @@ export function Investigaciones() {
                 type="button"
                 key={i.id}
                 onClick={() => setWriteupId(i.id)}
-                className="border-t border-border-dim py-5 first:border-t-0 text-left w-full"
+                className="border-t border-border-dim py-5 first:border-t-0 text-left w-full cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] transition-colors"
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--muted-foreground)]">

@@ -542,34 +542,8 @@ html.has-custom-cursor textarea {
   transform: translateX(0);
 }
 
-/* ── Labs carousel ──────────────────────────────────────────────── */
-.labs-carousel__viewport {
-  overflow: hidden;
-  width: 100%;
-}
-.labs-carousel__container {
-  display: flex;
-  gap: 1rem;
-}
-.labs-carousel__slide {
-  flex: 0 0 min(78vw, 340px);
-  min-width: 0;
-}
-.labs-carousel__progress {
-  position: relative;
-  height: 2px;
-  flex: 1;
-  background: var(--border-dim);
-  overflow: hidden;
-}
-.labs-carousel__progress-fill {
-  position: absolute;
-  inset: 0;
-  background: var(--accent);
-  transform-origin: left;
-  animation: labs-progress 3.5s linear infinite;
-}
-@keyframes labs-progress {
+/* ── Carousel autoplay progress ─────────────────────────────────── */
+@keyframes autoplay-progress {
   from {
     transform: scaleX(0);
   }
@@ -594,10 +568,6 @@ html.has-custom-cursor textarea {
   }
   .grain-overlay__layer {
     animation: none !important;
-  }
-  .labs-carousel__progress-fill {
-    animation: none !important;
-    transform: scaleX(0.5);
   }
   html {
     scroll-behavior: auto;

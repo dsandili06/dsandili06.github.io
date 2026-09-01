@@ -361,11 +361,13 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
           </motion.div>
         </motion.div>
       </AnimatePresence>
-      {/* Zoom lightbox for writeup screenshots */}
+      {/* Zoom lightbox for writeup screenshots — single slide: no prev/next arrows */}
       <Lightbox
         open={lightboxSrc !== null}
         close={() => setLightboxSrc(null)}
         slides={lightboxSrc ? [{ src: lightboxSrc }] : []}
+        carousel={{ finite: true }}
+        render={{ buttonPrev: () => null, buttonNext: () => null }}
         styles={{ container: { zIndex: 10000 } }}
       />
     </>,
