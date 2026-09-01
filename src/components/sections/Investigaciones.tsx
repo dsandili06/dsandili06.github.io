@@ -15,7 +15,11 @@ const WriteupModal = lazy(() =>
 );
 
 export function Investigaciones() {
-  const [viewMode, setViewMode] = useState<"carousel" | "table">("carousel");
+  const [viewMode, setViewMode] = useState<"carousel" | "table">(() =>
+    typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
+      ? "table" // mobile lands on the compact table format
+      : "carousel",
+  );
   const [writeupId, setWriteupId] = useState<string | null>(null);
 
   // Reduced motion: no autoplay plugin
@@ -26,7 +30,7 @@ export function Investigaciones() {
     { align: "start", loop: true, slidesToScroll: 1 },
     prefersReduced
       ? []
-      : [Autoplay({ delay: 3500, stopOnInteraction: false, stopOnMouseEnter: true })],
+      : [Autoplay({ delay: 2500, stopOnInteraction: false, stopOnMouseEnter: true })],
   );
 
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -160,7 +164,7 @@ export function Investigaciones() {
                 <div
                   key={progressKey}
                   className="absolute inset-0 bg-[var(--accent)] origin-left"
-                  style={{ animation: "autoplay-progress 3.5s linear infinite" }}
+                  style={{ animation: "autoplay-progress 2.5s linear infinite" }}
                 />
               )}
             </div>
@@ -341,40 +345,36 @@ export function Investigaciones() {
                 type="button"
                 key={i.id}
                 onClick={() => setWriteupId(i.id)}
-                className="border-t border-border-dim py-5 first:border-t-0 text-left w-full cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] transition-colors px-4 -mx-4"
+                className="group border-t border-border-dim py-3 first:border-t-0 text-left w-full cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] transition-colors px-4 -mx-4"
               >
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--muted-foreground)]">
-                    {i.id}
+                <div className="flex items-center gap-3">
+                  <span className="w-7 shrink-0 font-mono text-[10px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums">
+                    {i.id.replace("LAB_", "")}
                   </span>
-                  <Badge variant="success" dot>
-                    PUBLICADO
-                  </Badge>
+                  <span className="min-w-0 flex-1 truncate font-display font-semibold text-[14px] tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
+                    {i.title}
+                  </span>
+                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--accent)]">
+                    VER →
+                  </span>
                 </div>
-                <h3 className="font-display font-semibold text-lg tracking-tight mb-1">
-                  {i.title}
-                </h3>
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-3">
+                <div className="mt-1 pl-10 font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
                   {i.platform} · {i.categories.join(" · ")}
-                </div>
-                <p className="text-sm text-foreground/65 leading-relaxed">{i.summary}</p>
-                <div className="mt-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)]">
-                  Ver writeup →
                 </div>
               </button>
             ))}
-            <div className="border-t border-dashed border-[var(--accent)]/30 py-5 opacity-60 px-4 -mx-4">
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)]">
-                  LAB_016
+            <div className="border-t border-dashed border-[var(--accent)]/30 py-3 opacity-60 px-4 -mx-4">
+              <div className="flex items-center gap-3">
+                <span className="w-7 shrink-0 font-mono text-[10px] tracking-[0.2em] text-[var(--accent)] tabular-nums">
+                  016
                 </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">
+                <span className="min-w-0 flex-1 truncate font-display font-semibold text-[14px] tracking-tight text-foreground/70">
+                  Próximo writeup CyberDefenders
+                </span>
+                <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">
                   EN PROCESO
                 </span>
               </div>
-              <h3 className="font-display font-semibold text-lg tracking-tight">
-                Próximo writeup CyberDefenders
-              </h3>
             </div>
           </div>
         </>
