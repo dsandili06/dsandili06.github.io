@@ -301,7 +301,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-          style={{ background: "#0B1118" }}
+          style={{ background: "#04070B" }}
           onClick={onClose}
         >
           <motion.div
@@ -380,7 +380,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
             >
               <div className={showToc ? "flex items-start gap-6" : ""}>
                 <div
-                  className={`border border-border-dim rounded bg-[#0B1118] min-h-[200px] max-h-[80dvh] ${
+                  className={`border border-border-dim rounded bg-[#0B1118] min-h-[200px] ${
                     showToc ? "flex-1 min-w-0" : ""
                   }`}
                 >
