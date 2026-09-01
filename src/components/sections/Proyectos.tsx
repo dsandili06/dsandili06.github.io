@@ -31,7 +31,7 @@ export function Proyectos() {
                 {p.label}
               </span>
             </div>
-            <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-60 group-hover:opacity-100 group-hover:translate-x-1 transition-all pt-1">
+            <div className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-60 max-md:opacity-100 group-hover:opacity-100 group-hover:translate-x-1 transition-all pt-1">
               VER REPO →
             </div>
           </motion.a>

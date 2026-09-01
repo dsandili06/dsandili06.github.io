@@ -53,7 +53,7 @@ export function About() {
                 948 <span className="text-[var(--muted-foreground)] text-xl">/ 1000</span>
               </div>
             </div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity">
+            <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 transition-opacity">
               VER →
             </span>
           </div>

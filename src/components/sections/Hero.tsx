@@ -47,7 +47,7 @@ export function Hero() {
       </motion.div>
       {/* Scanline — subtle moving line for incident room feel */}
       <div className="scanline" aria-hidden />
-      <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-24 md:pt-28">
+      <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-20 md:pt-28">
         <div className="flex items-center gap-3 flex-wrap">
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2.5 py-1 border border-[var(--accent-green)]/50 text-[var(--accent-green)] inline-flex items-center gap-2">
             <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
@@ -61,7 +61,7 @@ export function Hero() {
       </div>
       <div className="max-w-7xl w-full mx-auto px-6 md:px-10 flex-1 grid grid-cols-1 md:grid-cols-[1fr_minmax(0,440px)] gap-10 md:gap-12 items-center py-12">
         <div className="flex flex-col">
-          <div className="mb-8 min-h-[5.5rem]">
+          <div className="hidden sm:block mb-8 min-h-[5.5rem]">
             <BootSequence />
           </div>
           <motion.h1

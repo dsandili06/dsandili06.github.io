@@ -38,7 +38,7 @@ export function Contacto() {
     <section
       id="contacto"
       data-reveal="fade-scale"
-      className="relative py-24 md:py-32 border-b border-border-dim"
+      className="relative py-16 md:py-32 border-b border-border-dim"
     >
       <div className="mb-14 md:mb-20">
         <h2
@@ -98,7 +98,7 @@ export function Contacto() {
                 <span className="font-semibold text-base md:text-lg text-foreground group-hover:text-[var(--accent)] transition-colors break-all">
                   {c.value}
                 </span>
-                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
                   {c.cta}
                 </span>
               </div>

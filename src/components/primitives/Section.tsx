@@ -17,7 +17,7 @@ export function Section({ id, number, title, kicker, reveal, children }: Section
     <section
       id={id}
       data-reveal={reveal || "slide-up"}
-      className="relative py-24 md:py-32 border-b border-border-dim"
+      className="relative py-16 md:py-32 border-b border-border-dim"
     >
       <SectionHeader number={number} title={title} kicker={kicker} />
       {children}

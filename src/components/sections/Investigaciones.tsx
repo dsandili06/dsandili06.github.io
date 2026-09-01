@@ -169,7 +169,7 @@ export function Investigaciones() {
                 type="button"
                 onClick={scrollPrev}
                 aria-label="Anterior"
-                className="flex items-center justify-center size-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -177,7 +177,7 @@ export function Investigaciones() {
                 type="button"
                 onClick={scrollNext}
                 aria-label="Siguiente"
-                className="flex items-center justify-center size-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
               >
                 <ChevronRight size={16} />
               </button>
@@ -309,7 +309,7 @@ export function Investigaciones() {
                     PUBLICADO
                   </Badge>
                 </div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 group-hover:opacity-100 transition-opacity pt-0.5 text-right">
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 transition-opacity pt-0.5 text-right">
                   VER →
                 </div>
               </button>
@@ -341,7 +341,7 @@ export function Investigaciones() {
                 type="button"
                 key={i.id}
                 onClick={() => setWriteupId(i.id)}
-                className="border-t border-border-dim py-5 first:border-t-0 text-left w-full cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] transition-colors"
+                className="border-t border-border-dim py-5 first:border-t-0 text-left w-full cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] transition-colors px-4 -mx-4"
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--muted-foreground)]">
@@ -363,7 +363,7 @@ export function Investigaciones() {
                 </div>
               </button>
             ))}
-            <div className="border-t border-dashed border-[var(--accent)]/30 py-5 opacity-60">
+            <div className="border-t border-dashed border-[var(--accent)]/30 py-5 opacity-60 px-4 -mx-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)]">
                   LAB_016

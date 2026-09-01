@@ -239,9 +239,9 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
           </div>
         )}
         {interactive && isMobile && (
-          <div className="flex items-center gap-2 font-mono text-[11px] text-[var(--muted-foreground)]">
+          <div className="flex items-center gap-2 font-mono text-[11px] text-[var(--muted-foreground)] flex-wrap">
             <span className="inline-block size-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-            <span>MODO INTERACTIVO NO DISPONIBLE · Usá un navegador desktop para comandos</span>
+            <span>Modo interactivo disponible en desktop</span>
           </div>
         )}
       </div>

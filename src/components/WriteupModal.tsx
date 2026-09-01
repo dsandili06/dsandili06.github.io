@@ -319,7 +319,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
             aria-labelledby="writeup-title"
           >
             {/* Header */}
-            <div className="flex items-start justify-between gap-4 px-6 pt-6 pb-3 shrink-0">
+            <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-6 pb-3 shrink-0">
               <div className="min-w-0">
                 <div className="flex items-center gap-3 flex-wrap mb-1">
                   <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
@@ -375,7 +375,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
               ref={bodyScrollRef}
               data-lenis-prevent
               onScroll={handleBodyScroll}
-              className="flex-1 overflow-y-auto px-6 pb-6"
+              className="flex-1 overflow-y-auto px-4 md:px-6 pb-6"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
               <div className={showToc ? "flex items-start gap-6" : ""}>
@@ -469,9 +469,10 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
               </div>
             </div>
             {/* Footer */}
-            <div className="flex items-center justify-between px-6 pb-4 shrink-0">
+            <div className="flex items-center justify-between px-4 md:px-6 pb-4 shrink-0">
               <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                ESC para cerrar
+                <span className="md:hidden">Tocá fuera del panel para cerrar</span>
+                <span className="hidden md:inline">ESC para cerrar</span>
               </span>
               {investigation && (
                 <a
