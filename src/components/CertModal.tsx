@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 
 type CertModalProps = {
   cert: string;
@@ -10,6 +11,7 @@ type CertModalProps = {
 };
 
 export function CertModal({ cert, title, onClose }: CertModalProps) {
+  const panelRef = useFocusTrap<HTMLDivElement>();
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -35,6 +37,7 @@ export function CertModal({ cert, title, onClose }: CertModalProps) {
         onClick={onClose}
       >
         <motion.div
+          ref={panelRef}
           key="cert-modal-panel"
           initial={{ opacity: 0, scale: 0.96, y: 16 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}

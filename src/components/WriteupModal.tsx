@@ -1,15 +1,76 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { X, ExternalLink, Loader2, AlertTriangle } from "lucide-react";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { X, ExternalLink, Loader2, AlertTriangle, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
+import rehypeSlug from "rehype-slug";
+import GithubSlugger from "github-slugger";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import type { ComponentProps } from "react";
+import type { ComponentProps, ReactNode } from "react";
 import { INVESTIGATIONS } from "@/data/investigations";
 import type { Investigation } from "@/types";
+
+/** Recursively extracts plain text from React children (highlighted code included). */
+function extractText(node: ReactNode): string {
+  if (node == null || typeof node === "boolean") return "";
+  if (typeof node === "string" || typeof node === "number") return String(node);
+  if (Array.isArray(node)) return node.map(extractText).join("");
+  if (typeof node === "object" && "props" in node) {
+    return extractText((node as { props: { children?: ReactNode } }).props.children);
+  }
+  return "";
+}
+
+/** Copy-to-clipboard button shown on hover over writeup code blocks. */
+function CopyCodeButton({ children }: { children: ReactNode }) {
+  const [copied, setCopied] = useState(false);
+
+  const onCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(extractText(children));
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      /* clipboard unavailable — silently ignore */
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onCopy}
+      aria-label="Copiar comando"
+      className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded border border-border-dim bg-[#0D1117]/90 text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] opacity-0 group-hover/code:opacity-100 focus:opacity-100 transition-opacity"
+    >
+      {copied ? <Check size={12} strokeWidth={2} /> : <Copy size={12} strokeWidth={1.5} />}
+      {copied ? "Copiado" : "Copiar"}
+    </button>
+  );
+}
+
+type TocEntry = { depth: number; text: string; id: string };
+
+/**
+ * Extracts h2/h3 entries from the raw markdown. Uses the same github-slugger
+ * over ALL headings (in document order) as rehype-slug does, so ids match.
+ */
+function parseToc(md: string): TocEntry[] {
+  const slugger = new GithubSlugger();
+  const toc: TocEntry[] = [];
+  for (const line of md.split("\n")) {
+    const m = line.match(/^(#{1,6})\s+(.+?)\s*$/);
+    if (!m) continue;
+    const depth = m[1].length;
+    const raw = m[2].replace(/[*_`~]/g, "").trim();
+    const id = slugger.slug(raw);
+    if (depth === 2 || depth === 3) toc.push({ depth, text: raw, id });
+  }
+  return toc;
+}
 function investigationById(id: string): Investigation | undefined {
   return INVESTIGATIONS.find((i) => i.id === id);
 }
@@ -42,12 +103,15 @@ type WriteupModalProps = {
   onClose: () => void;
 };
 export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
+  const panelRef = useFocusTrap<HTMLDivElement>();
   const investigation = investigationById(investigationId);
   const [md, setMd] = useState<string | null>(null);
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
   const cacheKey = `writeup-${investigationId}`;
+  const bodyScrollRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
   const fetchWriteup = useCallback(async () => {
     if (!investigation) {
@@ -104,6 +168,21 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
   const platform = investigation?.platform;
   const categories = investigation?.categories;
   const summary = investigation?.summary;
+  const toc = useMemo(() => (md ? parseToc(md) : []), [md]);
+  const showToc = toc.length >= 4;
+
+  // Reading progress — scaleX bar at the top of the panel (GPU transform)
+  const handleBodyScroll = useCallback(() => {
+    const el = bodyScrollRef.current;
+    const bar = progressBarRef.current;
+    if (!el || !bar) return;
+    const max = el.scrollHeight - el.clientHeight;
+    bar.style.transform = `scaleX(${max > 0 ? el.scrollTop / max : 0})`;
+  }, []);
+
+  useEffect(() => {
+    handleBodyScroll();
+  }, [md, handleBodyScroll]);
 
   const components: MarkdownComponents = {
     img: ({ src, alt, ...props }) => {
@@ -141,7 +220,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
     ),
     h2: ({ children, ...props }) => (
       <h2
-        className="font-display font-bold text-2xl md:text-3xl leading-tight tracking-tight text-foreground mt-8 mb-3"
+        className="font-display font-bold text-2xl md:text-3xl leading-tight tracking-tight text-foreground mt-8 mb-3 scroll-mt-6"
         {...props}
       >
         {children}
@@ -149,7 +228,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
     ),
     h3: ({ children, ...props }) => (
       <h3
-        className="font-display font-bold text-xl md:text-2xl leading-tight tracking-tight text-foreground mt-6 mb-2"
+        className="font-display font-bold text-xl md:text-2xl leading-tight tracking-tight text-foreground mt-6 mb-2 scroll-mt-6"
         {...props}
       >
         {children}
@@ -194,11 +273,14 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
         );
       }
       return (
-        <pre className="overflow-x-auto rounded border border-border-dim bg-[#0D1117] p-4 mb-4">
-          <code className="font-mono text-[13px] leading-relaxed text-[#c9d1d9]" {...props}>
-            {children}
-          </code>
-        </pre>
+        <div className="relative group/code">
+          <CopyCodeButton>{children}</CopyCodeButton>
+          <pre className="overflow-x-auto rounded border border-border-dim bg-[#0D1117] p-4 mb-4">
+            <code className="font-mono text-[13px] leading-relaxed text-[#c9d1d9]" {...props}>
+              {children}
+            </code>
+          </pre>
+        </div>
       );
     },
     table: ({ children, ...props }) => (
@@ -223,6 +305,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
           onClick={onClose}
         >
           <motion.div
+            ref={panelRef}
             key="writeup-panel"
             initial={{ opacity: 0, scale: 0.97, y: 16 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -277,67 +360,111 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
               </button>
             </div>
 
+            {/* Reading progress — top edge of the panel */}
+            <div className="absolute top-0 left-0 right-0 h-[2px] z-10" aria-hidden>
+              <div
+                ref={progressBarRef}
+                className="h-full bg-[var(--accent)] origin-left"
+                style={{ transform: "scaleX(0)" }}
+              />
+            </div>
+
             {/* Body — data-lenis-prevent lets native touch scroll work inside
                 the modal while Lenis is stopped (body scroll stays locked) */}
             <div
+              ref={bodyScrollRef}
               data-lenis-prevent
+              onScroll={handleBodyScroll}
               className="flex-1 overflow-y-auto px-6 pb-6"
               style={{ WebkitOverflowScrolling: "touch" }}
             >
-              <div className="border border-border-dim rounded bg-[#0B1118] min-h-[200px] max-h-[80dvh]">
-                {loading && (
-                  <div className="flex flex-col items-center justify-center gap-3 py-20 text-[var(--muted-foreground)]">
-                    <Loader2 size={24} className="animate-spin" />
-                    <span className="font-mono text-[11px] uppercase tracking-[0.2em]">
-                      Fetching writeup...
-                    </span>
-                  </div>
-                )}
-                {error && !loading && investigation && (
-                  <div className="flex flex-col items-center justify-center gap-4 py-20 px-6 text-center">
-                    <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
-                    <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                      No se pudo cargar el writeup
-                    </span>
-                    <a
-                      href={investigation.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] px-4 py-2 border border-[var(--accent)]/50 text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
-                    >
-                      <ExternalLink size={14} strokeWidth={1.5} /> Ver en GitHub
-                    </a>
-                    <button
-                      onClick={() => {
-                        sessionStorage.removeItem(cacheKey);
-                        setError(false);
-                        setLoading(true);
-                        fetchWriteup();
-                      }}
-                      className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] hover:text-foreground transition-colors underline underline-offset-2"
-                    >
-                      Reintentar
-                    </button>
-                  </div>
-                )}
-                {!investigation && !loading && (
-                  <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-                    <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
-                    <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                      Writeup no encontrado
-                    </span>
-                  </div>
-                )}
-                {md && (
-                  <div className="p-6 md:p-10 max-w-none">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      rehypePlugins={[rehypeRaw]}
-                      components={components}
-                    >
-                      {md}
-                    </ReactMarkdown>
-                  </div>
+              <div className={showToc ? "flex items-start gap-6" : ""}>
+                <div
+                  className={`border border-border-dim rounded bg-[#0B1118] min-h-[200px] max-h-[80dvh] ${
+                    showToc ? "flex-1 min-w-0" : ""
+                  }`}
+                >
+                  {loading && (
+                    <div className="flex flex-col items-center justify-center gap-3 py-20 text-[var(--muted-foreground)]">
+                      <Loader2 size={24} className="animate-spin" />
+                      <span className="font-mono text-[11px] uppercase tracking-[0.2em]">
+                        Fetching writeup...
+                      </span>
+                    </div>
+                  )}
+                  {error && !loading && investigation && (
+                    <div className="flex flex-col items-center justify-center gap-4 py-20 px-6 text-center">
+                      <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
+                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                        No se pudo cargar el writeup
+                      </span>
+                      <a
+                        href={investigation.href}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] px-4 py-2 border border-[var(--accent)]/50 text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
+                      >
+                        <ExternalLink size={14} strokeWidth={1.5} /> Ver en GitHub
+                      </a>
+                      <button
+                        onClick={() => {
+                          sessionStorage.removeItem(cacheKey);
+                          setError(false);
+                          setLoading(true);
+                          fetchWriteup();
+                        }}
+                        className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] hover:text-foreground transition-colors underline underline-offset-2"
+                      >
+                        Reintentar
+                      </button>
+                    </div>
+                  )}
+                  {!investigation && !loading && (
+                    <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+                      <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
+                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                        Writeup no encontrado
+                      </span>
+                    </div>
+                  )}
+                  {md && (
+                    <div className="p-6 md:p-10 max-w-none">
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm]}
+                        rehypePlugins={[rehypeRaw, rehypeSlug]}
+                        components={components}
+                      >
+                        {md}
+                      </ReactMarkdown>
+                    </div>
+                  )}
+                </div>
+
+                {/* TOC — sticky index for long writeups (desktop only) */}
+                {showToc && (
+                  <aside className="hidden lg:block w-56 shrink-0 sticky top-4 max-h-[76dvh] overflow-y-auto">
+                    <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mb-3">
+                      INDEX
+                    </div>
+                    <ul className="space-y-1.5 border-l border-border-dim">
+                      {toc.map((t) => (
+                        <li key={t.id} style={{ paddingLeft: t.depth === 3 ? "0.9rem" : "0.6rem" }}>
+                          <a
+                            href={`#${t.id}`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              document
+                                .getElementById(t.id)
+                                ?.scrollIntoView({ behavior: "smooth", block: "start" });
+                            }}
+                            className="block font-mono text-[10px] leading-snug text-[var(--muted-foreground)] hover:text-[var(--accent)] transition-colors"
+                          >
+                            {t.text}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </aside>
                 )}
               </div>
             </div>
