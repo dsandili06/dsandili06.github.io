@@ -115,7 +115,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
           loading="lazy"
           decoding="async"
           onClick={() => resolved && setLightboxSrc(resolved)}
-          className="max-w-full h-auto rounded border border-border-dim my-4 cursor-zoom-in"
+          className="writeup-img max-w-full h-auto rounded border border-border-dim my-4"
           {...props}
         />
       );

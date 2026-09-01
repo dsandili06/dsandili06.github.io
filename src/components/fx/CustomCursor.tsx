@@ -38,7 +38,9 @@ export function CustomCursor() {
     const onOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement | null;
       hovering = Boolean(
-        target?.closest('a, button, [role="button"], .spotlight-card, input, textarea'),
+        target?.closest(
+          'a, button, [role="button"], .spotlight-card, input, textarea, .writeup-img',
+        ),
       );
       if (ringRef.current) {
         ringRef.current.dataset.hover = hovering ? "true" : "false";
@@ -82,16 +84,17 @@ export function CustomCursor() {
 
   return (
     <>
+      {/* z-index above modals (9999) and lightbox (10000) — cursor is always visible */}
       <div
         ref={dotRef}
         aria-hidden
-        className="custom-cursor-dot pointer-events-none fixed left-0 top-0 z-[98] opacity-0"
+        className="custom-cursor-dot pointer-events-none fixed left-0 top-0 z-[10051] opacity-0"
       />
       <div
         ref={ringRef}
         aria-hidden
         data-hover="false"
-        className="custom-cursor-ring pointer-events-none fixed left-0 top-0 z-[97] opacity-0"
+        className="custom-cursor-ring pointer-events-none fixed left-0 top-0 z-[10050] opacity-0"
       />
     </>
   );
