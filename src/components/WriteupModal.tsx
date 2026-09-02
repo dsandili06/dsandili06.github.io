@@ -380,7 +380,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.97, y: 16 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="relative mx-auto w-full max-w-5xl flex flex-col"
+            className="relative mx-auto w-full max-w-7xl flex flex-col"
             style={{ maxHeight: "100dvh" }}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
