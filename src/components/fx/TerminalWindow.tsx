@@ -77,7 +77,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  // Auto-typing animation
+  // Auto-typing animation — single interval chain, no state per character
   useEffect(() => {
     if (!start || done) return;
     if (lineIdx >= BOOT_LINES.length) {
@@ -86,17 +86,20 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
       return;
     }
     const full = BOOT_LINES[lineIdx].text;
-    if (current.length < full.length) {
-      const t = setTimeout(() => setCurrent(full.slice(0, current.length + 1)), CHAR_MS);
-      return () => clearTimeout(t);
-    }
-    const t = setTimeout(() => {
-      setPrinted((p) => [...p, BOOT_LINES[lineIdx]]);
-      setCurrent("");
-      setLineIdx((i) => i + 1);
-    }, LINE_DELAY);
-    return () => clearTimeout(t);
-  }, [start, current, lineIdx, done]);
+    let charIdx = 0;
+    const interval = setInterval(() => {
+      charIdx++;
+      if (charIdx <= full.length) {
+        setCurrent(full.slice(0, charIdx));
+      } else {
+        clearInterval(interval);
+        setPrinted((p) => [...p, BOOT_LINES[lineIdx]]);
+        setCurrent("");
+        setLineIdx((i) => i + 1);
+      }
+    }, CHAR_MS);
+    return () => clearInterval(interval);
+  }, [start, lineIdx, done]);
 
   // Scroll to bottom on new content
   useEffect(() => {

@@ -106,5 +106,4 @@ describe("WriteupModal", () => {
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
-
-  });
+});

@@ -91,6 +91,7 @@ export function HeroShader() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let alive = true;
     let rafId = 0;
+    let visible = true; // tracks whether the hero is in the viewport
 
     let renderer: Renderer;
     try {
@@ -136,6 +137,10 @@ export function HeroShader() {
 
     const frame = (time: number) => {
       if (!alive) return;
+      if (!visible) {
+        rafId = requestAnimationFrame(frame);
+        return; // pause rendering when hero is out of viewport
+      }
       program.uniforms.uTime.value = time * 0.001;
       // Lerp mouse for smooth trailing
       const u = program.uniforms.uMouse.value as Vec2;
@@ -161,6 +166,30 @@ export function HeroShader() {
     });
     ro.observe(wrapper);
 
+    // Pause rAF when hero is out of viewport (perf on mobile/long pages)
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        visible = entry.isIntersecting;
+      },
+      { threshold: 0 },
+    );
+    io.observe(wrapper);
+
+    // Handle WebGL context loss — pause rendering silently
+    const onContextLost = (e: Event) => {
+      e.preventDefault();
+      alive = false;
+      cancelAnimationFrame(rafId);
+      console.warn("[HeroShader] WebGL context lost");
+    };
+    const onContextRestored = () => {
+      alive = true;
+      if (!reduced) rafId = requestAnimationFrame(frame);
+      console.warn("[HeroShader] WebGL context restored");
+    };
+    canvas.addEventListener("webglcontextlost", onContextLost);
+    canvas.addEventListener("webglcontextrestored", onContextRestored);
+
     if (!reduced) {
       window.addEventListener("mousemove", onMouse, { passive: true });
     }
@@ -170,9 +199,10 @@ export function HeroShader() {
       cancelAnimationFrame(rafId);
       cancelAnimationFrame(rafStart);
       ro.disconnect();
+      io.disconnect();
+      canvas.removeEventListener("webglcontextlost", onContextLost);
+      canvas.removeEventListener("webglcontextrestored", onContextRestored);
       if (!reduced) window.removeEventListener("mousemove", onMouse);
-      const ext = gl.getExtension("WEBGL_lose_context");
-      ext?.loseContext();
     };
   }, []);
 

@@ -24,27 +24,26 @@ function NotFoundComponent() {
 
       <div className="relative max-w-md text-center">
         {/* Terminal-style error */}
-        <div className="font-mono text-[11px] text-[#475569] mb-6">
+        <div className="font-mono text-xs text-[var(--muted-foreground)] mb-6">
           <span className="text-[#22D3EE]">analyst@soc-lab</span>:~$ cd /requested-page
         </div>
-        <div className="font-mono text-[11px] text-[#FF5F56] mb-8">
+        <div className="font-mono text-xs text-[#FF5F56] mb-8">
           bash: cd: /requested-page: No such file or directory
         </div>
 
         {/* Glitch 404 */}
         <h1
-          className="glitch font-display font-bold text-8xl text-[#3B82F6] leading-none tracking-tight mb-4"
-          style={{ fontSize: "clamp(5rem, 15vw, 9rem)" }}
+          className="glitch font-display font-bold leading-none tracking-tight mb-4"
+          style={{ fontSize: "clamp(5rem, 15vw, 9rem)", color: "#3B82F6" }}
         >
           404
         </h1>
 
-        <h2 className="font-mono text-sm uppercase tracking-[0.25em] text-[#E2E8F0] mb-3">
-          PAGE_NOT_FOUND
+        <h2 className="font-mono text-sm uppercase tracking-[0.25em] text-foreground mb-3">
+          PÁGINA_NO_ENCONTRADA
         </h2>
-        <p className="font-mono text-[11px] text-[#475569] mb-8 max-w-sm mx-auto leading-relaxed">
-          The page you're looking for doesn't exist or has been moved. Try going back to the main
-          terminal.
+        <p className="font-mono text-xs text-[var(--muted-foreground)] mb-8 max-w-sm mx-auto leading-relaxed">
+          La página que buscás no existe o fue movida. Volvé a la terminal principal.
         </p>
 
         <Link
@@ -67,10 +66,10 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
     <div className="min-h-screen bg-[#060A10] flex flex-col items-center justify-center px-4">
       <div className="max-w-md text-center">
         <h1 className="font-mono text-sm uppercase tracking-[0.25em] text-[#FF5F56] mb-4">
-          [ERROR] Session crashed
+          [ERROR] Sesión caída
         </h1>
-        <p className="font-mono text-[11px] text-[#475569] mb-8 max-w-sm mx-auto leading-relaxed">
-          Something went wrong on our end. You can try refreshing or head back home.
+        <p className="font-mono text-xs text-[var(--muted-foreground)] mb-8 max-w-sm mx-auto leading-relaxed">
+          Algo salió mal. Podés refrescar la página o volver al inicio.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           <button
@@ -80,11 +79,11 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
             }}
             className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-[#3B82F6]/30 text-[#3B82F6] hover:bg-[#3B82F6]/10 hover:border-[#3B82F6] transition-colors"
           >
-            <span>retry</span>
+            <span>reintentar</span>
           </button>
           <a
             href="/"
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-[#475569]/30 text-[#475569] hover:text-[#E2E8F0] hover:border-[#475569] transition-colors"
+            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-[var(--muted-foreground)]/30 text-[var(--muted-foreground)] hover:text-foreground hover:border-[var(--muted-foreground)] transition-colors"
           >
             <span>cd ~</span>
           </a>
