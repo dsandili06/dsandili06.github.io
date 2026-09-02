@@ -7,8 +7,6 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
-import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
-import type { Schema } from "hast-util-sanitize";
 import GithubSlugger from "github-slugger";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -119,81 +117,6 @@ function resolveImageUri(uri: string, githubUrl: string): string {
   const cleaned = uri.replace(/^\.?\//, "");
   return base + cleaned;
 }
-
-// rehype-sanitize schema: allow safe HTML tags from remote markdown
-// while stripping scripts, event handlers, iframes, etc.
-const SANITIZE_SCHEMA: Schema = {
-  ...defaultSchema,
-  tagNames: [
-    ...(defaultSchema.tagNames ?? []),
-    "img",
-    "a",
-    "h1",
-    "h2",
-    "h3",
-    "h4",
-    "h5",
-    "h6",
-    "pre",
-    "code",
-    "table",
-    "thead",
-    "tbody",
-    "tfoot",
-    "tr",
-    "th",
-    "td",
-    "blockquote",
-    "ul",
-    "ol",
-    "li",
-    "hr",
-    "div",
-    "span",
-    "strong",
-    "em",
-    "b",
-    "i",
-    "br",
-    "p",
-    "del",
-    "ins",
-    "sup",
-    "sub",
-    "details",
-    "summary",
-    "kbd",
-    "abbr",
-    "dd",
-    "dl",
-    "dt",
-    "figure",
-    "figcaption",
-    "mark",
-    "small",
-    "time",
-    "wbr",
-    "video",
-    "source",
-  ],
-  attributes: {
-    ...defaultSchema.attributes,
-    "*": ["className", "id", "style", "title", "lang", "dir"],
-    a: ["href", "target", "rel", "download"],
-    img: ["src", "alt", "width", "height", "loading", "decoding", "referrerPolicy"],
-    video: ["src", "controls", "width", "height", "poster", "autoplay", "loop", "muted"],
-    source: ["src", "type"],
-    th: ["align", "colspan", "rowspan", "scope"],
-    td: ["align", "colspan", "rowspan"],
-    ol: ["start", "type"],
-    li: ["value"],
-    details: ["open"],
-    abbr: ["title"],
-    time: ["datetime"],
-  },
-  clobberPrefix: "x-writeup-",
-  clobber: ["name", "id"],
-};
 
 type MarkdownComponents = ComponentProps<typeof ReactMarkdown>["components"];
 
@@ -556,7 +479,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
                     <div className="p-6 md:p-10 max-w-none">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw, [rehypeSanitize, SANITIZE_SCHEMA], rehypeSlug]}
+                        rehypePlugins={[rehypeRaw, rehypeSlug]}
                         components={components}
                       >
                         {md}
