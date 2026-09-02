@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useActiveSection } from "@/hooks/useActiveSection";
+import { getLenis } from "@/lib/lenis";
 
 const railLinks = [
   { id: "about", label: "01" },
@@ -22,13 +23,12 @@ export function SectionRail() {
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (!el) return;
-    const lenis = (window as unknown as Record<string, unknown>).__lenis as
-      { scrollTo: (target: Element, opts?: { offset?: number }) => void } | undefined;
-    if (lenis) {
-      lenis.scrollTo(el, { offset: -64 });
-    } else {
+    const lenis = getLenis();
+    if (!lenis) {
       el.scrollIntoView({ behavior: "smooth" });
+      return;
     }
+    lenis.scrollTo(el, { offset: -64 });
     history.replaceState(null, "", `#${id}`);
   };
 

@@ -149,6 +149,8 @@ type WriteupModalProps = {
   investigationId: string;
   onClose: () => void;
 };
+import { getLenis } from "@/lib/lenis";
+
 export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
   const panelRef = useFocusTrap<HTMLDivElement>();
   const investigation = investigationById(investigationId);
@@ -201,8 +203,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
 
   // Pause Lenis smooth scroll while modal is open; resume on close
   useEffect(() => {
-    const lenis = (window as unknown as Record<string, unknown>).__lenis as
-      { stop: () => void; start: () => void } | undefined;
+    const lenis = getLenis();
     lenis?.stop();
     document.body.style.overflow = "hidden";
     return () => {
