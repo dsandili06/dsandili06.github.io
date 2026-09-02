@@ -24,9 +24,13 @@ export function LenisProvider() {
     rafId = requestAnimationFrame(raf);
 
     // Intercept in-page hash navigation for smooth scroll via Lenis
+    // Skip clicks inside data-lenis-prevent containers (modals) or already prevented
     const onAnchorClick = (e: MouseEvent) => {
+      if (e.defaultPrevented) return;
       const target = (e.target as HTMLElement)?.closest("a[href^='#']") as HTMLAnchorElement | null;
       if (!target) return;
+      // Skip if the anchor is inside a lenis-prevent container (e.g. writeup modal TOC)
+      if (target.closest("[data-lenis-prevent]")) return;
       const hash = target.getAttribute("href");
       if (!hash || hash === "#") return;
       const id = hash.slice(1);

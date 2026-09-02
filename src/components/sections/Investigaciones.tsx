@@ -156,7 +156,7 @@ export function Investigaciones() {
               <span className="text-foreground font-bold">
                 {String(selectedIndex + 1).padStart(2, "0")}
               </span>{" "}
-              / {String(INVESTIGATIONS.length).padStart(2, "0")}
+              / {String(INVESTIGATIONS.length + 1).padStart(2, "0")}
             </span>
             {/* Autoplay progress bar — restarts on every slide change */}
             <div className="relative h-[2px] flex-1 bg-border-dim overflow-hidden" aria-hidden>

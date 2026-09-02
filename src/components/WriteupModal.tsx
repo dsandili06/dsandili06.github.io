@@ -7,6 +7,8 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import type { Schema } from "hast-util-sanitize";
 import GithubSlugger from "github-slugger";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -55,13 +57,20 @@ function CopyCodeButton({ children }: { children: ReactNode }) {
 type TocEntry = { depth: number; text: string; id: string };
 
 /**
- * Extracts h2/h3 entries from the raw markdown. Uses the same github-slugger
- * over ALL headings (in document order) as rehype-slug does, so ids match.
+ * Extracts h2/h3 entries from the raw markdown, skipping content inside code fences.
+ * Uses the same github-slugger over ALL headings (in document order) as rehype-slug does, so ids match.
  */
 function parseToc(md: string): TocEntry[] {
   const slugger = new GithubSlugger();
   const toc: TocEntry[] = [];
+  let inFence = false;
   for (const line of md.split("\n")) {
+    // Track code fences (``` or ~~~)
+    if (/^```/.test(line) || /^~~~/.test(line)) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
     const m = line.match(/^(#{1,6})\s+(.+?)\s*$/);
     if (!m) continue;
     const depth = m[1].length;
@@ -90,11 +99,101 @@ function getImageBaseUrl(githubUrl: string): string {
 }
 
 function resolveImageUri(uri: string, githubUrl: string): string {
-  if (/^https?:\/\//.test(uri)) return uri;
+  // Only allow images from GitHub domains (security: block external tracking pixels)
+  if (/^https?:\/\//.test(uri)) {
+    try {
+      const host = new URL(uri).hostname;
+      const allowed = [
+        "raw.githubusercontent.com",
+        "github.com",
+        "user-images.githubusercontent.com",
+        "avatars.githubusercontent.com",
+      ];
+      if (!allowed.some((h) => host === h || host.endsWith("." + h))) return "";
+    } catch {
+      return "";
+    }
+    return uri;
+  }
   const base = getImageBaseUrl(githubUrl);
   const cleaned = uri.replace(/^\.?\//, "");
   return base + cleaned;
 }
+
+// rehype-sanitize schema: allow safe HTML tags from remote markdown
+// while stripping scripts, event handlers, iframes, etc.
+const SANITIZE_SCHEMA: Schema = {
+  ...defaultSchema,
+  tagNames: [
+    ...(defaultSchema.tagNames ?? []),
+    "img",
+    "a",
+    "h1",
+    "h2",
+    "h3",
+    "h4",
+    "h5",
+    "h6",
+    "pre",
+    "code",
+    "table",
+    "thead",
+    "tbody",
+    "tfoot",
+    "tr",
+    "th",
+    "td",
+    "blockquote",
+    "ul",
+    "ol",
+    "li",
+    "hr",
+    "div",
+    "span",
+    "strong",
+    "em",
+    "b",
+    "i",
+    "br",
+    "p",
+    "del",
+    "ins",
+    "sup",
+    "sub",
+    "details",
+    "summary",
+    "kbd",
+    "abbr",
+    "dd",
+    "dl",
+    "dt",
+    "figure",
+    "figcaption",
+    "mark",
+    "small",
+    "time",
+    "wbr",
+    "video",
+    "source",
+  ],
+  attributes: {
+    ...defaultSchema.attributes,
+    "*": ["className", "id", "style", "title", "lang", "dir"],
+    a: ["href", "target", "rel", "download"],
+    img: ["src", "alt", "width", "height", "loading", "decoding", "referrerPolicy"],
+    video: ["src", "controls", "width", "height", "poster", "autoplay", "loop", "muted"],
+    source: ["src", "type"],
+    th: ["align", "colspan", "rowspan", "scope"],
+    td: ["align", "colspan", "rowspan"],
+    ol: ["start", "type"],
+    li: ["value"],
+    details: ["open"],
+    abbr: ["title"],
+    time: ["datetime"],
+  },
+  clobberPrefix: "x-writeup-",
+  clobber: ["name", "id"],
+};
 
 type MarkdownComponents = ComponentProps<typeof ReactMarkdown>["components"];
 
@@ -127,12 +226,21 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
     }
     try {
       const rawUrl = toRawUrl(investigation.href);
-      const res = await fetch(rawUrl);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+      const res = await fetch(rawUrl, { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
       const text = await res.text();
-      sessionStorage.setItem(cacheKey, text);
+      // Cache best-effort (QuotaExceededError in private Safari is swallowed)
+      try {
+        sessionStorage.setItem(cacheKey, text);
+      } catch {
+        /* quota — cache is optional */
+      }
       setMd(text);
-    } catch {
+    } catch (err) {
+      console.error(`[WriteupModal] Failed to fetch ${investigation.id}:`, err);
       setError(true);
     } finally {
       setLoading(false);
@@ -194,6 +302,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
           loading="lazy"
           decoding="async"
           onClick={() => resolved && setLightboxSrc(resolved)}
+          referrerPolicy="no-referrer"
           className="writeup-img max-w-full h-auto rounded border border-border-dim my-4"
           {...props}
         />
@@ -290,6 +399,9 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
         </table>
       </div>
     ),
+    // react-markdown wraps code blocks in its own <pre>; our code component
+    // already returns a <pre> inside a <div>, so we strip the outer <pre>
+    pre: ({ children }) => <>{children}</>,
   };
   return createPortal(
     <>
@@ -431,7 +543,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
                     <div className="p-6 md:p-10 max-w-none">
                       <ReactMarkdown
                         remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw, rehypeSlug]}
+                        rehypePlugins={[rehypeRaw, [rehypeSanitize, SANITIZE_SCHEMA], rehypeSlug]}
                         components={components}
                       >
                         {md}
