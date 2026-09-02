@@ -23,8 +23,7 @@ export function SectionRail() {
     const el = document.getElementById(id);
     if (!el) return;
     const lenis = (window as unknown as Record<string, unknown>).__lenis as
-      | { scrollTo: (target: Element, opts?: { offset?: number }) => void }
-      | undefined;
+      { scrollTo: (target: Element, opts?: { offset?: number }) => void } | undefined;
     if (lenis) {
       lenis.scrollTo(el, { offset: -64 });
     } else {

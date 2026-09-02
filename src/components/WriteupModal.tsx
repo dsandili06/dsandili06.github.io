@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useState, useEffect, useCallback, useRef, useMemo, Component } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
@@ -13,6 +13,31 @@ import "yet-another-react-lightbox/styles.css";
 import type { ComponentProps, ReactNode } from "react";
 import { INVESTIGATIONS } from "@/data/investigations";
 import type { Investigation } from "@/types";
+
+/** Catches ReactMarkdown render errors so the modal doesn't crash silently. */
+class MarkdownErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
+  state = { error: null as Error | null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  render() {
+    if (this.state.error) {
+      console.error("[WriteupModal] Markdown render error:", this.state.error);
+      return (
+        <div className="p-6 text-center">
+          <AlertTriangle size={24} className="mx-auto mb-3 text-[var(--accent-amber)]" />
+          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+            Error al renderizar el contenido
+          </p>
+          <p className="mt-2 font-mono text-[10px] text-[var(--muted-foreground)]/60">
+            {this.state.error.message}
+          </p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 /** Recursively extracts plain text from React children (highlighted code included). */
 function extractText(node: ReactNode): string {
@@ -177,8 +202,7 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
   // Pause Lenis smooth scroll while modal is open; resume on close
   useEffect(() => {
     const lenis = (window as unknown as Record<string, unknown>).__lenis as
-      | { stop: () => void; start: () => void }
-      | undefined;
+      { stop: () => void; start: () => void } | undefined;
     lenis?.stop();
     document.body.style.overflow = "hidden";
     return () => {
@@ -218,30 +242,26 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
   const components: MarkdownComponents = {
     img: ({ src, alt, ...props }) => {
       const resolved = src ? resolveImageUri(src, investigation?.href || "") : src;
+      if (!resolved) return null;
       return (
-        <button
-          type="button"
-          disabled={!resolved}
-          onClick={() => resolved && setLightboxSrc(resolved)}
+        <img
+          src={resolved}
+          alt={alt || ""}
+          loading="lazy"
+          decoding="async"
+          referrerPolicy="no-referrer"
+          tabIndex={0}
+          role="button"
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              if (resolved) setLightboxSrc(resolved);
+              setLightboxSrc(resolved);
             }
           }}
-          aria-label={alt ? `Ampliar imagen: ${alt}` : "Ampliar imagen"}
-          className="block text-left w-full"
-        >
-          <img
-            src={resolved}
-            alt={alt || ""}
-            loading="lazy"
-            decoding="async"
-            referrerPolicy="no-referrer"
-            className="writeup-img max-w-full h-auto rounded border border-border-dim my-4"
-            {...props}
-          />
-        </button>
+          onClick={() => setLightboxSrc(resolved)}
+          className="writeup-img max-w-full h-auto rounded border border-border-dim my-4 cursor-zoom-in"
+          {...props}
+        />
       );
     },
     a: ({ href, children, ...props }) => (
@@ -477,13 +497,15 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
                   )}
                   {md && (
                     <div className="p-6 md:p-10 max-w-none">
-                      <ReactMarkdown
-                        remarkPlugins={[remarkGfm]}
-                        rehypePlugins={[rehypeRaw, rehypeSlug]}
-                        components={components}
-                      >
-                        {md}
-                      </ReactMarkdown>
+                      <MarkdownErrorBoundary>
+                        <ReactMarkdown
+                          remarkPlugins={[remarkGfm]}
+                          rehypePlugins={[rehypeRaw, rehypeSlug]}
+                          components={components}
+                        >
+                          {md}
+                        </ReactMarkdown>
+                      </MarkdownErrorBoundary>
                     </div>
                   )}
                 </div>
