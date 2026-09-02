@@ -79,4 +79,32 @@ describe("WriteupModal", () => {
     const img = await screen.findByAltText("screenshot");
     expect(img).toHaveAttribute("src", "https://github.com/user-attachments/assets/test-uuid");
   });
-});
+
+  it("shows error state when fetch fails (HTTP 404)", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: false, status: 404, statusText: "Not Found" }),
+    );
+    render(<WriteupModal investigationId="LAB_001" onClose={vi.fn()} />);
+
+    expect(await screen.findByText("No se pudo cargar el writeup")).toBeInTheDocument();
+    const retryBtn = screen.getByText("Reintentar");
+    expect(retryBtn).toBeInTheDocument();
+  });
+
+  it("shows error state for unknown investigation ID", async () => {
+    render(<WriteupModal investigationId="LAB_999" onClose={vi.fn()} />);
+
+    expect(await screen.findByText("Writeup no encontrado")).toBeInTheDocument();
+  });
+
+  it("calls onClose when Escape is pressed", async () => {
+    const onClose = vi.fn();
+    const { findByText } = render(<WriteupModal investigationId="LAB_001" onClose={onClose} />);
+    await findByText(MD_CONTENT.split("\n\n")[1]);
+
+    document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  });

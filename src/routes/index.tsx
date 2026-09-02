@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { lazy, Suspense, useState } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { MotionConfig } from "motion/react";
 import { LenisProvider } from "@/components/fx/LenisProvider";
 import { GrainOverlay } from "@/components/fx/GrainOverlay";
 import { CustomCursor } from "@/components/fx/CustomCursor";
@@ -58,45 +59,47 @@ function Portfolio() {
 
   return (
     <TooltipProvider delayDuration={150}>
-      <LenisProvider />
-      <div className="min-h-screen bg-background text-foreground font-body relative selection:bg-accent selection:text-[var(--accent-foreground)]">
-        {/* Skip to content — a11y */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[10000] focus:px-4 focus:py-2 focus:bg-[var(--accent)] focus:text-[var(--accent-foreground)] focus:font-mono focus:text-xs focus:uppercase focus:tracking-[0.2em] focus:rounded"
-        >
-          Saltar al contenido
-        </a>
-        <ScrollProgress />
-        <GrainOverlay />
-        <CustomCursor />
-        <SectionRail />
-        <Nav />
-        <main id="main-content">
-          <Hero />
-          <div className="max-w-7xl mx-auto px-6 md:px-10">
-            <About />
-            <Proyectos />
-            <Suspense fallback={<SectionSkeleton />}>
-              <Investigaciones />
-            </Suspense>
-            <Suspense fallback={<SectionSkeleton />}>
-              <Stack />
-            </Suspense>
-            <Suspense fallback={<SectionSkeleton />}>
-              <Certs />
-            </Suspense>
-            <Suspense fallback={<SectionSkeleton />}>
-              <Cursos />
-            </Suspense>
-            <Suspense fallback={<SectionSkeleton />}>
-              <Contacto />
-            </Suspense>
-          </div>
-        </main>
-        <Footer />
-        <MatrixRain active={matrixActive} onClose={() => setMatrixActive(false)} />
-      </div>
+      <MotionConfig reducedMotion="user">
+        <LenisProvider />
+        <div className="min-h-screen bg-background text-foreground font-body relative selection:bg-accent selection:text-[var(--accent-foreground)]">
+          {/* Skip to content — a11y */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[10000] focus:px-4 focus:py-2 focus:bg-[var(--accent)] focus:text-[var(--accent-foreground)] focus:font-mono focus:text-xs focus:uppercase focus:tracking-[0.2em] focus:rounded"
+          >
+            Saltar al contenido
+          </a>
+          <ScrollProgress />
+          <GrainOverlay />
+          <CustomCursor />
+          <SectionRail />
+          <Nav />
+          <main id="main-content">
+            <Hero />
+            <div className="max-w-7xl mx-auto px-6 md:px-10">
+              <About />
+              <Proyectos />
+              <Suspense fallback={<SectionSkeleton />}>
+                <Investigaciones />
+              </Suspense>
+              <Suspense fallback={<SectionSkeleton />}>
+                <Stack />
+              </Suspense>
+              <Suspense fallback={<SectionSkeleton />}>
+                <Certs />
+              </Suspense>
+              <Suspense fallback={<SectionSkeleton />}>
+                <Cursos />
+              </Suspense>
+              <Suspense fallback={<SectionSkeleton />}>
+                <Contacto />
+              </Suspense>
+            </div>
+          </main>
+          <Footer />
+          <MatrixRain active={matrixActive} onClose={() => setMatrixActive(false)} />
+        </div>
+      </MotionConfig>
     </TooltipProvider>
   );
 }

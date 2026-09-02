@@ -13,17 +13,22 @@ describe("Investigaciones", () => {
 
     expect(screen.getByText("FEATURED_CASES")).toBeInTheDocument();
     expect(screen.getByText("FULL_CASE_LOG")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /carrusel/i })).toBeInTheDocument();
+    // The toggle buttons use LayoutGrid icon for "Carrusel" and Table icon for "Tabla"
+    const carouselBtns = screen.getAllByRole("button", { name: /carrusel/i });
+    expect(carouselBtns.length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole("button", { name: /tabla/i })).toBeInTheDocument();
   });
 
   it("toggles between carousel and table views without errors", () => {
     render(<Investigaciones />);
 
-    // Carousel is the default view
+    // Carousel is the default view (desktop jsdom mock)
     const tableBtn = screen.getByRole("button", { name: /tabla/i });
-    const carouselBtn = screen.getByRole("button", { name: /carrusel/i });
-    expect(carouselBtn).toHaveAttribute("aria-pressed", "true");
+    const carouselBtns = screen.getAllByRole("button", { name: /carrusel/i });
+    // The first carousel button is the view toggle (has aria-pressed)
+    const carouselToggle = carouselBtns.find((b) => b.hasAttribute("aria-pressed"));
+    expect(carouselToggle).toBeTruthy();
+    expect(carouselToggle).toHaveAttribute("aria-pressed", "true");
 
     // Switch to table — embla (with autoplay) unmounts cleanly
     fireEvent.click(tableBtn);
@@ -31,8 +36,8 @@ describe("Investigaciones", () => {
     expect(screen.getAllByText(/Próximo writeup/i).length).toBeGreaterThanOrEqual(1);
 
     // Switch back — carousel remounts, autoplay restarts
-    fireEvent.click(carouselBtn);
-    expect(carouselBtn).toHaveAttribute("aria-pressed", "true");
+    fireEvent.click(carouselToggle!);
+    expect(carouselToggle).toHaveAttribute("aria-pressed", "true");
   });
 
   it("table lab rows show click affordance (cursor + hover styles)", () => {

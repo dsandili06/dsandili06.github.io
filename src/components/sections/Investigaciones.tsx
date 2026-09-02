@@ -35,6 +35,7 @@ export function Investigaciones() {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [progressKey, setProgressKey] = useState(0); // restarts progress bar per slide
+  const [paused, setPaused] = useState(false);
 
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
@@ -169,6 +170,41 @@ export function Investigaciones() {
               )}
             </div>
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  emblaApi?.plugins().autoplay?.stop();
+                  setPaused(true);
+                }}
+                aria-label="Pausar carrusel automático"
+                className={`flex items-center justify-center size-10 border transition-colors ${
+                  paused
+                    ? "border-[var(--accent)] text-[var(--accent)]"
+                    : "border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)]"
+                }`}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <rect x="2" y="1" width="4" height="12" rx="1" />
+                  <rect x="8" y="1" width="4" height="12" rx="1" />
+                </svg>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  emblaApi?.plugins().autoplay?.play();
+                  setPaused(false);
+                }}
+                aria-label="Reanudar carrusel automático"
+                className={`flex items-center justify-center size-10 border transition-colors ${
+                  !paused
+                    ? "border-[var(--accent)] text-[var(--accent)]"
+                    : "border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)]"
+                }`}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <polygon points="2,1 13,7 2,13" />
+                </svg>
+              </button>
               <button
                 type="button"
                 onClick={scrollPrev}

@@ -296,16 +296,29 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
     img: ({ src, alt, ...props }) => {
       const resolved = src ? resolveImageUri(src, investigation?.href || "") : src;
       return (
-        <img
-          src={resolved}
-          alt={alt || ""}
-          loading="lazy"
-          decoding="async"
+        <button
+          type="button"
+          disabled={!resolved}
           onClick={() => resolved && setLightboxSrc(resolved)}
-          referrerPolicy="no-referrer"
-          className="writeup-img max-w-full h-auto rounded border border-border-dim my-4"
-          {...props}
-        />
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              if (resolved) setLightboxSrc(resolved);
+            }
+          }}
+          aria-label={alt ? `Ampliar imagen: ${alt}` : "Ampliar imagen"}
+          className="block text-left w-full"
+        >
+          <img
+            src={resolved}
+            alt={alt || ""}
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+            className="writeup-img max-w-full h-auto rounded border border-border-dim my-4"
+            {...props}
+          />
+        </button>
       );
     },
     a: ({ href, children, ...props }) => (

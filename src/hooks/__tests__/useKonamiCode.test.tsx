@@ -16,7 +16,7 @@ const KONAMI_SEQUENCE = [
 ];
 
 function fireKey(key: string) {
-  window.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }));
+  document.dispatchEvent(new KeyboardEvent("keydown", { key, bubbles: true }));
 }
 
 describe("useKonamiCode", () => {
