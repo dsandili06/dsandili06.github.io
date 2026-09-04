@@ -4,7 +4,6 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { MotionConfig } from "motion/react";
 import { LenisProvider } from "@/components/fx/LenisProvider";
 import { GrainOverlay } from "@/components/fx/GrainOverlay";
-import { CustomCursor } from "@/components/fx/CustomCursor";
 import { SectionRail } from "@/components/fx/SectionRail";
 import { Nav } from "@/components/sections/Nav";
 import { Hero } from "@/components/sections/Hero";
@@ -71,7 +70,6 @@ function Portfolio() {
           </a>
           <ScrollProgress />
           <GrainOverlay />
-          <CustomCursor />
           <SectionRail />
           <Nav />
           <main id="main-content">

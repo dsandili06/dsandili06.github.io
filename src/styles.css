@@ -534,43 +534,6 @@ html {
   }
 }
 
-/* ── Custom cursor ──────────────────────────────────────────────── */
-/* Hide native cursor only when the custom cursor is active (JS adds .has-custom-cursor) */
-html.has-custom-cursor,
-html.has-custom-cursor a,
-html.has-custom-cursor button {
-  cursor: none;
-}
-html.has-custom-cursor input,
-html.has-custom-cursor textarea {
-  cursor: text;
-}
-.custom-cursor-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 9999px;
-  background: var(--accent);
-  transition: opacity 0.2s ease;
-}
-.custom-cursor-ring {
-  width: 34px;
-  height: 34px;
-  border-radius: 9999px;
-  border: 1px solid color-mix(in oklab, var(--accent) 55%, transparent);
-  transition:
-    width 0.22s var(--ease-out-expo),
-    height 0.22s var(--ease-out-expo),
-    border-color 0.22s ease,
-    background-color 0.22s ease,
-    opacity 0.2s ease;
-}
-.custom-cursor-ring[data-hover="true"] {
-  width: 56px;
-  height: 56px;
-  border-color: var(--accent);
-  background: color-mix(in oklab, var(--accent) 8%, transparent);
-}
-
 /* ── Section rail (right-side indicators) ───────────────────────── */
 .section-rail {
   position: fixed;
