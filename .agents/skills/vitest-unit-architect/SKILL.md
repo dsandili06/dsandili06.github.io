@@ -15,6 +15,7 @@ Esta skill establece las pautas y patrones de prueba para mantener la suite de V
 ## 1. Patrones Canónicos de Prueba
 
 ### A. Pruebas de Comportamiento del Usuario (User-Centric)
+
 - Probar **lo que el usuario ve e interactúa**, no los detalles de implementación internos.
 - Utilizar consultas semánticas en este orden de prioridad:
   1. `screen.getByRole('button', { name: /.../i })`
@@ -23,7 +24,9 @@ Esta skill establece las pautas y patrones de prueba para mantener la suite de V
   4. `screen.getByTestId(...)` (solo como último recurso)
 
 ### B. Mocks de Entorno Browser Necesarios
+
 Al probar componentes con animaciones o APIs de navegador modernas, asegurarse de mockear:
+
 ```typescript
 // Mock de IntersectionObserver
 window.IntersectionObserver = vi.fn().mockImplementation(() => ({
@@ -55,6 +58,7 @@ window.matchMedia = vi.fn().mockImplementation((query) => ({
 ---
 
 ## 2. Pruebas de Modales & Flujos de Salida (`AnimatePresence`)
+
 - Al probar modales (`WriteupModal`, `CertModal`), verificar:
   1. Que se monte y renderice el contenido esperado al activarse.
   2. Que al hacer clic en el botón de cerrar o presionar `Escape`, se dispare el callback `onClose`.
@@ -63,7 +67,9 @@ window.matchMedia = vi.fn().mockImplementation((query) => ({
 ---
 
 ## 3. Verificación Rápida y Limpieza
+
 Comandos estándar para ejecutar antes de confirmar cualquier refactorización:
+
 ```bash
 # Ejecutar toda la suite de pruebas unitarias
 npx vitest run
@@ -74,4 +80,5 @@ npx tsc --noEmit
 # Compilar para producción
 npm run build
 ```
+
 - Una prueba exitosa debe ejecutarse en milisegundos y ser determinista (0 pruebas intermitentes o "flaky").

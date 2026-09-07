@@ -17,6 +17,7 @@ Esta skill guía la evaluación continua de la postura de seguridad del portafol
 El archivo `index.html` debe mantener directivas CSP defensivas sin relajar la protección innecesariamente:
 
 ### Directivas Esenciales:
+
 - `default-src 'self'`: Bloqueo por defecto de cualquier origen desconocido.
 - `script-src 'self'`: Solo permitir scripts empaquetados localmente. Evitar `'unsafe-eval'`.
 - `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`: Permitir estilos en línea necesarios para Tailwind y fuentes oficiales.
@@ -30,6 +31,7 @@ El archivo `index.html` debe mantener directivas CSP defensivas sin relajar la p
 ## 2. Sanitización y Renderizado Seguro de Markdown
 
 Al renderizar contenido dinámico o writeups mediante Markdown:
+
 - **Prevención de XSS:** Nunca renderizar HTML crudo con `dangerouslySetInnerHTML` sin pasar previamente por un sanitizador estricto (ej. `DOMPurify`).
 - **Validación de URLs de Imágenes (`resolveImageUri`):**
   - Solo resolver imágenes que pertenezcan a dominios verificados (`user-attachments.githubusercontent.com`, `camo.githubusercontent.com`, `raw.githubusercontent.com`, buckets S3 oficiales).
@@ -40,9 +42,11 @@ Al renderizar contenido dinámico o writeups mediante Markdown:
 ## 3. Enlaces Externos Seguros
 
 Cualquier enlace externo (`<a href="..." target="_blank">`) **debe incluir obligatoriamente**:
+
 ```html
 rel="noopener noreferrer"
 ```
+
 Esto previene ataques de **Tabnabbing** inverso donde la página externa podría manipular `window.opener.location`.
 
 ---

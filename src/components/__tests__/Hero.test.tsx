@@ -46,9 +46,7 @@ describe("Hero section", () => {
       "/badges/badgegoogle.png",
     );
     expect(
-      screen.getByAltText(
-        "Badge Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta",
-      ),
+      screen.getByAltText("Badge Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta"),
     ).toHaveAttribute("src", "/badges/ciber.png");
     expect(screen.getByAltText("Badge NSE 1 Network Security Associate")).toHaveAttribute(
       "src",

@@ -48,8 +48,7 @@ export function Investigaciones() {
 
   const toggleAutoplay = useCallback(() => {
     const autoplay = emblaApi?.plugins()?.autoplay as
-      | { isPlaying?: () => boolean; play?: () => void; stop?: () => void }
-      | undefined;
+      { isPlaying?: () => boolean; play?: () => void; stop?: () => void } | undefined;
     if (!autoplay) {
       setIsPlaying((p) => !p);
       return;
@@ -197,7 +196,9 @@ export function Investigaciones() {
               <button
                 type="button"
                 onClick={toggleAutoplay}
-                aria-label={isPlaying ? "Pausar carrusel automático" : "Reanudar carrusel automático"}
+                aria-label={
+                  isPlaying ? "Pausar carrusel automático" : "Reanudar carrusel automático"
+                }
                 aria-pressed={!isPlaying}
                 className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
               >

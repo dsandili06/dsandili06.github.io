@@ -50,7 +50,9 @@ describe("Certs section", () => {
 
     expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
     expect(screen.getByTestId("modal-title")).toHaveTextContent("Google Cybersecurity");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent("/certs/Google Cybersecurity Certificate.webp");
+    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
+      "/certs/Google Cybersecurity Certificate.webp",
+    );
 
     // Close modal
     fireEvent.click(screen.getByTestId("modal-close"));

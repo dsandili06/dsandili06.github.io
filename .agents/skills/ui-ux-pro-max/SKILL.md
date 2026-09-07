@@ -15,6 +15,7 @@ Esta skill establece las reglas matemáticas, cromáticas y ergonómicas que gar
 ## 1. La Regla Cromática 60 / 30 / 10
 
 Toda vista o componente debe equilibrarse visualmente siguiendo la regla de distribución:
+
 - **60% Dominante (Fondo y Canvas Base):**
   - Colores profundos de baja fatiga ocular (`#04070b`, `var(--background)`).
   - Actúa como la atmósfera inmersiva donde flotan los elementos.
@@ -22,13 +23,14 @@ Toda vista o componente debe equilibrarse visualmente siguiendo la regla de dist
   - Superficies elevadas (`var(--card)`, `#0a0f16`), paneles semitransparentes y líneas divisoras tácticas (`var(--border)`, `rgba(255, 255, 255, 0.08)`).
 - **10% Acento Táctico (Puntos de Foco e Interacción):**
   - Reservado estrictamente para elementos que requieren atención inmediata: CTAs principales, badges de estado activo, puntuaciones numéricas (`var(--accent)`, cyan `#22d3ee` / electric blue `#3b82f6`).
-  - ⚠️ *Nunca usar el acento en áreas grandes de fondo que saturen la vista.*
+  - ⚠️ _Nunca usar el acento en áreas grandes de fondo que saturen la vista._
 
 ---
 
 ## 2. Ritmo Espacial Matemático (Sistema de Rejilla de 8pt)
 
 Todos los márgenes, paddings, gaps y dimensiones deben ser múltiplos de 4px / 8px:
+
 - **4px (`0.25rem` / `gap-1`):** Micro-espacios entre iconos y etiquetas.
 - **8px (`0.5rem` / `gap-2`):** Espaciado interno de badges o elementos compactos.
 - **16px (`1rem` / `p-4` / `gap-4`):** Padding estándar en tarjetas móviles.
@@ -41,6 +43,7 @@ Todos los márgenes, paddings, gaps y dimensiones deben ser múltiplos de 4px / 
 ## 3. Estados de Interacción Completos (Interaction States)
 
 Ningún elemento interactivo (`<button>`, `<a>`, `<input>`, tarjeta cliqueable) puede existir sin sus 5 estados claramente definidos:
+
 1. **Default:** Aspecto limpio con pistas sutiles de interactividad (`cursor-pointer`).
 2. **Hover:** Respuesta visual inmediata y refinada:
    - Ligero escalado (`scale-[1.02]` o `scale-105`).

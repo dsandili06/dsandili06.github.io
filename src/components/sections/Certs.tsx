@@ -44,9 +44,7 @@ export function Certs() {
                   {c.title}
                 </h3>
                 {c.note && (
-                  <p className="mt-2 text-xs md:text-sm font-mono text-[var(--accent)]">
-                    {c.note}
-                  </p>
+                  <p className="mt-2 text-xs md:text-sm font-mono text-[var(--accent)]">{c.note}</p>
                 )}
               </div>
               <div className="flex items-center justify-between md:justify-end gap-6 md:gap-8">

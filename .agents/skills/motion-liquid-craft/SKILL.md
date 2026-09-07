@@ -17,11 +17,13 @@ Esta skill dicta cómo implementar animaciones, transiciones y efectos visuales 
 Para evitar recálculos de layout (reflow) o repintados continuos de la CPU (repaint), **solo se deben animar propiedades que la GPU pueda componer directamente**:
 
 ### ✅ Propiedades Permitidas para Animación:
+
 - `transform` (`scale`, `translate3d`, `rotate`)
 - `opacity`
 - `filter` / `backdrop-filter` (con moderación y siempre acelerado por hardware)
 
 ### ❌ Propiedades Prohibidas para Animación:
+
 - `width`, `height`, `top`, `left`, `margin`, `padding` (forzan reflow masivo en cada frame).
 - `box-shadow` pesado en bucles de keyframes infinitos (provoca calentamiento y caída de frames en dispositivos móviles).
 
@@ -30,13 +32,14 @@ Para evitar recálculos de layout (reflow) o repintados continuos de la CPU (rep
 ## 2. Superficies "Liquid Glass" (Vidrio Líquido y Táctico)
 
 Para paneles, tarjetas flotantes y modales de alta gama:
+
 - **Estructura Recomendada:**
   ```css
   background: rgba(4, 7, 11, 0.82);
   backdrop-filter: blur(14px) saturate(180%);
   -webkit-backdrop-filter: blur(14px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 
+  box-shadow:
     0 4px 24px -1px rgba(0, 0, 0, 0.6),
     inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
   ```
@@ -47,6 +50,7 @@ Para paneles, tarjetas flotantes y modales de alta gama:
 ## 3. Microdestellos & Efectos Especulares (Corner Glints)
 
 Al agregar destellos o brillos a insignias o badges (como en la sección de Certificaciones):
+
 1. **Destello Estelar de 4 Puntas Curvo**:
    Utilizar SVG con curvas Bézier cúbicas precisas:
    ```svg
