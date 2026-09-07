@@ -1,9 +1,31 @@
+export type ProjectScript = {
+  name: string;
+  desc: string;
+  lang?: "py" | "ps1" | "yara" | "sigma";
+};
+
+export type ProjectMetric = {
+  label: string;
+  value: string;
+};
+
 export type Project = {
   id: string;
   title: string;
   description: string;
   href: string;
   label: string;
+  tags?: string[];
+  branch?: string;
+  license?: string;
+  visibility?: string;
+  image?: string;
+  metrics?: ProjectMetric[];
+  scripts?: ProjectScript[];
+  modulesLabel?: string;
+  highlight?: string;
+  inPageHref?: string;
+  inPageLabel?: string;
 };
 
 export type Investigation = {
