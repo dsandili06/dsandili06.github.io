@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "motion/react";
 import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight, LayoutGrid, Table } from "lucide-react";
+import { ChevronLeft, ChevronRight, LayoutGrid, Table, Play, Pause } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/primitives/Section";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
@@ -21,6 +21,12 @@ export function Investigaciones() {
       : "carousel",
   );
   const [writeupId, setWriteupId] = useState<string | null>(null);
+  const [modalWriteupId, setModalWriteupId] = useState<string | null>(null);
+
+  const openWriteup = (id: string) => {
+    setModalWriteupId(id);
+    setWriteupId(id);
+  };
 
   // Reduced motion: no autoplay plugin
   const prefersReduced =
@@ -35,8 +41,28 @@ export function Investigaciones() {
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [progressKey, setProgressKey] = useState(0); // restarts progress bar per slide
+  const [isPlaying, setIsPlaying] = useState(!prefersReduced);
+
   const scrollPrev = useCallback(() => emblaApi && emblaApi.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
+
+  const toggleAutoplay = useCallback(() => {
+    const autoplay = emblaApi?.plugins()?.autoplay as
+      | { isPlaying?: () => boolean; play?: () => void; stop?: () => void }
+      | undefined;
+    if (!autoplay) {
+      setIsPlaying((p) => !p);
+      return;
+    }
+    const playing = autoplay.isPlaying ? autoplay.isPlaying() : isPlaying;
+    if (playing) {
+      autoplay.stop?.();
+      setIsPlaying(false);
+    } else {
+      autoplay.play?.();
+      setIsPlaying(true);
+    }
+  }, [emblaApi, isPlaying]);
 
   const onSelect = useCallback(() => {
     if (!emblaApi) return;
@@ -67,12 +93,12 @@ export function Investigaciones() {
           {FEATURED_INVESTIGATIONS.map((i, idx) => (
             <SpotlightCard
               key={i.id}
-              className="group flex flex-col justify-between min-h-[270px] border border-[var(--accent)]/30 hover:border-[var(--accent)] transition-all duration-200"
+              className="group flex flex-col justify-between min-h-[270px] border border-[var(--accent)]/30 hover:border-[var(--accent)] transition-all duration-200 cursor-pointer"
             >
               <button
                 type="button"
-                onClick={() => setWriteupId(i.id)}
-                className="flex flex-col justify-between h-full p-6 bg-[var(--surface)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] transition-colors text-left w-full"
+                onClick={() => openWriteup(i.id)}
+                className="flex flex-col justify-between h-full p-6 bg-[var(--surface)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] transition-colors text-left w-full cursor-pointer"
               >
                 <div>
                   <div className="flex items-center justify-between gap-3 mb-5">
@@ -159,7 +185,7 @@ export function Investigaciones() {
             </span>
             {/* Autoplay progress bar — restarts on every slide change */}
             <div className="relative h-[2px] flex-1 bg-border-dim overflow-hidden" aria-hidden>
-              {!prefersReduced && (
+              {!prefersReduced && isPlaying && (
                 <div
                   key={progressKey}
                   className="absolute inset-0 bg-[var(--accent)] origin-left"
@@ -170,9 +196,18 @@ export function Investigaciones() {
             <div className="flex items-center gap-2">
               <button
                 type="button"
+                onClick={toggleAutoplay}
+                aria-label={isPlaying ? "Pausar carrusel automático" : "Reanudar carrusel automático"}
+                aria-pressed={!isPlaying}
+                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
+              >
+                {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+              </button>
+              <button
+                type="button"
                 onClick={scrollPrev}
                 aria-label="Anterior"
-                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -180,7 +215,7 @@ export function Investigaciones() {
                 type="button"
                 onClick={scrollNext}
                 aria-label="Siguiente"
-                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
               >
                 <ChevronRight size={16} />
               </button>
@@ -200,7 +235,7 @@ export function Investigaciones() {
               >
                 <button
                   type="button"
-                  onClick={() => setWriteupId(i.id)}
+                  onClick={() => openWriteup(i.id)}
                   className="group flex flex-col justify-between h-full p-6 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))] transition-all duration-200 text-left w-full cursor-pointer"
                 >
                   <div>
@@ -284,7 +319,7 @@ export function Investigaciones() {
               <button
                 type="button"
                 key={i.id}
-                onClick={() => setWriteupId(i.id)}
+                onClick={() => openWriteup(i.id)}
                 className="group grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 items-start px-5 py-4 border-b border-border-dim last:border-b-0 w-full text-left transition-colors hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] cursor-pointer"
                 title={i.summary}
               >
@@ -343,7 +378,7 @@ export function Investigaciones() {
               <button
                 type="button"
                 key={i.id}
-                onClick={() => setWriteupId(i.id)}
+                onClick={() => openWriteup(i.id)}
                 className="group border-t border-border-dim py-3 first:border-t-0 text-left w-full cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] transition-colors px-4 -mx-4"
               >
                 <div className="flex items-center gap-3">
@@ -379,9 +414,14 @@ export function Investigaciones() {
         </>
       )}
 
-      {writeupId && (
+      {modalWriteupId && (
         <Suspense fallback={null}>
-          <WriteupModal investigationId={writeupId} onClose={() => setWriteupId(null)} />
+          <WriteupModal
+            investigationId={modalWriteupId}
+            isOpen={Boolean(writeupId)}
+            onClose={() => setWriteupId(null)}
+            onExitComplete={() => setModalWriteupId(null)}
+          />
         </Suspense>
       )}
     </Section>

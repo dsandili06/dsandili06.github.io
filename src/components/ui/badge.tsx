@@ -8,20 +8,17 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "border border-transparent bg-primary text-primary-foreground px-2 py-0.5 text-xs",
-        secondary:
-          "border border-transparent bg-secondary text-secondary-foreground px-2 py-0.5 text-xs",
+        default: "border border-transparent bg-accent text-[var(--accent-foreground)]",
+        secondary: "border border-border-dim bg-surface text-foreground",
         destructive:
-          "border border-transparent bg-destructive text-destructive-foreground px-2 py-0.5 text-xs",
-        outline: "text-foreground border border-border-dim px-2 py-0.5 text-xs",
+          "border border-[var(--accent-amber)]/50 bg-[var(--accent-amber)]/10 text-[var(--accent-amber)]",
+        outline: "text-foreground border border-border-dim",
         // Tactical variants for the cyber-defensive system
-        tactical: "border border-accent/40 text-accent bg-accent/[0.04] px-2 py-0.5 text-[10px]",
-        success:
-          "border border-[var(--accent-green)]/50 text-[var(--accent-green)] px-2 py-0.5 text-[10px]",
-        warning:
-          "border border-[var(--accent-amber)]/50 text-[var(--accent-amber)] px-2 py-0.5 text-[10px]",
-        process: "border border-dashed border-accent/50 text-accent px-2 py-0.5 text-[10px]",
-        ghost: "text-muted-foreground px-2 py-0.5 text-[10px] border border-transparent",
+        tactical: "border border-accent/40 text-accent bg-accent/[0.04]",
+        success: "border border-[var(--accent-green)]/50 text-[var(--accent-green)]",
+        warning: "border border-[var(--accent-amber)]/50 text-[var(--accent-amber)]",
+        process: "border border-dashed border-accent/50 text-accent",
+        ghost: "text-muted-foreground border border-transparent",
       },
       size: {
         sm: "text-[9px] px-1.5 py-0.5",
@@ -46,9 +43,9 @@ function Badge({ className, variant, size, dot, pulse, children, ...props }: Bad
   const dotColor =
     variant === "success"
       ? "bg-[var(--accent-green)]"
-      : variant === "warning"
+      : variant === "warning" || variant === "destructive"
         ? "bg-[var(--accent-amber)]"
-        : variant === "process" || variant === "tactical"
+        : variant === "process" || variant === "tactical" || variant === "default"
           ? "bg-accent"
           : "bg-current";
   return (

@@ -122,17 +122,25 @@ function getImageBaseUrl(githubUrl: string): string {
 }
 
 function resolveImageUri(uri: string, githubUrl: string): string {
-  // Only allow images from GitHub domains (security: block external tracking pixels)
+  // Allow data: URLs for inline base64 images permitted by CSP
+  if (uri.startsWith("data:image/")) {
+    return uri;
+  }
+  // Only allow images from GitHub domains and trusted CDNs matching CSP (security: block external tracking pixels)
   if (/^https?:\/\//.test(uri)) {
     try {
       const host = new URL(uri).hostname;
-      const allowed = [
-        "raw.githubusercontent.com",
-        "github.com",
-        "user-images.githubusercontent.com",
-        "avatars.githubusercontent.com",
-      ];
-      if (!allowed.some((h) => host === h || host.endsWith("." + h))) return "";
+      const allowed = ["github.com", "githubusercontent.com", "s3.amazonaws.com"];
+      if (
+        !allowed.some(
+          (h) =>
+            host === h ||
+            host.endsWith("." + h) ||
+            /\.s3[.-][a-z0-9-]+\.amazonaws\.com$/.test(host),
+        )
+      ) {
+        return "";
+      }
     } catch {
       return "";
     }
@@ -147,11 +155,18 @@ type MarkdownComponents = ComponentProps<typeof ReactMarkdown>["components"];
 
 type WriteupModalProps = {
   investigationId: string;
+  isOpen?: boolean;
   onClose: () => void;
+  onExitComplete?: () => void;
 };
 import { getLenis } from "@/lib/lenis";
 
-export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
+export function WriteupModal({
+  investigationId,
+  isOpen = true,
+  onClose,
+  onExitComplete,
+}: WriteupModalProps) {
   const panelRef = useFocusTrap<HTMLDivElement>();
   const investigation = investigationById(investigationId);
   const [md, setMd] = useState<string | null>(null);
@@ -162,47 +177,73 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
   const bodyScrollRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  const fetchWriteup = useCallback(async () => {
-    if (!investigation) {
-      setLoading(false);
-      setError(true);
-      return;
-    }
-    const cached = sessionStorage.getItem(cacheKey);
-    if (cached) {
-      setMd(cached);
-      setLoading(false);
-      return;
-    }
-    try {
-      const rawUrl = toRawUrl(investigation.href);
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 10000);
-      const res = await fetch(rawUrl, { signal: controller.signal });
-      clearTimeout(timeout);
-      if (!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
-      const text = await res.text();
-      // Cache best-effort (QuotaExceededError in private Safari is swallowed)
-      try {
-        sessionStorage.setItem(cacheKey, text);
-      } catch {
-        /* quota — cache is optional */
+  const fetchWriteup = useCallback(
+    async (signal?: AbortSignal) => {
+      setError(false);
+      setLoading(true);
+      if (!investigation) {
+        setLoading(false);
+        setError(true);
+        return;
       }
-      setMd(text);
-    } catch (err) {
-      console.error(`[WriteupModal] Failed to fetch ${investigation.id}:`, err);
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  }, [investigation, cacheKey]);
+      const cached = sessionStorage.getItem(cacheKey);
+      if (cached) {
+        setMd(cached);
+        setLoading(false);
+        return;
+      }
+      try {
+        const rawUrl = toRawUrl(investigation.href);
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 10000);
+        const onAbort = () => controller.abort();
+        signal?.addEventListener("abort", onAbort, { once: true });
+
+        const res = await fetch(rawUrl, { signal: controller.signal });
+        clearTimeout(timeout);
+        signal?.removeEventListener("abort", onAbort);
+
+        if (!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
+        const text = await res.text();
+        if (signal?.aborted) return;
+        // Cache best-effort (QuotaExceededError in private Safari is swallowed)
+        try {
+          sessionStorage.setItem(cacheKey, text);
+        } catch {
+          /* quota — cache is optional */
+        }
+        setMd(text);
+      } catch (err: unknown) {
+        if ((err as Error)?.name === "AbortError" || signal?.aborted) {
+          return;
+        }
+        console.error(`[WriteupModal] Failed to fetch ${investigation.id}:`, err);
+        setError(true);
+      } finally {
+        if (!signal?.aborted) {
+          setLoading(false);
+        }
+      }
+    },
+    [investigation, cacheKey],
+  );
 
   useEffect(() => {
-    fetchWriteup();
+    setMd(null);
+    const controller = new AbortController();
+    fetchWriteup(controller.signal);
+    return () => {
+      controller.abort();
+    };
   }, [fetchWriteup]);
 
   // Pause Lenis smooth scroll while modal is open; resume on close
   useEffect(() => {
+    if (!isOpen) {
+      document.body.style.overflow = "";
+      getLenis()?.start();
+      return;
+    }
     const lenis = getLenis();
     lenis?.stop();
     document.body.style.overflow = "hidden";
@@ -210,16 +251,17 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
       lenis?.start();
       document.body.style.overflow = "";
     };
-  }, []);
+  }, [isOpen]);
 
   // ESC to close (but only the modal — lightbox handles its own ESC first)
   useEffect(() => {
+    if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" && !lightboxSrc) onClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [onClose, lightboxSrc]);
+  }, [isOpen, onClose, lightboxSrc]);
   const title = investigation?.title || investigationId;
   const platform = investigation?.platform;
   const categories = investigation?.categories;
@@ -362,203 +404,221 @@ export function WriteupModal({ investigationId, onClose }: WriteupModalProps) {
   };
   return createPortal(
     <>
-      <AnimatePresence>
-        <motion.div
-          key="writeup-backdrop"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-          style={{ background: "#04070B" }}
-          onClick={onClose}
-        >
+      <AnimatePresence onExitComplete={onExitComplete}>
+        {isOpen && (
           <motion.div
-            ref={panelRef}
-            key="writeup-panel"
-            initial={{ opacity: 0, scale: 0.97, y: 16 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.97, y: 16 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="relative mx-auto w-full max-w-7xl flex flex-col"
-            style={{ maxHeight: "100dvh" }}
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="writeup-title"
+            key="writeup-backdrop"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
+            style={{ background: "rgba(4, 7, 11, 0.9)", backdropFilter: "blur(12px)" }}
+            onClick={onClose}
           >
-            {/* Header */}
-            <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-6 pb-3 shrink-0">
-              <div className="min-w-0">
-                <div className="flex items-center gap-3 flex-wrap mb-1">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-                    {investigationId}
-                  </span>
-                  {platform && (
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)]">
-                      {platform}
-                    </span>
-                  )}
-                  {categories?.map((cat) => (
-                    <span
-                      key={cat}
-                      className="font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-0.5 border border-border-dim text-[var(--muted-foreground)]"
-                    >
-                      {cat}
-                    </span>
-                  ))}
-                </div>
-                <h2
-                  id="writeup-title"
-                  className="font-display font-bold text-2xl md:text-3xl leading-tight tracking-tight text-foreground"
-                >
-                  {title}
-                </h2>
-                {summary && (
-                  <p className="mt-1 text-sm text-[var(--muted-foreground)] line-clamp-2 max-w-2xl">
-                    {summary}
-                  </p>
-                )}
-              </div>
-              <button
-                onClick={onClose}
-                aria-label="Cerrar"
-                className="shrink-0 ml-4 flex items-center justify-center w-9 h-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
-              >
-                <X size={16} strokeWidth={1.5} />
-              </button>
-            </div>
-
-            {/* Reading progress — top edge of the panel */}
-            <div className="absolute top-0 left-0 right-0 h-[2px] z-10" aria-hidden>
-              <div
-                ref={progressBarRef}
-                className="h-full bg-[var(--accent)] origin-left"
-                style={{ transform: "scaleX(0)" }}
-              />
-            </div>
-
-            {/* Body — data-lenis-prevent lets native touch scroll work inside
-                the modal while Lenis is stopped (body scroll stays locked) */}
-            <div
-              ref={bodyScrollRef}
-              data-lenis-prevent
-              onScroll={handleBodyScroll}
-              className="flex-1 overflow-y-auto px-4 md:px-6 pb-6"
-              style={{ WebkitOverflowScrolling: "touch" }}
+            <motion.div
+              ref={panelRef}
+              key="writeup-panel"
+              initial={{ opacity: 0, scale: 0.97, y: 16 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.97, y: 16 }}
+              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              className="relative mx-auto w-full max-w-7xl flex flex-col"
+              style={{ maxHeight: "100dvh" }}
+              onClick={(e) => e.stopPropagation()}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="writeup-title"
             >
-              <div className={showToc ? "flex items-start gap-6" : ""}>
-                <div
-                  className={`border border-border-dim rounded bg-[#0B1118] min-h-[200px] ${
-                    showToc ? "flex-1 min-w-0" : ""
-                  }`}
-                >
-                  {loading && (
-                    <div className="flex flex-col items-center justify-center gap-3 py-20 text-[var(--muted-foreground)]">
-                      <Loader2 size={24} className="animate-spin" />
-                      <span className="font-mono text-[11px] uppercase tracking-[0.2em]">
-                        Fetching writeup...
+              {/* Header */}
+              <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-6 pb-3 shrink-0">
+                <div className="min-w-0">
+                  <div className="flex items-center gap-3 flex-wrap mb-1">
+                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+                      {investigationId}
+                    </span>
+                    {platform && (
+                      <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)]">
+                        {platform}
                       </span>
-                    </div>
-                  )}
-                  {error && !loading && investigation && (
-                    <div className="flex flex-col items-center justify-center gap-4 py-20 px-6 text-center">
-                      <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
-                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                        No se pudo cargar el writeup
-                      </span>
-                      <a
-                        href={investigation.href}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] px-4 py-2 border border-[var(--accent)]/50 text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
+                    )}
+                    {categories?.map((cat) => (
+                      <span
+                        key={cat}
+                        className="font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-0.5 border border-border-dim text-[var(--muted-foreground)]"
                       >
-                        <ExternalLink size={14} strokeWidth={1.5} /> Ver en GitHub
-                      </a>
-                      <button
-                        onClick={() => {
-                          sessionStorage.removeItem(cacheKey);
-                          setError(false);
-                          setLoading(true);
-                          fetchWriteup();
-                        }}
-                        className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] hover:text-foreground transition-colors underline underline-offset-2"
-                      >
-                        Reintentar
-                      </button>
-                    </div>
-                  )}
-                  {!investigation && !loading && (
-                    <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
-                      <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
-                      <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                        Writeup no encontrado
+                        {cat}
                       </span>
-                    </div>
-                  )}
-                  {md && (
-                    <div className="p-6 md:p-10 max-w-none">
-                      <MarkdownErrorBoundary>
-                        <ReactMarkdown
-                          remarkPlugins={[remarkGfm]}
-                          rehypePlugins={[rehypeRaw, rehypeSlug]}
-                          components={components}
-                        >
-                          {md}
-                        </ReactMarkdown>
-                      </MarkdownErrorBoundary>
-                    </div>
+                    ))}
+                  </div>
+                  <h2
+                    id="writeup-title"
+                    className="font-display font-bold text-2xl md:text-3xl leading-tight tracking-tight text-foreground"
+                  >
+                    {title}
+                  </h2>
+                  {summary && (
+                    <p className="mt-1 text-sm text-[var(--muted-foreground)] line-clamp-2 max-w-2xl">
+                      {summary}
+                    </p>
                   )}
                 </div>
+                <button
+                  onClick={onClose}
+                  aria-label="Cerrar"
+                  className="shrink-0 ml-4 flex items-center justify-center w-9 h-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+                >
+                  <X size={16} strokeWidth={1.5} />
+                </button>
+              </div>
 
-                {/* TOC — sticky index for long writeups (desktop only) */}
-                {showToc && (
-                  <aside className="hidden lg:block w-56 shrink-0 sticky top-4 max-h-[76dvh] overflow-y-auto">
-                    <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mb-3">
-                      INDEX
-                    </div>
-                    <ul className="space-y-1.5 border-l border-border-dim">
-                      {toc.map((t) => (
-                        <li key={t.id} style={{ paddingLeft: t.depth === 3 ? "0.9rem" : "0.6rem" }}>
-                          <a
-                            href={`#${t.id}`}
-                            onClick={(e) => {
-                              e.preventDefault();
-                              document
-                                .getElementById(t.id)
-                                ?.scrollIntoView({ behavior: "smooth", block: "start" });
-                            }}
-                            className="block font-mono text-[10px] leading-snug text-[var(--muted-foreground)] hover:text-[var(--accent)] transition-colors"
+              {/* Reading progress — top edge of the panel */}
+              <div className="absolute top-0 left-0 right-0 h-[2px] z-10" aria-hidden>
+                <div
+                  ref={progressBarRef}
+                  className="h-full bg-[var(--accent)] origin-left"
+                  style={{ transform: "scaleX(0)" }}
+                />
+              </div>
+
+              {/* Body — data-lenis-prevent lets native touch scroll work inside
+                the modal while Lenis is stopped (body scroll stays locked) */}
+              <div
+                ref={bodyScrollRef}
+                data-lenis-prevent
+                onScroll={handleBodyScroll}
+                className="flex-1 overflow-y-auto px-4 md:px-6 pb-6"
+                style={{ WebkitOverflowScrolling: "touch" }}
+              >
+                <div className={showToc ? "flex items-start gap-6" : ""}>
+                  <div
+                    className={`border border-border-dim rounded bg-[#0B1118] min-h-[200px] ${
+                      showToc ? "flex-1 min-w-0" : ""
+                    }`}
+                  >
+                    {loading && (
+                      <div className="flex flex-col items-center justify-center gap-3 py-20 text-[var(--muted-foreground)]">
+                        <Loader2 size={24} className="animate-spin" />
+                        <span className="font-mono text-[11px] uppercase tracking-[0.2em]">
+                          Fetching writeup...
+                        </span>
+                      </div>
+                    )}
+                    {error && !loading && investigation && (
+                      <div className="flex flex-col items-center justify-center gap-4 py-20 px-6 text-center">
+                        <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
+                        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                          No se pudo cargar el writeup
+                        </span>
+                        <a
+                          href={investigation.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] px-4 py-2 border border-[var(--accent)]/50 text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
+                        >
+                          <ExternalLink size={14} strokeWidth={1.5} /> Ver en GitHub
+                        </a>
+                        <button
+                          onClick={() => {
+                            sessionStorage.removeItem(cacheKey);
+                            setError(false);
+                            setLoading(true);
+                            fetchWriteup();
+                          }}
+                          className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] hover:text-foreground transition-colors underline underline-offset-2"
+                        >
+                          Reintentar
+                        </button>
+                      </div>
+                    )}
+                    {!investigation && !loading && (
+                      <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+                        <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
+                        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                          Writeup no encontrado
+                        </span>
+                      </div>
+                    )}
+                    {md && (
+                      <div className="p-6 md:p-10 max-w-none">
+                        <MarkdownErrorBoundary>
+                          <ReactMarkdown
+                            remarkPlugins={[remarkGfm]}
+                            rehypePlugins={[rehypeRaw, rehypeSlug]}
+                            urlTransform={(url) => url}
+                            components={components}
                           >
-                            {t.text}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </aside>
+                            {md}
+                          </ReactMarkdown>
+                        </MarkdownErrorBoundary>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* TOC — sticky index for long writeups (desktop only) */}
+                  {showToc && (
+                    <aside className="hidden lg:block w-56 shrink-0 sticky top-4 max-h-[76dvh] overflow-y-auto">
+                      <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mb-3">
+                        INDEX
+                      </div>
+                      <ul className="space-y-1.5 border-l border-border-dim">
+                        {toc.map((t) => (
+                          <li
+                            key={t.id}
+                            style={{ paddingLeft: t.depth === 3 ? "0.9rem" : "0.6rem" }}
+                          >
+                            <a
+                              href={`#${t.id}`}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                const target = document.getElementById(t.id);
+                                const container = bodyScrollRef.current;
+                                if (target && container) {
+                                  const targetRect = target.getBoundingClientRect();
+                                  const containerRect = container.getBoundingClientRect();
+                                  const targetOffset =
+                                    targetRect.top - containerRect.top + container.scrollTop;
+                                  const prefersReduced = window.matchMedia(
+                                    "(prefers-reduced-motion: reduce)",
+                                  ).matches;
+                                  container.scrollTo({
+                                    top: Math.max(0, targetOffset - 16),
+                                    behavior: prefersReduced ? "auto" : "smooth",
+                                  });
+                                }
+                              }}
+                              className="block font-mono text-[10px] leading-snug text-[var(--muted-foreground)] hover:text-[var(--accent)] transition-colors"
+                            >
+                              {t.text}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </aside>
+                  )}
+                </div>
+              </div>
+              {/* Footer */}
+              <div className="flex items-center justify-between px-4 md:px-6 pb-4 shrink-0">
+                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                  <span className="md:hidden">Tocá fuera del panel para cerrar</span>
+                  <span className="hidden md:inline">ESC para cerrar</span>
+                </span>
+                {investigation && (
+                  <a
+                    href={investigation.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline"
+                  >
+                    <ExternalLink size={12} strokeWidth={1.5} />
+                    Ver en GitHub →
+                  </a>
                 )}
               </div>
-            </div>
-            {/* Footer */}
-            <div className="flex items-center justify-between px-4 md:px-6 pb-4 shrink-0">
-              <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                <span className="md:hidden">Tocá fuera del panel para cerrar</span>
-                <span className="hidden md:inline">ESC para cerrar</span>
-              </span>
-              {investigation && (
-                <a
-                  href={investigation.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline"
-                >
-                  <ExternalLink size={12} strokeWidth={1.5} />
-                  Ver en GitHub →
-                </a>
-              )}
-            </div>
+            </motion.div>
           </motion.div>
-        </motion.div>
+        )}
       </AnimatePresence>
       {/* Zoom lightbox for writeup screenshots — single slide: no prev/next arrows */}
       <Lightbox

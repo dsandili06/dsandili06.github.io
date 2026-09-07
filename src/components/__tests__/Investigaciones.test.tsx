@@ -53,4 +53,17 @@ describe("Investigaciones", () => {
       expect(row.className).toContain("group");
     }
   });
+
+  it("featured cases show cursor affordance and can be clicked", () => {
+    render(<Investigaciones />);
+
+    const spotlightButtons = screen
+      .getAllByRole("button")
+      .filter((b) => b.textContent?.includes("SPOTLIGHT_0"));
+
+    expect(spotlightButtons.length).toBe(3);
+    for (const btn of spotlightButtons) {
+      expect(btn.className).toContain("cursor-pointer");
+    }
+  });
 });

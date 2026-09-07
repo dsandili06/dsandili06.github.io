@@ -38,6 +38,9 @@ export function LenisProvider() {
       if (!el) return;
       e.preventDefault();
       lenis.scrollTo(el, { offset: -64 });
+      if (el instanceof HTMLElement) {
+        el.focus({ preventScroll: true });
+      }
       history.replaceState(null, "", hash);
     };
     document.addEventListener("click", onAnchorClick);

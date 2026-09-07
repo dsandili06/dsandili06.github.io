@@ -4,17 +4,25 @@ import { type ReactNode } from "react";
 import { Contacto } from "@/components/sections/Contacto";
 
 // Mock motion/react
-vi.mock("motion/react", () => ({
-  motion: {
-    span: ({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) => (
-      <span {...props}>{children}</span>
-    ),
-    div: ({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) => (
-      <div {...props}>{children}</div>
-    ),
-  },
-  AnimatePresence: ({ children }: { children?: ReactNode }) => <>{children}</>,
-}));
+vi.mock("motion/react", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("motion/react")>();
+  return {
+    ...actual,
+    useReducedMotion: () => false,
+    useScroll: () => ({ scrollYProgress: { get: () => 0 } }),
+    useTransform: () => 0,
+    motion: {
+      ...actual.motion,
+      span: ({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) => (
+        <span {...props}>{children}</span>
+      ),
+      div: ({ children, ...props }: { children?: ReactNode; [key: string]: unknown }) => (
+        <div {...props}>{children}</div>
+      ),
+    },
+    AnimatePresence: ({ children }: { children?: ReactNode }) => <>{children}</>,
+  };
+});
 
 describe("Contacto", () => {
   it("should render status card with availability", () => {

@@ -136,11 +136,7 @@ export function HeroShader() {
     };
 
     const frame = (time: number) => {
-      if (!alive) return;
-      if (!visible) {
-        rafId = requestAnimationFrame(frame);
-        return; // pause rendering when hero is out of viewport
-      }
+      if (!alive || !visible) return;
       program.uniforms.uTime.value = time * 0.001;
       // Lerp mouse for smooth trailing
       const u = program.uniforms.uMouse.value as Vec2;
@@ -153,7 +149,7 @@ export function HeroShader() {
     const start = () => {
       if (!setSize()) return;
       renderer.render({ scene: mesh }); // first frame (also covers reduced-motion)
-      if (!reduced) rafId = requestAnimationFrame(frame);
+      if (!reduced && visible) rafId = requestAnimationFrame(frame);
     };
     const rafStart = requestAnimationFrame(() => {
       if (alive) start();
@@ -169,7 +165,12 @@ export function HeroShader() {
     // Pause rAF when hero is out of viewport (perf on mobile/long pages)
     const io = new IntersectionObserver(
       ([entry]) => {
+        const wasVisible = visible;
         visible = entry.isIntersecting;
+        if (!wasVisible && visible && alive && !reduced) {
+          cancelAnimationFrame(rafId);
+          rafId = requestAnimationFrame(frame);
+        }
       },
       { threshold: 0 },
     );
@@ -184,7 +185,7 @@ export function HeroShader() {
     };
     const onContextRestored = () => {
       alive = true;
-      if (!reduced) rafId = requestAnimationFrame(frame);
+      if (!reduced && visible) rafId = requestAnimationFrame(frame);
       console.warn("[HeroShader] WebGL context restored");
     };
     canvas.addEventListener("webglcontextlost", onContextLost);

@@ -1,4 +1,5 @@
 import { motion } from "motion/react";
+import { Section } from "@/components/primitives/Section";
 
 const channels = [
   {
@@ -35,22 +36,7 @@ const meta = [
 
 export function Contacto() {
   return (
-    <section
-      id="contacto"
-      data-reveal="fade-scale"
-      className="relative py-16 md:py-32 border-b border-border-dim"
-    >
-      <div className="mb-14 md:mb-20">
-        <h2
-          className="font-display font-bold leading-[0.95] tracking-tight text-[var(--accent)]"
-          style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)" }}
-        >
-          CONTACTO
-        </h2>
-        <p className="mt-4 font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-          [SECURE_CHANNEL] · Tiempo de respuesta: {"< 24h"}
-        </p>
-      </div>
+    <Section id="contacto" number="07" title="Contacto" kicker="SECURE_CHANNEL">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
         <div className="w-full bg-[var(--surface)] border border-border-dim rounded p-8">
           <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-6">
@@ -106,6 +92,6 @@ export function Contacto() {
           ))}
         </div>
       </div>
-    </section>
+    </Section>
   );
 }

@@ -4,12 +4,12 @@ import { motion } from "motion/react";
 type Line = { text: string; color: string };
 
 const BOOT_LINES: Line[] = [
-  { text: "$ volatility3 -f memory.raw windows.pslist", color: "#475569" },
+  { text: "$ volatility3 -f memory.raw windows.pslist", color: "#94A3B8" },
   { text: "[*] Analyzing process list...", color: "#E2E8F0" },
   { text: "[+] 87 processes found", color: "#22D3EE" },
-  { text: '$ strings malware.exe | grep -i "http"', color: "#475569" },
+  { text: '$ strings malware.exe | grep -i "http"', color: "#94A3B8" },
   { text: "[!] C2 detected: 185.220.101.47", color: "#3B82F6" },
-  { text: '$ splunk search "EventCode=4625"', color: "#475569" },
+  { text: '$ splunk search "EventCode=4625"', color: "#94A3B8" },
   { text: "[+] 847 failed logons — threshold exceeded", color: "#22D3EE" },
   { text: "[ALERT] Escalating to T1 analyst...", color: "#3B82F6" },
 ];
@@ -17,18 +17,18 @@ const BOOT_LINES: Line[] = [
 const COMMANDS: Record<string, Line[]> = {
   help: [
     { text: "Comandos disponibles:", color: "#E2E8F0" },
-    { text: "  help      — Muestra esta ayuda", color: "#475569" },
-    { text: "  whoami    — Info del analista", color: "#475569" },
-    { text: "  ls        — Lista secciones del portfolio", color: "#475569" },
-    { text: "  skills    — Stack técnico", color: "#475569" },
-    { text: "  contact   — Info de contacto", color: "#475569" },
-    { text: "  clear     — Limpia el terminal", color: "#475569" },
-    { text: "  exit      — Cierra la sesión", color: "#475569" },
+    { text: "  help      — Muestra esta ayuda", color: "#94A3B8" },
+    { text: "  whoami    — Info del analista", color: "#94A3B8" },
+    { text: "  ls        — Lista secciones del portfolio", color: "#94A3B8" },
+    { text: "  skills    — Stack técnico", color: "#94A3B8" },
+    { text: "  contact   — Info de contacto", color: "#94A3B8" },
+    { text: "  clear     — Limpia el terminal", color: "#94A3B8" },
+    { text: "  exit      — Cierra la sesión", color: "#94A3B8" },
   ],
   whoami: [
     { text: "Santiago Daniel Sandili", color: "#3B82F6" },
     { text: "SOC Analyst Jr. · Blue Team · DFIR", color: "#E2E8F0" },
-    { text: "Tucumán, Argentina", color: "#475569" },
+    { text: "Tucumán, Argentina", color: "#94A3B8" },
   ],
   ls: [
     { text: "about/        proyectos/    investigaciones/", color: "#22D3EE" },
@@ -48,7 +48,7 @@ const COMMANDS: Record<string, Line[]> = {
     { text: "GitHub:    github.com/dsandili06", color: "#3B82F6" },
   ],
   exit: [
-    { text: "[*] Cerrando sesión...", color: "#475569" },
+    { text: "[*] Cerrando sesión...", color: "#94A3B8" },
     { text: "[+] Hasta la próxima. Stay curious.", color: "#22D3EE" },
   ],
 };
@@ -107,13 +107,6 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
       bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
     }
   }, [printed, current, history]);
-
-  // Focus input when interactive
-  useEffect(() => {
-    if (interactive && inputRef.current) {
-      inputRef.current.focus({ preventScroll: true });
-    }
-  }, [interactive]);
 
   const handleCommand = (cmd: string) => {
     const trimmed = cmd.trim().toLowerCase();

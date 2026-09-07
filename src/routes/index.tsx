@@ -60,7 +60,7 @@ function Portfolio() {
     <TooltipProvider delayDuration={150}>
       <MotionConfig reducedMotion="user">
         <LenisProvider />
-        <div className="min-h-screen bg-background text-foreground font-body relative selection:bg-accent selection:text-[var(--accent-foreground)]">
+        <div className="min-h-screen bg-background text-foreground font-body relative overflow-x-clip selection:bg-accent selection:text-[var(--accent-foreground)]">
           {/* Skip to content — a11y */}
           <a
             href="#main-content"
@@ -72,9 +72,9 @@ function Portfolio() {
           <GrainOverlay />
           <SectionRail />
           <Nav />
-          <main id="main-content">
+          <main id="main-content" tabIndex={-1} className="outline-none">
             <Hero />
-            <div className="max-w-7xl mx-auto px-6 md:px-10">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10">
               <About />
               <Proyectos />
               <Suspense fallback={<SectionSkeleton />}>

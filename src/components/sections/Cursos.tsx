@@ -42,9 +42,14 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
 
 export function Cursos() {
   const [activeCert, setActiveCert] = useState<{ cert: string; title: string } | null>(null);
+  const [modalCert, setModalCert] = useState<{ cert: string; title: string } | null>(null);
   const [openGroup, setOpenGroup] = useState<string | null>(null);
   const openCertificate = (course: Course) => {
-    if (course.cert) setActiveCert({ cert: course.cert, title: course.title });
+    if (course.cert) {
+      const item = { cert: course.cert, title: course.title };
+      setModalCert(item);
+      setActiveCert(item);
+    }
   };
 
   return (
@@ -99,6 +104,7 @@ export function Cursos() {
                 </button>
                 {/* Smooth height animation via CSS grid trick */}
                 <div
+                  inert={!isOpen ? true : undefined}
                   className="grid transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]"
                   style={{
                     gridTemplateRows: isOpen ? "1fr" : "0fr",
@@ -118,11 +124,13 @@ export function Cursos() {
         </div>
       </div>
 
-      {activeCert && (
+      {modalCert && (
         <CertModal
-          cert={activeCert.cert}
-          title={activeCert.title}
+          cert={modalCert.cert}
+          title={modalCert.title}
+          isOpen={Boolean(activeCert)}
           onClose={() => setActiveCert(null)}
+          onExitComplete={() => setModalCert(null)}
         />
       )}
     </Section>

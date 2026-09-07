@@ -64,6 +64,7 @@ export function Nav() {
         </button>
       </div>
       <div
+        inert={!menuOpen ? true : undefined}
         className={`md:hidden overflow-hidden border-t border-border-dim bg-[#07080A] transition-[max-height,opacity] duration-300 ${menuOpen ? "nav-mobile-open max-h-[80vh] opacity-100" : "max-h-0 opacity-0"}`}
       >
         <ul className="flex flex-col px-6 py-2 font-mono text-xs uppercase tracking-[0.2em]">

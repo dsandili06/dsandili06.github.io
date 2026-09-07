@@ -49,6 +49,7 @@ describe("WriteupModal", () => {
 
     expect(lenis.stop).toHaveBeenCalled();
     expect(document.body.style.overflow).toBe("hidden");
+    await screen.findByText(MD_CONTENT.split("\n\n")[1]);
   });
 
   it("resumes Lenis and restores body scroll on unmount", async () => {
@@ -80,6 +81,38 @@ describe("WriteupModal", () => {
     expect(img).toHaveAttribute("src", "https://github.com/user-attachments/assets/test-uuid");
   });
 
+  it("resolves user-attachments.githubusercontent.com and s3.amazonaws.com while blocking untrusted CDNs", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        text: () =>
+          Promise.resolve(`
+![s3-img](https://mybucket.s3.amazonaws.com/evidence.png)
+![user-attachment](https://user-attachments.githubusercontent.com/123/img.png)
+![data-img](data:image/png;base64,iVBORw0KGgo=)
+![blocked-tracker](https://tracker.evil.com/pixel.png)
+          `),
+      }),
+    );
+
+    render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
+
+    const s3Img = await screen.findByAltText("s3-img");
+    expect(s3Img).toHaveAttribute("src", "https://mybucket.s3.amazonaws.com/evidence.png");
+
+    const attachmentImg = screen.getByAltText("user-attachment");
+    expect(attachmentImg).toHaveAttribute(
+      "src",
+      "https://user-attachments.githubusercontent.com/123/img.png",
+    );
+
+    const dataImg = screen.getByAltText("data-img");
+    expect(dataImg).toHaveAttribute("src", "data:image/png;base64,iVBORw0KGgo=");
+
+    expect(screen.queryByAltText("blocked-tracker")).not.toBeInTheDocument();
+  });
+
   it("shows error state when fetch fails (HTTP 404)", async () => {
     vi.stubGlobal(
       "fetch",
@@ -96,6 +129,37 @@ describe("WriteupModal", () => {
     render(<WriteupModal investigationId="LAB_999" onClose={vi.fn()} />);
 
     expect(await screen.findByText("Writeup no encontrado")).toBeInTheDocument();
+  });
+
+  it("scrolls internal container smoothly when TOC index link is clicked", async () => {
+    const markdownWithHeadings = `
+## Section 1
+Content 1
+## Section 2
+Content 2
+## Section 3
+Content 3
+## Section 4
+Content 4
+    `;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve(markdownWithHeadings) }),
+    );
+
+    render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
+
+    const tocLink = await screen.findByRole("link", { name: "Section 2" });
+    expect(tocLink).toBeInTheDocument();
+
+    const scrollContainer = document.body.querySelector("[data-lenis-prevent]") as HTMLElement;
+    expect(scrollContainer).not.toBeNull();
+    const scrollToMock = vi.fn();
+    scrollContainer.scrollTo = scrollToMock;
+
+    tocLink.click();
+
+    expect(scrollToMock).toHaveBeenCalled();
   });
 
   it("calls onClose when Escape is pressed", async () => {
