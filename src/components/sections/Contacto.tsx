@@ -38,7 +38,7 @@ export function Contacto() {
   return (
     <Section id="contacto" number="07" title="Contacto" kicker="SECURE_CHANNEL">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
-        <div className="w-full bg-[var(--surface)] border border-border-dim rounded p-8">
+        <div className="w-full bg-[var(--surface)] border border-border-dim rounded p-5 sm:p-7 md:p-8">
           <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-6">
             ANALYST STATUS
           </div>
@@ -51,7 +51,7 @@ export function Contacto() {
               />
               <span className="relative rounded-full size-2.5 bg-[var(--accent-green)]" />
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground font-semibold">
+            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground font-semibold break-words [overflow-wrap:anywhere]">
               DISPONIBLE PARA OPORTUNIDADES
             </span>
           </div>
@@ -64,7 +64,9 @@ export function Contacto() {
                 <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
                   {m.k}
                 </span>
-                <span className="text-foreground text-sm font-medium">{m.v}</span>
+                <span className="text-foreground text-sm font-medium break-words [overflow-wrap:anywhere]">
+                  {m.v}
+                </span>
               </div>
             ))}
           </div>
@@ -78,10 +80,10 @@ export function Contacto() {
               className="group block px-6 py-5 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)] transition-all duration-200 rounded"
             >
               <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-2">
-                CHANNEL_{c.code} · {c.label}
+                {c.label}
               </div>
               <div className="flex items-center justify-between gap-4 flex-wrap">
-                <span className="font-semibold text-base md:text-lg text-foreground group-hover:text-[var(--accent)] transition-colors break-all">
+                <span className="font-semibold text-base md:text-lg text-foreground group-hover:text-[var(--accent)] transition-colors break-words [overflow-wrap:anywhere]">
                   {c.value}
                 </span>
                 <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 group-hover:translate-x-1 transition-all">

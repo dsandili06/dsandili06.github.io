@@ -17,7 +17,7 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
       aria-label={
         hasCert ? `Ver certificado: ${course.title}` : `${course.title}, certificado pendiente`
       }
-      className={`group/row flex w-full items-center gap-3 border-t border-border-dim py-3 text-left first:border-t-0 ${hasCert ? "cursor-pointer" : "cursor-default opacity-60"}`}
+      className={`group/row flex w-full min-h-[44px] items-center gap-3 border-t border-border-dim py-3.5 text-left first:border-t-0 ${hasCert ? "cursor-pointer" : "cursor-default opacity-60"}`}
     >
       <span className="w-6 shrink-0 font-mono text-[10px] tracking-[0.16em] text-[var(--accent)]/60 tabular-nums">
         {course.n}

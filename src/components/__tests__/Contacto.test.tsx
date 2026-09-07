@@ -34,13 +34,13 @@ describe("Contacto", () => {
   it("should render 3 channel cards with correct links", () => {
     render(<Contacto />);
 
-    const linkedin = screen.getByText("CHANNEL_01 · LinkedIn");
+    const linkedin = screen.getByText("LinkedIn");
     expect(linkedin).toBeInTheDocument();
 
-    const email = screen.getByText("CHANNEL_02 · Email");
+    const email = screen.getByText("Email");
     expect(email).toBeInTheDocument();
 
-    const github = screen.getByText("CHANNEL_03 · GitHub");
+    const github = screen.getByText("GitHub");
     expect(github).toBeInTheDocument();
   });
 

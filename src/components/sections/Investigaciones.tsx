@@ -154,7 +154,7 @@ export function Investigaciones() {
             type="button"
             onClick={() => setViewMode("carousel")}
             aria-pressed={viewMode === "carousel"}
-            className={`flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
+            className={`flex items-center gap-2 min-h-[44px] px-3.5 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
               viewMode === "carousel"
                 ? "bg-[var(--accent)] text-[var(--accent-foreground)] font-bold"
                 : "text-[var(--muted-foreground)] hover:text-foreground"
@@ -167,7 +167,7 @@ export function Investigaciones() {
             type="button"
             onClick={() => setViewMode("table")}
             aria-pressed={viewMode === "table"}
-            className={`flex items-center gap-2 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
+            className={`flex items-center gap-2 min-h-[44px] px-3.5 py-2.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
               viewMode === "table"
                 ? "bg-[var(--accent)] text-[var(--accent-foreground)] font-bold"
                 : "text-[var(--muted-foreground)] hover:text-foreground"
@@ -205,7 +205,7 @@ export function Investigaciones() {
                   isPlaying ? "Pausar carrusel automático" : "Reanudar carrusel automático"
                 }
                 aria-pressed={!isPlaying}
-                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
+                className="flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
               >
                 {isPlaying ? <Pause size={14} /> : <Play size={14} />}
               </button>
@@ -213,7 +213,7 @@ export function Investigaciones() {
                 type="button"
                 onClick={scrollPrev}
                 aria-label="Anterior"
-                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
+                className="flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
               >
                 <ChevronLeft size={16} />
               </button>
@@ -221,7 +221,7 @@ export function Investigaciones() {
                 type="button"
                 onClick={scrollNext}
                 aria-label="Siguiente"
-                className="flex items-center justify-center size-10 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
+                className="flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
               >
                 <ChevronRight size={16} />
               </button>
@@ -385,7 +385,7 @@ export function Investigaciones() {
                 type="button"
                 key={i.id}
                 onClick={() => openWriteup(i.id)}
-                className="group border-t border-border-dim py-3 first:border-t-0 text-left w-full cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] transition-colors px-4 -mx-4"
+                className="group border-t border-border-dim w-full px-3 py-3.5 rounded-xs first:border-t-0 text-left cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] transition-colors"
               >
                 <div className="flex items-center gap-3">
                   <span className="w-7 shrink-0 font-mono text-[10px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums">
@@ -403,7 +403,7 @@ export function Investigaciones() {
                 </div>
               </button>
             ))}
-            <div className="border-t border-dashed border-[var(--accent)]/30 py-3 opacity-60 px-4 -mx-4">
+            <div className="border-t border-dashed border-[var(--accent)]/30 w-full px-3 py-3.5 rounded-xs opacity-60">
               <div className="flex items-center gap-3">
                 <span className="w-7 shrink-0 font-mono text-[10px] tracking-[0.2em] text-[var(--accent)] tabular-nums">
                   016

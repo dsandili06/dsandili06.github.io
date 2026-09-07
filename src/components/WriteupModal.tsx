@@ -69,7 +69,7 @@ function CopyCodeButton({ children }: { children: ReactNode }) {
       type="button"
       onClick={onCopy}
       aria-label="Copiar comando"
-      className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded border border-border-dim bg-[#0D1117]/90 text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] opacity-0 group-hover/code:opacity-100 focus:opacity-100 transition-opacity"
+      className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded border border-border-dim bg-[#0D1117]/90 text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] opacity-100 md:opacity-0 md:group-hover/code:opacity-100 focus:opacity-100 transition-opacity"
     >
       {copied ? <Check size={12} strokeWidth={2} /> : <Copy size={12} strokeWidth={1.5} />}
       {copied ? "Copiado" : "Copiar"}
@@ -431,7 +431,7 @@ export function WriteupModal({
               aria-labelledby="writeup-title"
             >
               {/* Header */}
-              <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-6 pb-3 shrink-0">
+              <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-3 shrink-0">
                 <div className="min-w-0">
                   <div className="flex items-center gap-3 flex-wrap mb-1">
                     <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
@@ -466,7 +466,7 @@ export function WriteupModal({
                 <button
                   onClick={onClose}
                   aria-label="Cerrar"
-                  className="shrink-0 ml-4 flex items-center justify-center w-9 h-9 border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors"
+                  className="shrink-0 ml-4 flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
                 >
                   <X size={16} strokeWidth={1.5} />
                 </button>
@@ -540,7 +540,7 @@ export function WriteupModal({
                       </div>
                     )}
                     {md && (
-                      <div className="p-6 md:p-10 max-w-none">
+                      <div className="p-4 sm:p-6 md:p-10 max-w-none">
                         <MarkdownErrorBoundary>
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
@@ -599,7 +599,7 @@ export function WriteupModal({
                 </div>
               </div>
               {/* Footer */}
-              <div className="flex items-center justify-between px-4 md:px-6 pb-4 shrink-0">
+              <div className="flex items-center justify-between px-4 md:px-6 pb-[max(1rem,env(safe-area-inset-bottom))] shrink-0">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                   <span className="md:hidden">Tocá fuera del panel para cerrar</span>
                   <span className="hidden md:inline">ESC para cerrar</span>
@@ -609,7 +609,7 @@ export function WriteupModal({
                     href={investigation.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline"
+                    className="inline-flex items-center gap-2 min-h-[44px] py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline"
                   >
                     <ExternalLink size={12} strokeWidth={1.5} />
                     Ver en GitHub →

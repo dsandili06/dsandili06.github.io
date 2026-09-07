@@ -88,7 +88,7 @@ export function Hero() {
       </motion.div>
       {/* Scanline — subtle moving line for incident room feel */}
       <div className="scanline" aria-hidden />
-      <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-20 md:pt-28">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 pt-6 sm:pt-10 md:pt-28">
         <div className="flex items-center gap-3 flex-wrap">
           <span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2.5 py-1 border border-[var(--accent-green)]/50 text-[var(--accent-green)] inline-flex items-center gap-2">
             <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
@@ -100,7 +100,7 @@ export function Hero() {
           </span>
         </div>
       </div>
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 flex-1 grid grid-cols-1 md:grid-cols-[1fr_minmax(0,440px)] gap-10 md:gap-12 items-center py-12">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 flex-1 grid grid-cols-1 md:grid-cols-[1fr_minmax(0,440px)] gap-10 md:gap-12 items-center py-6 sm:py-8 md:py-12">
         <div className="flex flex-col">
           <div className="hidden sm:block mb-8 min-h-[5.5rem]">
             <BootSequence />
@@ -139,7 +139,7 @@ export function Hero() {
               <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
               <span>VERIFIED_CREDENTIALS</span>
             </div>
-            <div className="flex items-center gap-4 sm:gap-5 md:gap-6 flex-wrap">
+            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
               {HERO_BADGES.map((b) => (
                 <button
                   key={b.id}
@@ -148,7 +148,7 @@ export function Hero() {
                     setActiveCert(b);
                     setModalCert(b);
                   }}
-                  className="group relative size-14 sm:size-16 md:size-20 shrink-0 flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg"
+                  className="group relative size-12 sm:size-14 md:size-20 shrink-0 flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg"
                   title={`${b.name} (${b.org}) — Click para ver credencial`}
                   aria-label={`Ver credencial ${b.name}`}
                 >
@@ -182,7 +182,7 @@ export function Hero() {
           <TerminalWindow start />
         </div>
       </div>
-      <div className="max-w-7xl w-full mx-auto px-6 md:px-10 pb-10 flex items-end justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] gap-6 flex-wrap">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 pb-10 flex items-end justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] gap-6 flex-wrap">
         <div className="flex items-center gap-6">
           <span>SCROLL ↓</span>
         </div>
