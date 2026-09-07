@@ -9,6 +9,12 @@ import { lazy, Suspense } from "react";
 import { SpotlightCard } from "@/components/fx/SpotlightCard";
 import Autoplay from "embla-carousel-autoplay";
 
+type AutoplayPluginType = {
+  isPlaying?: () => boolean;
+  play?: () => void;
+  stop?: () => void;
+};
+
 // Lazy: react-markdown (~250KB) solo se descarga al abrir un writeup
 const WriteupModal = lazy(() =>
   import("@/components/WriteupModal").then((m) => ({ default: m.WriteupModal })),
@@ -47,8 +53,7 @@ export function Investigaciones() {
   const scrollNext = useCallback(() => emblaApi && emblaApi.scrollNext(), [emblaApi]);
 
   const toggleAutoplay = useCallback(() => {
-    const autoplay = emblaApi?.plugins()?.autoplay as
-      { isPlaying?: () => boolean; play?: () => void; stop?: () => void } | undefined;
+    const autoplay = emblaApi?.plugins()?.autoplay as AutoplayPluginType | undefined;
     if (!autoplay) {
       setIsPlaying((p) => !p);
       return;
