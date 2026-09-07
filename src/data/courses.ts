@@ -127,12 +127,6 @@ export const COURSES: Course[] = [
     org: "Google",
     cert: "/certs/Coursera - Accelerate Your Job Search with AI.webp",
   },
-  {
-    n: "22",
-    title: "Google Cybersecurity Professional Certificate",
-    org: "Google",
-    cert: "/certs/Google Cybersecurity Certificate.webp",
-  },
 ];
 
 export const COURSE_GROUPS = COURSES.reduce<{ org: string; courses: Course[] }[]>(

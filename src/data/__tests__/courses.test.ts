@@ -7,8 +7,8 @@ describe("COURSES data integrity", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it("should have 22 courses", () => {
-    expect(COURSES.length).toBeGreaterThanOrEqual(22);
+  it("should have 21 courses", () => {
+    expect(COURSES.length).toBe(21);
   });
 
   it("each course should have title and org", () => {
@@ -27,11 +27,10 @@ describe("COURSES data integrity", () => {
     }
   });
 
-  it("Google Cybersecurity Certificate should exist as course #22", () => {
-    const gcc = COURSES.find((c) => c.n === "22");
-    expect(gcc).toBeDefined();
-    expect(gcc?.title).toContain("Google Cybersecurity");
-    expect(gcc?.org).toBe("Google");
+  it("Google individual courses should be present", () => {
+    const foundations = COURSES.find((c) => c.title === "Foundations of Cybersecurity");
+    expect(foundations).toBeDefined();
+    expect(foundations?.org).toBe("Google");
   });
 });
 

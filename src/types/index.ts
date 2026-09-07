@@ -27,6 +27,8 @@ export type Certification = {
   badge: string;
   href?: string;
   featured?: boolean;
+  note?: string;
+  logo?: string;
 };
 
 export type StackGroup = { title: string; items: string[] };
