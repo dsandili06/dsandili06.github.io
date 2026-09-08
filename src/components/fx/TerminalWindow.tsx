@@ -183,8 +183,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
       {/* Body */}
       <div
         ref={bodyRef}
-        data-lenis-prevent
-        className="font-mono text-[11px] sm:text-[12px] leading-[1.6] p-3.5 sm:p-5 overflow-y-auto overscroll-contain touch-pan-y h-[220px] md:h-[260px] lg:h-[340px]"
+        className="font-mono text-[11px] sm:text-[12px] leading-[1.6] p-3.5 sm:p-5 overflow-hidden md:overflow-y-auto h-[220px] md:h-[260px] lg:h-[340px]"
       >
         {printed.map((l, i) => (
           <div key={i} style={{ color: l.color }}>

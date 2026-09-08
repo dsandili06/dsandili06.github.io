@@ -208,7 +208,7 @@ export function HeroShader() {
   }, []);
 
   return (
-    <div ref={wrapperRef} className="absolute inset-0 -z-30" aria-hidden>
+    <div ref={wrapperRef} className="absolute inset-0 -z-30 pointer-events-none" aria-hidden>
       <canvas ref={canvasRef} className="block h-full w-full" />
     </div>
   );
