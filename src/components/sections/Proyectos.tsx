@@ -98,7 +98,7 @@ export function Proyectos() {
                             {s.name}
                           </div>
                           <div className="text-[11px] text-foreground/70 leading-snug line-clamp-1">
-                            {s.summary}
+                            {s.desc}
                           </div>
                         </div>
                       </div>
