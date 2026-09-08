@@ -26,7 +26,11 @@ describe("useModalHistory", () => {
     );
 
     expect(pushStateSpy).toHaveBeenCalledTimes(1);
-    expect(pushStateSpy).toHaveBeenCalledWith({ modal: "writeup", id: "LAB_001" }, "");
+    expect(pushStateSpy).toHaveBeenCalledWith(
+      { modal: "writeup", id: "LAB_001" },
+      "",
+      window.location.href,
+    );
   });
 
   it("does not push history state when isOpen is false", () => {
@@ -90,17 +94,19 @@ describe("useModalHistory", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("reverts history on unmount if modal was open and not closed by popstate", () => {
+  it("reverts history when isOpen transitions from true to false", () => {
     const onClose = vi.fn();
-    const { unmount } = renderHook(() =>
-      useModalHistory({
-        isOpen: true,
-        onClose,
-      }),
+    const { rerender } = renderHook(
+      ({ isOpen }) =>
+        useModalHistory({
+          isOpen,
+          onClose,
+        }),
+      { initialProps: { isOpen: true } },
     );
 
     expect(backSpy).not.toHaveBeenCalled();
-    unmount();
+    rerender({ isOpen: false });
     expect(backSpy).toHaveBeenCalledTimes(1);
   });
 

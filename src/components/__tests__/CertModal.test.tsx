@@ -68,7 +68,11 @@ describe("CertModal component", () => {
       />,
     );
 
-    expect(pushStateSpy).toHaveBeenCalledWith({ modal: "cert", title: "Google Cybersecurity" }, "");
+    expect(pushStateSpy).toHaveBeenCalledWith(
+      { modal: "cert", title: "Google Cybersecurity" },
+      "",
+      window.location.href,
+    );
 
     window.dispatchEvent(new PopStateEvent("popstate"));
 

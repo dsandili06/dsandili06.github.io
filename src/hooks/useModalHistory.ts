@@ -53,11 +53,13 @@ export function useModalHistory({ isOpen = true, onClose, stateData }: UseModalH
 
     // Modal is open
     closedByPopstateRef.current = false;
-    try {
-      window.history.pushState(stateDataRef.current ?? { modal: true }, "");
-      isPushedRef.current = true;
-    } catch {
-      /* ignore */
+    if (!isPushedRef.current) {
+      try {
+        window.history.pushState(stateDataRef.current ?? { modal: true }, "", window.location.href);
+        isPushedRef.current = true;
+      } catch {
+        /* ignore */
+      }
     }
 
     const onPopState = () => {
@@ -73,14 +75,6 @@ export function useModalHistory({ isOpen = true, onClose, stateData }: UseModalH
 
     return () => {
       window.removeEventListener("popstate", onPopState);
-      if (isPushedRef.current && !closedByPopstateRef.current) {
-        isPushedRef.current = false;
-        try {
-          window.history.back();
-        } catch {
-          /* ignore */
-        }
-      }
     };
   }, [isOpen]);
 

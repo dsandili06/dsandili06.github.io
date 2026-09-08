@@ -184,7 +184,11 @@ Content 4
     const { findByText } = render(<WriteupModal investigationId="LAB_001" onClose={onClose} />);
     await findByText(MD_CONTENT.split("\n\n")[1]);
 
-    expect(pushStateSpy).toHaveBeenCalledWith({ modal: "writeup", id: "LAB_001" }, "");
+    expect(pushStateSpy).toHaveBeenCalledWith(
+      { modal: "writeup", id: "LAB_001" },
+      "",
+      window.location.href,
+    );
 
     // Simulate mobile back button / swipe gesture
     window.dispatchEvent(new PopStateEvent("popstate"));
