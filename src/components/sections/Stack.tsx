@@ -186,7 +186,7 @@ export function Stack() {
         </div>
 
         {/* Right: Tactical Instrument Bay */}
-        <div className="relative flex flex-col p-4 sm:p-6 md:p-8 rounded-xs border border-[var(--accent)]/30 bg-[var(--surface)] backdrop-blur-md min-h-[380px] overflow-hidden">
+        <div className="relative flex flex-col p-4 sm:p-6 md:p-8 rounded-xs border border-[var(--accent)]/30 bg-[var(--surface)] backdrop-blur-md min-h-[380px] overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_8px_24px_-8px_rgba(0,0,0,0.5)]">
           {/* Tactical HUD Corner Brackets */}
           <span
             className={cn(

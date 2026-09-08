@@ -38,7 +38,7 @@ export function Contacto() {
   return (
     <Section id="contacto" number="07" title="Contacto" kicker="SECURE_CHANNEL">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 items-start">
-        <div className="w-full bg-[var(--surface)] border border-border-dim rounded p-5 sm:p-7 md:p-8">
+        <div className="w-full bg-[var(--surface)] border border-border-dim rounded p-5 sm:p-7 md:p-8 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_4px_20px_-4px_rgba(0,0,0,0.4)]">
           <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-6">
             ANALYST STATUS
           </div>
@@ -77,7 +77,7 @@ export function Contacto() {
               key={c.code}
               href={c.href}
               {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
-              className="group block px-6 py-5 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)] transition-all duration-200 rounded"
+              className="group block px-6 py-5 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04),0_2px_8px_-2px_rgba(0,0,0,0.3)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_8px_20px_-4px_rgba(0,0,0,0.5),0_0_15px_-4px_rgba(34,211,238,0.12)] hover:-translate-y-0.5 transition-all duration-200 rounded"
             >
               <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-2">
                 {c.label}

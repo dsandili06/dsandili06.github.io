@@ -23,7 +23,7 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
         {course.n}
       </span>
       <span
-        className={`min-w-0 flex-1 text-[13px] font-medium leading-snug ${hasCert ? "text-foreground group-hover/row:text-[var(--accent)]" : "text-foreground/60"}`}
+        className={`min-w-0 flex-1 text-[13px] font-medium leading-snug ${hasCert ? "text-foreground group-hover/row:text-[var(--accent)]" : "text-foreground/75"}`}
       >
         {course.title}
       </span>
@@ -79,7 +79,7 @@ export function Cursos() {
         <p className="mb-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
           Seleccioná una institución para ver sus certificados
         </p>
-        <div className="border border-border-dim bg-[var(--surface)]">
+        <div className="border border-border-dim bg-[var(--surface)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_4px_20px_-4px_rgba(0,0,0,0.4)]">
           {COURSE_GROUPS.map((group) => {
             const isOpen = openGroup === group.org;
             return (

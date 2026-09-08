@@ -126,7 +126,7 @@ export function Investigaciones() {
                       </span>
                     ))}
                   </div>
-                  <p className="text-sm text-foreground/70 leading-relaxed">{i.summary}</p>
+                  <p className="text-sm text-foreground/80 leading-relaxed">{i.summary}</p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
                   <span className="text-[var(--muted-foreground)]">{i.platform}</span>
@@ -242,7 +242,7 @@ export function Investigaciones() {
                 <button
                   type="button"
                   onClick={() => openWriteup(i.id)}
-                  className="group flex flex-col justify-between h-full p-6 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))] transition-all duration-200 text-left w-full cursor-pointer"
+                  className="group flex flex-col justify-between h-full p-6 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_4px_16px_-4px_rgba(0,0,0,0.4)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_10px_24px_-6px_rgba(0,0,0,0.55),0_0_15px_-4px_rgba(34,211,238,0.12)] hover:-translate-y-0.5 transition-all duration-200 text-left w-full cursor-pointer"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4 gap-2">
@@ -266,7 +266,7 @@ export function Investigaciones() {
                         </span>
                       ))}
                     </div>
-                    <p className="text-xs md:text-sm text-foreground/65 leading-relaxed line-clamp-4">
+                    <p className="text-xs md:text-sm text-foreground/80 leading-relaxed line-clamp-4">
                       {i.summary}
                     </p>
                   </div>

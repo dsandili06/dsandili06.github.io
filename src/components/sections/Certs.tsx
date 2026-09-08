@@ -31,7 +31,7 @@ export function Certs() {
             <Wrapper
               key={c.code}
               {...wrapperProps}
-              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-colors relative text-left w-full ${isClickable ? "hover:bg-[var(--surface-2)] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
+              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-all duration-200 relative text-left w-full shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_4px_16px_-4px_rgba(0,0,0,0.4)] ${isClickable ? "hover:bg-[var(--surface-2)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_10px_26px_-6px_rgba(0,0,0,0.55),0_0_15px_-4px_rgba(34,211,238,0.12)] hover:-translate-y-0.5 cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
               style={{ borderLeft: `3px solid ${accentColor}` }}
             >
               {/* Title & Metadata */}
