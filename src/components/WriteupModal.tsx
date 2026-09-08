@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo, Component } from "re
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useModalHistory } from "@/hooks/useModalHistory";
 import { X, ExternalLink, Loader2, AlertTriangle, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -168,6 +169,11 @@ export function WriteupModal({
   onExitComplete,
 }: WriteupModalProps) {
   const panelRef = useFocusTrap<HTMLDivElement>();
+  const { handleClose } = useModalHistory({
+    isOpen,
+    onClose,
+    stateData: { modal: "writeup", id: investigationId },
+  });
   const investigation = investigationById(investigationId);
   const [md, setMd] = useState<string | null>(null);
   const [error, setError] = useState(false);
@@ -257,11 +263,11 @@ export function WriteupModal({
   useEffect(() => {
     if (!isOpen) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !lightboxSrc) onClose();
+      if (e.key === "Escape" && !lightboxSrc) handleClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
-  }, [isOpen, onClose, lightboxSrc]);
+  }, [isOpen, handleClose, lightboxSrc]);
   const title = investigation?.title || investigationId;
   const platform = investigation?.platform;
   const categories = investigation?.categories;
@@ -414,7 +420,7 @@ export function WriteupModal({
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
             style={{ background: "rgba(4, 7, 11, 0.9)", backdropFilter: "blur(12px)" }}
-            onClick={onClose}
+            onClick={handleClose}
           >
             <motion.div
               ref={panelRef}
@@ -464,7 +470,7 @@ export function WriteupModal({
                   )}
                 </div>
                 <button
-                  onClick={onClose}
+                  onClick={handleClose}
                   aria-label="Cerrar"
                   className="shrink-0 ml-4 flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
                 >

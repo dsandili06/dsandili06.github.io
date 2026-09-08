@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { X } from "lucide-react";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useModalHistory } from "@/hooks/useModalHistory";
 import { getLenis } from "@/lib/lenis";
 
 type CertModalProps = {
@@ -15,6 +16,11 @@ type CertModalProps = {
 
 export function CertModal({ cert, title, isOpen = true, onClose, onExitComplete }: CertModalProps) {
   const panelRef = useFocusTrap<HTMLDivElement>();
+  const { handleClose } = useModalHistory({
+    isOpen,
+    onClose,
+    stateData: { modal: "cert", title },
+  });
   useEffect(() => {
     if (!isOpen) {
       document.body.style.overflow = "";
@@ -24,7 +30,7 @@ export function CertModal({ cert, title, isOpen = true, onClose, onExitComplete 
     const lenis = getLenis();
     lenis?.stop();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") handleClose();
     };
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
@@ -33,7 +39,7 @@ export function CertModal({ cert, title, isOpen = true, onClose, onExitComplete 
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, handleClose]);
 
   return createPortal(
     <AnimatePresence onExitComplete={onExitComplete}>
@@ -46,7 +52,7 @@ export function CertModal({ cert, title, isOpen = true, onClose, onExitComplete 
           transition={{ duration: 0.2 }}
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-4 md:p-8 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]"
           style={{ background: "rgba(4, 7, 11, 0.9)", backdropFilter: "blur(12px)" }}
-          onClick={onClose}
+          onClick={handleClose}
         >
           <motion.div
             ref={panelRef}
@@ -76,7 +82,7 @@ export function CertModal({ cert, title, isOpen = true, onClose, onExitComplete 
                 </h3>
               </div>
               <button
-                onClick={onClose}
+                onClick={handleClose}
                 aria-label="Cerrar"
                 className="ml-4 shrink-0 flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer"
               >
