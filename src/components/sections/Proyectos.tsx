@@ -140,7 +140,7 @@ export function Proyectos() {
       </div>
 
       {/* WIP Card — Minimalist with Animated Loading Bar */}
-      <div className="border border-dashed border-[var(--accent)]/30 bg-[var(--surface)] p-4 sm:p-6 md:p-8 transition-all duration-200 relative overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05),0_4px_20px_-4px_rgba(0,0,0,0.4)] hover:shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_10px_26px_-6px_rgba(0,0,0,0.55),0_0_15px_-4px_rgba(34,211,238,0.12)] hover:-translate-y-0.5">
+      <div className="border border-dashed border-[var(--accent)]/30 bg-[var(--surface)] p-4 sm:p-6 md:p-8 transition-colors relative overflow-hidden">
         <div className="flex flex-col justify-between h-full">
           <div>
             <div className="flex items-center justify-between gap-3 mb-4">
