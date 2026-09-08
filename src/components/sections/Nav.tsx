@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { motion } from "motion/react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Search } from "lucide-react";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { getLenis } from "@/lib/lenis";
+import { openCommandPalette } from "@/hooks/useCommandPalette";
 
 const links = [
   { href: "#about", id: "about", label: "About" },
@@ -69,7 +70,7 @@ export function Nav() {
           <span className="text-[var(--muted-foreground)]"> ~]</span>
           <span className="text-[var(--accent)] ml-1">$</span>
         </a>
-        <div className="hidden md:flex items-center gap-9 font-mono text-[11px] uppercase tracking-[0.18em]">
+        <div className="hidden md:flex items-center gap-7 lg:gap-9 font-mono text-[11px] uppercase tracking-[0.18em]">
           {links.map((l) => {
             const isActive = active === l.id;
             return (
@@ -89,16 +90,43 @@ export function Nav() {
               </a>
             );
           })}
+
+          {/* Tactical Command Palette Button */}
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            className="flex items-center gap-2 px-2.5 py-1 rounded-xs border border-border-dim bg-[var(--surface-2)]/60 text-[var(--muted-foreground)] hover:text-foreground hover:border-[var(--accent)]/50 transition-colors text-[11px] font-mono cursor-pointer"
+            title="Abrir buscador"
+            aria-label="Abrir buscador"
+          >
+            <Search size={13} className="text-[var(--accent)]" />
+            <span className="text-[10px] tracking-wider text-[var(--muted-foreground)]">
+              BUSCAR
+            </span>
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
-          aria-expanded={menuOpen}
-          className="md:hidden inline-flex items-center justify-center size-11 min-h-[44px] min-w-[44px] text-[var(--accent)] border border-border-dim hover:border-[var(--accent)] transition-colors cursor-pointer"
-        >
-          {menuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
-        </button>
+
+        {/* Mobile Actions: Search + Hamburger Menu */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={openCommandPalette}
+            aria-label="Abrir buscador"
+            className="inline-flex items-center justify-center size-11 min-h-[44px] min-w-[44px] text-[var(--accent)] border border-border-dim hover:border-[var(--accent)] transition-colors cursor-pointer"
+            title="Buscar en el portafolio"
+          >
+            <Search size={18} strokeWidth={1.5} />
+          </button>
+          <button
+            type="button"
+            onClick={() => setMenuOpen((v) => !v)}
+            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+            aria-expanded={menuOpen}
+            className="inline-flex items-center justify-center size-11 min-h-[44px] min-w-[44px] text-[var(--accent)] border border-border-dim hover:border-[var(--accent)] transition-colors cursor-pointer"
+          >
+            {menuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
+          </button>
+        </div>
       </div>
 
       {menuOpen && (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { FileSearch, Binary, Network, Terminal, Activity } from "lucide-react";
 import { Section } from "@/components/primitives/Section";
@@ -57,6 +57,17 @@ const CATEGORY_META: Record<
 
 export function Stack() {
   const [selectedCategory, setSelectedCategory] = useState<string>(STACK_GROUPS[0].title);
+
+  useEffect(() => {
+    const handleCategoryChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ category: string }>;
+      if (customEvent.detail?.category) {
+        setSelectedCategory(customEvent.detail.category);
+      }
+    };
+    window.addEventListener("set-stack-category", handleCategoryChange);
+    return () => window.removeEventListener("set-stack-category", handleCategoryChange);
+  }, []);
 
   const activeGroup = STACK_GROUPS.find((g) => g.title === selectedCategory) ?? STACK_GROUPS[0];
   const activeMeta = CATEGORY_META[activeGroup.title] ?? {

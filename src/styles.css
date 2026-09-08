@@ -627,6 +627,22 @@ html {
   }
 }
 
+/* ── Command Palette (cmdk) Tactical Styling ── */
+[cmdk-root] {
+  font-family: var(--font-mono);
+}
+[cmdk-item] {
+  content-visibility: auto;
+  user-select: none;
+}
+[cmdk-item][data-selected="true"] {
+  background-color: var(--surface-2) !important;
+  color: var(--accent) !important;
+}
+[cmdk-group-heading] {
+  user-select: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .scanline {
     animation: none !important;
