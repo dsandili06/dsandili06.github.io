@@ -87,7 +87,7 @@ export function Certs() {
               )}
 
               {/* Score and Certificate CTA: bottom row on mobile, middle column on desktop */}
-              <div className="col-span-2 md:col-span-1 md:col-start-2 md:row-start-1 md:text-right pt-3 md:pt-0 border-t md:border-t-0 border-border-dim/40 flex items-center justify-between md:justify-end md:flex-col gap-2 md:gap-1">
+              <div className="col-span-2 md:col-span-1 md:col-start-2 md:row-start-1 md:text-right pt-3 md:pt-0 border-t md:border-t-0 border-border-dim/40 flex items-center justify-between md:justify-end md:items-end md:flex-col gap-2 md:gap-1">
                 {c.score ? (
                   <>
                     <div className="flex items-baseline md:flex-col md:items-end gap-2 md:gap-0">
@@ -99,17 +99,17 @@ export function Certs() {
                       </div>
                     </div>
                     {c.href && (
-                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity">
+                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity text-right">
                         VER CERTIFICADO →
                       </span>
                     )}
                   </>
                 ) : obtained && c.href ? (
-                  <span className="inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity">
+                  <span className="ml-auto inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity text-right">
                     VER CERTIFICADO →
                   </span>
                 ) : (
-                  <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+                  <div className="ml-auto md:ml-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] text-right">
                     ESTUDIO EN CURSO
                   </div>
                 )}
