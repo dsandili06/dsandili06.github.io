@@ -28,6 +28,22 @@ describe("CERTIFICATIONS data integrity", () => {
     expect(comptia?.note).toContain("Q3 de 2026");
   });
 
+  it("should contain CompTIA Security+ with mock exams tracking data", () => {
+    const comptia = CERTIFICATIONS.find((c) => c.code === "SY0-701");
+    expect(comptia?.mockExams).toBeDefined();
+    expect(comptia?.mockExams).toHaveLength(4);
+
+    const latest = comptia?.mockExams?.[3];
+    expect(latest?.score).toBe(87);
+    expect(latest?.correctQuestions).toBe(79);
+    expect(latest?.totalQuestions).toBe(90);
+    expect(latest?.image).toBe("/certs/comptia-prep/dion-test-4.jpg");
+    expect(latest?.domains).toHaveLength(5);
+    expect(latest?.highlightedDomains).toBeDefined();
+    expect(latest?.highlightedDomains?.length).toBeGreaterThan(0);
+    expect(latest?.analysis).toContain("Puntuación máxima");
+  });
+
   it("each certification should have required fields", () => {
     for (const c of CERTIFICATIONS) {
       expect(c.code).toBeTruthy();

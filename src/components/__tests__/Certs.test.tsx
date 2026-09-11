@@ -15,6 +15,24 @@ vi.mock("@/components/CertModal", () => ({
   ),
 }));
 
+// Mock CompTIAModal to verify in-page tracking modal rendering
+vi.mock("@/components/CompTIAModal", () => ({
+  CompTIAModal: ({
+    certification,
+    onClose,
+  }: {
+    certification: { title: string };
+    onClose: () => void;
+  }) => (
+    <div data-testid="comptia-modal">
+      <span data-testid="comptia-modal-title">{certification.title}</span>
+      <button data-testid="comptia-modal-close" onClick={onClose}>
+        Close
+      </button>
+    </div>
+  ),
+}));
+
 describe("Certs section", () => {
   it("renders all 3 certifications with date and org", () => {
     render(<Certs />);
@@ -67,5 +85,26 @@ describe("Certs section", () => {
     expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
     expect(screen.getByTestId("modal-title")).toHaveTextContent("SAL1 (Security Analyst L1)");
     expect(screen.getByTestId("modal-cert")).toHaveTextContent("/certs/THM-SAL1-Certificate.png");
+  });
+
+  it("renders latest mock exam score and tracking CTA on CompTIA Security+ card", () => {
+    render(<Certs />);
+
+    expect(screen.getByText("ÚLTIMO SCORE")).toBeInTheDocument();
+    expect(screen.getByText("87%")).toBeInTheDocument();
+    expect(screen.getByText("VER SEGUIMIENTO DE SIMULACROS →")).toBeInTheDocument();
+  });
+
+  it("opens in-page CompTIAModal on click of CompTIA Security+ card", () => {
+    render(<Certs />);
+
+    const comptiaBtn = screen.getByRole("button", { name: /CompTIA Security\+/i });
+    fireEvent.click(comptiaBtn);
+
+    expect(screen.getByTestId("comptia-modal")).toBeInTheDocument();
+    expect(screen.getByTestId("comptia-modal-title")).toHaveTextContent("CompTIA Security+");
+
+    // Close modal
+    fireEvent.click(screen.getByTestId("comptia-modal-close"));
   });
 });

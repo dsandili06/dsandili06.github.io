@@ -39,6 +39,25 @@ export type Investigation = {
 
 export type Course = { n: string; title: string; org: string; cert?: string };
 
+export type MockExamDomain = {
+  domain: string;
+  score: number;
+};
+
+export type MockExam = {
+  id: string;
+  title: string;
+  date: string;
+  score: number;
+  correctQuestions: number;
+  totalQuestions: number;
+  timeSpent: string;
+  image: string;
+  domains: MockExamDomain[];
+  highlightedDomains?: string[];
+  analysis?: string;
+};
+
 export type Certification = {
   code: string;
   title: string;
@@ -51,6 +70,7 @@ export type Certification = {
   featured?: boolean;
   note?: string;
   logo?: string;
+  mockExams?: MockExam[];
 };
 
 export type StackGroup = { title: string; items: string[] };
