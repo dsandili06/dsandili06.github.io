@@ -22,7 +22,7 @@ export function Certs() {
   };
 
   return (
-    <Section id="formacion" number="05" title="Certificaciones" kicker="CREDENTIALS">
+    <Section id="formacion" number="02" title="Certificaciones" kicker="CREDENTIALS">
       <div className="flex flex-col gap-px bg-border-dim border border-border-dim">
         {CERTIFICATIONS.map((c) => {
           const obtained = c.status === "OBTENIDA";

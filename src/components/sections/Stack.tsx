@@ -82,7 +82,7 @@ export function Stack() {
   const ActiveIcon = activeMeta.icon;
 
   return (
-    <Section id="stack" number="04" title="Stack Técnico" kicker="TOOLING" reveal="fade-scale">
+    <Section id="stack" number="05" title="Stack Técnico" kicker="TOOLING" reveal="fade-scale">
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 lg:gap-8 items-start">
         {/* Left: Domain Command Selector */}
         <div className="flex flex-col gap-3">

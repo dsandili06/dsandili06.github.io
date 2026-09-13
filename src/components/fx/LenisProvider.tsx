@@ -30,14 +30,15 @@ export function LenisProvider() {
       const target = (e.target as HTMLElement)?.closest("a[href^='#']") as HTMLAnchorElement | null;
       if (!target) return;
       // Skip if the anchor is inside a lenis-prevent container (e.g. writeup modal TOC)
-      if (target.closest("[data-lenis-prevent]")) return;
+      // but allow nav drawer links to smoothly scroll the page
+      if (target.closest("[data-lenis-prevent]") && !target.closest("nav")) return;
       const hash = target.getAttribute("href");
       if (!hash || hash === "#") return;
       const id = hash.slice(1);
       const el = id ? document.getElementById(id) : document.documentElement;
       if (!el) return;
       e.preventDefault();
-      lenis.scrollTo(el, { offset: -64 });
+      lenis.scrollTo(el, { offset: 0 });
       if (el instanceof HTMLElement) {
         el.focus({ preventScroll: true });
       }

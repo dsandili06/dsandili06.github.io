@@ -5,8 +5,21 @@ import { TerminalWindow } from "@/components/fx/TerminalWindow";
 import { HeroShader } from "@/components/fx/HeroShader";
 import { TextScramble } from "@/components/fx/TextScramble";
 import { CertModal } from "@/components/CertModal";
+import { CompTIAModal } from "@/components/CompTIAModal";
+import { CERTIFICATIONS } from "@/data/certifications";
+import type { Certification } from "@/types";
 
-const HERO_BADGES = [
+type HeroBadge = {
+  id: string;
+  name: string;
+  org: string;
+  logo: string;
+  cert?: string;
+  inProgress?: boolean;
+  code?: string;
+};
+
+const HERO_BADGES: HeroBadge[] = [
   {
     id: "sal1",
     name: "SAL1 (Security Analyst L1)",
@@ -20,6 +33,14 @@ const HERO_BADGES = [
     org: "Google",
     logo: "/badges/badgegoogle.png",
     cert: "/certs/Google Cybersecurity Certificate.webp",
+  },
+  {
+    id: "comptia-secplus",
+    name: "CompTIA Security+",
+    org: "CompTIA",
+    logo: "/badges/comptiabadge.png",
+    inProgress: true,
+    code: "SY0-701",
   },
   {
     id: "blue-team",
@@ -48,6 +69,10 @@ export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
   const [activeCert, setActiveCert] = useState<{ cert: string; name: string } | null>(null);
   const [modalCert, setModalCert] = useState<{ cert: string; name: string } | null>(null);
+  const [comptiaCertState, setComptiaCertState] = useState<Certification | null>(null);
+  const [modalComptia, setModalComptia] = useState<Certification | null>(null);
+
+  const comptiaCertData = CERTIFICATIONS.find((c) => c.code === "SY0-701");
 
   // Watermark parallax — drifts slower than scroll, fades out
   const { scrollYProgress } = useScroll({
@@ -139,42 +164,85 @@ export function Hero() {
               <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
               <span>VERIFIED_CREDENTIALS</span>
             </div>
-            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
-              {HERO_BADGES.map((b) => (
-                <button
-                  key={b.id}
-                  type="button"
-                  onClick={() => {
-                    setActiveCert(b);
-                    setModalCert(b);
-                  }}
-                  className="group relative size-12 sm:size-14 md:size-20 shrink-0 flex items-center justify-center cursor-pointer transition-transform duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg"
-                  title={`${b.name} (${b.org}) — Click para ver credencial`}
-                  aria-label={`Ver credencial ${b.name}`}
-                >
-                  <img
-                    src={b.logo}
-                    alt={`Badge ${b.name}`}
-                    className="size-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)] group-hover:brightness-115 transition-all duration-300 pointer-events-none"
-                    loading="eager"
-                    decoding="async"
-                  />
-                  {/* Micro-destello estelar en esquina */}
-                  <div
-                    className="absolute -top-1 -right-1 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out"
-                    aria-hidden="true"
+            <div className="flex items-center gap-x-3 gap-y-4 sm:gap-4 flex-wrap">
+              {HERO_BADGES.map((b) => {
+                const isInProgress = Boolean(b.inProgress);
+                return (
+                  <button
+                    key={b.id}
+                    type="button"
+                    onClick={() => {
+                      if (isInProgress) {
+                        if (comptiaCertData) {
+                          setModalComptia(comptiaCertData);
+                          setComptiaCertState(comptiaCertData);
+                        }
+                      } else if (b.cert) {
+                        setActiveCert({ cert: b.cert, name: b.name });
+                        setModalCert({ cert: b.cert, name: b.name });
+                      }
+                    }}
+                    className={`group relative size-12 sm:size-14 md:size-20 shrink-0 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg ${
+                      isInProgress
+                        ? "ring-1 ring-amber-400/50 bg-amber-500/5 hover:ring-amber-400 hover:shadow-[0_0_20px_rgba(251,191,36,0.25)]"
+                        : ""
+                    }`}
+                    title={
+                      isInProgress
+                        ? "CompTIA Security+ (SY0-701) — En preparación (87% en simulacros) — Click para ver seguimiento"
+                        : `${b.name} (${b.org}) — Click para ver credencial`
+                    }
+                    aria-label={
+                      isInProgress
+                        ? "Ver seguimiento de preparación CompTIA Security+ (SY0-701)"
+                        : `Ver credencial ${b.name}`
+                    }
                   >
-                    <div className="absolute -inset-1 rounded-full bg-cyan-400/30 blur-sm" />
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="relative size-4 sm:size-5 text-white filter drop-shadow-[0_0_6px_rgba(255,255,255,0.9)] transition-transform duration-700 ease-out group-hover:rotate-45"
-                      fill="currentColor"
+                    <img
+                      src={b.logo}
+                      alt={`Badge ${b.name}`}
+                      className={`size-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-all duration-300 pointer-events-none ${
+                        isInProgress
+                          ? "group-hover:drop-shadow-[0_0_16px_rgba(251,191,36,0.7)] group-hover:brightness-115"
+                          : "group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)] group-hover:brightness-115"
+                      }`}
+                      loading="eager"
+                      decoding="async"
+                    />
+
+                    {/* Micro-badge indicador En preparación */}
+                    {isInProgress && (
+                      <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 font-mono text-[7px] sm:text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-[#070D14] border border-amber-400/80 text-amber-400 rounded-xs shadow-[0_2px_8px_rgba(0,0,0,0.9)] whitespace-nowrap flex items-center gap-1 z-10 pointer-events-none">
+                        <span className="size-1 rounded-full bg-amber-400 animate-ping" />
+                        EN PREPARACIÓN
+                      </span>
+                    )}
+
+                    {/* Micro-destello estelar en esquina */}
+                    <div
+                      className="absolute -top-1 -right-1 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out"
+                      aria-hidden="true"
                     >
-                      <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" />
-                    </svg>
-                  </div>
-                </button>
-              ))}
+                      <div
+                        className={`absolute -inset-1 rounded-full blur-sm ${
+                          isInProgress ? "bg-amber-400/40" : "bg-cyan-400/30"
+                        }`}
+                      />
+                      <svg
+                        viewBox="0 0 24 24"
+                        className={`relative size-4 sm:size-5 filter transition-transform duration-700 ease-out group-hover:rotate-45 ${
+                          isInProgress
+                            ? "text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.9)]"
+                            : "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.9)]"
+                        }`}
+                        fill="currentColor"
+                      >
+                        <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" />
+                      </svg>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </motion.div>
         </div>
@@ -201,6 +269,15 @@ export function Hero() {
           isOpen={Boolean(activeCert)}
           onClose={() => setActiveCert(null)}
           onExitComplete={() => setModalCert(null)}
+        />
+      )}
+
+      {modalComptia && (
+        <CompTIAModal
+          certification={modalComptia}
+          isOpen={Boolean(comptiaCertState)}
+          onClose={() => setComptiaCertState(null)}
+          onExitComplete={() => setModalComptia(null)}
         />
       )}
     </section>

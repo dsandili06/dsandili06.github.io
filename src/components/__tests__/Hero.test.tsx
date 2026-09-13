@@ -31,8 +31,25 @@ vi.mock("@/components/CertModal", () => ({
   ),
 }));
 
+vi.mock("@/components/CompTIAModal", () => ({
+  CompTIAModal: ({
+    certification,
+    onClose,
+  }: {
+    certification: { title: string };
+    onClose: () => void;
+  }) => (
+    <div data-testid="comptia-modal">
+      <span data-testid="comptia-modal-title">{certification.title}</span>
+      <button data-testid="comptia-modal-close" onClick={onClose}>
+        Close
+      </button>
+    </div>
+  ),
+}));
+
 describe("Hero section", () => {
-  it("renders verified credentials badges dock with the 5 obtained certs", () => {
+  it("renders verified credentials badges dock with obtained certs and CompTIA in-progress", () => {
     render(<Hero />);
 
     expect(screen.getByText("VERIFIED_CREDENTIALS")).toBeInTheDocument();
@@ -45,6 +62,11 @@ describe("Hero section", () => {
       "src",
       "/badges/badgegoogle.png",
     );
+    expect(screen.getByAltText("Badge CompTIA Security+")).toHaveAttribute(
+      "src",
+      "/badges/comptiabadge.png",
+    );
+    expect(screen.getByText("EN PREPARACIÓN")).toBeInTheDocument();
     expect(
       screen.getByAltText("Badge Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta"),
     ).toHaveAttribute("src", "/badges/ciber.png");
@@ -56,12 +78,9 @@ describe("Hero section", () => {
       "src",
       "/badges/fortinet-nse-2-certified-in-cybersecurity.1.png",
     );
-
-    // CompTIA Security+ must NOT be rendered in the Hero
-    expect(screen.queryByAltText(/CompTIA/i)).not.toBeInTheDocument();
   });
 
-  it("opens in-page CertModal when clicking a credential badge in the Hero", () => {
+  it("opens in-page CertModal when clicking an obtained credential badge in the Hero", () => {
     render(<Hero />);
 
     const googleBtn = screen.getByRole("button", {
@@ -77,5 +96,20 @@ describe("Hero section", () => {
 
     // Close modal
     fireEvent.click(screen.getByTestId("modal-close"));
+  });
+
+  it("opens in-page CompTIAModal when clicking the CompTIA credential badge in the Hero", () => {
+    render(<Hero />);
+
+    const comptiaBtn = screen.getByRole("button", {
+      name: /Ver seguimiento de preparación CompTIA Security\+/i,
+    });
+    fireEvent.click(comptiaBtn);
+
+    expect(screen.getByTestId("comptia-modal")).toBeInTheDocument();
+    expect(screen.getByTestId("comptia-modal-title")).toHaveTextContent("CompTIA Security+");
+
+    // Close modal
+    fireEvent.click(screen.getByTestId("comptia-modal-close"));
   });
 });

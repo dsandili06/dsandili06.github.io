@@ -4,10 +4,10 @@ import { getLenis } from "@/lib/lenis";
 
 const railLinks = [
   { id: "about", label: "01" },
-  { id: "proyectos", label: "02" },
-  { id: "investigaciones", label: "03" },
-  { id: "stack", label: "04" },
-  { id: "formacion", label: "05" },
+  { id: "formacion", label: "02" },
+  { id: "proyectos", label: "03" },
+  { id: "investigaciones", label: "04" },
+  { id: "stack", label: "05" },
   { id: "cursos", label: "06" },
   { id: "contacto", label: "07" },
 ];
@@ -28,7 +28,7 @@ export function SectionRail() {
       el.scrollIntoView({ behavior: "smooth" });
       return;
     }
-    lenis.scrollTo(el, { offset: -64 });
+    lenis.scrollTo(el, { offset: 0 });
     history.replaceState(null, "", `#${id}`);
   };
 

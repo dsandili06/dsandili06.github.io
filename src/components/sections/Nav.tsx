@@ -7,10 +7,10 @@ import { openCommandPalette } from "@/hooks/useCommandPalette";
 
 const links = [
   { href: "#about", id: "about", label: "About" },
+  { href: "#formacion", id: "formacion", label: "Certs" },
   { href: "#proyectos", id: "proyectos", label: "Proyectos" },
   { href: "#investigaciones", id: "investigaciones", label: "Labs" },
   { href: "#stack", id: "stack", label: "Stack" },
-  { href: "#formacion", id: "formacion", label: "Certs" },
   { href: "#cursos", id: "cursos", label: "Cursos" },
   { href: "#contacto", id: "contacto", label: "Contacto" },
 ];
@@ -140,14 +140,18 @@ export function Nav() {
       <div
         inert={!menuOpen ? true : undefined}
         data-lenis-prevent
-        className={`md:hidden relative z-50 overflow-y-auto overscroll-contain border-t border-border-dim bg-[#07080A] transition-[max-height,opacity] duration-300 ${menuOpen ? "nav-mobile-open max-h-[80vh] opacity-100" : "max-h-0 opacity-0 pointer-events-none"}`}
+        className={`md:hidden absolute top-full left-0 right-0 w-full z-50 overflow-y-auto overscroll-contain border-t border-border-dim bg-[#07080A] shadow-2xl transition-[max-height,opacity] duration-300 ${menuOpen ? "nav-mobile-open max-h-[80vh] opacity-100" : "max-h-0 opacity-0 pointer-events-none"}`}
       >
         <ul className="flex flex-col px-4 sm:px-6 py-2 font-mono text-xs uppercase tracking-[0.2em]">
           {links.map((l, i) => (
             <li key={l.href}>
               <a
                 href={l.href}
-                onClick={() => setMenuOpen(false)}
+                onClick={() => {
+                  const lenis = getLenis();
+                  lenis?.start();
+                  setMenuOpen(false);
+                }}
                 style={{ transitionDelay: menuOpen ? `${80 + i * 55}ms` : "0ms" }}
                 className="nav-mobile-link flex items-center gap-3 min-h-[44px] py-3.5 border-b border-border-dim/60 text-foreground/80 hover:text-[var(--accent)] transition-colors"
               >

@@ -42,32 +42,32 @@ const SECTIONS = [
     icon: FileText,
   },
   {
-    id: "proyectos",
+    id: "formacion",
     number: "02",
+    label: "Certificaciones",
+    desc: "Credenciales verificadas de TryHackMe, Google, Fortinet y CompTIA",
+    icon: Award,
+  },
+  {
+    id: "proyectos",
+    number: "03",
     label: "Proyectos & Repositorios",
     desc: "Artifakt Labs, BlueTeam-Scripts y herramientas defensivas",
     icon: Layers,
   },
   {
     id: "investigaciones",
-    number: "03",
+    number: "04",
     label: "Labs & Investigaciones DFIR",
     desc: "15 writeups técnicos de CyberDefenders con análisis forense",
     icon: Shield,
   },
   {
     id: "stack",
-    number: "04",
+    number: "05",
     label: "Arsenal & Stack Tecnológico",
     desc: "SIEM, EDR, análisis de memoria, network forensics y scripting",
     icon: Terminal,
-  },
-  {
-    id: "formacion",
-    number: "05",
-    label: "Certificaciones",
-    desc: "Credenciales verificadas de TryHackMe, Google, Fortinet y CompTIA",
-    icon: Award,
   },
   {
     id: "cursos",
@@ -158,7 +158,7 @@ export function CommandPalette() {
     if (!el) return;
     const lenis = getLenis();
     if (lenis) {
-      lenis.scrollTo(el, { offset: -64 });
+      lenis.scrollTo(el, { offset: 0 });
     } else {
       el.scrollIntoView({ behavior: "smooth" });
     }

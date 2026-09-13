@@ -82,7 +82,7 @@ export function Investigaciones() {
   }, [emblaApi, onSelect]);
 
   return (
-    <Section id="investigaciones" number="03" title="Investigaciones" kicker="CASE_LOG">
+    <Section id="investigaciones" number="04" title="Investigaciones" kicker="CASE_LOG">
       <div className="mb-14 md:mb-16">
         <div className="flex items-center gap-4 mb-5">
           <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--accent)]">

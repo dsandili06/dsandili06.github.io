@@ -7,7 +7,7 @@ describe("Proyectos section - Tactical Repository Dossiers", () => {
   it("renders the section header and kicker", () => {
     render(<Proyectos />);
     expect(screen.getByRole("heading", { name: /Proyectos/i })).toBeInTheDocument();
-    expect(screen.getByText(/SECTION_02 \/\/ REPOSITORIES/i)).toBeInTheDocument();
+    expect(screen.getByText(/SECTION_03 \/\/ REPOSITORIES/i)).toBeInTheDocument();
   });
 
   it("renders both tactical project dossier cards with titles and descriptions", () => {
@@ -49,7 +49,7 @@ describe("Proyectos section - Tactical Repository Dossiers", () => {
 
   it("renders in-page bridge link from Artifakt Labs to #investigaciones", () => {
     render(<Proyectos />);
-    const bridgeLink = screen.getByRole("link", { name: /Explorar Writeups \(#03\)/i });
+    const bridgeLink = screen.getByRole("link", { name: /Explorar Writeups \(#04\)/i });
     expect(bridgeLink).toHaveAttribute("href", "#investigaciones");
   });
 

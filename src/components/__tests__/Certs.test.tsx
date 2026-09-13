@@ -34,6 +34,12 @@ vi.mock("@/components/CompTIAModal", () => ({
 }));
 
 describe("Certs section", () => {
+  it("renders the section header with number 02 and credentials kicker", () => {
+    render(<Certs />);
+    expect(screen.getByRole("heading", { name: /Certificaciones/i })).toBeInTheDocument();
+    expect(screen.getByText(/SECTION_02 \/\/ CREDENTIALS/i)).toBeInTheDocument();
+  });
+
   it("renders all 3 certifications with date and org", () => {
     render(<Certs />);
 

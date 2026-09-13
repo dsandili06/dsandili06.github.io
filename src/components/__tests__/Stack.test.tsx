@@ -4,6 +4,11 @@ import { Stack } from "@/components/sections/Stack";
 import { STACK_GROUPS } from "@/data/stack";
 
 describe("Stack section - SOC Workstation Deck", () => {
+  it("renders the section header with number 05 and tooling kicker", () => {
+    render(<Stack />);
+    expect(screen.getByText(/SECTION_05 \/\/ TOOLING/i)).toBeInTheDocument();
+  });
+
   it("renders all 4 category selectors with their exact titles", () => {
     render(<Stack />);
 

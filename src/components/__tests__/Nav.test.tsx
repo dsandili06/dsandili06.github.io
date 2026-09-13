@@ -18,6 +18,22 @@ describe("Nav component", () => {
     expect(screen.getAllByText("Proyectos").length).toBeGreaterThan(0);
   });
 
+  it("renders navigation links in the updated order", () => {
+    const { container } = render(<Nav />);
+    const desktopLinks = Array.from(container.querySelectorAll("div.hidden.md\\:flex > a")).map(
+      (a) => a.getAttribute("href"),
+    );
+    expect(desktopLinks).toEqual([
+      "#about",
+      "#formacion",
+      "#proyectos",
+      "#investigaciones",
+      "#stack",
+      "#cursos",
+      "#contacto",
+    ]);
+  });
+
   it("toggles mobile menu on hamburger button click and manages body scroll lock", () => {
     render(<Nav />);
     const menuBtn = screen.getByRole("button", { name: /Abrir menú/i });

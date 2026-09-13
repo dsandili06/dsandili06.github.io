@@ -25,6 +25,11 @@ vi.mock("motion/react", async (importOriginal) => {
 });
 
 describe("Contacto", () => {
+  it("renders the section header with number 07 and secure channel kicker", () => {
+    render(<Contacto />);
+    expect(screen.getByText(/SECTION_07 \/\/ SECURE_CHANNEL/i)).toBeInTheDocument();
+  });
+
   it("should render status card with availability", () => {
     render(<Contacto />);
     expect(screen.getByText("ANALYST STATUS")).toBeInTheDocument();

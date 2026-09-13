@@ -25,6 +25,11 @@ vi.mock("lucide-react", () => ({
 }));
 
 describe("Cursos", () => {
+  it("renders the section header with number 06 and learning log kicker", () => {
+    render(<Cursos />);
+    expect(screen.getByText(/SECTION_06 \/\/ LEARNING_LOG/i)).toBeInTheDocument();
+  });
+
   it("should render total count and institution count", () => {
     render(<Cursos />);
     expect(screen.getByText(/TOTAL/)).toBeInTheDocument();

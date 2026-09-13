@@ -8,6 +8,11 @@ import { Investigaciones } from "@/components/sections/Investigaciones";
  * (autoplay plugin stops on unmount — regression guard).
  */
 describe("Investigaciones", () => {
+  it("renders the section header with number 04 and case log kicker", () => {
+    render(<Investigaciones />);
+    expect(screen.getByText(/SECTION_04 \/\/ CASE_LOG/i)).toBeInTheDocument();
+  });
+
   it("renders featured cases and the view toggle", () => {
     render(<Investigaciones />);
 

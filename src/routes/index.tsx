@@ -78,15 +78,15 @@ function Portfolio() {
             <Hero />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10">
               <About />
+              <Suspense fallback={<SectionSkeleton />}>
+                <Certs />
+              </Suspense>
               <Proyectos />
               <Suspense fallback={<SectionSkeleton />}>
                 <Investigaciones />
               </Suspense>
               <Suspense fallback={<SectionSkeleton />}>
                 <Stack />
-              </Suspense>
-              <Suspense fallback={<SectionSkeleton />}>
-                <Certs />
               </Suspense>
               <Suspense fallback={<SectionSkeleton />}>
                 <Cursos />

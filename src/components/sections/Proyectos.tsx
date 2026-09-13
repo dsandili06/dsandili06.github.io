@@ -6,7 +6,7 @@ import { PROJECTS } from "@/data/projects";
 
 export function Proyectos() {
   return (
-    <Section id="proyectos" number="02" title="Proyectos" kicker="REPOSITORIES" reveal="fade-scale">
+    <Section id="proyectos" number="03" title="Proyectos" kicker="REPOSITORIES" reveal="fade-scale">
       {/* Primary Projects Grid — Tactical Command Dossiers */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch mb-6">
         {PROJECTS.map((p) => (

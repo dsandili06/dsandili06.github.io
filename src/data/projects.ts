@@ -12,7 +12,7 @@ export const PROJECTS: Project[] = [
     label: "LABS_SOC.REPO",
     image: socLabsImg,
     inPageHref: "#investigaciones",
-    inPageLabel: "Explorar Writeups (#03)",
+    inPageLabel: "Explorar Writeups (#04)",
     metrics: [
       { label: "INVESTIGACIONES", value: "15+ Writeups" },
       { label: "PLATAFORMAS", value: "CyberDefenders · THM" },
