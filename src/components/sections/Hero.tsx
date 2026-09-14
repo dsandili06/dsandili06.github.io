@@ -134,8 +134,7 @@ export function Hero() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-            className="glitch font-display font-bold leading-[0.88] tracking-[-0.025em] text-foreground"
-            style={{ fontSize: "clamp(2.5rem, 8vw, 9rem)" }}
+            className="glitch font-display font-bold leading-[0.88] tracking-[-0.025em] text-foreground text-[clamp(3.35rem,14.5vw,4.75rem)] sm:text-[clamp(4.25rem,10.5vw,6rem)] md:text-[clamp(4.75rem,7.5vw,9rem)]"
           >
             <span className="text-[var(--accent)]">
               <TextScramble text="Santiago" />
