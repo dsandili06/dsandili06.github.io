@@ -629,17 +629,10 @@ html {
   -webkit-text-stroke: 1px color-mix(in oklab, var(--accent) 14%, transparent);
 }
 
-/* ── Mobile nav stagger ─────────────────────────────────────────── */
+/* ── Mobile nav links ─────────────────────────────────────────── */
 .nav-mobile-link {
-  opacity: 0;
-  transform: translateX(-12px);
-  transition:
-    opacity 0.3s var(--ease-out-expo),
-    transform 0.3s var(--ease-out-expo);
-}
-.nav-mobile-open .nav-mobile-link {
   opacity: 1;
-  transform: translateX(0);
+  transform: none;
 }
 
 /* ── Carousel autoplay progress ─────────────────────────────────── */

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion } from "motion/react";
+import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, Search } from "lucide-react";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { getLenis } from "@/lib/lenis";
@@ -57,7 +57,7 @@ export function Nav() {
           : "bg-[#07080A]/80 backdrop-blur-xl supports-[backdrop-filter]:bg-[#07080A]/60"
       }`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 h-14 sm:h-16 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-10 h-14 sm:h-16 flex items-center justify-between relative z-50">
         <a
           href="#top"
           aria-label="Inicio"
@@ -129,39 +129,55 @@ export function Nav() {
         </div>
       </div>
 
-      {menuOpen && (
-        <div
-          role="presentation"
-          onClick={() => setMenuOpen(false)}
-          className="fixed inset-0 bg-[#07080A]/70 backdrop-blur-sm z-40 md:hidden"
-        />
-      )}
+      <AnimatePresence>
+        {menuOpen && (
+          <>
+            {/* Mobile Backdrop */}
+            <motion.div
+              key="mobile-nav-backdrop"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              role="presentation"
+              onClick={() => setMenuOpen(false)}
+              className="fixed inset-0 top-14 sm:top-16 bg-[#07080A]/80 backdrop-blur-sm z-40 md:hidden"
+            />
 
-      <div
-        inert={!menuOpen ? true : undefined}
-        data-lenis-prevent
-        className={`md:hidden absolute top-full left-0 right-0 w-full z-50 overflow-y-auto overscroll-contain border-t border-border-dim bg-[#07080A] shadow-2xl transition-[max-height,opacity] duration-300 ${menuOpen ? "nav-mobile-open max-h-[80vh] opacity-100" : "max-h-0 opacity-0 pointer-events-none"}`}
-      >
-        <ul className="flex flex-col px-4 sm:px-6 py-2 font-mono text-xs uppercase tracking-[0.2em]">
-          {links.map((l, i) => (
-            <li key={l.href}>
-              <a
-                href={l.href}
-                onClick={() => {
-                  const lenis = getLenis();
-                  lenis?.start();
-                  setMenuOpen(false);
-                }}
-                style={{ transitionDelay: menuOpen ? `${80 + i * 55}ms` : "0ms" }}
-                className="nav-mobile-link flex items-center gap-3 min-h-[44px] py-3.5 border-b border-border-dim/60 text-foreground/80 hover:text-[var(--accent)] transition-colors"
-              >
-                <span className="text-[var(--accent)]/60">{">"}</span>
-                <span>{l.label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+            {/* Mobile Drawer */}
+            <motion.div
+              key="mobile-nav-drawer"
+              initial={{ opacity: 0, y: -6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              data-lenis-prevent
+              className="fixed inset-x-0 top-14 sm:top-16 z-50 md:hidden bg-[#07080A] border-b border-border-dim shadow-2xl overflow-y-auto max-h-[calc(100dvh-3.5rem)] sm:max-h-[calc(100dvh-4rem)]"
+            >
+              <ul className="flex flex-col px-4 sm:px-6 py-2 font-mono text-xs uppercase tracking-[0.2em]">
+                {links.map((l) => (
+                  <li key={l.href}>
+                    <a
+                      href={l.href}
+                      onClick={() => {
+                        const lenis = getLenis();
+                        lenis?.start();
+                        setMenuOpen(false);
+                      }}
+                      className="nav-mobile-link flex items-center gap-3 min-h-[44px] py-3.5 border-b border-border-dim/60 text-foreground hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors opacity-100"
+                    >
+                      <span className="text-[var(--accent)]/70 font-semibold">{">"}</span>
+                      <span className="text-foreground tracking-wider font-medium text-[13px]">
+                        {l.label}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
