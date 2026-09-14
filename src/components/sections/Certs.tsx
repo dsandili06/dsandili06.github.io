@@ -6,14 +6,22 @@ import { CompTIAModal } from "@/components/CompTIAModal";
 import type { Certification } from "@/types";
 
 export function Certs() {
-  const [activeCert, setActiveCert] = useState<{ cert: string; title: string } | null>(null);
-  const [modalCert, setModalCert] = useState<{ cert: string; title: string } | null>(null);
+  const [activeCert, setActiveCert] = useState<{
+    cert: string;
+    title: string;
+    initialTab?: "cert" | "review";
+  } | null>(null);
+  const [modalCert, setModalCert] = useState<{
+    cert: string;
+    title: string;
+    initialTab?: "cert" | "review";
+  } | null>(null);
   const [comptiaCert, setComptiaCert] = useState<Certification | null>(null);
   const [modalComptia, setModalComptia] = useState<Certification | null>(null);
 
-  const openCertificate = (cert: string, title: string) => {
-    setModalCert({ cert, title });
-    setActiveCert({ cert, title });
+  const openCertificate = (cert: string, title: string, initialTab?: "cert" | "review") => {
+    setModalCert({ cert, title, initialTab });
+    setActiveCert({ cert, title, initialTab });
   };
 
   const openCompTIATracking = (cert: Certification) => {
@@ -35,12 +43,14 @@ export function Certs() {
                 type: "button" as const,
                 "aria-label": hasMockExams
                   ? `Seguimiento de simulacros para ${c.title}`
-                  : `Ver certificado de ${c.title}`,
+                  : c.hasReview
+                    ? `Ver certificado y review técnica de ${c.title}`
+                    : `Ver certificado de ${c.title}`,
                 onClick: () => {
                   if (hasMockExams) {
                     openCompTIATracking(c);
                   } else if (c.href) {
-                    openCertificate(c.href, c.title);
+                    openCertificate(c.href, c.title, c.hasReview ? "review" : "cert");
                   }
                 },
               }
@@ -117,11 +127,15 @@ export function Certs() {
                         {c.score}
                       </div>
                     </div>
-                    {c.href && (
+                    {c.hasReview ? (
+                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-85 group-hover:opacity-100 transition-opacity text-right font-medium">
+                        VER CERTIFICADO & REVIEW TÉCNICA →
+                      </span>
+                    ) : c.href ? (
                       <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity text-right">
                         VER CERTIFICADO →
                       </span>
-                    )}
+                    ) : null}
                   </>
                 ) : hasMockExams && c.mockExams ? (
                   <>
@@ -156,6 +170,7 @@ export function Certs() {
         <CertModal
           cert={modalCert.cert}
           title={modalCert.title}
+          initialTab={modalCert.initialTab}
           isOpen={Boolean(activeCert)}
           onClose={() => setActiveCert(null)}
           onExitComplete={() => setModalCert(null)}

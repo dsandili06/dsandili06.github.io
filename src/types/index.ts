@@ -71,6 +71,7 @@ export type Certification = {
   note?: string;
   logo?: string;
   mockExams?: MockExam[];
+  hasReview?: boolean;
 };
 
 export type StackGroup = { title: string; items: string[] };

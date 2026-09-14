@@ -19,6 +19,7 @@ describe("CERTIFICATIONS data integrity", () => {
     expect(sal1?.title).toBe("SAL1 (Security Analyst L1)");
     expect(sal1?.year).toBe("19/03/2026");
     expect(sal1?.status).toBe("OBTENIDA");
+    expect(sal1?.hasReview).toBe(true);
   });
 
   it("should contain CompTIA Security+ with Q3 2026 goal note", () => {

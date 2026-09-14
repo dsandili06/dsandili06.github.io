@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, cleanup } from "@testing-library/react";
+import { render, screen, cleanup, fireEvent } from "@testing-library/react";
 import { CertModal } from "@/components/CertModal";
 
 describe("CertModal component", () => {
@@ -138,5 +138,118 @@ describe("CertModal component", () => {
 
     expect(backSpy).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders tabbed interface for SAL1 with official certificate and technical review tabs", () => {
+    render(
+      <CertModal
+        isOpen={true}
+        onClose={vi.fn()}
+        cert="/certs/THM-SAL1-Certificate.png"
+        title="SAL1 (Security Analyst L1)"
+      />,
+    );
+
+    // Tab buttons exist
+    const certTab = screen.getByRole("button", { name: /\[ CERTIFICADO OFICIAL \]/i });
+    const reviewTab = screen.getByRole("button", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
+    expect(certTab).toBeInTheDocument();
+    expect(reviewTab).toBeInTheDocument();
+
+    // Defaults to review tab or allows reading technical breakdown
+    expect(screen.getByText("Escenarios Evaluados")).toBeInTheDocument();
+    expect(screen.getByText("Security Analyst Fundamentals")).toBeInTheDocument();
+    expect(screen.getByText("Fowl Play B1 v2")).toBeInTheDocument();
+    expect(screen.getByText("Red Alert: Command and Control B2 V2")).toBeInTheDocument();
+
+    // Check takeaways and scores
+    const takeaways = screen.getAllByText("Takeaway:");
+    expect(takeaways.length).toBe(3);
+    expect(screen.queryByText(/Takeaway defensivo/i)).not.toBeInTheDocument();
+
+    // Check methodology is removed
+    expect(screen.queryByText("Metodología Aplicada en la Ventana de 24h")).not.toBeInTheDocument();
+
+    // Check verdict conclusion quote is removed
+    expect(
+      screen.queryByText(/El SAL1 de TryHackMe es una de las certificaciones más sólidas/i),
+    ).not.toBeInTheDocument();
+
+    // Score telemetry
+    expect(screen.getByText(/4h 7m 55s/i)).toBeInTheDocument();
+    expect(screen.getByText(/Intento #1 \(Primero\)/i)).toBeInTheDocument();
+  });
+
+  it("switches tabs between review and official certificate in SAL1 modal", () => {
+    render(
+      <CertModal
+        isOpen={true}
+        onClose={vi.fn()}
+        cert="/certs/THM-SAL1-Certificate.png"
+        title="SAL1 (Security Analyst L1)"
+        initialTab="review"
+      />,
+    );
+
+    const certTab = screen.getByRole("button", { name: /\[ CERTIFICADO OFICIAL \]/i });
+    const reviewTab = screen.getByRole("button", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
+
+    // Click cert tab
+    fireEvent.click(certTab);
+    const certImg = screen.getByAltText("SAL1 (Security Analyst L1)");
+    expect(certImg).toBeInTheDocument();
+    expect(certImg).toHaveAttribute("src", "/certs/THM-SAL1-Certificate.png");
+
+    // Click review tab
+    fireEvent.click(reviewTab);
+    expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Ampliar captura oficial de puntaje/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders evidence image uncropped with object-contain and comfortable height", () => {
+    render(
+      <CertModal
+        isOpen={true}
+        onClose={vi.fn()}
+        cert="/certs/THM-SAL1-Certificate.png"
+        title="SAL1 (Security Analyst L1)"
+        initialTab="review"
+      />,
+    );
+
+    const evidenceImg = screen.getByAltText(
+      /Captura oficial de resultados de certificación TryHackMe SAL1/i,
+    );
+    expect(evidenceImg).toBeInTheDocument();
+    expect(evidenceImg.className).toContain("object-contain");
+    expect(evidenceImg.className).not.toContain("aspect-[21/9]");
+  });
+
+  it("reactively updates active tab when initialTab prop changes dynamically", () => {
+    const { rerender } = render(
+      <CertModal
+        isOpen={true}
+        onClose={vi.fn()}
+        cert="/certs/THM-SAL1-Certificate.png"
+        title="SAL1 (Security Analyst L1)"
+        initialTab="cert"
+      />,
+    );
+
+    expect(screen.getByAltText("SAL1 (Security Analyst L1)")).toBeInTheDocument();
+
+    rerender(
+      <CertModal
+        isOpen={true}
+        onClose={vi.fn()}
+        cert="/certs/THM-SAL1-Certificate.png"
+        title="SAL1 (Security Analyst L1)"
+        initialTab="review"
+      />,
+    );
+
+    expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
   });
 });

@@ -11,6 +11,7 @@ export const CERTIFICATIONS: Certification[] = [
     badge: "CERTIFIED",
     href: "/certs/THM-SAL1-Certificate.png",
     logo: "/badges/sal1badge.png",
+    hasReview: true,
   },
   {
     code: "GOOGLE",

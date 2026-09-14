@@ -113,4 +113,16 @@ describe("Certs section", () => {
     // Close modal
     fireEvent.click(screen.getByTestId("comptia-modal-close"));
   });
+
+  it("renders clean SAL1 card with review CTA and without simulation hours or review available badge", () => {
+    render(<Certs />);
+
+    expect(screen.getByText("VER CERTIFICADO & REVIEW TÉCNICA →")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: /Ver certificado y review técnica de SAL1/i }),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Review Técnica Disponible/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/SIMULACIONES SOC/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/4H 07M/i)).not.toBeInTheDocument();
+  });
 });
