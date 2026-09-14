@@ -151,11 +151,11 @@ export function Investigaciones() {
                     {i.title}
                   </h3>
 
-                  <div className="flex flex-wrap gap-1.5 mb-3.5 min-h-[26px]">
+                  <div className="flex flex-wrap gap-1.5 mb-3.5 min-h-[22px]">
                     {i.categories.map((c) => (
                       <span
                         key={c}
-                        className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 rounded-2xs border border-border-dim/80 bg-[var(--surface-2)]/40 group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--surface-2)]/80 text-foreground/75 transition-all"
+                        className="font-mono text-[8px] uppercase tracking-[0.1em] px-1.5 py-0.5 rounded-2xs border border-border-dim/80 bg-[var(--surface-2)]/40 group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--surface-2)]/80 text-foreground/75 transition-all whitespace-nowrap"
                       >
                         {c}
                       </span>
@@ -302,11 +302,11 @@ export function Investigaciones() {
                     <h3 className="font-display font-bold text-xl leading-snug tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors mb-3">
                       {i.title}
                     </h3>
-                    <div className="flex flex-wrap gap-1.5 mb-4">
+                    <div className="flex flex-wrap gap-1.5 mb-4 min-h-[22px]">
                       {i.categories.map((c) => (
                         <span
                           key={c}
-                          className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 rounded-2xs border border-border-dim/80 bg-[var(--surface-2)]/40 group-hover:border-[var(--accent)]/30 group-hover:text-foreground group-hover:bg-[var(--surface-2)]/80 text-foreground/70 transition-all"
+                          className="font-mono text-[8px] uppercase tracking-[0.1em] px-1.5 py-0.5 rounded-2xs border border-border-dim/80 bg-[var(--surface-2)]/40 group-hover:border-[var(--accent)]/30 group-hover:text-foreground group-hover:bg-[var(--surface-2)]/80 text-foreground/70 transition-all whitespace-nowrap"
                         >
                           {c}
                         </span>
