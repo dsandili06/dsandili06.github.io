@@ -507,17 +507,22 @@ html {
   inset: 0;
   border-radius: inherit;
   background: radial-gradient(
-    400px circle at var(--mouse-x) var(--mouse-y),
-    color-mix(in oklab, var(--accent) 8%, transparent),
-    transparent 60%
+    220px circle at var(--mouse-x) var(--mouse-y),
+    color-mix(in oklab, var(--accent) 4.5%, transparent),
+    transparent 65%
   );
   opacity: 0;
-  transition: opacity 250ms var(--ease-out-expo);
+  transition: opacity 300ms var(--ease-out-expo);
   pointer-events: none;
   z-index: 1;
 }
 .spotlight-card:hover::before {
   opacity: 1;
+}
+@media (hover: none) {
+  .spotlight-card::before {
+    display: none;
+  }
 }
 
 /* ── Film grain overlay ─────────────────────────────────────────── */

@@ -71,4 +71,12 @@ describe("Investigaciones", () => {
       expect(btn.className).toContain("cursor-pointer");
     }
   });
+
+  it("renders forensic watermark elements in featured cases", () => {
+    render(<Investigaciones />);
+
+    expect(screen.getAllByText("LAB_001").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("LAB_012").length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText("LAB_003").length).toBeGreaterThanOrEqual(1);
+  });
 });

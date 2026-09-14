@@ -12,8 +12,17 @@ export function Proyectos() {
         {PROJECTS.map((p) => (
           <SpotlightCard
             key={p.id}
-            className="group flex flex-col justify-between border border-[var(--accent)]/30 hover:border-[var(--accent)] transition-all duration-200 overflow-hidden bg-[var(--surface)]"
+            className="group relative flex flex-col justify-between border border-[var(--accent)]/30 hover:border-[var(--accent)]/55 rounded-xs bg-[color-mix(in_oklab,var(--surface)_96%,transparent)] backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.07),0_12px_36px_-6px_rgba(0,0,0,0.6)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.18),0_16px_40px_-6px_rgba(0,0,0,0.65)] active:scale-[0.99] active:duration-100 transition-all duration-300 overflow-hidden"
           >
+            {/* Top ambient laser accent */}
+            <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/45 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20" />
+
+            {/* Tactical HUD Corner Brackets */}
+            <span className="absolute top-0 left-0 size-2.5 border-t-2 border-l-2 border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all duration-300 pointer-events-none z-20" />
+            <span className="absolute top-0 right-0 size-2.5 border-t-2 border-r-2 border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all duration-300 pointer-events-none z-20" />
+            <span className="absolute bottom-0 left-0 size-2.5 border-b-2 border-l-2 border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all duration-300 pointer-events-none z-20" />
+            <span className="absolute bottom-0 right-0 size-2.5 border-b-2 border-r-2 border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all duration-300 pointer-events-none z-20" />
+
             {/* Dossier Visual Header Banner */}
             {p.image && (
               <div className="relative h-44 sm:h-52 w-full overflow-hidden border-b border-border-dim/60 bg-black/50">
@@ -25,11 +34,12 @@ export function Proyectos() {
                   className="w-full h-full object-cover object-center opacity-80 group-hover:scale-105 group-hover:opacity-95 transition-all duration-500 ease-out pointer-events-none"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface)] via-[var(--surface)]/30 to-transparent" />
-                <div className="absolute top-3.5 left-4 right-4 flex items-center justify-between pointer-events-none">
-                  <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold bg-[#07080A]/90 px-2.5 py-1 border border-border-dim backdrop-blur-xs">
+                <div className="absolute top-3.5 left-4 right-4 flex items-center justify-between pointer-events-none z-10">
+                  <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold bg-[#07080A]/90 px-2.5 py-1 border border-border-dim backdrop-blur-xs shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
                     PRJ_{p.id}
                   </span>
-                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] bg-[#07080A]/90 backdrop-blur-xs">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] bg-[#07080A]/90 backdrop-blur-xs shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-1.5">
+                    <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
                     PUBLIC REPO
                   </span>
                 </div>
@@ -44,7 +54,8 @@ export function Proyectos() {
                     <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold">
                       PRJ_{p.id}
                     </span>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)]">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] bg-[var(--surface-2)]/60 flex items-center gap-1.5">
+                      <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
                       PUBLIC REPO
                     </span>
                   </div>
@@ -58,7 +69,7 @@ export function Proyectos() {
 
                 {/* Bento Metrics Strip */}
                 {p.metrics && (
-                  <div className="grid grid-cols-3 gap-2 my-4 p-2.5 bg-[var(--surface-2)]/60 border border-border-dim/60 rounded-xs">
+                  <div className="grid grid-cols-3 gap-2 my-4 p-3 bg-[color-mix(in_oklab,var(--surface-2)_75%,transparent)] backdrop-blur-xs border border-border-dim/70 rounded-xs group-hover:border-[var(--accent)]/30 transition-colors duration-200 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
                     {p.metrics.map((m) => (
                       <div key={m.label} className="min-w-0">
                         <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.18em] text-[var(--muted-foreground)] truncate">
@@ -82,19 +93,19 @@ export function Proyectos() {
                     {p.scripts.map((s) => (
                       <div
                         key={s.name}
-                        className="flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface-2)]/35 border border-border-dim/40 hover:border-[var(--accent)]/40 transition-colors"
+                        className="group/item flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface-2)]/40 border border-border-dim/40 hover:border-[var(--accent)]/50 hover:bg-[color-mix(in_oklab,var(--accent)_3.5%,var(--surface-2))] transition-all duration-200"
                       >
                         {s.lang ? (
-                          <span className="font-mono text-[9px] uppercase tracking-[0.15em] px-1.5 py-0.5 rounded-2xs border border-[var(--accent)]/40 text-[var(--accent)] bg-[var(--accent)]/5 shrink-0 mt-0.5">
+                          <span className="font-mono text-[9px] uppercase tracking-[0.15em] px-1.5 py-0.5 rounded-2xs border border-[var(--accent)]/40 text-[var(--accent)] bg-[var(--accent)]/10 shrink-0 mt-0.5">
                             {s.lang.toUpperCase()}
                           </span>
                         ) : (
-                          <span className="text-[var(--accent)] font-mono text-xs select-none shrink-0 mt-0.5 px-0.5">
+                          <span className="text-[var(--accent)] font-mono text-xs select-none shrink-0 mt-0.5 px-0.5 group-hover/item:translate-x-0.5 transition-transform">
                             ›
                           </span>
                         )}
                         <div className="min-w-0 flex-1">
-                          <div className="font-mono text-[11.5px] font-semibold text-foreground/90 truncate">
+                          <div className="font-mono text-[11.5px] font-semibold text-foreground/90 truncate group-hover/item:text-[var(--accent)] transition-colors">
                             {s.name}
                           </div>
                           <div className="text-[11px] text-foreground/70 leading-snug line-clamp-1">
@@ -140,7 +151,13 @@ export function Proyectos() {
       </div>
 
       {/* WIP Card — Minimalist with Animated Loading Bar */}
-      <div className="border border-dashed border-[var(--accent)]/30 bg-[var(--surface)] p-4 sm:p-6 md:p-8 transition-colors relative overflow-hidden">
+      <div className="border border-dashed border-[var(--accent)]/40 rounded-xs bg-[radial-gradient(ellipse_at_top,_rgba(59,130,246,0.04),_transparent_65%)] bg-[var(--surface)] p-4 sm:p-6 md:p-8 transition-all duration-300 relative overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_8px_32px_rgba(0,0,0,0.4)]">
+        {/* Tactical Corner HUD Accents */}
+        <span className="absolute top-0 left-0 size-3 border-t-2 border-l-2 border-[var(--accent)]/50 opacity-40 sm:opacity-60 pointer-events-none" />
+        <span className="absolute top-0 right-0 size-3 border-t-2 border-r-2 border-[var(--accent)]/50 opacity-40 sm:opacity-60 pointer-events-none" />
+        <span className="absolute bottom-0 left-0 size-3 border-b-2 border-l-2 border-[var(--accent)]/50 opacity-40 sm:opacity-60 pointer-events-none" />
+        <span className="absolute bottom-0 right-0 size-3 border-b-2 border-r-2 border-[var(--accent)]/50 opacity-40 sm:opacity-60 pointer-events-none" />
+
         <div className="flex flex-col justify-between h-full">
           <div>
             <div className="flex items-center justify-between gap-3 mb-4">
@@ -164,20 +181,20 @@ export function Proyectos() {
             <div className="mt-6 mb-2">
               <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-2.5">
                 <span className="flex items-center gap-2">
-                  <span className="inline-block size-1.5 rounded-full bg-[var(--accent)]" />
+                  <span className="inline-block size-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
                   PIPELINE // EN PROCESO
                 </span>
-                <span className="text-[var(--accent)] font-semibold">68%</span>
+                <span className="text-[var(--accent)] font-semibold font-mono">68%</span>
               </div>
 
               <div
-                className="h-2 w-full bg-[var(--surface-2)] border border-border-dim/80 rounded-xs overflow-hidden relative"
+                className="h-2.5 w-full bg-[var(--surface-2)] border border-border-dim/90 rounded-xs overflow-hidden relative shadow-[inset_0_1px_2px_rgba(0,0,0,0.6)]"
                 role="progressbar"
                 aria-label="Progreso del próximo proyecto"
               >
-                <div className="h-full bg-gradient-to-r from-[var(--accent)]/50 via-[var(--accent)] to-[var(--accent)] relative rounded-xs w-[68%]">
+                <div className="h-full bg-gradient-to-r from-[var(--accent)]/60 via-[var(--accent)] to-cyan-400 relative rounded-xs w-[68%]">
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent"
                     initial={{ x: "-100%" }}
                     animate={{ x: "200%" }}
                     transition={{
@@ -193,7 +210,10 @@ export function Proyectos() {
 
           <div className="mt-6 pt-4 border-t border-border-dim flex flex-wrap items-center justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.25em]">
             <span className="text-[var(--muted-foreground)]">ESTADO: EN DESARROLLO</span>
-            <span className="text-[var(--muted-foreground)]">GITHUB // WIP</span>
+            <span className="text-[var(--muted-foreground)] flex items-center gap-1.5">
+              <span className="inline-block size-1.5 rounded-full bg-[var(--accent)]/60" />
+              GITHUB // WIP
+            </span>
           </div>
         </div>
       </div>

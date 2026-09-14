@@ -119,11 +119,14 @@ export function Stack() {
                   whileTap={{ scale: 0.985 }}
                   transition={{ type: "spring", stiffness: 450, damping: 30 }}
                   className={cn(
-                    "group relative flex items-center justify-between p-3 sm:p-4 rounded-xs border text-left cursor-pointer select-none overflow-hidden transition-all duration-200",
+                    "group relative flex items-center justify-between p-3 sm:p-4 rounded-xs border text-left cursor-pointer select-none overflow-hidden transition-all duration-200 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]",
                     isSelected
-                      ? cn("border-border-dim", meta.borderActive)
+                      ? cn(
+                          "border-border-dim shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1),0_4px_20px_-2px_rgba(0,0,0,0.5)]",
+                          meta.borderActive,
+                        )
                       : cn(
-                          "border-border-dim bg-[var(--surface)] hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))]",
+                          "border-border-dim bg-[var(--surface)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))]",
                           meta.borderHover,
                         ),
                   )}
@@ -134,7 +137,7 @@ export function Stack() {
                     <>
                       <motion.div
                         layoutId="activeDeckPill"
-                        className="absolute inset-0 bg-white/[0.03] pointer-events-none"
+                        className="absolute inset-0 bg-gradient-to-r from-white/[0.04] to-transparent pointer-events-none"
                         transition={{ type: "spring", stiffness: 380, damping: 32 }}
                       />
                       <motion.div
@@ -147,6 +150,9 @@ export function Stack() {
                       />
                     </>
                   )}
+
+                  {/* Corner tech accent */}
+                  <span className="absolute top-0 right-0 size-2 border-t border-r border-border-dim/50 group-hover:border-[var(--accent)]/40 transition-colors pointer-events-none" />
 
                   <div className="relative z-10 flex items-center gap-2 sm:gap-3 min-w-0">
                     <Icon
@@ -186,29 +192,29 @@ export function Stack() {
         </div>
 
         {/* Right: Tactical Instrument Bay */}
-        <div className="relative flex flex-col p-4 sm:p-6 md:p-8 rounded-xs border border-[var(--accent)]/30 bg-[var(--surface)] backdrop-blur-md min-h-[380px] overflow-hidden">
+        <div className="relative flex flex-col p-4 sm:p-6 md:p-8 rounded-xs border border-[var(--accent)]/35 bg-[color-mix(in_oklab,var(--surface)_94%,transparent)] backdrop-blur-xl min-h-[380px] overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_20px_50px_-10px_rgba(0,0,0,0.7)]">
           {/* Tactical HUD Corner Brackets */}
           <span
             className={cn(
-              "absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 pointer-events-none transition-colors duration-300",
+              "absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 pointer-events-none opacity-40 sm:opacity-100 transition-all duration-300",
               activeMeta.borderCorner,
             )}
           />
           <span
             className={cn(
-              "absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 pointer-events-none transition-colors duration-300",
+              "absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 pointer-events-none opacity-40 sm:opacity-100 transition-all duration-300",
               activeMeta.borderCorner,
             )}
           />
           <span
             className={cn(
-              "absolute bottom-0 left-0 w-2.5 h-2.5 border-b-2 border-l-2 pointer-events-none transition-colors duration-300",
+              "absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 pointer-events-none opacity-40 sm:opacity-100 transition-all duration-300",
               activeMeta.borderCorner,
             )}
           />
           <span
             className={cn(
-              "absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 pointer-events-none transition-colors duration-300",
+              "absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 pointer-events-none opacity-40 sm:opacity-100 transition-all duration-300",
               activeMeta.borderCorner,
             )}
           />
@@ -253,13 +259,19 @@ export function Stack() {
                 initial={{ opacity: 0, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{
-                  duration: 0.15,
+                  duration: 0.18,
                   delay: idx * 0.015,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                whileHover={{ scale: 1.015 }}
-                className="group/tool relative flex items-center justify-between p-3.5 rounded-xs border border-border-dim bg-[color-mix(in_oklab,var(--background)_40%,var(--surface))] hover:bg-[color-mix(in_oklab,var(--accent)_6%,var(--surface))] hover:border-[var(--accent)]/50 transition-all duration-200 cursor-default select-none overflow-hidden"
+                whileHover={{ scale: 1.02 }}
+                className="group/tool relative flex items-center justify-between p-3.5 rounded-xs border border-border-dim/80 bg-[color-mix(in_oklab,var(--background)_45%,var(--surface))] hover:bg-[color-mix(in_oklab,var(--accent)_2.5%,var(--surface))] hover:border-[var(--accent)]/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.12),0_4px_16px_-2px_rgba(0,0,0,0.4)] transition-all duration-200 cursor-default select-none overflow-hidden"
               >
+                {/* Top laser accent on hover */}
+                <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/35 to-transparent opacity-0 group-hover/tool:opacity-100 transition-opacity duration-200 pointer-events-none" />
+
+                {/* Micro corner accent */}
+                <span className="absolute top-0 left-0 size-1.5 border-t border-l border-border-dim group-hover/tool:border-[var(--accent)] transition-colors pointer-events-none" />
+
                 <div className="flex items-center gap-2.5 min-w-0">
                   <span
                     className={cn(
@@ -275,17 +287,14 @@ export function Stack() {
                   </span>
                 </div>
 
-                {/* Micro-destello estelar (4-point sparkle) en hover de esquina */}
-                <svg
+                {/* Precision status indicator pip on hover */}
+                <span
                   className={cn(
-                    "size-2.5 shrink-0 pointer-events-none opacity-0 group-hover/tool:opacity-90 group-hover/tool:scale-125 transition-all duration-300",
-                    activeMeta.accentColor,
+                    "size-1.5 rounded-full opacity-0 group-hover/tool:opacity-90 transition-opacity duration-200 pointer-events-none shrink-0",
+                    activeMeta.dotColor,
                   )}
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
-                </svg>
+                  aria-hidden="true"
+                />
               </motion.div>
             ))}
           </div>

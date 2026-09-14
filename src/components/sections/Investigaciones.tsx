@@ -97,38 +97,75 @@ export function Investigaciones() {
           {FEATURED_INVESTIGATIONS.map((i, idx) => (
             <SpotlightCard
               key={i.id}
-              className="group flex flex-col justify-between min-h-[270px] border border-[var(--accent)]/30 hover:border-[var(--accent)] transition-all duration-200 cursor-pointer"
+              className="group relative flex flex-col justify-between min-h-[270px] rounded-xs border border-[var(--accent)]/30 hover:border-[var(--accent)]/55 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_8px_30px_-6px_rgba(0,0,0,0.6)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.18),0_12px_32px_-4px_rgba(0,0,0,0.6)] active:scale-[0.985] active:duration-100 transition-all duration-300 overflow-hidden cursor-pointer"
             >
+              {/* Top ambient highlight line */}
+              <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/45 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
+
+              {/* Tactical HUD Corner Accents */}
+              <span className="absolute top-0 left-0 size-2 border-t border-l border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-10" />
+              <span className="absolute top-0 right-0 size-2 border-t border-r border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-10" />
+              <span className="absolute bottom-0 left-0 size-2 border-b border-l border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-10" />
+              <span className="absolute bottom-0 right-0 size-2 border-b border-r border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-10" />
+
               <button
                 type="button"
                 onClick={() => openWriteup(i.id)}
-                className="flex flex-col justify-between h-full p-6 bg-[var(--surface)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))] transition-colors text-left w-full cursor-pointer"
+                className="relative flex flex-col justify-between h-full p-6 bg-[color-mix(in_oklab,var(--surface)_94%,transparent)] hover:bg-[color-mix(in_oklab,var(--accent)_2.5%,var(--surface))] transition-colors duration-300 text-left w-full cursor-pointer overflow-hidden"
               >
-                <div>
-                  <div className="flex items-center justify-between gap-3 mb-5">
-                    <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold">
-                      SPOTLIGHT_0{idx + 1}
-                    </span>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)]">
-                      {i.id}
-                    </span>
+                {/* Dossier ID Watermark */}
+                <span
+                  aria-hidden="true"
+                  className="absolute -right-2 -bottom-2 font-mono font-bold text-6xl md:text-7xl tracking-tighter text-white/[0.03] group-hover:text-[var(--accent)]/[0.06] pointer-events-none select-none transition-colors duration-500 leading-none z-0"
+                >
+                  {i.id}
+                </span>
+
+                <div className="relative z-10 flex flex-col flex-1">
+                  <div className="flex items-center justify-between gap-3 mb-4">
+                    <div className="flex items-center gap-2">
+                      <span
+                        aria-hidden="true"
+                        className="font-mono text-[11px] text-[var(--accent)]/60 group-hover:text-[var(--accent)] transition-colors select-none font-bold"
+                      >
+                        +
+                      </span>
+                      <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold">
+                        SPOTLIGHT_0{idx + 1}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <span
+                        aria-hidden="true"
+                        className="font-mono text-[9px] text-[var(--muted-foreground)]/50 select-none group-hover:text-[var(--accent)]/50 transition-colors"
+                      >
+                        [+]
+                      </span>
+                      <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] bg-[var(--surface-2)]/60">
+                        {i.id}
+                      </span>
+                    </div>
                   </div>
-                  <h3 className="font-display font-bold text-2xl leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors mb-3">
+
+                  <h3 className="font-display font-bold text-2xl leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors mb-2.5 line-clamp-1">
                     {i.title}
                   </h3>
-                  <div className="flex flex-wrap gap-1.5 mb-4">
+
+                  <div className="flex flex-wrap gap-1.5 mb-3.5 min-h-[26px]">
                     {i.categories.map((c) => (
                       <span
                         key={c}
-                        className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-border-dim text-foreground/70"
+                        className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 rounded-2xs border border-border-dim/80 bg-[var(--surface-2)]/40 group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--surface-2)]/80 text-foreground/75 transition-all"
                       >
                         {c}
                       </span>
                     ))}
                   </div>
-                  <p className="text-sm text-foreground/80 leading-relaxed">{i.summary}</p>
+
+                  <p className="text-sm text-foreground/80 leading-relaxed mb-4">{i.summary}</p>
                 </div>
-                <div className="mt-6 pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
+
+                <div className="relative z-10 mt-auto pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
                   <span className="text-[var(--muted-foreground)]">{i.platform}</span>
                   <span className="text-[var(--accent)] group-hover:translate-x-1 transition-transform">
                     VER WRITEUP →
@@ -242,8 +279,17 @@ export function Investigaciones() {
                 <button
                   type="button"
                   onClick={() => openWriteup(i.id)}
-                  className="group flex flex-col justify-between h-full p-6 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/60 hover:bg-[color-mix(in_oklab,var(--accent)_4%,var(--surface))] transition-all duration-200 text-left w-full cursor-pointer"
+                  className="group relative flex flex-col justify-between h-full p-6 rounded-xs bg-[color-mix(in_oklab,var(--surface)_94%,transparent)] border border-border-dim hover:border-[var(--accent)]/45 hover:bg-[color-mix(in_oklab,var(--accent)_2.5%,var(--surface))] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_6px_24px_rgba(0,0,0,0.35)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.18),0_8px_24px_-4px_rgba(0,0,0,0.5)] active:scale-[0.985] active:duration-100 transition-all duration-300 text-left w-full cursor-pointer overflow-hidden"
                 >
+                  {/* Top ambient highlight line */}
+                  <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/45 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
+
+                  {/* Tactical HUD Corner Accents */}
+                  <span className="absolute top-0 left-0 size-2 border-t border-l border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-10" />
+                  <span className="absolute top-0 right-0 size-2 border-t border-r border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-10" />
+                  <span className="absolute bottom-0 left-0 size-2 border-b border-l border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-10" />
+                  <span className="absolute bottom-0 right-0 size-2 border-b border-r border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-10" />
+
                   <div>
                     <div className="flex items-center justify-between mb-4 gap-2">
                       <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold">
@@ -260,18 +306,18 @@ export function Investigaciones() {
                       {i.categories.map((c) => (
                         <span
                           key={c}
-                          className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-border-dim text-foreground/70"
+                          className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 rounded-2xs border border-border-dim/80 bg-[var(--surface-2)]/40 group-hover:border-[var(--accent)]/30 group-hover:text-foreground group-hover:bg-[var(--surface-2)]/80 text-foreground/70 transition-all"
                         >
                           {c}
                         </span>
                       ))}
                     </div>
-                    <p className="text-xs md:text-sm text-foreground/80 leading-relaxed line-clamp-4">
+                    <p className="text-xs md:text-sm text-foreground/80 leading-relaxed mb-4">
                       {i.summary}
                     </p>
                   </div>
 
-                  <div className="mt-6 pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
+                  <div className="mt-auto pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
                     <span className="text-[var(--muted-foreground)]">{i.platform}</span>
                     <span className="text-[var(--accent)] group-hover:translate-x-1 transition-transform">
                       VER WRITEUP →
@@ -283,27 +329,36 @@ export function Investigaciones() {
 
             {/* WIP Card */}
             <div className="flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] pl-4">
-              <div className="flex flex-col justify-between h-full p-6 bg-[var(--surface)]/50 border border-dashed border-[var(--accent)]/30 opacity-75">
+              <div className="relative flex flex-col justify-between h-full p-6 rounded-xs bg-[radial-gradient(ellipse_at_top,_rgba(59,130,246,0.04),_transparent_65%)] bg-[var(--surface)]/60 border border-dashed border-[var(--accent)]/40 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] backdrop-blur-xs opacity-80 hover:opacity-100 transition-all duration-300 overflow-hidden">
+                {/* Tactical HUD Corner Accents */}
+                <span className="absolute top-0 left-0 size-2.5 border-t border-l border-[var(--accent)]/40 opacity-40 sm:opacity-60 pointer-events-none" />
+                <span className="absolute top-0 right-0 size-2.5 border-t border-r border-[var(--accent)]/40 opacity-40 sm:opacity-60 pointer-events-none" />
+                <span className="absolute bottom-0 left-0 size-2.5 border-b border-l border-[var(--accent)]/40 opacity-40 sm:opacity-60 pointer-events-none" />
+                <span className="absolute bottom-0 right-0 size-2.5 border-b border-r border-[var(--accent)]/40 opacity-40 sm:opacity-60 pointer-events-none" />
+
                 <div>
                   <div className="flex items-center justify-between mb-4 gap-2">
                     <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold">
                       LAB_016
                     </span>
-                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">
+                    <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)] bg-[var(--accent)]/5">
                       EN PROCESO
                     </span>
                   </div>
-                  <h3 className="font-display font-bold text-xl leading-snug tracking-tight text-foreground/70 mb-3">
+                  <h3 className="font-display font-bold text-xl leading-snug tracking-tight text-foreground/75 mb-3">
                     Próximo writeup CyberDefenders
                   </h3>
-                  <p className="text-xs md:text-sm text-foreground/50 leading-relaxed">
+                  <p className="text-xs md:text-sm text-foreground/60 leading-relaxed">
                     Investigación forense en desarrollo. El análisis y la documentación de
                     artefactos estarán disponibles próximamente.
                   </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
                   <span className="text-[var(--muted-foreground)]">CyberDefenders</span>
-                  <span className="text-[var(--accent)]/60">WIP.LOG</span>
+                  <span className="text-[var(--accent)]/70 flex items-center gap-1.5">
+                    <span className="inline-block size-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+                    WIP.LOG
+                  </span>
                 </div>
               </div>
             </div>
@@ -326,7 +381,7 @@ export function Investigaciones() {
                 type="button"
                 key={i.id}
                 onClick={() => openWriteup(i.id)}
-                className="group grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 items-start px-5 py-4 border-b border-border-dim last:border-b-0 w-full text-left transition-colors hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] cursor-pointer"
+                className="group relative grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 items-start px-5 py-4 border-b border-border-dim last:border-b-0 w-full text-left transition-all duration-200 hover:bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] cursor-pointer before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-[var(--accent)] before:opacity-0 hover:before:opacity-100 before:transition-opacity"
                 title={i.summary}
               >
                 <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums pt-0.5">
@@ -339,7 +394,7 @@ export function Investigaciones() {
                   {i.categories.map((c) => (
                     <span
                       key={c}
-                      className="font-mono text-[9px] uppercase tracking-[0.2em] px-1.5 py-0.5 border border-border-dim text-foreground/70 leading-tight"
+                      className="font-mono text-[9px] uppercase tracking-[0.2em] px-1.5 py-0.5 rounded-2xs border border-border-dim text-foreground/70 leading-tight"
                     >
                       {c}
                     </span>
@@ -353,7 +408,7 @@ export function Investigaciones() {
                     PUBLICADO
                   </Badge>
                 </div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 transition-opacity pt-0.5 text-right">
+                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all pt-0.5 text-right">
                   VER →
                 </div>
               </button>
@@ -385,7 +440,7 @@ export function Investigaciones() {
                 type="button"
                 key={i.id}
                 onClick={() => openWriteup(i.id)}
-                className="group border-t border-border-dim w-full px-3 py-3.5 rounded-xs first:border-t-0 text-left cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_4%,transparent)] transition-colors"
+                className="group relative border-t border-border-dim w-full px-3 py-3.5 rounded-xs first:border-t-0 text-left cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] transition-all duration-200 before:absolute before:left-0 before:top-1 before:bottom-1 before:w-[2px] before:bg-[var(--accent)] before:opacity-0 hover:before:opacity-100 before:transition-opacity"
               >
                 <div className="flex items-center gap-3">
                   <span className="w-7 shrink-0 font-mono text-[10px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums">
@@ -394,7 +449,7 @@ export function Investigaciones() {
                   <span className="min-w-0 flex-1 truncate font-display font-semibold text-[14px] tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
                     {i.title}
                   </span>
-                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--accent)]">
+                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--accent)] group-hover:translate-x-0.5 transition-transform">
                     VER →
                   </span>
                 </div>
