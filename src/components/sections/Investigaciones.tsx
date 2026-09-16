@@ -151,11 +151,11 @@ export function Investigaciones() {
                     {i.title}
                   </h3>
 
-                  <div className="flex flex-wrap gap-1.5 mb-3 min-h-[16px]">
+                  <div className="flex flex-wrap gap-1.5 mb-3.5 min-h-[22px]">
                     {i.categories.map((c) => (
                       <span
                         key={c}
-                        className="font-mono text-[7.5px] uppercase tracking-[0.08em] px-1.5 py-[2px] leading-none rounded-xs border border-border-dim/60 bg-[var(--surface-2)]/30 group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--surface-2)]/70 text-foreground/70 transition-all whitespace-nowrap"
+                        className="inline-flex items-center justify-center font-mono text-[9px] uppercase tracking-[0.14em] px-2.5 py-1 rounded-xs border border-border-dim/80 bg-[var(--surface-2)]/50 group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--surface-2)]/80 text-foreground/80 transition-all whitespace-nowrap text-center leading-none"
                       >
                         {c}
                       </span>
@@ -302,11 +302,11 @@ export function Investigaciones() {
                     <h3 className="font-display font-bold text-xl leading-snug tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors mb-3">
                       {i.title}
                     </h3>
-                    <div className="flex flex-wrap gap-1.5 mb-3.5 min-h-[16px]">
+                    <div className="flex flex-wrap gap-1.5 mb-3.5 min-h-[22px]">
                       {i.categories.map((c) => (
                         <span
                           key={c}
-                          className="font-mono text-[7.5px] uppercase tracking-[0.08em] px-1.5 py-[2px] leading-none rounded-xs border border-border-dim/60 bg-[var(--surface-2)]/30 group-hover:border-[var(--accent)]/30 group-hover:text-foreground group-hover:bg-[var(--surface-2)]/70 text-foreground/70 transition-all whitespace-nowrap"
+                          className="inline-flex items-center justify-center font-mono text-[9px] uppercase tracking-[0.14em] px-2.5 py-1 rounded-xs border border-border-dim/80 bg-[var(--surface-2)]/50 group-hover:border-[var(--accent)]/30 group-hover:text-foreground group-hover:bg-[var(--surface-2)]/80 text-foreground/80 transition-all whitespace-nowrap text-center leading-none"
                         >
                           {c}
                         </span>
@@ -394,7 +394,7 @@ export function Investigaciones() {
                   {i.categories.map((c) => (
                     <span
                       key={c}
-                      className="font-mono text-[7.5px] uppercase tracking-[0.08em] px-1.5 py-[2px] leading-none rounded-xs border border-border-dim/60 text-foreground/70 whitespace-nowrap"
+                      className="inline-flex items-center justify-center font-mono text-[9px] uppercase tracking-[0.14em] px-2 py-0.5 rounded-xs border border-border-dim/80 text-foreground/80 whitespace-nowrap text-center leading-none"
                     >
                       {c}
                     </span>
