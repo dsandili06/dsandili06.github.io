@@ -1,4 +1,6 @@
 import { describe, it, expect } from "vitest";
+import fs from "node:fs";
+import path from "node:path";
 import { COURSES, COURSE_GROUPS } from "@/data/courses";
 
 describe("COURSES data integrity", () => {
@@ -21,16 +23,17 @@ describe("COURSES data integrity", () => {
   it("each certificate path should reference an existing file in public/certs/", () => {
     for (const c of COURSES) {
       if (c.cert) {
-        // Reference should be to a file in /certs/
         expect(c.cert).toMatch(/^\/certs\/.+/);
+        const filePath = path.resolve(process.cwd(), "public", c.cert.replace(/^\//, ""));
+        expect(fs.existsSync(filePath)).toBe(true);
       }
     }
   });
 
-  it("Google individual courses should be present", () => {
+  it("Coursera/Google individual courses should be present", () => {
     const foundations = COURSES.find((c) => c.title === "Foundations of Cybersecurity");
     expect(foundations).toBeDefined();
-    expect(foundations?.org).toBe("Google");
+    expect(foundations?.org).toBe("Coursera/Google");
   });
 });
 
@@ -40,9 +43,33 @@ describe("COURSE_GROUPS data integrity", () => {
     expect(totalInGroups).toBe(COURSES.length);
   });
 
-  it("should have a Google group with multiple courses", () => {
-    const google = COURSE_GROUPS.find((g) => g.org === "Google");
+  it("should have a Coursera/Google group with multiple courses", () => {
+    const google = COURSE_GROUPS.find((g) => g.org === "Coursera/Google");
     expect(google).toBeDefined();
     expect(google!.courses.length).toBeGreaterThanOrEqual(8);
+  });
+
+  it("each group should have valid institution metadata", () => {
+    for (const group of COURSE_GROUPS) {
+      expect(group.meta).toBeDefined();
+      expect(group.meta?.id).toBeTruthy();
+      expect(group.meta?.code).toBeTruthy();
+      expect(group.meta?.domain).toBeTruthy();
+      expect(group.meta?.description).toBeTruthy();
+    }
+  });
+
+  it("should have exactly 8 verified institutions", () => {
+    expect(COURSE_GROUPS.length).toBe(8);
+  });
+
+  it("each badge path in metadata should reference an existing file in public/badges/", () => {
+    for (const group of COURSE_GROUPS) {
+      if (group.meta?.badge) {
+        expect(group.meta.badge).toMatch(/^\/badges\/.+/);
+        const filePath = path.resolve(process.cwd(), "public", group.meta.badge.replace(/^\//, ""));
+        expect(fs.existsSync(filePath)).toBe(true);
+      }
+    }
   });
 });
