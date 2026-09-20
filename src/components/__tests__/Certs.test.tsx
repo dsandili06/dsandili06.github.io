@@ -97,7 +97,7 @@ describe("Certs section", () => {
     render(<Certs />);
 
     expect(screen.getByText("ÚLTIMO SCORE")).toBeInTheDocument();
-    expect(screen.getByText("87%")).toBeInTheDocument();
+    expect(screen.getByText("80%")).toBeInTheDocument();
     expect(screen.getByText("VER SEGUIMIENTO DE SIMULACROS →")).toBeInTheDocument();
   });
 

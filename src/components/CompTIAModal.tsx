@@ -72,6 +72,7 @@ export function CompTIAModal({
   const latestExam = mockExams[mockExams.length - 1];
   const firstExam = mockExams[0];
   const totalGain = latestExam.score - firstExam.score;
+  const maxScore = mockExams.length > 0 ? Math.max(...mockExams.map((e) => e.score)) : 0;
 
   return createPortal(
     <>
@@ -118,7 +119,7 @@ export function CompTIAModal({
                     </span>
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xs font-mono text-[9px] uppercase tracking-wider bg-[var(--accent-green)]/15 border border-[var(--accent-green)]/40 text-[var(--accent-green)]">
                       <CheckCircle2 size={10} />
-                      Objetivo CompTIA Superado (87% vs ~83%)
+                      Objetivo CompTIA Superado ({maxScore}% vs ~83%)
                     </span>
                   </div>
                   <h2
@@ -157,7 +158,7 @@ export function CompTIAModal({
                       <div className="text-sm font-bold text-foreground">
                         {firstExam.score}% → {latestExam.score}%{" "}
                         <span className="text-[var(--accent-green)] font-semibold">
-                          (+{totalGain}%)
+                          ({totalGain >= 0 ? `+${totalGain}%` : `${totalGain}%`})
                         </span>
                       </div>
                     </div>
@@ -187,13 +188,15 @@ export function CompTIAModal({
                       </div>
                       <div className="text-sm font-bold text-foreground">
                         90% Target ·{" "}
-                        <span className="text-amber-400 font-semibold">87% actual (-3%)</span>
+                        <span className="text-amber-400 font-semibold">
+                          {maxScore}% pico (-{Math.max(0, 90 - maxScore)}%)
+                        </span>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Timeline / Selector de 4 Simulacros */}
+                {/* Timeline / Selector de Simulacros */}
                 <div>
                   <div className="flex items-center justify-between mb-2.5">
                     <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
@@ -204,7 +207,7 @@ export function CompTIAModal({
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
                     {mockExams.map((exam, idx) => {
                       const isSelected = idx === selectedIndex;
                       const prevExam = idx > 0 ? mockExams[idx - 1] : null;

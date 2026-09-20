@@ -122,6 +122,29 @@ export const CERTIFICATIONS: Certification[] = [
         analysis:
           "Puntuación máxima del ciclo (87%). Dominio sobresaliente en Operaciones de Seguridad (96%) y Amenazas (95%), competencias nucleares para el rol de Analista SOC.",
       },
+      {
+        id: "dion-test-5",
+        title: "Simulacro Dion #5",
+        date: "17 Sep 2026",
+        score: 80,
+        correctQuestions: 72,
+        totalQuestions: 90,
+        timeSpent: "1h 14m",
+        image: "/certs/comptia-prep/dion-test-5.jpg",
+        domains: [
+          { domain: "1.0 General Security Concepts", score: 90 },
+          { domain: "2.0 Threats, Vulnerabilities, and Mitigations", score: 75 },
+          { domain: "3.0 Security Architecture", score: 81 },
+          { domain: "4.0 Security Operations", score: 77 },
+          { domain: "5.0 Security Program Management and Oversight", score: 83 },
+        ],
+        highlightedDomains: [
+          "1.0 General Security Concepts (90%)",
+          "5.0 Security Program Management and Oversight (83%)",
+        ],
+        analysis:
+          "Simulacro #5 con 80% (72/90 aciertos en 1h 14m). Rendimiento sólido y consistente con picos en Conceptos Generales (90%) y Gestión y Supervisión (83%).",
+      },
     ],
   },
 ];

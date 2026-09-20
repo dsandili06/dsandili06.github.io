@@ -32,17 +32,27 @@ describe("CERTIFICATIONS data integrity", () => {
   it("should contain CompTIA Security+ with mock exams tracking data", () => {
     const comptia = CERTIFICATIONS.find((c) => c.code === "SY0-701");
     expect(comptia?.mockExams).toBeDefined();
-    expect(comptia?.mockExams).toHaveLength(4);
+    expect(comptia?.mockExams).toHaveLength(5);
 
-    const latest = comptia?.mockExams?.[3];
-    expect(latest?.score).toBe(87);
-    expect(latest?.correctQuestions).toBe(79);
+    const exam4 = comptia?.mockExams?.[3];
+    expect(exam4?.score).toBe(87);
+    expect(exam4?.correctQuestions).toBe(79);
+    expect(exam4?.totalQuestions).toBe(90);
+    expect(exam4?.image).toBe("/certs/comptia-prep/dion-test-4.jpg");
+    expect(exam4?.domains).toHaveLength(5);
+    expect(exam4?.analysis).toContain("Puntuación máxima");
+
+    const latest = comptia?.mockExams?.[4];
+    expect(latest?.id).toBe("dion-test-5");
+    expect(latest?.score).toBe(80);
+    expect(latest?.correctQuestions).toBe(72);
     expect(latest?.totalQuestions).toBe(90);
-    expect(latest?.image).toBe("/certs/comptia-prep/dion-test-4.jpg");
+    expect(latest?.timeSpent).toBe("1h 14m");
+    expect(latest?.image).toBe("/certs/comptia-prep/dion-test-5.jpg");
     expect(latest?.domains).toHaveLength(5);
     expect(latest?.highlightedDomains).toBeDefined();
     expect(latest?.highlightedDomains?.length).toBeGreaterThan(0);
-    expect(latest?.analysis).toContain("Puntuación máxima");
+    expect(latest?.analysis).toContain("Simulacro #5 con 80%");
   });
 
   it("each certification should have required fields", () => {

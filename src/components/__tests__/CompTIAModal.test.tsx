@@ -24,20 +24,21 @@ describe("CompTIAModal component", () => {
     expect(screen.getByText("Seguimiento CompTIA Security+")).toBeInTheDocument();
     expect(screen.getByText(/SIMULACROS JASON DION/i)).toBeInTheDocument();
     expect(screen.getByText(/Objetivo CompTIA Superado/i)).toBeInTheDocument();
-    expect(screen.getByText(/67% → 87%/i)).toBeInTheDocument();
+    expect(screen.getByText(/67% → 80%/i)).toBeInTheDocument();
   });
 
-  it("renders all 4 mock exams in timeline selector and selects the latest by default", () => {
+  it("renders all 5 mock exams in timeline selector and selects the latest by default", () => {
     render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
 
     expect(screen.getByText("Simulacro #1")).toBeInTheDocument();
     expect(screen.getByText("Simulacro #2")).toBeInTheDocument();
     expect(screen.getByText("Simulacro #3")).toBeInTheDocument();
     expect(screen.getByText("Simulacro #4")).toBeInTheDocument();
+    expect(screen.getByText("Simulacro #5")).toBeInTheDocument();
 
     // Latest exam header is shown in domain breakdown
-    expect(screen.getByText(/Simulacro Dion #4/i)).toBeInTheDocument();
-    expect(screen.getByText("79 de 90 aciertos")).toBeInTheDocument();
+    expect(screen.getByText(/Simulacro Dion #5/i)).toBeInTheDocument();
+    expect(screen.getByText("72 de 90 aciertos")).toBeInTheDocument();
   });
 
   it("renders the scrollable body with data-lenis-prevent for Lenis compatibility", () => {
@@ -50,10 +51,20 @@ describe("CompTIAModal component", () => {
   it("switches displayed exam details and dynamic technical analysis when another mock is clicked", () => {
     render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
 
-    // Initially selects latest exam (Simulacro #4)
+    // Initially selects latest exam (Simulacro #5)
+    expect(screen.getByText(/Simulacro Dion #5/i)).toBeInTheDocument();
+    expect(screen.getByText(/Simulacro #5 con 80%/i)).toBeInTheDocument();
+
+    // Click on Simulacro #4
+    const exam4Btn = screen.getByText("Simulacro #4").closest("button");
+    expect(exam4Btn).not.toBeNull();
+    fireEvent.click(exam4Btn!);
+
     expect(screen.getByText(/Simulacro Dion #4/i)).toBeInTheDocument();
+    expect(screen.getByText("79 de 90 aciertos")).toBeInTheDocument();
     expect(screen.getByText(/Puntuación máxima del ciclo/i)).toBeInTheDocument();
 
+    // Click on Simulacro #1
     const exam1Btn = screen.getByText("Simulacro #1").closest("button");
     expect(exam1Btn).not.toBeNull();
     fireEvent.click(exam1Btn!);
@@ -79,7 +90,7 @@ describe("CompTIAModal component", () => {
     render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
 
     const previewBtn = screen.getByRole("button", {
-      name: /Ampliar captura de Simulacro Dion #4/i,
+      name: /Ampliar captura de Simulacro Dion #5/i,
     });
     expect(previewBtn).toBeInTheDocument();
   });
