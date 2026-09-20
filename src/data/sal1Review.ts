@@ -56,7 +56,7 @@ export const SAL1_REVIEW: Sal1ReviewData = {
       overview:
         "Evaluación de opción múltiple sobre fundamentos de operaciones de seguridad, marcos defensivos (NIST/MITRE), análisis de red y telemetría de endpoints.",
       takeaway:
-        "No evalúa definiciones de memoria, sino criterio aplicado: saber priorizar qué alertas investigar primero y comprender el ciclo de vida del incidente antes de tocar la consola.",
+        "No es un cuestionario conceptual de memoria: exige entender la cadena completa del incidente, desde la inspección de tráfico y reglas Snort hasta la correlación de logs en el SIEM, priorizando qué fuentes de datos consultar según la táctica adversaria observada.",
     },
     {
       id: "fowl-play",
