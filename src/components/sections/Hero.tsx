@@ -181,7 +181,7 @@ export function Hero() {
                         setModalCert({ cert: b.cert, name: b.name });
                       }
                     }}
-                    className={`group relative size-12 sm:size-14 md:size-20 shrink-0 flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg ${
+                    className={`group relative size-12 sm:size-14 md:size-20 shrink-0 flex items-center justify-center cursor-pointer hover:z-20 transform-gpu backface-hidden will-change-transform transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg ${
                       isInProgress
                         ? "ring-1 ring-amber-400/50 bg-amber-500/5 hover:ring-amber-400 hover:shadow-[0_0_20px_rgba(251,191,36,0.25)]"
                         : ""
@@ -200,7 +200,7 @@ export function Hero() {
                     <img
                       src={b.logo}
                       alt={`Badge ${b.name}`}
-                      className={`size-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-all duration-300 pointer-events-none ${
+                      className={`size-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out pointer-events-none transform-gpu backface-hidden ${
                         isInProgress
                           ? "group-hover:drop-shadow-[0_0_16px_rgba(251,191,36,0.7)] group-hover:brightness-115"
                           : "group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)] group-hover:brightness-115"
@@ -211,7 +211,7 @@ export function Hero() {
 
                     {/* Micro-badge indicador En preparación */}
                     {isInProgress && (
-                      <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 font-mono text-[7px] sm:text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-[#070D14] border border-amber-400/80 text-amber-400 rounded-xs shadow-[0_2px_8px_rgba(0,0,0,0.9)] whitespace-nowrap flex items-center gap-1 z-10 pointer-events-none">
+                      <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 font-mono text-[7px] sm:text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-[#070D14] border border-amber-400/80 text-amber-400 rounded-xs shadow-[0_2px_8px_rgba(0,0,0,0.9)] whitespace-nowrap flex items-center gap-1 z-10 pointer-events-none transform-gpu backface-hidden">
                         <span className="size-1 rounded-full bg-amber-400 animate-ping" />
                         EN PREPARACIÓN
                       </span>
@@ -219,7 +219,7 @@ export function Hero() {
 
                     {/* Micro-destello estelar en esquina */}
                     <div
-                      className="absolute -top-1 -right-1 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out"
+                      className="absolute -top-1 -right-1 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu backface-hidden"
                       aria-hidden="true"
                     >
                       <div
@@ -229,7 +229,7 @@ export function Hero() {
                       />
                       <svg
                         viewBox="0 0 24 24"
-                        className={`relative size-4 sm:size-5 filter transition-transform duration-700 ease-out group-hover:rotate-45 ${
+                        className={`relative size-4 sm:size-5 filter transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45 transform-gpu backface-hidden ${
                           isInProgress
                             ? "text-amber-300 drop-shadow-[0_0_6px_rgba(251,191,36,0.9)]"
                             : "text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.9)]"

@@ -95,7 +95,7 @@ export function About() {
         </div>
 
         {/* Right Column: Tactical Rack Accordion */}
-        <SpotlightCard className="backdrop-blur-md bg-[color-mix(in_oklab,var(--surface)_92%,transparent)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_32px_-4px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30 hover:border-[var(--accent)] transition-all duration-200 p-6 sm:p-7">
+        <SpotlightCard className="backdrop-blur-md bg-[color-mix(in_oklab,var(--surface)_92%,transparent)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_32px_-4px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30 hover:border-[var(--accent)] hover:z-10 relative transform-gpu backface-hidden transition-all duration-300 ease-out p-6 sm:p-7">
           <div>
             {/* Header: Centered Titular with hairline architectural anchors */}
             <div className="flex items-center gap-3 mb-5">
@@ -113,9 +113,9 @@ export function About() {
                 return (
                   <div
                     key={item.id}
-                    className={`border transition-all duration-200 rounded-xs overflow-hidden ${
+                    className={`border transition-all duration-200 ease-out rounded-xs overflow-hidden relative transform-gpu backface-hidden hover:z-10 ${
                       isActive
-                        ? "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--surface-2)_60%,transparent)] shadow-xs"
+                        ? "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--surface-2)_60%,transparent)] shadow-xs z-1"
                         : "border-border-dim/70 bg-[color-mix(in_oklab,var(--surface-2)_20%,transparent)] hover:border-border-dim hover:bg-[color-mix(in_oklab,var(--surface-2)_35%,transparent)]"
                     }`}
                   >
@@ -125,7 +125,7 @@ export function About() {
                       onClick={() => setActiveTab((curr) => (curr === item.id ? null : item.id))}
                       aria-label={item.label}
                       aria-expanded={isActive}
-                      className="w-full py-3.5 px-4 flex items-center justify-between text-left select-none group transition-colors cursor-pointer"
+                      className="w-full py-3.5 px-4 flex items-center justify-between text-left select-none group transition-colors duration-200 cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
                         <span
@@ -185,7 +185,7 @@ export function About() {
                               {item.highlights.map((h) => (
                                 <li
                                   key={h}
-                                  className="flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface)]/70 border border-border-dim/40 text-[11px] sm:text-xs text-foreground/80 hover:border-[var(--accent)]/30 transition-colors"
+                                  className="flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface)]/70 border border-border-dim/40 text-[11px] sm:text-xs text-foreground/80 hover:border-[var(--accent)]/30 hover:bg-[var(--surface)] transition-all duration-200 ease-out"
                                 >
                                   <span className="text-[var(--accent)] font-mono text-xs select-none">
                                     ›

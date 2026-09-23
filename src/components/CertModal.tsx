@@ -219,7 +219,7 @@ export function CertModal({
                           alt={title}
                           loading="lazy"
                           decoding="async"
-                          className="w-full h-full object-contain rounded transition-transform duration-300 group-hover:scale-[1.01]"
+                          className="w-full h-full object-contain rounded transition-transform duration-300 ease-out group-hover:scale-[1.01] transform-gpu backface-hidden will-change-transform"
                           style={{ maxHeight: isSal1 ? "70dvh" : "78dvh" }}
                         />
                         <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 border border-white/10 px-2.5 py-1 rounded font-mono text-[10px] text-white flex items-center gap-1.5 pointer-events-none shadow-md">
@@ -359,7 +359,7 @@ export function CertModal({
                       <img
                         src={review.evidenceImage}
                         alt="Captura oficial de resultados de certificación TryHackMe SAL1: 948 puntos sobre 1000, aprobado en 4h 7m 55s"
-                        className="max-h-[380px] sm:max-h-[460px] w-auto max-w-full object-contain mx-auto rounded shadow-lg transition-transform duration-300 group-hover:scale-[1.01]"
+                        className="max-h-[380px] sm:max-h-[460px] w-auto max-w-full object-contain mx-auto rounded shadow-lg transition-transform duration-300 ease-out group-hover:scale-[1.01] transform-gpu backface-hidden will-change-transform"
                         loading="lazy"
                         decoding="async"
                       />

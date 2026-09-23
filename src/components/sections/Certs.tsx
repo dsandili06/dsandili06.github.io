@@ -60,7 +60,7 @@ export function Certs() {
             <Wrapper
               key={c.code}
               {...wrapperProps}
-              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-colors relative text-left w-full ${isClickable ? "hover:bg-[var(--surface-2)] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
+              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-colors duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden ${isClickable ? "hover:bg-[var(--surface-2)] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
               style={{ borderLeft: `3px solid ${accentColor}` }}
             >
               {/* Title & Metadata */}
@@ -70,7 +70,7 @@ export function Certs() {
                     {c.year} · {c.org}
                   </span>
                 </div>
-                <h3 className="font-display font-bold text-2xl md:text-[2.25rem] leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
+                <h3 className="font-display font-bold text-2xl md:text-[2.25rem] leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors duration-200">
                   {c.title}
                 </h3>
                 {c.note && (
@@ -84,13 +84,13 @@ export function Certs() {
                   <img
                     src={c.logo}
                     alt={`Badge ${c.title}`}
-                    className="size-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)] group-hover:brightness-110 group-hover:scale-105 transition-all duration-300 ease-out pointer-events-none"
+                    className="size-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)] group-hover:brightness-110 group-hover:scale-105 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none transform-gpu backface-hidden will-change-transform"
                     loading="lazy"
                     decoding="async"
                   />
                   {/* Brillo reluciente sutil en la esquina superior derecha */}
                   <div
-                    className="absolute top-0 right-0 sm:top-0.5 sm:right-0.5 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-out"
+                    className="absolute top-0 right-0 sm:top-0.5 sm:right-0.5 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu backface-hidden"
                     aria-hidden="true"
                   >
                     {/* Halo suave de luz */}
@@ -98,7 +98,7 @@ export function Certs() {
                     {/* Destello estelar reluciente */}
                     <svg
                       viewBox="0 0 24 24"
-                      className="relative size-4 sm:size-5 text-white filter drop-shadow-[0_0_6px_rgba(255,255,255,0.9)] transition-transform duration-700 ease-out group-hover:rotate-45"
+                      className="relative size-4 sm:size-5 text-white filter drop-shadow-[0_0_6px_rgba(255,255,255,0.9)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45 transform-gpu backface-hidden"
                       fill="currentColor"
                     >
                       <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" />
@@ -106,7 +106,7 @@ export function Certs() {
                     {/* Micro destello secundario */}
                     <svg
                       viewBox="0 0 24 24"
-                      className="absolute -bottom-1 -left-1 size-2 text-cyan-200 filter drop-shadow-[0_0_3px_rgba(103,232,249,0.8)] transition-transform duration-700 ease-out group-hover:-rotate-45"
+                      className="absolute -bottom-1 -left-1 size-2 text-cyan-200 filter drop-shadow-[0_0_3px_rgba(103,232,249,0.8)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-rotate-45 transform-gpu backface-hidden"
                       fill="currentColor"
                     >
                       <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" />

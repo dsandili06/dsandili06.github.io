@@ -296,6 +296,8 @@ html {
     pointer-events: none;
     opacity: 0.7;
     transition: opacity 250ms var(--ease-out-expo);
+    z-index: 2;
+    will-change: opacity;
   }
   &::before {
     top: -1px;
@@ -351,11 +353,20 @@ html {
   }
 }
 
+.stack-chip {
+  transition: transform 200ms var(--ease-out-expo), border-color 200ms ease, background-color 200ms ease, color 200ms ease;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
 .stack-chip:hover {
   border-color: rgba(59, 130, 246, 0.5) !important;
   background: rgba(59, 130, 246, 0.06) !important;
   color: #60a5fa !important;
   transform: scale(1.02);
+  backface-visibility: hidden;
+  position: relative;
+  z-index: 10;
 }
 
 .reveal-on-view {
@@ -500,6 +511,8 @@ html {
 .spotlight-card {
   --mouse-x: 50%;
   --mouse-y: 50%;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 .spotlight-card::before {
   content: "";
@@ -515,6 +528,7 @@ html {
   transition: opacity 300ms var(--ease-out-expo);
   pointer-events: none;
   z-index: 1;
+  will-change: opacity;
 }
 .spotlight-card:hover::before {
   opacity: 1;

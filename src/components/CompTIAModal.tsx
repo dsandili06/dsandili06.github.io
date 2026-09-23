@@ -362,7 +362,7 @@ export function CompTIAModal({
                       <img
                         src={currentExam.image}
                         alt={`Captura de resultado ${currentExam.title}`}
-                        className="size-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                        className="size-full object-cover object-top transition-transform duration-300 ease-out group-hover:scale-105 transform-gpu backface-hidden will-change-transform"
                         loading="lazy"
                         decoding="async"
                       />

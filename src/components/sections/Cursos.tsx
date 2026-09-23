@@ -25,14 +25,14 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
           ? `Ver certificado oficial: ${course.title}`
           : `${course.title}, certificado pendiente`
       }
-      className={`group/row relative flex w-full min-h-[56px] items-center gap-3 sm:gap-4 p-3.5 sm:p-4 text-left transition-all duration-200 ${
+      className={`group/row relative flex w-full min-h-[56px] items-center gap-3 sm:gap-4 p-3.5 sm:p-4 text-left hover:z-10 relative transform-gpu backface-hidden transition-all duration-200 ease-out ${
         hasCert
-          ? "hover:bg-[var(--surface-2)]/90 cursor-pointer active:scale-[0.995] focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-[var(--accent)] focus-visible:ring-inset"
+          ? "hover:bg-[var(--surface-2)]/90 cursor-pointer active:scale-[0.995] active:duration-100 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-[var(--accent)] focus-visible:ring-inset"
           : "cursor-default opacity-85"
       }`}
     >
       {/* Active hover accent strip */}
-      <span className="absolute left-0 inset-y-0 w-[2px] bg-[var(--accent)] opacity-0 group-hover/row:opacity-100 group-focus-visible/row:opacity-100 transition-opacity" />
+      <span className="absolute left-0 inset-y-0 w-[2px] bg-[var(--accent)] opacity-0 group-hover/row:opacity-100 group-focus-visible/row:opacity-100 transition-opacity duration-200" />
 
       {/* Course Sequence */}
       <span className="w-7 shrink-0 font-mono text-[11px] font-semibold tracking-[0.16em] text-[var(--accent)]/90 tabular-nums">
@@ -42,7 +42,7 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
       {/* Course Title & Mobile Org */}
       <div className="min-w-0 flex-1">
         <span
-          className={`block text-[13px] sm:text-[14px] font-medium leading-snug transition-colors ${
+          className={`block text-[13px] sm:text-[14px] font-medium leading-snug transition-colors duration-200 ${
             hasCert ? "text-foreground group-hover/row:text-[var(--accent)]" : "text-foreground/80"
           }`}
         >
@@ -55,12 +55,12 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
 
       {/* CTA Button Badge */}
       {hasCert ? (
-        <div className="flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/80 bg-[var(--surface)] px-2 sm:px-2.5 py-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-[var(--accent)] group-hover/row:border-[var(--accent)]/50 group-hover/row:bg-[var(--accent)]/15 group-hover/row:text-white transition-all">
+        <div className="flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/80 bg-[var(--surface)] px-2 sm:px-2.5 py-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-[var(--accent)] group-hover/row:border-[var(--accent)]/50 group-hover/row:bg-[var(--accent)]/15 group-hover/row:text-white transition-all duration-200">
           <span className="hidden sm:inline">VER CERTIFICADO</span>
           <span className="sm:hidden">VER</span>
           <ExternalLink
             size={11}
-            className="shrink-0 opacity-70 group-hover/row:opacity-100 group-hover/row:translate-x-0.5 transition-transform"
+            className="shrink-0 opacity-70 group-hover/row:opacity-100 group-hover/row:translate-x-0.5 transition-all duration-200 ease-out transform-gpu"
             aria-hidden="true"
           />
         </div>
@@ -238,9 +238,9 @@ export function Cursos() {
                   onClick={(e) => handleSelectOrg(group.org, e.currentTarget)}
                   onKeyDown={(e) => handleKeyDown(e, index)}
                   aria-label={`${group.org}, ${group.courses.length} ${group.courses.length === 1 ? "curso" : "cursos"}`}
-                  className={`group/tab relative shrink-0 snap-start flex items-center gap-3 w-[220px] sm:w-[240px] md:w-full px-3 py-2.5 sm:px-3.5 sm:py-3 text-left transition-all duration-200 cursor-pointer min-h-[58px] border active:scale-[0.99] focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-[var(--accent)] focus-visible:ring-inset ${
+                  className={`group/tab relative shrink-0 snap-start flex items-center gap-3 w-[220px] sm:w-[240px] md:w-full px-3 py-2.5 sm:px-3.5 sm:py-3 text-left hover:z-10 transform-gpu backface-hidden transition-all duration-200 ease-out cursor-pointer min-h-[58px] border active:scale-[0.99] active:duration-100 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-[var(--accent)] focus-visible:ring-inset ${
                     isSelected
-                      ? "bg-[color-mix(in_oklab,var(--accent)_12%,var(--surface-2))] border-[var(--accent)]/70 text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_0_18px_-3px_rgba(59,130,246,0.2)]"
+                      ? "bg-[color-mix(in_oklab,var(--accent)_12%,var(--surface-2))] border-[var(--accent)]/70 text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_0_18px_-3px_rgba(59,130,246,0.2)] z-1"
                       : "bg-[var(--surface)]/80 hover:bg-[var(--surface-2)] border-border-dim/60 text-[var(--muted-foreground)] hover:text-foreground hover:border-border-dim"
                   }`}
                 >
@@ -275,7 +275,7 @@ export function Cursos() {
                   {/* Institution Details */}
                   <div className="min-w-0 flex-1">
                     <div
-                      className={`truncate text-[13px] sm:text-[14px] font-medium transition-colors ${
+                      className={`truncate text-[13px] sm:text-[14px] font-medium transition-colors duration-200 ${
                         isSelected
                           ? "text-foreground font-semibold"
                           : "text-foreground/85 group-hover/tab:text-foreground"
@@ -287,7 +287,7 @@ export function Cursos() {
 
                   {/* Course Counter */}
                   <span
-                    className={`shrink-0 font-mono text-[10px] tracking-[0.15em] tabular-nums px-1.5 py-0.5 rounded-xs transition-colors ${
+                    className={`shrink-0 font-mono text-[10px] tracking-[0.15em] tabular-nums px-1.5 py-0.5 rounded-xs transition-colors duration-200 ${
                       isSelected
                         ? "bg-[var(--accent)]/20 text-[var(--accent)] font-bold border border-[var(--accent)]/40"
                         : "bg-black/30 text-[var(--muted-foreground)] border border-border-dim/40 group-hover/tab:text-foreground"
@@ -299,7 +299,7 @@ export function Cursos() {
                   {/* Arrow Indicator on Desktop */}
                   <ChevronRight
                     size={14}
-                    className={`hidden md:block shrink-0 transition-transform ${
+                    className={`hidden md:block shrink-0 transition-transform duration-200 ease-out transform-gpu ${
                       isSelected
                         ? "text-[var(--accent)] translate-x-0.5 opacity-100"
                         : "text-[var(--muted-foreground)] opacity-0 group-hover/tab:opacity-60"

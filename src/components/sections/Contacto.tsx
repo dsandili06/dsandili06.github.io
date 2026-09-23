@@ -77,16 +77,16 @@ export function Contacto() {
               key={c.code}
               href={c.href}
               {...(c.external ? { target: "_blank", rel: "noreferrer" } : {})}
-              className="group block px-6 py-5 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)] transition-all duration-200 rounded"
+              className="group block px-6 py-5 bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)] hover:z-10 relative transform-gpu backface-hidden transition-all duration-200 ease-out rounded"
             >
               <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-2">
                 {c.label}
               </div>
               <div className="flex items-center justify-between gap-4 flex-wrap">
-                <span className="font-semibold text-base md:text-lg text-foreground group-hover:text-[var(--accent)] transition-colors break-words [overflow-wrap:anywhere]">
+                <span className="font-semibold text-base md:text-lg text-foreground group-hover:text-[var(--accent)] transition-colors duration-200 break-words [overflow-wrap:anywhere]">
                   {c.value}
                 </span>
-                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 group-hover:translate-x-1 transition-all">
+                <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-200 ease-out transform-gpu">
                   {c.cta}
                 </span>
               </div>
