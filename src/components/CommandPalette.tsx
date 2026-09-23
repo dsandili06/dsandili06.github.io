@@ -214,7 +214,7 @@ export function CommandPalette() {
     <>
       <AnimatePresence>
         {isOpen && (
-          <div className="fixed inset-0 z-[100] flex items-start justify-center p-3 sm:p-4 md:p-6 pt-[max(2rem,env(safe-area-inset-top))] sm:pt-[10vh]">
+          <div className="fixed inset-0 z-[10000] flex items-start justify-center p-3 sm:p-4 md:p-6 pt-[max(2rem,env(safe-area-inset-top))] sm:pt-[10vh]">
             {/* Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
