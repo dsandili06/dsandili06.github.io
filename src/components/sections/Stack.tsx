@@ -119,10 +119,10 @@ export function Stack() {
                   whileTap={{ scale: 0.985 }}
                   transition={{ type: "spring", stiffness: 450, damping: 30 }}
                   className={cn(
-                    "group relative flex items-center justify-between p-3 sm:p-4 rounded-xs border text-left cursor-pointer select-none overflow-hidden hover:z-10 transform-gpu backface-hidden will-change-transform transition-all duration-200 ease-out shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]",
+                    "group relative flex items-center justify-between p-3 sm:p-4 rounded-xs border text-left cursor-pointer select-none overflow-hidden hover:z-10 transform-gpu backface-hidden will-change-transform transition-[background-color,border-color,box-shadow,color] duration-200 ease-out shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]",
                     isSelected
                       ? cn(
-                          "border-border-dim shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1),0_4px_20px_-2px_rgba(0,0,0,0.5)] z-1",
+                          "border-border-dim shadow-[inset_0_1px_0_0_rgba(255,255,255,0.1),0_4px_20px_-2px_rgba(0,0,0,0.5)] z-[1]",
                           meta.borderActive,
                         )
                       : cn(
@@ -265,7 +265,7 @@ export function Stack() {
                   ease: [0.16, 1, 0.3, 1],
                   scale: { duration: 0.18, ease: [0.16, 1, 0.3, 1] },
                 }}
-                className="group/tool relative flex items-center justify-between p-3.5 rounded-xs border border-border-dim/80 bg-[color-mix(in_oklab,var(--background)_45%,var(--surface))] hover:bg-[color-mix(in_oklab,var(--accent)_2.5%,var(--surface))] hover:border-[var(--accent)]/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.12),0_4px_16px_-2px_rgba(0,0,0,0.4)] hover:z-10 transform-gpu backface-hidden will-change-transform transition-all duration-200 ease-out cursor-default select-none overflow-hidden"
+                className="group/tool relative flex items-center justify-between p-3.5 rounded-xs border border-border-dim/80 bg-[color-mix(in_oklab,var(--background)_45%,var(--surface))] hover:bg-[color-mix(in_oklab,var(--accent)_2.5%,var(--surface))] hover:border-[var(--accent)]/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.12),0_4px_16px_-2px_rgba(0,0,0,0.4)] hover:z-10 transform-gpu backface-hidden will-change-transform transition-[background-color,border-color,box-shadow,color] duration-200 ease-out cursor-default select-none overflow-hidden"
               >
                 {/* Top laser accent on hover */}
                 <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/35 to-transparent opacity-0 group-hover/tool:opacity-100 transition-opacity duration-200 pointer-events-none" />

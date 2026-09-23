@@ -24,6 +24,7 @@ export function SpotlightCard({ children, className }: SpotlightCardProps) {
   return (
     <div
       ref={ref}
+      onMouseEnter={handleMouseMove}
       onMouseMove={handleMouseMove}
       className={`spotlight-card relative ${className ?? ""}`}
     >

@@ -47,7 +47,7 @@ export function Proyectos() {
             )}
 
             {/* Dossier Body Content */}
-            <div className="flex flex-col justify-between flex-1 p-4 sm:p-6 md:p-8">
+            <div className="relative z-2 flex flex-col justify-between flex-1 p-4 sm:p-6 md:p-8">
               <div>
                 {!p.image && (
                   <div className="flex items-center justify-between gap-3 mb-5">
@@ -93,7 +93,7 @@ export function Proyectos() {
                     {p.scripts.map((s) => (
                       <div
                         key={s.name}
-                        className="group/item flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface-2)]/40 border border-border-dim/40 hover:border-[var(--accent)]/50 hover:bg-[color-mix(in_oklab,var(--accent)_3.5%,var(--surface-2))] transition-all duration-200 ease-out hover:z-10 relative transform-gpu backface-hidden"
+                        className="group/item relative flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface-2)]/40 border border-border-dim/40 hover:border-[var(--accent)]/50 hover:bg-[color-mix(in_oklab,var(--accent)_3.5%,var(--surface-2))] transition-all duration-200 ease-out hover:z-10 transform-gpu backface-hidden"
                       >
                         {s.lang ? (
                           <span className="font-mono text-[9px] uppercase tracking-[0.15em] px-1.5 py-0.5 rounded-2xs border border-[var(--accent)]/40 text-[var(--accent)] bg-[var(--accent)]/10 shrink-0 mt-0.5">

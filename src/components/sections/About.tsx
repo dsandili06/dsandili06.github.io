@@ -95,8 +95,8 @@ export function About() {
         </div>
 
         {/* Right Column: Tactical Rack Accordion */}
-        <SpotlightCard className="backdrop-blur-md bg-[color-mix(in_oklab,var(--surface)_92%,transparent)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_32px_-4px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30 hover:border-[var(--accent)] hover:z-10 relative transform-gpu backface-hidden transition-all duration-300 ease-out p-6 sm:p-7">
-          <div>
+        <SpotlightCard className="backdrop-blur-md bg-[color-mix(in_oklab,var(--surface)_92%,transparent)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_32px_-4px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30 hover:border-[var(--accent)] hover:z-10 transform-gpu backface-hidden transition-all duration-300 ease-out p-6 sm:p-7">
+          <div className="relative z-2">
             {/* Header: Centered Titular with hairline architectural anchors */}
             <div className="flex items-center gap-3 mb-5">
               <div className="h-px flex-1 bg-border-dim/60" />
@@ -115,7 +115,7 @@ export function About() {
                     key={item.id}
                     className={`border transition-all duration-200 ease-out rounded-xs overflow-hidden relative transform-gpu backface-hidden hover:z-10 ${
                       isActive
-                        ? "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--surface-2)_60%,transparent)] shadow-xs z-1"
+                        ? "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--surface-2)_60%,transparent)] shadow-xs z-[1]"
                         : "border-border-dim/70 bg-[color-mix(in_oklab,var(--surface-2)_20%,transparent)] hover:border-border-dim hover:bg-[color-mix(in_oklab,var(--surface-2)_35%,transparent)]"
                     }`}
                   >

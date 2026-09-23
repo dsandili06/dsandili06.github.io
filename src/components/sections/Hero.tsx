@@ -181,7 +181,7 @@ export function Hero() {
                         setModalCert({ cert: b.cert, name: b.name });
                       }
                     }}
-                    className={`group relative size-12 sm:size-14 md:size-20 shrink-0 flex items-center justify-center cursor-pointer hover:z-20 transform-gpu backface-hidden will-change-transform transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg ${
+                    className={`group relative size-12 sm:size-14 md:size-20 shrink-0 flex items-center justify-center cursor-pointer hover:z-20 transform-gpu backface-hidden will-change-transform transition-[transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg ${
                       isInProgress
                         ? "ring-1 ring-amber-400/50 bg-amber-500/5 hover:ring-amber-400 hover:shadow-[0_0_20px_rgba(251,191,36,0.25)]"
                         : ""

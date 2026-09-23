@@ -353,22 +353,6 @@ html {
   }
 }
 
-.stack-chip {
-  transition: transform 200ms var(--ease-out-expo), border-color 200ms ease, background-color 200ms ease, color 200ms ease;
-  backface-visibility: hidden;
-  transform: translateZ(0);
-}
-
-.stack-chip:hover {
-  border-color: rgba(59, 130, 246, 0.5) !important;
-  background: rgba(59, 130, 246, 0.06) !important;
-  color: #60a5fa !important;
-  transform: scale(1.02);
-  backface-visibility: hidden;
-  position: relative;
-  z-index: 10;
-}
-
 .reveal-on-view {
   will-change: transform, opacity;
   backface-visibility: hidden;
