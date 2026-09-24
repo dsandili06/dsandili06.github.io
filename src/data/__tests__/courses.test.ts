@@ -92,4 +92,25 @@ describe("COURSE_GROUPS data integrity", () => {
       }
     }
   });
+
+  it("Coursera/Google group should contain exactly 9 courses", () => {
+    const google = COURSE_GROUPS.find((g) => g.org === "Coursera/Google");
+    expect(google).toBeDefined();
+    expect(google!.courses.length).toBe(9);
+  });
+
+  it("every group shortName should be defined and reasonably compact (<= 25 chars) for sidebar layout", () => {
+    for (const group of COURSE_GROUPS) {
+      expect(group.meta?.shortName).toBeTruthy();
+      expect(group.meta!.shortName.length).toBeLessThanOrEqual(25);
+    }
+  });
+
+  it("every course org should map to an existing registered institution in INSTITUTIONS", () => {
+    for (const c of COURSES) {
+      const group = COURSE_GROUPS.find((g) => g.org === c.org);
+      expect(group).toBeDefined();
+      expect(group?.meta).toBeDefined();
+    }
+  });
 });

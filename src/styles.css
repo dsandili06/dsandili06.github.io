@@ -454,6 +454,15 @@ html {
   scrollbar-color: color-mix(in oklab, var(--accent) 30%, var(--surface)) var(--background);
 }
 
+/* Utility to hide scrollbars while preserving scroll functionality */
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
+}
+
 /* Glitch effect — RGB split, fires briefly every 8s */
 @keyframes glitch-shadow {
   0%,

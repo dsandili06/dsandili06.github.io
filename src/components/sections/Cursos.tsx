@@ -25,14 +25,14 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
           ? `Ver certificado oficial: ${course.title}`
           : `${course.title}, certificado pendiente`
       }
-      className={`group/row relative flex w-full min-h-[56px] items-center gap-3 sm:gap-4 p-3.5 sm:p-4 text-left hover:z-10 transform-gpu backface-hidden transition-all duration-200 ease-out ${
+      className={`group relative flex w-full min-h-[56px] items-center gap-3 sm:gap-4 p-3.5 sm:p-4 text-left hover:z-10 transform-gpu backface-hidden transition-all duration-200 ease-out ${
         hasCert
           ? "hover:bg-[var(--surface-2)]/90 cursor-pointer active:scale-[0.995] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-inset"
           : "cursor-default opacity-85"
       }`}
     >
       {/* Active hover accent strip */}
-      <span className="absolute left-0 inset-y-0 w-[2px] bg-[var(--accent)] opacity-0 group-hover/row:opacity-100 group-focus-visible/row:opacity-100 transition-opacity duration-200" />
+      <span className="absolute left-0 inset-y-0 w-[2px] bg-[var(--accent)] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200" />
 
       {/* Course Sequence */}
       <span className="w-7 shrink-0 font-mono text-[11px] font-semibold tracking-[0.16em] text-[var(--accent-secondary)] tabular-nums">
@@ -40,11 +40,12 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
       </span>
 
       {/* Course Title & Mobile Org */}
-      <div className="min-w-0 flex-1">
+      <span className="min-w-0 flex-1 block">
         <span
-          className={`block text-[13px] sm:text-[14px] font-medium leading-snug transition-colors duration-200 ${
+          title={course.title}
+          className={`block text-[13px] sm:text-[14px] font-medium leading-snug break-words transition-colors duration-200 ${
             hasCert
-              ? "text-foreground group-hover/row:text-[var(--accent-secondary)] group-focus-visible/row:text-[var(--accent-secondary)]"
+              ? "text-foreground group-hover:text-[var(--accent-secondary)] group-focus-visible:text-[var(--accent-secondary)]"
               : "text-foreground/80"
           }`}
         >
@@ -53,23 +54,23 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
         <span className="mt-0.5 inline-block font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted-foreground)] sm:hidden">
           {course.org}
         </span>
-      </div>
+      </span>
 
       {/* CTA Button Badge */}
       {hasCert ? (
-        <div className="flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/80 bg-[var(--surface)] px-2 sm:px-2.5 py-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-[var(--accent-secondary)] group-hover/row:border-[var(--accent)]/50 group-hover/row:bg-[var(--accent)]/15 group-hover/row:text-white group-focus-visible/row:border-[var(--accent)]/50 group-focus-visible/row:bg-[var(--accent)]/15 group-focus-visible/row:text-white transition-all duration-200">
+        <span className="inline-flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/80 bg-[var(--surface)] px-2 sm:px-2.5 py-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-[var(--accent-secondary)] group-hover:border-[var(--accent)]/50 group-hover:bg-[var(--accent)]/15 group-hover:text-white group-focus-visible:border-[var(--accent)]/50 group-focus-visible:bg-[var(--accent)]/15 group-focus-visible:text-white transition-all duration-200">
           <span className="hidden sm:inline">VER CERTIFICADO</span>
           <span className="sm:hidden">VER</span>
           <ExternalLink
             size={11}
-            className="shrink-0 opacity-80 group-hover/row:opacity-100 group-focus-visible/row:opacity-100 group-hover/row:translate-x-0.5 group-focus-visible/row:translate-x-0.5 transition-all duration-200 ease-out transform-gpu"
+            className="shrink-0 opacity-80 group-hover:opacity-100 group-focus-visible:opacity-100 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 transition-all duration-200 ease-out transform-gpu"
             aria-hidden="true"
           />
-        </div>
+        </span>
       ) : (
-        <div className="flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/50 bg-[var(--surface-2)]/50 px-2 sm:px-2.5 py-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+        <span className="inline-flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/50 bg-[var(--surface-2)]/50 px-2 sm:px-2.5 py-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
           <span>PENDIENTE</span>
-        </div>
+        </span>
       )}
     </button>
   );
@@ -117,11 +118,20 @@ export function Cursos() {
 
   const handleSelectOrg = (org: string, buttonElement?: HTMLButtonElement | null) => {
     setSelectedOrg(org);
-    if (buttonElement && typeof buttonElement.scrollIntoView === "function") {
-      try {
-        buttonElement.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
-      } catch {
-        buttonElement.scrollIntoView();
+    if (buttonElement && tabsRef.current) {
+      const container = tabsRef.current;
+      const isScrollable = container.scrollWidth > container.clientWidth;
+      if (isScrollable) {
+        try {
+          const scrollLeft = buttonElement.offsetLeft - container.offsetLeft - 16;
+          if (typeof container.scrollTo === "function") {
+            container.scrollTo({ left: Math.max(0, scrollLeft), behavior: "smooth" });
+          } else {
+            container.scrollLeft = Math.max(0, scrollLeft);
+          }
+        } catch {
+          buttonElement.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+        }
       }
     }
   };
@@ -210,7 +220,7 @@ export function Cursos() {
             </span>
             <span className="h-2 w-px bg-border-dim hidden sm:inline" />
             <span className="text-[var(--accent-secondary)] font-bold tabular-nums">
-              [ {String(activeGroup.courses.length).padStart(2, "0")} CURSOS ]
+              {`[ ${String(activeGroup.courses.length).padStart(2, "0")} ${activeGroup.courses.length === 1 ? "CURSO" : "CURSOS"} ]`}
             </span>
           </div>
         </div>
@@ -223,7 +233,7 @@ export function Cursos() {
             role="tablist"
             aria-label="Emisores de cursos y certificaciones"
             aria-orientation="vertical"
-            className="flex md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar p-2.5 sm:p-3 gap-2 border-b md:border-b-0 md:border-r border-border-dim bg-[var(--surface-2)]/25 snap-x snap-proximity touch-pan-x overscroll-x-contain"
+            className="flex md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-2.5 sm:p-3 gap-2 border-b md:border-b-0 md:border-r border-border-dim bg-[var(--surface-2)]/25 snap-x snap-proximity touch-pan-x overscroll-x-contain"
           >
             <div className="hidden md:flex items-center justify-between px-2 pb-2 pt-1 font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
               <span>// EMISORES</span>
@@ -257,7 +267,15 @@ export function Cursos() {
                 >
                   {/* Active Indicator Strip */}
                   {isSelected && (
-                    <span className="absolute left-0 inset-y-0 w-1 bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]" />
+                    <motion.span
+                      layoutId="activeCourseTabIndicator"
+                      className="absolute left-0 inset-y-0 w-1 bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]"
+                      transition={
+                        shouldReduceMotion
+                          ? { duration: 0 }
+                          : { type: "spring", stiffness: 450, damping: 35 }
+                      }
+                    />
                   )}
 
                   {/* Monogram or Official Badge Tile with high-contrast background */}
@@ -287,7 +305,7 @@ export function Cursos() {
                   <div className="min-w-0 flex-1">
                     <div
                       title={group.meta?.shortName || group.org}
-                      className={`truncate md:whitespace-normal md:leading-tight text-[13px] sm:text-[14px] font-medium transition-colors duration-200 ${
+                      className={`whitespace-normal leading-tight text-[12px] sm:text-[13px] md:text-[14px] font-medium transition-colors duration-200 ${
                         isSelected
                           ? "text-foreground font-semibold"
                           : "text-foreground/85 group-hover/tab:text-foreground"

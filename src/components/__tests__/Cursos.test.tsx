@@ -121,10 +121,10 @@ describe("Cursos", () => {
     expect(badgeImg).toHaveAttribute("src", "/badges/dojo.png");
   });
 
-  it("should open CertModal with review initialTab for SAL1 course and close it", () => {
+  it("should open CertModal when clicking course row for TryHackMe SOC L1 and close it", () => {
     render(<Cursos />);
 
-    // Switch to TryHackMe where SAL1 is located
+    // Switch to TryHackMe where SOC L1 is located
     const thmTab = screen.getByRole("tab", { name: /TryHackMe/i });
     fireEvent.click(thmTab);
 
@@ -303,5 +303,37 @@ describe("Cursos", () => {
     render(<Cursos />);
     const tablist = screen.getByRole("tablist");
     expect(tablist.className).toContain("overscroll-x-contain");
+  });
+
+  it("tablist includes cross-browser scrollbar suppression classes", () => {
+    render(<Cursos />);
+    const tablist = screen.getByRole("tablist");
+    expect(tablist.className).toContain("no-scrollbar");
+    expect(tablist.className).toContain("[scrollbar-width:none]");
+    expect(tablist.className).toContain("[&::-webkit-scrollbar]:hidden");
+  });
+
+  it("displays proper singular/plural grammar in the HUD header for course counts", () => {
+    render(<Cursos />);
+
+    // Default Coursera/Google has 9 courses -> plural CURSOS
+    expect(screen.getByText(/\[ 09 CURSOS \]/)).toBeInTheDocument();
+
+    // Switch to DOJO COMMUNITY which has 1 course -> singular CURSO
+    const dojoTab = screen.getByRole("tab", { name: /DOJO/i });
+    fireEvent.click(dojoTab);
+    expect(screen.getByText(/\[ 01 CURSO \]/)).toBeInTheDocument();
+  });
+
+  it("course row button uses valid phrasing content without illegal nested divs", () => {
+    render(<Cursos />);
+    const buttons = screen.getAllByRole("button", { name: /Ver certificado oficial:/i });
+    expect(buttons.length).toBeGreaterThan(0);
+
+    for (const btn of buttons) {
+      // In HTML5, buttons cannot contain div elements (flow content)
+      const nestedDivs = btn.querySelectorAll("div");
+      expect(nestedDivs.length).toBe(0);
+    }
   });
 });
