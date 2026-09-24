@@ -260,4 +260,48 @@ describe("Cursos", () => {
       expect(tabs[i]).toHaveAttribute("aria-label", expectedLabel);
     }
   });
+
+  it("manages roving tabIndex correctly between selected and unselected tabs", () => {
+    render(<Cursos />);
+    const tabs = screen.getAllByRole("tab");
+
+    // First tab active by default
+    expect(tabs[0]).toHaveAttribute("tabindex", "0");
+    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+    for (let i = 1; i < tabs.length; i++) {
+      expect(tabs[i]).toHaveAttribute("tabindex", "-1");
+      expect(tabs[i]).toHaveAttribute("aria-selected", "false");
+    }
+
+    // Switch tab to Cisco (index 2)
+    fireEvent.click(tabs[2]);
+    expect(tabs[2]).toHaveAttribute("tabindex", "0");
+    expect(tabs[2]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[0]).toHaveAttribute("tabindex", "-1");
+    expect(tabs[0]).toHaveAttribute("aria-selected", "false");
+  });
+
+  it("keyboard navigation wraps cyclically between first and last institutions", () => {
+    render(<Cursos />);
+    const tabs = screen.getAllByRole("tab");
+    const firstTab = tabs[0];
+    const lastTab = tabs[tabs.length - 1];
+
+    // ArrowUp on first tab wraps to last tab
+    firstTab.focus();
+    fireEvent.keyDown(firstTab, { key: "ArrowUp" });
+    expect(lastTab).toHaveAttribute("aria-selected", "true");
+    expect(lastTab).toHaveAttribute("tabindex", "0");
+
+    // ArrowDown on last tab wraps back to first tab
+    fireEvent.keyDown(lastTab, { key: "ArrowDown" });
+    expect(firstTab).toHaveAttribute("aria-selected", "true");
+    expect(firstTab).toHaveAttribute("tabindex", "0");
+  });
+
+  it("tablist includes mobile overscroll-x-contain to prevent accidental browser swipe-back", () => {
+    render(<Cursos />);
+    const tablist = screen.getByRole("tablist");
+    expect(tablist.className).toContain("overscroll-x-contain");
+  });
 });

@@ -72,4 +72,24 @@ describe("COURSE_GROUPS data integrity", () => {
       }
     }
   });
+
+  it("each institution code should be an uppercase string of 3 to 4 characters", () => {
+    for (const group of COURSE_GROUPS) {
+      expect(group.meta?.code).toMatch(/^[A-Z]{3,4}$/);
+    }
+  });
+
+  it("each course sequence number should be formatted as 2 digits", () => {
+    for (const c of COURSES) {
+      expect(c.n).toMatch(/^\d{2}$/);
+    }
+  });
+
+  it("all certificate paths should use webp or png formats", () => {
+    for (const c of COURSES) {
+      if (c.cert) {
+        expect(c.cert).toMatch(/\.(webp|png)$/i);
+      }
+    }
+  });
 });
