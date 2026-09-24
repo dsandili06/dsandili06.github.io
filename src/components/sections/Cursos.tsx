@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { ChevronRight, ExternalLink, ShieldCheck, Award, Terminal } from "lucide-react";
+import { ChevronRight, ExternalLink, Terminal } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/primitives/Section";
@@ -204,8 +204,8 @@ export function Cursos() {
           <div className="flex items-center gap-2.5">
             <Terminal size={14} className="text-[var(--accent)]" />
             <span className="text-foreground font-semibold">
-              <span className="sm:hidden">TERMINAL_HUB // EMISORES</span>
-              <span className="hidden sm:inline">TERMINAL_HUB // EMISORES_VERIFICADOS</span>
+              <span className="sm:hidden">EMISORES</span>
+              <span className="hidden sm:inline">EMISORES_VERIFICADOS</span>
             </span>
           </div>
           <div className="flex items-center gap-3">
@@ -390,11 +390,6 @@ export function Cursos() {
                       </p>
                     </div>
                   </div>
-
-                  <div className="flex items-center gap-2 px-2.5 py-1 rounded-xs border border-border-dim/60 bg-[var(--surface-2)]/60 font-mono text-[10px] tracking-[0.18em] uppercase text-[var(--muted-foreground)] shrink-0">
-                    <Award size={14} className="text-[var(--accent)]" aria-hidden="true" />
-                    <span>EXPEDIENTE ACTIVO</span>
-                  </div>
                 </div>
 
                 {activeGroup.meta?.description && (
@@ -414,11 +409,7 @@ export function Cursos() {
               </ul>
 
               {/* Dossier Footer Summary */}
-              <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border-dim px-4 py-3 bg-[var(--surface-2)]/30 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                <span className="flex items-center gap-2">
-                  <ShieldCheck size={12} className="text-[var(--accent-green)]" />
-                  <span>AUDITORÍA: 100% COMPLETADO Y VERIFICADO</span>
-                </span>
+              <div className="flex items-center justify-end border-t border-border-dim px-4 py-3 bg-[var(--surface-2)]/30 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                 <span className="tabular-nums text-foreground/80">
                   MOSTRANDO {activeGroup.courses.length} DE {COURSES.length} CURSOS
                 </span>
