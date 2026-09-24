@@ -141,7 +141,7 @@ describe("CompTIAModal component", () => {
     }
   });
 
-  it("renders timeline selector buttons with aria-selected and focus-visible attributes", () => {
+  it("renders timeline selector buttons with aria-selected, roving tabindex and focus-visible attributes", () => {
     render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
 
     const tablist = screen.getByRole("tablist", { name: /Historial de simulacros/i });
@@ -149,9 +149,43 @@ describe("CompTIAModal component", () => {
 
     const tabs = screen.getAllByRole("tab");
     expect(tabs).toHaveLength(5);
-    // 5th exam is selected by default
+    // 5th exam is selected by default with roving tabindex
     expect(tabs[4]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[4]).toHaveAttribute("tabindex", "0");
     expect(tabs[0]).toHaveAttribute("aria-selected", "false");
+    expect(tabs[0]).toHaveAttribute("tabindex", "-1");
     expect(tabs[4].className).toContain("focus-visible:ring-2");
+  });
+
+  it("navigates mock exams via keyboard arrow keys (ArrowLeft, ArrowRight, Home, End)", () => {
+    render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
+
+    const tablist = screen.getByRole("tablist", { name: /Historial de simulacros/i });
+    const tabs = screen.getAllByRole("tab");
+
+    // Home key navigates to first exam
+    fireEvent.keyDown(tablist, { key: "Home" });
+    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[0]).toHaveAttribute("tabindex", "0");
+
+    // ArrowRight navigates to second exam
+    fireEvent.keyDown(tablist, { key: "ArrowRight" });
+    expect(tabs[1]).toHaveAttribute("aria-selected", "true");
+
+    // ArrowLeft navigates back to first exam
+    fireEvent.keyDown(tablist, { key: "ArrowLeft" });
+    expect(tabs[0]).toHaveAttribute("aria-selected", "true");
+
+    // End key navigates to last exam
+    fireEvent.keyDown(tablist, { key: "End" });
+    expect(tabs[4]).toHaveAttribute("aria-selected", "true");
+  });
+
+  it("renders detail tabpanel with accessible tabIndex for keyboard scrolling", () => {
+    render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
+
+    const panel = screen.getByRole("tabpanel");
+    expect(panel).toBeInTheDocument();
+    expect(panel).toHaveAttribute("tabindex", "0");
   });
 });

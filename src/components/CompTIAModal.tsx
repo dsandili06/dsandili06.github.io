@@ -74,6 +74,31 @@ export function CompTIAModal({
   const totalGain = latestExam.score - firstExam.score;
   const maxScore = mockExams.length > 0 ? Math.max(...mockExams.map((e) => e.score)) : 0;
 
+  const handleTimelineKeyDown = (e: React.KeyboardEvent) => {
+    if (mockExams.length === 0) return;
+    let nextIndex = selectedIndex;
+
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") {
+      e.preventDefault();
+      nextIndex = (selectedIndex + 1) % mockExams.length;
+    } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      e.preventDefault();
+      nextIndex = (selectedIndex - 1 + mockExams.length) % mockExams.length;
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      nextIndex = 0;
+    } else if (e.key === "End") {
+      e.preventDefault();
+      nextIndex = mockExams.length - 1;
+    } else {
+      return;
+    }
+
+    setSelectedIndex(nextIndex);
+    const nextTab = document.getElementById(`tab-exam-${mockExams[nextIndex].id}`);
+    nextTab?.focus();
+  };
+
   return createPortal(
     <>
       <AnimatePresence onExitComplete={onExitComplete}>
@@ -211,6 +236,7 @@ export function CompTIAModal({
                   <div
                     role="tablist"
                     aria-label="Historial de simulacros CompTIA Security+"
+                    onKeyDown={handleTimelineKeyDown}
                     className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5"
                   >
                     {mockExams.map((exam, idx) => {
@@ -226,8 +252,9 @@ export function CompTIAModal({
                           id={`tab-exam-${exam.id}`}
                           aria-selected={isSelected}
                           aria-controls="panel-exam-details"
+                          tabIndex={isSelected ? 0 : -1}
                           onClick={() => setSelectedIndex(idx)}
-                          className={`p-3 rounded-md text-left transition-all relative border cursor-pointer transform-gpu backface-hidden active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b12] ${
+                          className={`p-2.5 sm:p-3 rounded-md text-left transition-all relative border cursor-pointer transform-gpu backface-hidden active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b12] last:col-span-2 sm:last:col-span-1 lg:last:col-span-1 ${
                             isSelected
                               ? "bg-[var(--surface-2)] border-[var(--accent)] shadow-[0_0_16px_rgba(34,211,238,0.15)] ring-1 ring-[var(--accent)]"
                               : "bg-[#0b1017] border-white/5 hover:border-white/20 hover:bg-[#0f1622]"
@@ -267,7 +294,8 @@ export function CompTIAModal({
                   id="panel-exam-details"
                   role="tabpanel"
                   aria-labelledby={`tab-exam-${currentExam.id}`}
-                  className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2"
+                  tabIndex={0}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2 focus-visible:outline-none"
                 >
                   {/* Left Column: Domain Breakdown & Metrics (7 cols) */}
                   <div className="lg:col-span-7 space-y-4">

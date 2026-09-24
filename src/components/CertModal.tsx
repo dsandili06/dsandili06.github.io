@@ -58,7 +58,22 @@ export function CertModal({
     } else {
       setActiveTab("cert");
     }
-  }, [initialTab, isSal1, cert]);
+  }, [initialTab, isSal1, cert, title]);
+
+  const handleTabKeyDown = (e: React.KeyboardEvent) => {
+    if (
+      e.key === "ArrowRight" ||
+      e.key === "ArrowDown" ||
+      e.key === "ArrowLeft" ||
+      e.key === "ArrowUp"
+    ) {
+      e.preventDefault();
+      const nextTab = activeTab === "cert" ? "review" : "cert";
+      setActiveTab(nextTab);
+      const nextEl = document.getElementById(nextTab === "cert" ? "tab-cert" : "tab-review");
+      nextEl?.focus();
+    }
+  };
 
   useEffect(() => {
     if (!isOpen) {
@@ -143,12 +158,12 @@ export function CertModal({
                       </span>
                     )}
                   </div>
-                  <h3
+                  <h2
                     id="certificate-title"
                     className="font-display font-bold text-lg sm:text-xl md:text-2xl text-foreground leading-snug truncate"
                   >
                     {title}
-                  </h3>
+                  </h2>
                 </div>
                 <button
                   type="button"
@@ -163,14 +178,18 @@ export function CertModal({
               {/* Tab Bar (Only when SAL1 review is available) */}
               {isSal1 && (
                 <div
+                  role="tablist"
                   aria-label="Vistas del expediente de certificación"
+                  onKeyDown={handleTabKeyDown}
                   className="flex border-b border-white/10 px-4 sm:px-6 bg-[#080d15] gap-2 shrink-0"
                 >
                   <button
                     type="button"
+                    role="tab"
                     id="tab-cert"
-                    aria-pressed={activeTab === "cert"}
+                    aria-selected={activeTab === "cert"}
                     aria-controls="panel-cert"
+                    tabIndex={activeTab === "cert" ? 0 : -1}
                     onClick={() => setActiveTab("cert")}
                     className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
                       activeTab === "cert"
@@ -183,9 +202,11 @@ export function CertModal({
                   </button>
                   <button
                     type="button"
+                    role="tab"
                     id="tab-review"
-                    aria-pressed={activeTab === "review"}
+                    aria-selected={activeTab === "review"}
                     aria-controls="panel-review"
+                    tabIndex={activeTab === "review" ? 0 : -1}
                     onClick={() => setActiveTab("review")}
                     className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
                       activeTab === "review"
@@ -207,9 +228,11 @@ export function CertModal({
                 /* TAB 1: CERTIFICADO OFICIAL */
                 <div
                   id={isSal1 ? "panel-cert" : undefined}
+                  role={isSal1 ? "tabpanel" : undefined}
                   aria-labelledby={isSal1 ? "tab-cert" : undefined}
+                  tabIndex={isSal1 ? 0 : undefined}
                   data-lenis-prevent
-                  className="flex-1 flex flex-col min-h-0 overflow-hidden"
+                  className="flex-1 flex flex-col min-h-0 overflow-hidden focus-visible:outline-none"
                 >
                   <div
                     className="flex-1 overflow-hidden flex items-center justify-center p-3 sm:p-4"
@@ -277,9 +300,11 @@ export function CertModal({
                 /* TAB 2: REVIEW TÉCNICA DEL EXAMEN (SAL1) */
                 <div
                   id={isSal1 ? "panel-review" : undefined}
+                  role={isSal1 ? "tabpanel" : undefined}
                   aria-labelledby={isSal1 ? "tab-review" : undefined}
+                  tabIndex={isSal1 ? 0 : undefined}
                   data-lenis-prevent
-                  className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-8"
+                  className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-8 focus-visible:outline-none"
                   style={{ background: "#070b12" }}
                 >
                   {/* Telemetry Metric Cards */}
@@ -409,9 +434,9 @@ export function CertModal({
                   <div className="space-y-3">
                     <div className="flex items-center gap-3">
                       <div className="h-px flex-1 bg-border-dim/60" />
-                      <h4 className="font-mono text-xs uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">
+                      <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">
                         Resumen Ejecutivo & Alcance
-                      </h4>
+                      </h3>
                       <div className="h-px flex-1 bg-border-dim/60" />
                     </div>
 
@@ -426,9 +451,9 @@ export function CertModal({
                   <div className="space-y-4">
                     <div className="flex items-center gap-3">
                       <div className="h-px flex-1 bg-border-dim/60" />
-                      <h4 className="font-mono text-xs uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">
+                      <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">
                         Escenarios Evaluados
-                      </h4>
+                      </h3>
                       <div className="h-px flex-1 bg-border-dim/60" />
                     </div>
 
@@ -443,9 +468,9 @@ export function CertModal({
                           >
                             {/* Scenario Header: Name & Score */}
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-3">
-                              <h5 className="font-display font-bold text-base sm:text-lg text-foreground">
+                              <h4 className="font-display font-bold text-base sm:text-lg text-foreground">
                                 {section.name}
-                              </h5>
+                              </h4>
                               <div className="flex items-baseline gap-1.5 font-mono">
                                 <span className="text-xl sm:text-2xl font-bold text-[var(--accent-green)] leading-none">
                                   {section.score}
@@ -492,9 +517,9 @@ export function CertModal({
                         <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)]">
                           Evaluación Técnica Final
                         </span>
-                        <h4 className="font-display font-bold text-base sm:text-lg text-foreground mt-0.5">
+                        <h3 className="font-display font-bold text-base sm:text-lg text-foreground mt-0.5">
                           Veredicto del Analista & Recomendaciones
-                        </h4>
+                        </h3>
                       </div>
                       <div className="font-mono text-right">
                         <span className="text-[10px] text-[var(--muted-foreground)] uppercase">

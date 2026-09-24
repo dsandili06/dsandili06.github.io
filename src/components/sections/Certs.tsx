@@ -43,10 +43,10 @@ export function Certs() {
             ? {
                 type: "button" as const,
                 "aria-label": hasMockExams
-                  ? `Seguimiento de simulacros para ${c.title}`
+                  ? `Seguimiento de simulacros para ${c.title}. Estado: ${c.status}. Último score: ${c.mockExams?.[c.mockExams.length - 1]?.score}%`
                   : c.hasReview
-                    ? `Ver certificado y review técnica de ${c.title}`
-                    : `Ver certificado de ${c.title}`,
+                    ? `Ver certificado y review técnica de ${c.title}. Estado: ${c.status}. Score: ${c.score}`
+                    : `Ver certificado de ${c.title}. Estado: ${c.status}, CERTIFIED`,
                 onClick: () => {
                   if (hasMockExams) {
                     openCompTIATracking(c);
@@ -139,7 +139,7 @@ export function Certs() {
               )}
 
               {/* Score and Certificate CTA: bottom row on mobile, middle column on desktop */}
-              <div className="col-span-2 md:col-span-1 md:col-start-2 md:row-start-1 md:text-right pt-3 md:pt-0 border-t md:border-t-0 border-border-dim/40 flex items-center justify-between md:justify-end md:items-end md:flex-col gap-2 md:gap-1">
+              <div className="col-span-2 md:col-span-1 md:col-start-2 md:row-start-1 md:text-right pt-3 md:pt-0 border-t md:border-t-0 border-border-dim/40 flex flex-wrap items-center justify-between md:justify-end md:items-end md:flex-col gap-2 md:gap-1 max-w-full">
                 {c.score ? (
                   <>
                     <div className="flex items-baseline md:flex-col md:items-end gap-2 md:gap-0">
@@ -151,11 +151,11 @@ export function Certs() {
                       </div>
                     </div>
                     {c.hasReview ? (
-                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-85 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right font-medium">
+                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.2em] md:tracking-[0.25em] text-[var(--accent)] opacity-85 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right font-medium">
                         VER CERTIFICADO & REVIEW TÉCNICA →
                       </span>
                     ) : c.href ? (
-                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
+                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.2em] md:tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
                         VER CERTIFICADO →
                       </span>
                     ) : null}
@@ -170,7 +170,7 @@ export function Certs() {
                         {c.mockExams[c.mockExams.length - 1].score}%
                       </div>
                     </div>
-                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
+                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.2em] md:tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
                       VER SEGUIMIENTO DE SIMULACROS →
                     </span>
                   </>
@@ -185,7 +185,7 @@ export function Certs() {
                         CERTIFIED
                       </div>
                     </div>
-                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
+                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.14em] sm:tracking-[0.2em] md:tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
                       VER CERTIFICADO →
                     </span>
                   </>

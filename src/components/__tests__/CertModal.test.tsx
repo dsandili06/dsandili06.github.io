@@ -151,8 +151,13 @@ describe("CertModal component", () => {
     );
 
     // Tab buttons exist
-    const certTab = screen.getByRole("button", { name: /\[ CERTIFICADO OFICIAL \]/i });
-    const reviewTab = screen.getByRole("button", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
+    const tablist = screen.getByRole("tablist", {
+      name: /Vistas del expediente de certificación/i,
+    });
+    expect(tablist).toBeInTheDocument();
+
+    const certTab = screen.getByRole("tab", { name: /\[ CERTIFICADO OFICIAL \]/i });
+    const reviewTab = screen.getByRole("tab", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
     expect(certTab).toBeInTheDocument();
     expect(reviewTab).toBeInTheDocument();
 
@@ -191,8 +196,8 @@ describe("CertModal component", () => {
       />,
     );
 
-    const certTab = screen.getByRole("button", { name: /\[ CERTIFICADO OFICIAL \]/i });
-    const reviewTab = screen.getByRole("button", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
+    const certTab = screen.getByRole("tab", { name: /\[ CERTIFICADO OFICIAL \]/i });
+    const reviewTab = screen.getByRole("tab", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
 
     // Click cert tab
     fireEvent.click(certTab);
@@ -273,7 +278,7 @@ describe("CertModal component", () => {
     }
   });
 
-  it("renders tabs with aria-pressed and focus-visible attributes", () => {
+  it("renders tabs with WAI-ARIA tablist, tab roles, aria-selected, roving tabindex and keyboard navigation", () => {
     render(
       <CertModal
         isOpen={true}
@@ -284,11 +289,40 @@ describe("CertModal component", () => {
       />,
     );
 
-    const reviewTab = screen.getByRole("button", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
-    const certTab = screen.getByRole("button", { name: /\[ CERTIFICADO OFICIAL \]/i });
+    const tablist = screen.getByRole("tablist", {
+      name: /Vistas del expediente de certificación/i,
+    });
+    expect(tablist).toBeInTheDocument();
 
-    expect(reviewTab).toHaveAttribute("aria-pressed", "true");
-    expect(certTab).toHaveAttribute("aria-pressed", "false");
+    const reviewTab = screen.getByRole("tab", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
+    const certTab = screen.getByRole("tab", { name: /\[ CERTIFICADO OFICIAL \]/i });
+
+    expect(reviewTab).toHaveAttribute("aria-selected", "true");
+    expect(reviewTab).toHaveAttribute("tabindex", "0");
+    expect(certTab).toHaveAttribute("aria-selected", "false");
+    expect(certTab).toHaveAttribute("tabindex", "-1");
     expect(reviewTab.className).toContain("focus-visible:ring-1");
+
+    // Test Arrow key navigation
+    fireEvent.keyDown(tablist, { key: "ArrowLeft" });
+    expect(certTab).toHaveAttribute("aria-selected", "true");
+    expect(reviewTab).toHaveAttribute("aria-selected", "false");
+  });
+
+  it("renders tabpanel with accessible labelling and scrollability attributes", () => {
+    render(
+      <CertModal
+        isOpen={true}
+        onClose={vi.fn()}
+        cert="/certs/THM-SAL1-Certificate.png"
+        title="SAL1 (Security Analyst L1)"
+        initialTab="review"
+      />,
+    );
+
+    const panel = screen.getByRole("tabpanel", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
+    expect(panel).toBeInTheDocument();
+    expect(panel).toHaveAttribute("data-lenis-prevent");
+    expect(panel).toHaveAttribute("tabindex", "0");
   });
 });
