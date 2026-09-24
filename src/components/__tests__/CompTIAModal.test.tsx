@@ -128,4 +128,30 @@ describe("CompTIAModal component", () => {
     window.dispatchEvent(new PopStateEvent("popstate"));
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it("renders domain breakdown progress bars with valid ARIA progressbar roles and values", () => {
+    render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
+
+    const progressBars = screen.getAllByRole("progressbar");
+    expect(progressBars).toHaveLength(5); // 5 domains
+    for (const pb of progressBars) {
+      expect(pb).toHaveAttribute("aria-valuenow");
+      expect(pb).toHaveAttribute("aria-valuemin", "0");
+      expect(pb).toHaveAttribute("aria-valuemax", "100");
+    }
+  });
+
+  it("renders timeline selector buttons with aria-selected and focus-visible attributes", () => {
+    render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
+
+    const tablist = screen.getByRole("tablist", { name: /Historial de simulacros/i });
+    expect(tablist).toBeInTheDocument();
+
+    const tabs = screen.getAllByRole("tab");
+    expect(tabs).toHaveLength(5);
+    // 5th exam is selected by default
+    expect(tabs[4]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[0]).toHaveAttribute("aria-selected", "false");
+    expect(tabs[4].className).toContain("focus-visible:ring-2");
+  });
 });

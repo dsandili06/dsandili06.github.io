@@ -98,6 +98,7 @@ export function CertModal({
             style={{
               background: "rgba(4, 7, 11, 0.92)",
               backdropFilter: "blur(14px) saturate(160%)",
+              WebkitBackdropFilter: "blur(14px) saturate(160%)",
             }}
             onClick={handleClose}
           >
@@ -153,7 +154,7 @@ export function CertModal({
                   type="button"
                   onClick={handleClose}
                   aria-label="Cerrar"
-                  className="shrink-0 flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer rounded-xs"
+                  className="shrink-0 flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:border-[var(--accent)] transition-colors cursor-pointer rounded-xs"
                 >
                   <X size={16} strokeWidth={1.5} />
                 </button>
@@ -161,11 +162,17 @@ export function CertModal({
 
               {/* Tab Bar (Only when SAL1 review is available) */}
               {isSal1 && (
-                <div className="flex border-b border-white/10 px-4 sm:px-6 bg-[#080d15] gap-2 shrink-0">
+                <div
+                  aria-label="Vistas del expediente de certificación"
+                  className="flex border-b border-white/10 px-4 sm:px-6 bg-[#080d15] gap-2 shrink-0"
+                >
                   <button
                     type="button"
+                    id="tab-cert"
+                    aria-pressed={activeTab === "cert"}
+                    aria-controls="panel-cert"
                     onClick={() => setActiveTab("cert")}
-                    className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 ${
+                    className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
                       activeTab === "cert"
                         ? "border-[var(--accent)] text-[var(--accent)] font-semibold bg-white/[0.02]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-foreground"
@@ -176,8 +183,11 @@ export function CertModal({
                   </button>
                   <button
                     type="button"
+                    id="tab-review"
+                    aria-pressed={activeTab === "review"}
+                    aria-controls="panel-review"
                     onClick={() => setActiveTab("review")}
-                    className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 ${
+                    className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
                       activeTab === "review"
                         ? "border-[var(--accent)] text-[var(--accent)] font-semibold bg-white/[0.02]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-foreground"
@@ -195,7 +205,12 @@ export function CertModal({
               {/* Modal Body */}
               {activeTab === "cert" ? (
                 /* TAB 1: CERTIFICADO OFICIAL */
-                <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                <div
+                  id={isSal1 ? "panel-cert" : undefined}
+                  aria-labelledby={isSal1 ? "tab-cert" : undefined}
+                  data-lenis-prevent
+                  className="flex-1 flex flex-col min-h-0 overflow-hidden"
+                >
                   <div
                     className="flex-1 overflow-hidden flex items-center justify-center p-3 sm:p-4"
                     style={{ background: "#0b1118", minHeight: 0 }}
@@ -241,7 +256,7 @@ export function CertModal({
                         <button
                           type="button"
                           onClick={() => setActiveTab("review")}
-                          className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] hover:underline inline-flex items-center gap-1 cursor-pointer"
+                          className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] hover:underline inline-flex items-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
                         >
                           <Terminal size={12} />
                           Ver Review Técnica →
@@ -251,7 +266,7 @@ export function CertModal({
                         href={cert}
                         target="_blank"
                         rel="noreferrer"
-                        className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline inline-flex items-center min-h-[44px] py-2"
+                        className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline inline-flex items-center min-h-[44px] py-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
                       >
                         Abrir en nueva pestaña →
                       </a>
@@ -261,6 +276,8 @@ export function CertModal({
               ) : (
                 /* TAB 2: REVIEW TÉCNICA DEL EXAMEN (SAL1) */
                 <div
+                  id={isSal1 ? "panel-review" : undefined}
+                  aria-labelledby={isSal1 ? "tab-review" : undefined}
                   data-lenis-prevent
                   className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-8"
                   style={{ background: "#070b12" }}
@@ -439,6 +456,19 @@ export function CertModal({
                               </div>
                             </div>
 
+                            {/* Score progress bar */}
+                            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden relative">
+                              <div
+                                role="progressbar"
+                                aria-valuenow={percentage}
+                                aria-valuemin={0}
+                                aria-valuemax={100}
+                                aria-label={`Puntaje en ${section.name}: ${percentage}%`}
+                                className="h-full rounded-full transition-all duration-500 ease-out bg-[var(--accent-green)]"
+                                style={{ width: `${percentage}%` }}
+                              />
+                            </div>
+
                             {/* Brief Summary */}
                             <p className="text-xs sm:text-[13px] text-foreground/80 leading-relaxed">
                               {section.overview}
@@ -528,7 +558,7 @@ export function CertModal({
                     <button
                       type="button"
                       onClick={() => setActiveTab("cert")}
-                      className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-border-dim text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer min-h-[44px] flex items-center gap-1.5"
+                      className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-border-dim text-[var(--accent)] hover:border-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] transition-colors cursor-pointer min-h-[44px] flex items-center gap-1.5"
                     >
                       <Award size={13} />
                       Ver Certificado Oficial →
@@ -536,7 +566,7 @@ export function CertModal({
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-border-dim text-[var(--muted-foreground)] hover:text-foreground hover:border-white/30 transition-colors cursor-pointer min-h-[44px] flex items-center"
+                      className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-border-dim text-[var(--muted-foreground)] hover:text-foreground hover:border-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] transition-colors cursor-pointer min-h-[44px] flex items-center"
                     >
                       Cerrar
                     </button>

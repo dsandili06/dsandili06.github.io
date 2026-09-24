@@ -252,4 +252,43 @@ describe("CertModal component", () => {
 
     expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
   });
+
+  it("renders progress bars for each evaluated scenario with valid ARIA attributes", () => {
+    render(
+      <CertModal
+        isOpen={true}
+        onClose={vi.fn()}
+        cert="/certs/THM-SAL1-Certificate.png"
+        title="SAL1 (Security Analyst L1)"
+        initialTab="review"
+      />,
+    );
+
+    const progressBars = screen.getAllByRole("progressbar");
+    expect(progressBars).toHaveLength(3);
+    for (const pb of progressBars) {
+      expect(pb).toHaveAttribute("aria-valuenow");
+      expect(pb).toHaveAttribute("aria-valuemin", "0");
+      expect(pb).toHaveAttribute("aria-valuemax", "100");
+    }
+  });
+
+  it("renders tabs with aria-pressed and focus-visible attributes", () => {
+    render(
+      <CertModal
+        isOpen={true}
+        onClose={vi.fn()}
+        cert="/certs/THM-SAL1-Certificate.png"
+        title="SAL1 (Security Analyst L1)"
+        initialTab="review"
+      />,
+    );
+
+    const reviewTab = screen.getByRole("button", { name: /\[ REVIEW TÉCNICA DEL EXAMEN \]/i });
+    const certTab = screen.getByRole("button", { name: /\[ CERTIFICADO OFICIAL \]/i });
+
+    expect(reviewTab).toHaveAttribute("aria-pressed", "true");
+    expect(certTab).toHaveAttribute("aria-pressed", "false");
+    expect(reviewTab.className).toContain("focus-visible:ring-1");
+  });
 });

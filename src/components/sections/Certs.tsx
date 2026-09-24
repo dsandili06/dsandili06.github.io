@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Section } from "@/components/primitives/Section";
 import { CERTIFICATIONS } from "@/data/certifications";
+import { CheckCircle2 } from "lucide-react";
 import { CertModal } from "@/components/CertModal";
 import { CompTIAModal } from "@/components/CompTIAModal";
 import type { Certification } from "@/types";
@@ -60,14 +61,36 @@ export function Certs() {
             <Wrapper
               key={c.code}
               {...wrapperProps}
-              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-colors duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden ${isClickable ? "hover:bg-[var(--surface-2)] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
+              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-all duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#04070b] focus-visible:z-20 ${isClickable ? "hover:bg-[var(--surface-2)] active:scale-[0.997] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
               style={{ borderLeft: `3px solid ${accentColor}` }}
             >
+              {/* Top ambient highlight on hover */}
+              <div
+                className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/35 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+                aria-hidden="true"
+              />
+
               {/* Title & Metadata */}
               <div className="col-start-1 col-end-2 row-start-1">
-                <div className="mb-2 sm:mb-3">
+                <div className="mb-2 sm:mb-3 flex flex-wrap items-center gap-2">
                   <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
                     {c.year} · {c.org}
+                  </span>
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-xs font-mono text-[9px] uppercase tracking-wider ${
+                      obtained
+                        ? "bg-[var(--accent-green)]/10 border border-[var(--accent-green)]/35 text-[var(--accent-green)]"
+                        : "bg-cyan-500/10 border border-cyan-500/35 text-cyan-400"
+                    }`}
+                  >
+                    <span
+                      className={`size-1.5 rounded-full ${
+                        obtained
+                          ? "bg-[var(--accent-green)] shadow-[0_0_6px_var(--accent-green)]"
+                          : "bg-cyan-400 shadow-[0_0_6px_rgba(34,211,238,0.8)] animate-pulse"
+                      }`}
+                    />
+                    {c.status}
                   </span>
                 </div>
                 <h3 className="font-display font-bold text-2xl md:text-[2.25rem] leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors duration-200">
@@ -80,7 +103,7 @@ export function Certs() {
 
               {/* Badge: right next to title on mobile (col 2), far right on desktop (col 3) */}
               {c.logo && (
-                <div className="relative size-14 sm:size-16 md:size-24 shrink-0 flex items-center justify-center col-start-2 row-start-1 md:col-start-3 md:row-start-1 justify-self-end mt-6 sm:mt-7 md:mt-0">
+                <div className="relative size-14 sm:size-16 md:size-24 shrink-0 flex items-center justify-center col-start-2 row-start-1 md:col-start-3 md:row-start-1 justify-self-end self-center">
                   <img
                     src={c.logo}
                     alt={`Badge ${c.title}`}
@@ -128,11 +151,11 @@ export function Certs() {
                       </div>
                     </div>
                     {c.hasReview ? (
-                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-85 group-hover:opacity-100 transition-opacity text-right font-medium">
+                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-85 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right font-medium">
                         VER CERTIFICADO & REVIEW TÉCNICA →
                       </span>
                     ) : c.href ? (
-                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity text-right">
+                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
                         VER CERTIFICADO →
                       </span>
                     ) : null}
@@ -147,14 +170,25 @@ export function Certs() {
                         {c.mockExams[c.mockExams.length - 1].score}%
                       </div>
                     </div>
-                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity text-right">
+                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
                       VER SEGUIMIENTO DE SIMULACROS →
                     </span>
                   </>
                 ) : obtained && c.href ? (
-                  <span className="ml-auto inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity text-right">
-                    VER CERTIFICADO →
-                  </span>
+                  <>
+                    <div className="flex items-baseline md:flex-col md:items-end gap-2 md:gap-0">
+                      <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] md:mb-1">
+                        ESTADO
+                      </div>
+                      <div className="font-mono text-sm sm:text-base md:text-xl font-bold text-[var(--accent-green)] leading-none flex items-center gap-1.5">
+                        <CheckCircle2 size={16} className="text-[var(--accent-green)] shrink-0" />
+                        CERTIFIED
+                      </div>
+                    </div>
+                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
+                      VER CERTIFICADO →
+                    </span>
+                  </>
                 ) : (
                   <div className="ml-auto md:ml-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] text-right">
                     ESTUDIO EN CURSO

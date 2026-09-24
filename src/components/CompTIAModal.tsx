@@ -88,6 +88,7 @@ export function CompTIAModal({
             style={{
               background: "rgba(4, 7, 11, 0.88)",
               backdropFilter: "blur(14px) saturate(180%)",
+              WebkitBackdropFilter: "blur(14px) saturate(180%)",
             }}
             onClick={handleClose}
           >
@@ -137,7 +138,7 @@ export function CompTIAModal({
                   type="button"
                   onClick={handleClose}
                   aria-label="Cerrar modal"
-                  className="shrink-0 flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-colors cursor-pointer rounded-xs"
+                  className="shrink-0 flex items-center justify-center size-11 min-h-[44px] min-w-[44px] border border-border-dim text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:border-[var(--accent)] transition-colors cursor-pointer rounded-xs"
                 >
                   <X size={18} strokeWidth={1.5} />
                 </button>
@@ -207,7 +208,11 @@ export function CompTIAModal({
                     </span>
                   </div>
 
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
+                  <div
+                    role="tablist"
+                    aria-label="Historial de simulacros CompTIA Security+"
+                    className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5"
+                  >
                     {mockExams.map((exam, idx) => {
                       const isSelected = idx === selectedIndex;
                       const prevExam = idx > 0 ? mockExams[idx - 1] : null;
@@ -217,8 +222,12 @@ export function CompTIAModal({
                         <button
                           key={exam.id}
                           type="button"
+                          role="tab"
+                          id={`tab-exam-${exam.id}`}
+                          aria-selected={isSelected}
+                          aria-controls="panel-exam-details"
                           onClick={() => setSelectedIndex(idx)}
-                          className={`p-3 rounded-md text-left transition-all relative border cursor-pointer ${
+                          className={`p-3 rounded-md text-left transition-all relative border cursor-pointer transform-gpu backface-hidden active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b12] ${
                             isSelected
                               ? "bg-[var(--surface-2)] border-[var(--accent)] shadow-[0_0_16px_rgba(34,211,238,0.15)] ring-1 ring-[var(--accent)]"
                               : "bg-[#0b1017] border-white/5 hover:border-white/20 hover:bg-[#0f1622]"
@@ -254,7 +263,12 @@ export function CompTIAModal({
                 </div>
 
                 {/* Detailed Section for Selected Exam */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2">
+                <div
+                  id="panel-exam-details"
+                  role="tabpanel"
+                  aria-labelledby={`tab-exam-${currentExam.id}`}
+                  className="grid grid-cols-1 lg:grid-cols-12 gap-5 pt-2"
+                >
                   {/* Left Column: Domain Breakdown & Metrics (7 cols) */}
                   <div className="lg:col-span-7 space-y-4">
                     <div className="flex items-center justify-between border-b border-white/5 pb-2">
@@ -310,8 +324,14 @@ export function CompTIAModal({
                                 className="absolute top-0 bottom-0 w-0.5 bg-white/30 z-10"
                                 style={{ left: "83.3%" }}
                                 title="Umbral CompTIA ~83%"
+                                aria-hidden="true"
                               />
                               <div
+                                role="progressbar"
+                                aria-valuenow={d.score}
+                                aria-valuemin={0}
+                                aria-valuemax={100}
+                                aria-label={`${d.domain}: ${d.score}%`}
                                 className={`h-full rounded-full transition-all duration-500 ease-out ${barColor}`}
                                 style={{ width: `${Math.min(100, Math.max(0, d.score))}%` }}
                               />
@@ -346,7 +366,7 @@ export function CompTIAModal({
                       <button
                         type="button"
                         onClick={() => setLightboxOpen(true)}
-                        className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)] hover:underline inline-flex items-center gap-1 cursor-pointer"
+                        className="font-mono text-[10px] uppercase tracking-wider text-[var(--accent)] hover:underline inline-flex items-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
                       >
                         <Maximize2 size={12} />
                         Ampliar Captura
@@ -404,7 +424,7 @@ export function CompTIAModal({
                 <button
                   type="button"
                   onClick={handleClose}
-                  className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-border-dim text-[var(--muted-foreground)] hover:text-foreground hover:border-white/30 transition-colors cursor-pointer min-h-[44px] flex items-center"
+                  className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-border-dim text-[var(--muted-foreground)] hover:text-foreground hover:border-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] transition-colors cursor-pointer min-h-[44px] flex items-center"
                 >
                   Cerrar
                 </button>

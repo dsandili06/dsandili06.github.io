@@ -125,4 +125,24 @@ describe("Certs section", () => {
     expect(screen.queryByText(/SIMULACIONES SOC/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/4H 07M/i)).not.toBeInTheDocument();
   });
+
+  it("renders credential status micro-badges (OBTENIDA / EN PREPARACIÓN) and verified CERTIFIED state on Google card", () => {
+    render(<Certs />);
+
+    const obtenidaBadges = screen.getAllByText("OBTENIDA");
+    expect(obtenidaBadges).toHaveLength(2); // SAL1 and Google
+
+    expect(screen.getByText("EN PREPARACIÓN")).toBeInTheDocument(); // CompTIA
+    expect(screen.getByText("CERTIFIED")).toBeInTheDocument(); // Google status
+  });
+
+  it("renders interactive cards with focus-visible accessibility classes", () => {
+    render(<Certs />);
+
+    const buttons = screen.getAllByRole("button");
+    for (const btn of buttons) {
+      expect(btn.className).toContain("focus-visible:ring-2");
+      expect(btn.className).toContain("focus-visible:outline-none");
+    }
+  });
 });
