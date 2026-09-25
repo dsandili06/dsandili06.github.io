@@ -438,7 +438,7 @@ export function WriteupModal({
             >
               {/* Header */}
               <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-3 shrink-0">
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-3 flex-wrap mb-1">
                     <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
                       {investigationId}
@@ -464,7 +464,7 @@ export function WriteupModal({
                     {title}
                   </h2>
                   {summary && (
-                    <p className="mt-1 text-sm text-[var(--muted-foreground)] line-clamp-2 max-w-2xl">
+                    <p className="mt-1.5 text-xs sm:text-sm text-[var(--muted-foreground)] leading-relaxed max-w-4xl">
                       {summary}
                     </p>
                   )}

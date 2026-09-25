@@ -226,4 +226,15 @@ Content 4
     expect(backSpy).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
+
+  it("renders full investigation description without line-clamp truncation for Brave (LAB_012)", async () => {
+    const { findByText } = render(<WriteupModal investigationId="LAB_012" onClose={() => {}} />);
+    await findByText(MD_CONTENT.split("\n\n")[1]);
+
+    const summaryEl = screen.getByText(
+      "Análisis forense de memoria de host Windows sospechoso de exfiltración. Identificación de conexiones, sesiones web cifradas (T1071.001) y uso de LOLApps. Reconstrucción de actividad vía UserAssist.",
+    );
+    expect(summaryEl).toBeInTheDocument();
+    expect(summaryEl.className).not.toContain("line-clamp");
+  });
 });
