@@ -24,10 +24,11 @@ describe("CompTIAModal component", () => {
     expect(screen.getByText("Seguimiento CompTIA Security+")).toBeInTheDocument();
     expect(screen.getByText(/SIMULACROS JASON DION/i)).toBeInTheDocument();
     expect(screen.getByText(/Objetivo CompTIA Superado/i)).toBeInTheDocument();
-    expect(screen.getByText(/67% → 80%/i)).toBeInTheDocument();
+    expect(screen.getByText(/67% → 77%/i)).toBeInTheDocument();
+    expect(screen.getByText(/\(\+10%\)/i)).toBeInTheDocument();
   });
 
-  it("renders all 5 mock exams in timeline selector and selects the latest by default", () => {
+  it("renders all 6 mock exams in timeline selector and selects the latest by default", () => {
     render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
 
     expect(screen.getByText("Simulacro #1")).toBeInTheDocument();
@@ -35,10 +36,12 @@ describe("CompTIAModal component", () => {
     expect(screen.getByText("Simulacro #3")).toBeInTheDocument();
     expect(screen.getByText("Simulacro #4")).toBeInTheDocument();
     expect(screen.getByText("Simulacro #5")).toBeInTheDocument();
+    expect(screen.getByText("Simulacro #6")).toBeInTheDocument();
 
     // Latest exam header is shown in domain breakdown
-    expect(screen.getByText(/Simulacro Dion #5/i)).toBeInTheDocument();
-    expect(screen.getByText("72 de 90 aciertos")).toBeInTheDocument();
+    expect(screen.getByText(/Simulacro Dion #6/i)).toBeInTheDocument();
+    expect(screen.getByText("70 de 90 aciertos")).toBeInTheDocument();
+    expect(screen.getByText("58 min")).toBeInTheDocument();
   });
 
   it("renders the scrollable body with data-lenis-prevent for Lenis compatibility", () => {
@@ -51,8 +54,17 @@ describe("CompTIAModal component", () => {
   it("switches displayed exam details and dynamic technical analysis when another mock is clicked", () => {
     render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
 
-    // Initially selects latest exam (Simulacro #5)
+    // Initially selects latest exam (Simulacro #6)
+    expect(screen.getByText(/Simulacro Dion #6/i)).toBeInTheDocument();
+    expect(screen.getByText(/Simulacro #6 con 77%/i)).toBeInTheDocument();
+
+    // Click on Simulacro #5
+    const exam5Btn = screen.getByText("Simulacro #5").closest("button");
+    expect(exam5Btn).not.toBeNull();
+    fireEvent.click(exam5Btn!);
+
     expect(screen.getByText(/Simulacro Dion #5/i)).toBeInTheDocument();
+    expect(screen.getByText("72 de 90 aciertos")).toBeInTheDocument();
     expect(screen.getByText(/Simulacro #5 con 80%/i)).toBeInTheDocument();
 
     // Click on Simulacro #4
@@ -90,7 +102,7 @@ describe("CompTIAModal component", () => {
     render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
 
     const previewBtn = screen.getByRole("button", {
-      name: /Ampliar captura de Simulacro Dion #5/i,
+      name: /Ampliar captura de Simulacro Dion #6/i,
     });
     expect(previewBtn).toBeInTheDocument();
   });
@@ -146,15 +158,16 @@ describe("CompTIAModal component", () => {
 
     const tablist = screen.getByRole("tablist", { name: /Historial de simulacros/i });
     expect(tablist).toBeInTheDocument();
+    expect(tablist.className).toContain("lg:grid-cols-6");
 
     const tabs = screen.getAllByRole("tab");
-    expect(tabs).toHaveLength(5);
-    // 5th exam is selected by default with roving tabindex
-    expect(tabs[4]).toHaveAttribute("aria-selected", "true");
-    expect(tabs[4]).toHaveAttribute("tabindex", "0");
+    expect(tabs).toHaveLength(6);
+    // 6th exam is selected by default with roving tabindex
+    expect(tabs[5]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[5]).toHaveAttribute("tabindex", "0");
     expect(tabs[0]).toHaveAttribute("aria-selected", "false");
     expect(tabs[0]).toHaveAttribute("tabindex", "-1");
-    expect(tabs[4].className).toContain("focus-visible:ring-2");
+    expect(tabs[5].className).toContain("focus-visible:ring-2");
   });
 
   it("navigates mock exams via keyboard arrow keys (ArrowLeft, ArrowRight, Home, End)", () => {
@@ -176,9 +189,9 @@ describe("CompTIAModal component", () => {
     fireEvent.keyDown(tablist, { key: "ArrowLeft" });
     expect(tabs[0]).toHaveAttribute("aria-selected", "true");
 
-    // End key navigates to last exam
+    // End key navigates to last exam (index 5)
     fireEvent.keyDown(tablist, { key: "End" });
-    expect(tabs[4]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[5]).toHaveAttribute("aria-selected", "true");
   });
 
   it("renders detail tabpanel with accessible tabIndex for keyboard scrolling", () => {

@@ -73,6 +73,9 @@ export function Hero() {
   const [modalComptia, setModalComptia] = useState<Certification | null>(null);
 
   const comptiaCertData = CERTIFICATIONS.find((c) => c.code === "SY0-701");
+  const comptiaPeakScore = comptiaCertData?.mockExams?.length
+    ? Math.max(...comptiaCertData.mockExams.map((e) => e.score))
+    : 87;
 
   // Watermark parallax — drifts slower than scroll, fades out
   const { scrollYProgress } = useScroll({
@@ -188,7 +191,7 @@ export function Hero() {
                     }`}
                     title={
                       isInProgress
-                        ? "CompTIA Security+ (SY0-701) — En preparación (87% en simulacros) — Click para ver seguimiento"
+                        ? `CompTIA Security+ (SY0-701) — En preparación (${comptiaPeakScore}% en simulacros) — Click para ver seguimiento`
                         : `${b.name} (${b.org}) — Click para ver credencial`
                     }
                     aria-label={

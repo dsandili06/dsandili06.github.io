@@ -97,8 +97,13 @@ describe("Certs section", () => {
     render(<Certs />);
 
     expect(screen.getByText("ÚLTIMO SCORE")).toBeInTheDocument();
-    expect(screen.getByText("80%")).toBeInTheDocument();
+    expect(screen.getByText("77%")).toBeInTheDocument();
     expect(screen.getByText("VER SEGUIMIENTO DE SIMULACROS →")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", {
+        name: /Seguimiento de simulacros para CompTIA Security\+\. Estado: EN PREPARACIÓN\. Último score: 77%/i,
+      }),
+    ).toBeInTheDocument();
   });
 
   it("opens in-page CompTIAModal on click of CompTIA Security+ card", () => {

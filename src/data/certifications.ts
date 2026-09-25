@@ -145,6 +145,29 @@ export const CERTIFICATIONS: Certification[] = [
         analysis:
           "Simulacro #5 con 80% (72/90 aciertos en 1h 14m). Rendimiento sólido y consistente con picos en Conceptos Generales (90%) y Gestión y Supervisión (83%).",
       },
+      {
+        id: "dion-test-6",
+        title: "Simulacro Dion #6",
+        date: "25 Sep 2026",
+        score: 77,
+        correctQuestions: 70,
+        totalQuestions: 90,
+        timeSpent: "58 min",
+        image: "/certs/comptia-prep/dion-test-6.jpg",
+        domains: [
+          { domain: "1.0 General Security Concepts", score: 80 },
+          { domain: "2.0 Threats, Vulnerabilities, and Mitigations", score: 90 },
+          { domain: "3.0 Security Architecture", score: 75 },
+          { domain: "4.0 Security Operations", score: 88 },
+          { domain: "5.0 Security Program Management and Oversight", score: 50 },
+        ],
+        highlightedDomains: [
+          "2.0 Threats, Vulnerabilities, and Mitigations (90%)",
+          "4.0 Security Operations (88%)",
+        ],
+        analysis:
+          "Simulacro #6 con 77% (70/90 aciertos en 58 min). Recaída puntual en Gobernanza y Supervisión (50%) por sobrecarga académica/laboral y tiempo acotado de repaso. Resiliencia técnica destacada en Amenazas (90%) y Operaciones (88%). Plan de mitigación: repaso intensivo de marcos regulatorios y gestión de riesgos de cara al examen oficial.",
+      },
     ],
   },
 ];

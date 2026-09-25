@@ -183,7 +183,11 @@ export function CompTIAModal({
                       </div>
                       <div className="text-sm font-bold text-foreground">
                         {firstExam.score}% → {latestExam.score}%{" "}
-                        <span className="text-[var(--accent-green)] font-semibold">
+                        <span
+                          className={`font-semibold ${
+                            totalGain >= 0 ? "text-[var(--accent-green)]" : "text-amber-400"
+                          }`}
+                        >
                           ({totalGain >= 0 ? `+${totalGain}%` : `${totalGain}%`})
                         </span>
                       </div>
@@ -237,12 +241,13 @@ export function CompTIAModal({
                     role="tablist"
                     aria-label="Historial de simulacros CompTIA Security+"
                     onKeyDown={handleTimelineKeyDown}
-                    className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5"
+                    className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5"
                   >
                     {mockExams.map((exam, idx) => {
                       const isSelected = idx === selectedIndex;
                       const prevExam = idx > 0 ? mockExams[idx - 1] : null;
                       const delta = prevExam ? exam.score - prevExam.score : null;
+                      const isOddTotal = mockExams.length % 2 !== 0;
 
                       return (
                         <button
@@ -254,7 +259,11 @@ export function CompTIAModal({
                           aria-controls="panel-exam-details"
                           tabIndex={isSelected ? 0 : -1}
                           onClick={() => setSelectedIndex(idx)}
-                          className={`p-2.5 sm:p-3 rounded-md text-left transition-all relative border cursor-pointer transform-gpu backface-hidden active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b12] last:col-span-2 sm:last:col-span-1 lg:last:col-span-1 ${
+                          className={`p-2.5 sm:p-3 rounded-md text-left transition-all relative border cursor-pointer transform-gpu backface-hidden active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b12] ${
+                            isOddTotal
+                              ? "last:col-span-2 sm:last:col-span-1 lg:last:col-span-1"
+                              : ""
+                          } ${
                             isSelected
                               ? "bg-[var(--surface-2)] border-[var(--accent)] shadow-[0_0_16px_rgba(34,211,238,0.15)] ring-1 ring-[var(--accent)]"
                               : "bg-[#0b1017] border-white/5 hover:border-white/20 hover:bg-[#0f1622]"
