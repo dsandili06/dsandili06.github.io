@@ -60,9 +60,19 @@ export function Certs() {
             <Wrapper
               key={c.code}
               {...wrapperProps}
-              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-colors duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden ${isClickable ? "hover:bg-[var(--surface-2)] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
+              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-all duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#04070b] focus-visible:z-20 ${isClickable ? "hover:bg-[var(--surface-2)] active:scale-[0.997] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
               style={{ borderLeft: `3px solid ${accentColor}` }}
             >
+              {/* Top ambient highlight on hover */}
+              <div
+                className={`absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r ${
+                  obtained
+                    ? "from-transparent via-[var(--accent-green)]/35 to-transparent"
+                    : "from-transparent via-[var(--accent)]/35 to-transparent"
+                } opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10`}
+                aria-hidden="true"
+              />
+
               {/* Title & Metadata */}
               <div className="col-start-1 col-end-2 row-start-1">
                 <div className="mb-2 sm:mb-3">
@@ -84,7 +94,11 @@ export function Certs() {
                   <img
                     src={c.logo}
                     alt={`Badge ${c.title}`}
-                    className="size-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)] group-hover:brightness-110 group-hover:scale-105 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none transform-gpu backface-hidden will-change-transform"
+                    className={`size-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] ${
+                      obtained
+                        ? "group-hover:drop-shadow-[0_0_16px_rgba(16,185,129,0.5)]"
+                        : "group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)]"
+                    } group-hover:brightness-110 group-hover:scale-105 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none transform-gpu backface-hidden will-change-transform`}
                     loading="lazy"
                     decoding="async"
                   />
@@ -94,7 +108,11 @@ export function Certs() {
                     aria-hidden="true"
                   >
                     {/* Halo suave de luz */}
-                    <div className="absolute -inset-1 rounded-full bg-cyan-400/30 blur-sm" />
+                    <div
+                      className={`absolute -inset-1 rounded-full ${
+                        obtained ? "bg-emerald-400/30" : "bg-cyan-400/30"
+                      } blur-sm`}
+                    />
                     {/* Destello estelar reluciente */}
                     <svg
                       viewBox="0 0 24 24"
@@ -106,7 +124,9 @@ export function Certs() {
                     {/* Micro destello secundario */}
                     <svg
                       viewBox="0 0 24 24"
-                      className="absolute -bottom-1 -left-1 size-2 text-cyan-200 filter drop-shadow-[0_0_3px_rgba(103,232,249,0.8)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-rotate-45 transform-gpu backface-hidden"
+                      className={`absolute -bottom-1 -left-1 size-2 ${
+                        obtained ? "text-emerald-200" : "text-cyan-200"
+                      } filter drop-shadow-[0_0_3px_rgba(103,232,249,0.8)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-rotate-45 transform-gpu backface-hidden`}
                       fill="currentColor"
                     >
                       <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" />
@@ -128,11 +148,11 @@ export function Certs() {
                       </div>
                     </div>
                     {c.hasReview ? (
-                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-85 group-hover:opacity-100 transition-opacity text-right font-medium">
+                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-85 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right font-medium">
                         VER CERTIFICADO & REVIEW TÉCNICA →
                       </span>
                     ) : c.href ? (
-                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity text-right">
+                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
                         VER CERTIFICADO →
                       </span>
                     ) : null}
@@ -147,12 +167,12 @@ export function Certs() {
                         {c.mockExams[c.mockExams.length - 1].score}%
                       </div>
                     </div>
-                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity text-right">
+                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
                       VER SEGUIMIENTO DE SIMULACROS →
                     </span>
                   </>
                 ) : obtained && c.href ? (
-                  <span className="ml-auto inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 transition-opacity text-right">
+                  <span className="ml-auto inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
                     VER CERTIFICADO →
                   </span>
                 ) : (
