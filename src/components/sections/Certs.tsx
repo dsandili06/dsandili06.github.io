@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ExternalLink } from "lucide-react";
 import { Section } from "@/components/primitives/Section";
 import { CERTIFICATIONS } from "@/data/certifications";
 import { CertModal } from "@/components/CertModal";
@@ -184,6 +185,59 @@ export function Certs() {
             </Wrapper>
           );
         })}
+      </div>
+
+      {/* Verificación de Expediente Digital en Credly */}
+      <div className="mt-4 sm:mt-5">
+        <a
+          href="https://www.credly.com/users/santiago-daniel-sandili/badges/credly"
+          target="_blank"
+          rel="noreferrer"
+          aria-label="Ver perfil oficial de credenciales e insignias en Credly (abre en pestaña nueva)"
+          className="group bg-[var(--surface)] p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border-dim hover:border-[#FF6B00]/50 hover:bg-[var(--surface-2)] transition-all duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B00] focus-visible:ring-offset-2 focus-visible:ring-offset-[#04070b] cursor-pointer"
+          style={{ borderLeft: "3px solid #FF6B00" }}
+        >
+          {/* Top ambient highlight on hover */}
+          <div
+            className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#FF6B00]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+            aria-hidden="true"
+          />
+
+          {/* Left: Credly Logo + Info */}
+          <div className="flex items-center gap-3.5 sm:gap-5 min-w-0">
+            <div className="h-11 sm:h-12 px-3 sm:px-3.5 rounded-xs bg-[#FF6B00]/10 border border-[#FF6B00]/30 flex items-center justify-center shrink-0 group-hover:border-[#FF6B00]/60 group-hover:bg-[#FF6B00]/15 transition-all">
+              <img
+                src="/badges/credly.svg"
+                alt="Credly"
+                className="h-5 sm:h-6 w-auto object-contain filter drop-shadow-[0_0_8px_rgba(255,107,0,0.35)]"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#FF8533] font-semibold">
+                  EXPEDIENTE DIGITAL // CREDLY
+                </span>
+                <span className="inline-block size-1.5 rounded-full bg-[#FF6B00] animate-pulse" />
+              </div>
+              <h3 className="font-display font-bold text-lg sm:text-xl md:text-2xl text-foreground group-hover:text-[#FF8533] transition-colors leading-tight">
+                Insignias y Certificaciones Verificadas
+              </h3>
+              <p className="font-mono text-[11px] text-[var(--muted-foreground)] mt-1 hidden sm:block">
+                Validación pública y criptográfica de credenciales emitidas por organizaciones
+                oficiales
+              </p>
+            </div>
+          </div>
+
+          {/* Right CTA */}
+          <div className="shrink-0 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF8533] group-hover:text-white group-hover:translate-x-0.5 transition-all duration-200 self-end sm:self-center font-medium">
+            <span>VER PERFIL EN CREDLY</span>
+            <ExternalLink size={13} className="shrink-0" />
+          </div>
+        </a>
       </div>
 
       {modalCert && (

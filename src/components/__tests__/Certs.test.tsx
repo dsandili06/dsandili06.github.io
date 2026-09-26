@@ -36,7 +36,9 @@ vi.mock("@/components/CompTIAModal", () => ({
 describe("Certs section", () => {
   it("renders the section header with number 02 and credentials kicker", () => {
     render(<Certs />);
-    expect(screen.getByRole("heading", { name: /Certificaciones/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 2, name: /^Certificaciones$/i }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/SECTION_02 \/\/ CREDENTIALS/i)).toBeInTheDocument();
   });
 
@@ -129,5 +131,28 @@ describe("Certs section", () => {
     expect(screen.queryByText(/Review Técnica Disponible/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/SIMULACIONES SOC/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/4H 07M/i)).not.toBeInTheDocument();
+  });
+
+  it("renders Credly official profile verification card with logo and external link", () => {
+    render(<Certs />);
+
+    const credlyLink = screen.getByRole("link", {
+      name: /Ver perfil oficial de credenciales e insignias en Credly/i,
+    });
+    expect(credlyLink).toBeInTheDocument();
+    expect(credlyLink).toHaveAttribute(
+      "href",
+      "https://www.credly.com/users/santiago-daniel-sandili/badges/credly",
+    );
+    expect(credlyLink).toHaveAttribute("target", "_blank");
+    expect(credlyLink).toHaveAttribute("rel", "noreferrer");
+
+    const credlyLogo = screen.getByAltText("Credly");
+    expect(credlyLogo).toBeInTheDocument();
+    expect(credlyLogo).toHaveAttribute("src", "/badges/credly.svg");
+
+    expect(screen.getByText("EXPEDIENTE DIGITAL // CREDLY")).toBeInTheDocument();
+    expect(screen.getByText("Insignias y Certificaciones Verificadas")).toBeInTheDocument();
+    expect(screen.getByText("VER PERFIL EN CREDLY")).toBeInTheDocument();
   });
 });
