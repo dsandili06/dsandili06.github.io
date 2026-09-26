@@ -607,7 +607,7 @@ export function WriteupModal({
               {/* Footer */}
               <div className="flex items-center justify-between px-4 md:px-6 pb-[max(1rem,env(safe-area-inset-bottom))] shrink-0">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                  <span className="md:hidden">Tocá fuera del panel para cerrar</span>
+                  <span className="md:hidden">Tocá fuera para cerrar</span>
                   <span className="hidden md:inline">ESC para cerrar</span>
                 </span>
                 {investigation && (

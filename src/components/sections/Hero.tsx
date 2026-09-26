@@ -122,10 +122,6 @@ export function Hero() {
             <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
             ACTIVE_SESSION
           </span>
-          <span className="font-mono text-[10px] uppercase tracking-[0.25em] px-2.5 py-1 border border-[var(--accent-green)]/50 text-[var(--accent-green)] inline-flex items-center gap-2">
-            <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
-            AVAILABLE
-          </span>
         </div>
       </div>
       <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 flex-1 grid grid-cols-1 md:grid-cols-[1fr_minmax(0,440px)] gap-10 md:gap-12 items-center py-6 sm:py-8 md:py-12">

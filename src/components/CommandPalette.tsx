@@ -244,9 +244,6 @@ export function CommandPalette() {
                   <span className="text-foreground/90">SOC_OPERATIONS // COMMAND_PALETTE</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="hidden sm:inline text-[9px] text-[var(--muted-foreground)]/70">
-                    ESC PARA SALIR
-                  </span>
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}

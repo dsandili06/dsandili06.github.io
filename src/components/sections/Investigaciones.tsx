@@ -135,12 +135,6 @@ export function Investigaciones() {
                       </span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <span
-                        aria-hidden="true"
-                        className="font-mono text-[9px] text-[var(--muted-foreground)]/50 select-none group-hover:text-[var(--accent)]/50 transition-colors"
-                      >
-                        [+]
-                      </span>
                       <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] bg-[var(--surface-2)]/60">
                         {i.id}
                       </span>
@@ -349,15 +343,15 @@ export function Investigaciones() {
                     Próximo writeup CyberDefenders
                   </h3>
                   <p className="text-xs md:text-sm text-foreground/60 leading-relaxed">
-                    Investigación forense en desarrollo. El análisis y la documentación de
-                    artefactos estarán disponibles próximamente.
+                    Investigación forense en curso. Documentación y análisis de artefactos
+                    próximamente disponibles.
                   </p>
                 </div>
                 <div className="mt-6 pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
                   <span className="text-[var(--muted-foreground)]">CyberDefenders</span>
                   <span className="text-[var(--accent)]/70 flex items-center gap-1.5">
                     <span className="inline-block size-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-                    WIP.LOG
+                    UPCOMING
                   </span>
                 </div>
               </div>

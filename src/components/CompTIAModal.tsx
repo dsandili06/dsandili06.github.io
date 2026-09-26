@@ -232,8 +232,8 @@ export function CompTIAModal({
                     <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                       Historial de Intentos
                     </span>
-                    <span className="font-mono text-[10px] text-[var(--muted-foreground)]">
-                      Selecciona un simulacro para ver métricas y captura
+                    <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[var(--accent)] font-semibold">
+                      {mockExams.length} INTENTOS REGISTRADOS
                     </span>
                   </div>
 
@@ -456,7 +456,7 @@ export function CompTIAModal({
               <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3 border-t border-white/10 bg-[#06090e] shrink-0">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                   <span className="md:hidden">Tocá fuera para cerrar</span>
-                  <span className="hidden md:inline">ESC para cerrar · Clic fuera para salir</span>
+                  <span className="hidden md:inline">ESC para cerrar</span>
                 </span>
                 <button
                   type="button"

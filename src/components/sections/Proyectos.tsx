@@ -130,7 +130,7 @@ export function Proyectos() {
                   </a>
                 ) : (
                   <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-                    GITHUB // CORE
+                    AUTOMATION // TOOLKIT
                   </span>
                 )}
 
@@ -176,7 +176,7 @@ export function Proyectos() {
             </h3>
 
             <p className="text-sm text-foreground/75 leading-relaxed">
-              Desarrollo activo en curso. Próximamente disponible.
+              Desarrollo en curso de herramientas defensivas y telemetría de laboratorio.
             </p>
 
             {/* Cybernetic Animated Loading Bar — Steady & Calm */}
@@ -184,7 +184,7 @@ export function Proyectos() {
               <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] mb-2.5">
                 <span className="flex items-center gap-2">
                   <span className="inline-block size-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
-                  PIPELINE // EN PROCESO
+                  PIPELINE // ACTIVE
                 </span>
                 <span className="text-[var(--accent)] font-semibold font-mono">68%</span>
               </div>
@@ -214,7 +214,7 @@ export function Proyectos() {
             <span className="text-[var(--muted-foreground)]">ESTADO: EN DESARROLLO</span>
             <span className="text-[var(--muted-foreground)] flex items-center gap-1.5">
               <span className="inline-block size-1.5 rounded-full bg-[var(--accent)]/60" />
-              GITHUB // WIP
+              REPOSITORY // ACTIVE
             </span>
           </div>
         </div>

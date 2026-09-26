@@ -204,8 +204,8 @@ export function Cursos() {
           <div className="flex items-center gap-2.5">
             <Terminal size={14} className="text-[var(--accent)]" />
             <span className="text-foreground font-semibold">
-              <span className="sm:hidden">EMISORES</span>
-              <span className="hidden sm:inline">EMISORES_VERIFICADOS</span>
+              <span className="sm:hidden">REGISTRO</span>
+              <span className="hidden sm:inline">REGISTRO_ACADÉMICO</span>
             </span>
           </div>
           <div className="flex items-center gap-3">

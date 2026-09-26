@@ -575,9 +575,7 @@ export function CertModal({
                 <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 border-t border-white/10 bg-[#06090e] shrink-0">
                   <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                     <span className="md:hidden">Tocá fuera para cerrar</span>
-                    <span className="hidden md:inline">
-                      ESC para cerrar · Clic fuera para salir
-                    </span>
+                    <span className="hidden md:inline">ESC para cerrar</span>
                   </span>
                   <div className="flex items-center gap-3">
                     <button
