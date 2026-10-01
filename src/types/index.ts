@@ -56,6 +56,7 @@ export type MockExam = {
   domains: MockExamDomain[];
   highlightedDomains?: string[];
   analysis?: string;
+  shortLabel?: string;
 };
 
 export type Certification = {

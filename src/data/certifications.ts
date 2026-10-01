@@ -168,6 +168,30 @@ export const CERTIFICATIONS: Certification[] = [
         analysis:
           "Simulacro #6 con 77% (70/90 aciertos en 58 min). Recaída puntual en Gobernanza y Supervisión (50%) por sobrecarga académica/laboral y tiempo acotado de repaso. Resiliencia técnica destacada en Amenazas (90%) y Operaciones (88%). Plan de mitigación: repaso intensivo de marcos regulatorios y gestión de riesgos de cara al examen oficial.",
       },
+      {
+        id: "dion-test-2-v2",
+        title: "Simulacro Dion #2 (2da Pasada)",
+        shortLabel: "Simulacro #2 (2da)",
+        date: "30 Sep 2026",
+        score: 91,
+        correctQuestions: 82,
+        totalQuestions: 90,
+        timeSpent: "1h 00m",
+        image: "/certs/comptia-prep/dion-test-2-pass2.jpg",
+        domains: [
+          { domain: "1.0 General Security Concepts", score: 90 },
+          { domain: "2.0 Threats, Vulnerabilities, and Mitigations", score: 100 },
+          { domain: "3.0 Security Architecture", score: 81 },
+          { domain: "4.0 Security Operations", score: 89 },
+          { domain: "5.0 Security Program Management and Oversight", score: 94 },
+        ],
+        highlightedDomains: [
+          "2.0 Threats, Vulnerabilities, and Mitigations (100%)",
+          "5.0 Security Program Management and Oversight (94%)",
+        ],
+        analysis:
+          "Segunda pasada (retake) del Simulacro #2 con 91% (82/90 aciertos en 1 hora). Superación contundente del benchmark de Jason Dion (90% target) con puntaje perfecto en Amenazas, Vulnerabilidades y Mitigaciones (100%) y notable recuperación en Gestión y Gobernanza (94% vs 50% previo). Rendimiento consolidado en Operaciones (89%) y Conceptos Generales (90%).",
+      },
     ],
   },
 ];

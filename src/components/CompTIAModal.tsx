@@ -209,7 +209,13 @@ export function CompTIAModal({
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded bg-amber-500/10 text-amber-400 shrink-0">
+                    <div
+                      className={`p-2 rounded shrink-0 ${
+                        maxScore >= 90
+                          ? "bg-green-500/10 text-[var(--accent-green)]"
+                          : "bg-amber-500/10 text-amber-400"
+                      }`}
+                    >
                       <Clock size={18} />
                     </div>
                     <div>
@@ -218,8 +224,14 @@ export function CompTIAModal({
                       </div>
                       <div className="text-sm font-bold text-foreground">
                         90% Target ·{" "}
-                        <span className="text-amber-400 font-semibold">
-                          {maxScore}% pico (-{Math.max(0, 90 - maxScore)}%)
+                        <span
+                          className={`font-semibold ${
+                            maxScore >= 90 ? "text-[var(--accent-green)]" : "text-amber-400"
+                          }`}
+                        >
+                          {maxScore >= 90
+                            ? `${maxScore}% pico (Superado +${maxScore - 90}%)`
+                            : `${maxScore}% pico (-${90 - maxScore}%)`}
                         </span>
                       </div>
                     </div>
@@ -241,7 +253,9 @@ export function CompTIAModal({
                     role="tablist"
                     aria-label="Historial de simulacros CompTIA Security+"
                     onKeyDown={handleTimelineKeyDown}
-                    className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5"
+                    className={`grid grid-cols-2 sm:grid-cols-3 ${
+                      mockExams.length >= 7 ? "lg:grid-cols-7" : "lg:grid-cols-6"
+                    } gap-2.5`}
                   >
                     {mockExams.map((exam, idx) => {
                       const isSelected = idx === selectedIndex;
@@ -271,7 +285,7 @@ export function CompTIAModal({
                         >
                           <div className="flex items-center justify-between gap-1 mb-1">
                             <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--muted-foreground)] truncate">
-                              Simulacro #{idx + 1}
+                              {exam.shortLabel ?? `Simulacro #${idx + 1}`}
                             </span>
                             {delta !== null && (
                               <span
