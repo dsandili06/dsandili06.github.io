@@ -2,6 +2,8 @@ import { Component, useState } from "react";
 import type { ComponentProps, ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeSlug from "rehype-slug";
 import { AlertTriangle, Check, Copy } from "lucide-react";
 import { resolveWriteupImageUri, safeMarkdownUrl } from "@/components/writeupMarkdownPolicy";
@@ -70,6 +72,15 @@ function CopyCodeButton({ children }: { children: ReactNode }) {
 }
 
 type MarkdownComponents = ComponentProps<typeof ReactMarkdown>["components"];
+
+const writeupSanitizeSchema = {
+  ...defaultSchema,
+  protocols: {
+    ...defaultSchema.protocols,
+    // safeMarkdownUrl performs the stricter raster/base64 and size validation at render time.
+    src: [...(defaultSchema.protocols?.src ?? []), "data"],
+  },
+};
 
 type WriteupMarkdownProps = {
   markdown: string;
@@ -210,7 +221,11 @@ export function WriteupMarkdown({
     <MarkdownErrorBoundary>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeSlug]}
+        rehypePlugins={[
+          rehypeRaw,
+          [rehypeSanitize, writeupSanitizeSchema],
+          [rehypeSlug, { prefix: "writeup-content-" }],
+        ]}
         urlTransform={safeMarkdownUrl}
         components={components}
       >

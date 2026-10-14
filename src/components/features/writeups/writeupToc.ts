@@ -2,6 +2,9 @@ import GithubSlugger from "github-slugger";
 
 export type TocEntry = { depth: number; text: string; id: string };
 
+/** Avoid collisions with application IDs and named DOM properties. */
+export const WRITEUP_HEADING_ID_PREFIX = "writeup-content-";
+
 /** Minimum number of headings before the writeup index becomes visible. */
 export const TOC_VISIBLE_THRESHOLD = 4;
 
@@ -24,7 +27,7 @@ export function parseToc(md: string): TocEntry[] {
     if (!m) continue;
     const depth = m[1].length;
     const raw = m[2].replace(/[*_`~]/g, "").trim();
-    const id = slugger.slug(raw);
+    const id = `${WRITEUP_HEADING_ID_PREFIX}${slugger.slug(raw)}`;
     if (depth === 2 || depth === 3) toc.push({ depth, text: raw, id });
   }
   return toc;
