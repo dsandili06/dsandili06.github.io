@@ -15,6 +15,7 @@ import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { MatrixRain } from "@/components/fx/MatrixRain";
 import { ScrollProgress } from "@/components/fx/ScrollProgress";
 import { CommandPalette } from "@/components/CommandPalette";
+import { SITE } from "@/data/site";
 
 // Lazy load below-the-fold sections for better initial load performance
 const Investigaciones = lazy(() =>
@@ -32,20 +33,10 @@ const Contacto = lazy(() =>
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team" },
-      {
-        name: "description",
-        content:
-          "Portfolio de Santiago Daniel Sandili — Analista de Seguridad L1 / Blue Team. DFIR, threat hunting, malware analysis y automatización defensiva.",
-      },
-      {
-        property: "og:title",
-        content: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team",
-      },
-      {
-        property: "og:description",
-        content: "DFIR · Threat Hunting · Malware Analysis · Blue Team Automation.",
-      },
+      { title: SITE.title },
+      { name: "description", content: SITE.description },
+      { property: "og:title", content: SITE.title },
+      { property: "og:description", content: SITE.tagline },
     ],
   }),
   component: Portfolio,
