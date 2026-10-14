@@ -1,0 +1,21 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "default_agent": "coordinator",
+  "permissions": [
+    {
+      "action": "edit",
+      "resource": "src/routeTree.gen.ts",
+      "effect": "deny",
+    },
+    {
+      "action": "edit",
+      "resource": "dist/**",
+      "effect": "deny",
+    },
+    {
+      "action": "edit",
+      "resource": "node_modules/**",
+      "effect": "deny",
+    },
+  ],
+}
