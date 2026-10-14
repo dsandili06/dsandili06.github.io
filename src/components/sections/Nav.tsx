@@ -14,6 +14,8 @@ const links = SECTIONS.map((section) => ({
   label: section.navLabel,
 }));
 
+const MOBILE_NAV_DRAWER_ID = "mobile-navigation-drawer";
+
 export function Nav() {
   const active = useActiveSection(links);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -70,6 +72,7 @@ export function Nav() {
 
   return (
     <nav
+      aria-label="Navegación principal"
       className={`sticky top-0 z-50 border-b border-border-dim pt-[env(safe-area-inset-top)] transition-colors ${
         menuOpen
           ? "bg-[#07080A]"
@@ -141,6 +144,8 @@ export function Nav() {
             onClick={() => setMenuOpen((v) => !v)}
             aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
             aria-expanded={menuOpen}
+            aria-controls={MOBILE_NAV_DRAWER_ID}
+            aria-haspopup="dialog"
             className="inline-flex items-center justify-center size-11 min-h-[44px] min-w-[44px] text-[var(--accent)] border border-border-dim hover:border-[var(--accent)] transition-colors cursor-pointer"
           >
             {menuOpen ? <X size={18} strokeWidth={1.5} /> : <Menu size={18} strokeWidth={1.5} />}
@@ -160,20 +165,32 @@ export function Nav() {
               transition={{ duration: 0.2 }}
               role="presentation"
               onClick={() => setMenuOpen(false)}
-              className="fixed inset-0 top-14 sm:top-16 bg-[#07080A]/80 backdrop-blur-sm z-40 md:hidden"
+              className="fixed inset-0 top-[calc(3.5rem+env(safe-area-inset-top))] sm:top-[calc(4rem+env(safe-area-inset-top))] bg-[#07080A]/80 backdrop-blur-sm z-40 md:hidden"
             />
 
             {/* Mobile Drawer */}
             <motion.div
               ref={drawerRef}
+              id={MOBILE_NAV_DRAWER_ID}
               key="mobile-nav-drawer"
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               data-lenis-prevent
-              className="fixed inset-x-0 top-14 sm:top-16 z-50 md:hidden bg-[#07080A] border-b border-border-dim shadow-2xl overflow-y-auto max-h-[calc(100dvh-3.5rem)] sm:max-h-[calc(100dvh-4rem)]"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Menú principal"
+              className="fixed inset-x-0 top-[calc(3.5rem+env(safe-area-inset-top))] sm:top-[calc(4rem+env(safe-area-inset-top))] z-50 md:hidden bg-[#07080A] border-b border-border-dim shadow-2xl overflow-y-auto max-h-[calc(100dvh-3.5rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] sm:max-h-[calc(100dvh-4rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))]"
             >
+              <button
+                type="button"
+                onClick={() => setMenuOpen(false)}
+                aria-label="Cerrar menú móvil"
+                className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:right-4 focus:z-10 focus:inline-flex focus:size-11 focus:min-h-[44px] focus:min-w-[44px] focus:items-center focus:justify-center focus:border focus:border-[var(--accent)] focus:bg-[#07080A] focus:text-[var(--accent)]"
+              >
+                <X size={18} strokeWidth={1.5} />
+              </button>
               <ul className="flex flex-col px-4 sm:px-6 py-2 font-mono text-xs uppercase tracking-[0.2em]">
                 {links.map((l) => (
                   <li key={l.href}>

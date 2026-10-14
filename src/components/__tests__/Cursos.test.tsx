@@ -1,7 +1,17 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Cursos } from "@/components/sections/Cursos";
 import { COURSE_GROUPS, COURSES } from "@/data/courses";
+
+const reducedMotionState = vi.hoisted(() => ({ value: false }));
+
+vi.mock("motion/react", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("motion/react")>();
+  return {
+    ...actual,
+    useReducedMotion: () => reducedMotionState.value,
+  };
+});
 
 // Mock CertModal
 vi.mock("@/components/CertModal", () => ({
@@ -31,6 +41,10 @@ vi.mock("@/components/CertModal", () => ({
 }));
 
 describe("Cursos", () => {
+  beforeEach(() => {
+    reducedMotionState.value = false;
+  });
+
   it("renders the section header with number 06 and learning log kicker", () => {
     render(<Cursos />);
     expect(screen.getByText(/SECTION_06 \/\/ LEARNING_LOG/i)).toBeInTheDocument();
@@ -81,6 +95,54 @@ describe("Cursos", () => {
     const tablist = screen.getByRole("tablist");
     expect(tablist).not.toHaveAttribute("data-lenis-prevent");
     expect(tablist.className).toContain("touch-pan-x");
+  });
+
+  it("scrolls the institution dock smoothly when reduced motion is not requested", () => {
+    render(<Cursos />);
+    const tablist = screen.getByRole("tablist");
+    Object.defineProperty(tablist, "scrollWidth", { configurable: true, value: 500 });
+    Object.defineProperty(tablist, "clientWidth", { configurable: true, value: 200 });
+    const scrollTo = vi.fn();
+    tablist.scrollTo = scrollTo;
+
+    fireEvent.click(screen.getAllByRole("tab")[1]);
+
+    expect(scrollTo).toHaveBeenCalledWith({ left: 0, behavior: "smooth" });
+  });
+
+  it("uses instant dock scrolling when reduced motion is requested", () => {
+    reducedMotionState.value = true;
+    render(<Cursos />);
+    const tablist = screen.getByRole("tablist");
+    Object.defineProperty(tablist, "scrollWidth", { configurable: true, value: 500 });
+    Object.defineProperty(tablist, "clientWidth", { configurable: true, value: 200 });
+    const scrollTo = vi.fn();
+    tablist.scrollTo = scrollTo;
+
+    fireEvent.click(screen.getAllByRole("tab")[1]);
+
+    expect(scrollTo).toHaveBeenCalledWith({ left: 0, behavior: "auto" });
+  });
+
+  it("uses instant scrollIntoView in the reduced-motion fallback path", () => {
+    reducedMotionState.value = true;
+    render(<Cursos />);
+    const tablist = screen.getByRole("tablist");
+    Object.defineProperty(tablist, "scrollWidth", { configurable: true, value: 500 });
+    Object.defineProperty(tablist, "clientWidth", { configurable: true, value: 200 });
+    tablist.scrollTo = vi.fn(() => {
+      throw new Error("scrollTo unavailable");
+    });
+    const targetTab = screen.getAllByRole("tab")[1];
+    targetTab.scrollIntoView = vi.fn();
+
+    fireEvent.click(targetTab);
+
+    expect(targetTab.scrollIntoView).toHaveBeenCalledWith({
+      behavior: "auto",
+      block: "nearest",
+      inline: "nearest",
+    });
   });
 
   it("should display initial institution (Coursera/Google) courses in the active dossier", () => {

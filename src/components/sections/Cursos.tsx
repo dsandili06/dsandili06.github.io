@@ -125,12 +125,19 @@ export function Cursos() {
         try {
           const scrollLeft = buttonElement.offsetLeft - container.offsetLeft - 16;
           if (typeof container.scrollTo === "function") {
-            container.scrollTo({ left: Math.max(0, scrollLeft), behavior: "smooth" });
+            container.scrollTo({
+              left: Math.max(0, scrollLeft),
+              behavior: shouldReduceMotion ? "auto" : "smooth",
+            });
           } else {
             container.scrollLeft = Math.max(0, scrollLeft);
           }
         } catch {
-          buttonElement.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+          buttonElement.scrollIntoView({
+            behavior: shouldReduceMotion ? "auto" : "smooth",
+            block: "nearest",
+            inline: "nearest",
+          });
         }
       }
     }

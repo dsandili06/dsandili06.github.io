@@ -48,6 +48,40 @@ describe("WriteupModal", () => {
     expect(container?.className).toContain("overflow-y-auto");
   });
 
+  it("announces loading and marks the dialog busy until content is ready", async () => {
+    let resolveFetch!: (response: { ok: boolean; text: () => Promise<string> }) => void;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        () =>
+          new Promise<{ ok: boolean; text: () => Promise<string> }>((resolve) => {
+            resolveFetch = resolve;
+          }),
+      ),
+    );
+
+    render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
+
+    const dialog = screen.getByRole("dialog");
+    const status = screen.getByRole("status");
+    expect(dialog).toHaveAttribute("aria-busy", "true");
+    expect(dialog).not.toContainElement(status);
+    expect(status).toHaveAttribute("aria-live", "polite");
+    expect(status).toHaveTextContent("Fetching writeup...");
+    expect(
+      screen
+        .getAllByText("Fetching writeup...")
+        .find((element) => element.closest('[aria-hidden="true"]')),
+    ).toBeDefined();
+
+    await act(async () => {
+      resolveFetch({ ok: true, text: () => Promise.resolve(MD_CONTENT) });
+    });
+
+    expect(await screen.findByText(MD_CONTENT.split("\n\n")[1])).toBeInTheDocument();
+    expect(dialog).toHaveAttribute("aria-busy", "false");
+  });
+
   it("pauses Lenis and locks body scroll on mount", async () => {
     const lenis = mockLenis();
     render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
@@ -163,7 +197,7 @@ describe("WriteupModal", () => {
     await act(async () => {
       await vi.advanceTimersByTimeAsync(10000);
     });
-    expect(screen.getByText("No se pudo cargar el writeup")).toBeInTheDocument();
+    expect(screen.getByRole("alert")).toHaveTextContent("No se pudo cargar el writeup");
 
     fetchMock.mockResolvedValueOnce({ ok: true, text: () => Promise.resolve(MD_CONTENT) });
     await act(async () => {
@@ -196,7 +230,7 @@ describe("WriteupModal", () => {
     );
     render(<WriteupModal investigationId="LAB_001" onClose={vi.fn()} />);
 
-    expect(await screen.findByText("No se pudo cargar el writeup")).toBeInTheDocument();
+    expect(await screen.findByRole("alert")).toHaveTextContent("No se pudo cargar el writeup");
     const retryBtn = screen.getByText("Reintentar");
     expect(retryBtn).toBeInTheDocument();
   });
@@ -204,7 +238,7 @@ describe("WriteupModal", () => {
   it("shows error state for unknown investigation ID", async () => {
     render(<WriteupModal investigationId="LAB_999" onClose={vi.fn()} />);
 
-    expect(await screen.findByText("Writeup no encontrado")).toBeInTheDocument();
+    expect(await screen.findByRole("alert")).toHaveTextContent("Writeup no encontrado");
   });
 
   it("scrolls internal container smoothly when TOC index link is clicked", async () => {

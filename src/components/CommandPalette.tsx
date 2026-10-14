@@ -31,6 +31,7 @@ import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { COMMAND_PALETTE_OPEN_EVENT, COMMAND_PALETTE_CLOSE_EVENT } from "@/hooks/useCommandPalette";
 import { CertModal } from "@/components/CertModal";
+import { WriteupModalFallback } from "@/components/primitives/WriteupModalFallback";
 
 // Lazy-load WriteupModal so react-markdown is only fetched if a writeup is opened
 const WriteupModal = lazy(() =>
@@ -220,7 +221,7 @@ export function CommandPalette() {
                   <button
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="size-5 inline-flex items-center justify-center text-[var(--muted-foreground)] hover:text-foreground transition-colors cursor-pointer"
+                    className="size-11 min-h-[44px] min-w-[44px] inline-flex items-center justify-center text-[var(--muted-foreground)] hover:text-foreground transition-colors cursor-pointer"
                     aria-label="Cerrar paleta de comandos"
                   >
                     <X size={13} />
@@ -247,7 +248,7 @@ export function CommandPalette() {
                     <button
                       type="button"
                       onClick={() => setSearch("")}
-                      className="text-[10px] font-mono uppercase text-[var(--muted-foreground)] hover:text-foreground px-1.5 py-0.5 rounded-xs border border-border-dim"
+                      className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-[10px] font-mono uppercase text-[var(--muted-foreground)] hover:text-foreground px-1.5 py-0.5 rounded-xs border border-border-dim"
                     >
                       LIMPIAR
                     </button>
@@ -282,7 +283,7 @@ export function CommandPalette() {
                     <Command.Item
                       value="copiar correo email contacto santiago sandili"
                       onSelect={handleCopyEmail}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
+                      className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         {copiedEmail ? (
@@ -311,7 +312,7 @@ export function CommandPalette() {
                           "noopener,noreferrer",
                         );
                       }}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
+                      className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <Github size={14} className="text-[var(--accent)] shrink-0" />
@@ -333,7 +334,7 @@ export function CommandPalette() {
                           "noopener,noreferrer",
                         );
                       }}
-                      className="flex items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
+                      className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <Linkedin size={14} className="text-[var(--accent)] shrink-0" />
@@ -360,7 +361,7 @@ export function CommandPalette() {
                           key={sec.id}
                           value={`${sec.number} ${sec.title} ${sec.description}`}
                           onSelect={() => handleSelectSection(sec.id)}
-                          className="flex items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
+                          className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
                             <span className="font-mono text-[10px] text-[var(--accent)] font-semibold shrink-0">
@@ -395,7 +396,7 @@ export function CommandPalette() {
                         key={lab.id}
                         value={`${lab.id} ${lab.title} ${lab.platform} ${lab.categories.join(" ")} ${lab.summary}`}
                         onSelect={() => handleSelectWriteup(lab.id)}
-                        className="flex items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
+                        className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
                           <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-xs bg-[var(--surface)] border border-border-dim text-[var(--accent)] shrink-0">
@@ -430,7 +431,7 @@ export function CommandPalette() {
                           key={`${grp.title}-${tool}`}
                           value={`${tool} ${grp.title}`}
                           onSelect={() => handleSelectTool(grp.title)}
-                          className="flex items-center justify-between px-3 py-2 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
+                          className="flex min-h-[44px] items-center justify-between px-3 py-2 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
                             <span className="text-[var(--accent)] font-mono text-xs select-none shrink-0">
@@ -464,7 +465,7 @@ export function CommandPalette() {
                             handleSelectSection("formacion");
                           }
                         }}
-                        className="flex items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
+                        className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
                           <Award size={14} className="text-[var(--accent)] shrink-0" />
@@ -523,7 +524,7 @@ export function CommandPalette() {
 
       {/* Writeup Modal Triggered from Command Palette */}
       {modalWriteupId && (
-        <Suspense fallback={null}>
+        <Suspense fallback={<WriteupModalFallback />}>
           <WriteupModal
             investigationId={modalWriteupId}
             isOpen={Boolean(activeWriteupId)}
