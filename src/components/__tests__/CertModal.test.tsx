@@ -11,6 +11,7 @@ describe("CertModal component", () => {
 
   afterEach(() => {
     cleanup();
+    window.dispatchEvent(new PopStateEvent("popstate"));
     vi.restoreAllMocks();
     document.body.style.overflow = "";
   });

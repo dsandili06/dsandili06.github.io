@@ -27,6 +27,8 @@ import { STACK_GROUPS } from "@/data/stack";
 import { CERTIFICATIONS } from "@/data/certifications";
 import { SECTIONS, type SectionId } from "@/data/sections";
 import { getLenis } from "@/lib/lenis";
+import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { COMMAND_PALETTE_OPEN_EVENT, COMMAND_PALETTE_CLOSE_EVENT } from "@/hooks/useCommandPalette";
 import { CertModal } from "@/components/CertModal";
 
@@ -59,6 +61,23 @@ export function CommandPalette() {
   const [activeCert, setActiveCert] = useState<{ cert: string; title: string } | null>(null);
 
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useFocusTrap<HTMLDivElement>();
+
+  const { overlayRef } = useOverlayLifecycle({
+    isOpen,
+    onEscape: () => {
+      setIsOpen(false);
+      return true;
+    },
+  });
+  const dialogLifecycleRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      dialogRef(node);
+      overlayRef(node);
+    },
+    [dialogRef, overlayRef],
+  );
+  const pendingSectionRef = useRef<string | null>(null);
 
   // Global keyboard shortcut: Ctrl+K or Cmd+K
   useEffect(() => {
@@ -84,43 +103,36 @@ export function CommandPalette() {
     };
   }, []);
 
-  // Body scroll lock & Lenis pause while palette is open
+  // Auto-focus input on open
   useEffect(() => {
     if (!isOpen) return;
-    const lenis = getLenis();
-    lenis?.stop();
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-
-    // Auto-focus input on open
     const timeout = setTimeout(() => {
       inputRef.current?.focus();
     }, 50);
 
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setIsOpen(false);
-      }
-    };
-    window.addEventListener("keydown", handleEscape);
-
     return () => {
       clearTimeout(timeout);
-      document.body.style.overflow = originalOverflow;
-      lenis?.start();
-      window.removeEventListener("keydown", handleEscape);
     };
   }, [isOpen]);
 
   const scrollToElement = useCallback((id: string) => {
+    pendingSectionRef.current = id;
     setIsOpen(false);
-    const el = document.getElementById(id);
-    if (!el) return;
+  }, []);
+
+  const handleExitComplete = useCallback(() => {
+    const id = pendingSectionRef.current;
+    pendingSectionRef.current = null;
+    if (!id) return;
+
+    const element = document.getElementById(id);
+    if (!element) return;
     const lenis = getLenis();
     if (lenis) {
-      lenis.scrollTo(el, { offset: 0 });
+      lenis.scrollTo(element, { offset: 0 });
     } else {
-      el.scrollIntoView({ behavior: "smooth" });
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      element.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth" });
     }
     history.replaceState(null, "", `#${id}`);
   }, []);
@@ -172,7 +184,7 @@ export function CommandPalette() {
 
   return createPortal(
     <>
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={handleExitComplete}>
         {isOpen && (
           <div className="fixed inset-0 z-[10000] flex items-start justify-center p-3 sm:p-4 md:p-6 pt-[max(2rem,env(safe-area-inset-top))] sm:pt-[10vh]">
             {/* Backdrop */}
@@ -188,6 +200,7 @@ export function CommandPalette() {
 
             {/* Command Dialog Panel */}
             <motion.div
+              ref={dialogLifecycleRef}
               role="dialog"
               aria-modal="true"
               aria-label="SOC Command Palette"

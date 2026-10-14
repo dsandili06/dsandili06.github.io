@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -16,8 +16,8 @@ import {
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
 import { useModalHistory } from "@/hooks/useModalHistory";
-import { getLenis } from "@/lib/lenis";
 import { SAL1_REVIEW } from "@/data/sal1Review";
 
 type CertModalProps = {
@@ -49,6 +49,21 @@ export function CertModal({
     onClose,
     stateData: { modal: "cert", title },
   });
+  const { overlayRef } = useOverlayLifecycle({
+    isOpen,
+    onEscape: () => {
+      if (lightboxImage) return false;
+      handleClose();
+      return true;
+    },
+  });
+  const panelLifecycleRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      panelRef(node);
+      overlayRef(node);
+    },
+    [panelRef, overlayRef],
+  );
 
   useEffect(() => {
     if (initialTab) {
@@ -75,28 +90,6 @@ export function CertModal({
     }
   };
 
-  useEffect(() => {
-    if (!isOpen) {
-      document.body.style.overflow = "";
-      getLenis()?.start();
-      return;
-    }
-    const lenis = getLenis();
-    lenis?.stop();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !lightboxImage) {
-        handleClose();
-      }
-    };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      lenis?.start();
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [isOpen, lightboxImage, handleClose]);
-
   const review = SAL1_REVIEW;
 
   return createPortal(
@@ -118,7 +111,7 @@ export function CertModal({
             onClick={handleClose}
           >
             <motion.div
-              ref={panelRef}
+              ref={panelLifecycleRef}
               key="cert-modal-panel"
               initial={{ opacity: 0, scale: 0.96, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
