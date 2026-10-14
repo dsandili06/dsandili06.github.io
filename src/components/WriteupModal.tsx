@@ -14,6 +14,7 @@ import {
 } from "@/components/features/writeups/writeupSource";
 import { parseToc, TOC_VISIBLE_THRESHOLD } from "@/components/features/writeups/writeupToc";
 import { WriteupMarkdown } from "@/components/features/writeups/WriteupMarkdown";
+import { WriteupTocPanel } from "@/components/features/writeups/WriteupTocPanel";
 
 type WriteupModalProps = {
   investigationId: string;
@@ -158,6 +159,20 @@ export function WriteupModal({
   useEffect(() => {
     handleBodyScroll();
   }, [md, handleBodyScroll]);
+
+  const scrollToHeading = useCallback((id: string) => {
+    const target = document.getElementById(id);
+    const container = bodyScrollRef.current;
+    if (!target || !container) return;
+    const targetRect = target.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const targetOffset = targetRect.top - containerRect.top + container.scrollTop;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    container.scrollTo({
+      top: Math.max(0, targetOffset - 16),
+      behavior: prefersReduced ? "auto" : "smooth",
+    });
+  }, []);
 
   return createPortal(
     <>
@@ -327,46 +342,7 @@ export function WriteupModal({
                   </div>
 
                   {/* TOC — sticky index for long writeups (desktop only) */}
-                  {showToc && (
-                    <aside className="hidden lg:block w-56 shrink-0 sticky top-4 max-h-[76dvh] overflow-y-auto">
-                      <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mb-3">
-                        INDEX
-                      </div>
-                      <ul className="space-y-1.5 border-l border-border-dim">
-                        {toc.map((t) => (
-                          <li
-                            key={t.id}
-                            style={{ paddingLeft: t.depth === 3 ? "0.9rem" : "0.6rem" }}
-                          >
-                            <a
-                              href={`#${t.id}`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                const target = document.getElementById(t.id);
-                                const container = bodyScrollRef.current;
-                                if (target && container) {
-                                  const targetRect = target.getBoundingClientRect();
-                                  const containerRect = container.getBoundingClientRect();
-                                  const targetOffset =
-                                    targetRect.top - containerRect.top + container.scrollTop;
-                                  const prefersReduced = window.matchMedia(
-                                    "(prefers-reduced-motion: reduce)",
-                                  ).matches;
-                                  container.scrollTo({
-                                    top: Math.max(0, targetOffset - 16),
-                                    behavior: prefersReduced ? "auto" : "smooth",
-                                  });
-                                }
-                              }}
-                              className="block font-mono text-[10px] leading-snug text-[var(--muted-foreground)] hover:text-[var(--accent)] transition-colors"
-                            >
-                              {t.text}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </aside>
-                  )}
+                  {showToc && <WriteupTocPanel entries={toc} onSelect={scrollToHeading} />}
                 </div>
               </div>
               {/* Footer */}
