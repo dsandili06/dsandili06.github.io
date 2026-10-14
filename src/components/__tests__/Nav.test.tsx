@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Nav } from "@/components/sections/Nav";
 
 describe("Nav component", () => {
@@ -9,6 +9,7 @@ describe("Nav component", () => {
 
   afterEach(() => {
     document.body.style.overflow = "";
+    delete (window as unknown as Record<string, unknown>).__lenis;
   });
 
   it("renders navigation brand and desktop links", () => {
@@ -39,7 +40,7 @@ describe("Nav component", () => {
     ).toEqual(["About", "Certs", "Proyectos", "Labs", "Stack", "Cursos", "Contacto"]);
   });
 
-  it("toggles mobile menu on hamburger button click and manages body scroll lock", () => {
+  it("toggles mobile menu on hamburger button click and manages body scroll lock", async () => {
     render(<Nav />);
     const menuBtn = screen.getByRole("button", { name: /Abrir menú/i });
     expect(menuBtn).toHaveAttribute("aria-expanded", "false");
@@ -60,10 +61,10 @@ describe("Nav component", () => {
       "aria-expanded",
       "false",
     );
-    expect(document.body.style.overflow).toBe("");
+    await waitFor(() => expect(document.body.style.overflow).toBe(""));
   });
 
-  it("closes mobile menu when clicking the backdrop and unlocks body scroll", () => {
+  it("keeps body scroll locked until the backdrop exit completes", async () => {
     const { container } = render(<Nav />);
     const menuBtn = screen.getByRole("button", { name: /Abrir menú/i });
     fireEvent.click(menuBtn);
@@ -79,14 +80,20 @@ describe("Nav component", () => {
       "aria-expanded",
       "false",
     );
-    expect(document.body.style.overflow).toBe("");
+    await waitFor(() => expect(document.body.style.overflow).toBe(""));
   });
 
-  it("closes mobile menu and unlocks scroll when clicking a mobile link", () => {
+  it("unlocks scroll and navigates after the mobile drawer exits", async () => {
+    const lenis = { stop: vi.fn(), start: vi.fn(), scrollTo: vi.fn() };
+    (window as unknown as Record<string, unknown>).__lenis = lenis;
+    const target = document.createElement("section");
+    target.id = "proyectos";
+    document.body.appendChild(target);
     const { container } = render(<Nav />);
     const menuBtn = screen.getByRole("button", { name: /Abrir menú/i });
     fireEvent.click(menuBtn);
     expect(document.body.style.overflow).toBe("hidden");
+    expect(lenis.stop).toHaveBeenCalledTimes(1);
     const mobileLink = container.querySelector(
       '.nav-mobile-link[href="#proyectos"]',
     ) as HTMLElement;
@@ -97,10 +104,28 @@ describe("Nav component", () => {
       "aria-expanded",
       "false",
     );
-    expect(document.body.style.overflow).toBe("");
+    expect(document.body.style.overflow).toBe("hidden");
+    await waitFor(() => expect(document.body.style.overflow).toBe(""));
+    expect(lenis.start).toHaveBeenCalledTimes(1);
+    expect(lenis.scrollTo).toHaveBeenCalledWith(target, { offset: 0 });
+    expect(window.location.hash).toBe("#proyectos");
+    target.remove();
+    history.replaceState(null, "", window.location.pathname);
   });
 
-  it("closes mobile menu when pressing Escape key and unlocks scroll", () => {
+  it("focuses the mobile drawer on open and restores focus to its trigger on close", async () => {
+    render(<Nav />);
+    const menuButton = screen.getByRole("button", { name: /Abrir menú/i });
+    menuButton.focus();
+    fireEvent.click(menuButton);
+
+    expect(document.activeElement).toBe(document.querySelector('.nav-mobile-link[href="#about"]'));
+
+    fireEvent.keyDown(window, { key: "Escape" });
+    await waitFor(() => expect(document.activeElement).toBe(menuButton));
+  });
+
+  it("keeps body scroll locked until Escape exit completes", async () => {
     render(<Nav />);
     const menuBtn = screen.getByRole("button", { name: /Abrir menú/i });
     fireEvent.click(menuBtn);
@@ -111,10 +136,10 @@ describe("Nav component", () => {
       "aria-expanded",
       "false",
     );
-    expect(document.body.style.overflow).toBe("");
+    await waitFor(() => expect(document.body.style.overflow).toBe(""));
   });
 
-  it("resets mobile menu and unlocks body scroll when window is resized to desktop width", () => {
+  it("keeps body scroll locked until resize exit completes", async () => {
     render(<Nav />);
     const menuBtn = screen.getByRole("button", { name: /Abrir menú/i });
     fireEvent.click(menuBtn);
@@ -127,7 +152,7 @@ describe("Nav component", () => {
       "aria-expanded",
       "false",
     );
-    expect(document.body.style.overflow).toBe("");
+    await waitFor(() => expect(document.body.style.overflow).toBe(""));
   });
 
   it("omits backdrop-blur on nav root when menu is open to prevent containing-block trap, and drawer has data-lenis-prevent", () => {

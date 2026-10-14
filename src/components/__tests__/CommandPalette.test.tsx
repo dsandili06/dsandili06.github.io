@@ -1,5 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent, act, waitForElementToBeRemoved } from "@testing-library/react";
+import {
+  render,
+  screen,
+  fireEvent,
+  act,
+  waitFor,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import { CommandPalette } from "@/components/CommandPalette";
 import { openCommandPalette } from "@/hooks/useCommandPalette";
 
@@ -59,6 +66,26 @@ describe("CommandPalette", () => {
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
 
+  it("restores focus to the opener after the palette closes", async () => {
+    const opener = document.createElement("button");
+    opener.textContent = "Open palette";
+    document.body.appendChild(opener);
+    opener.focus();
+
+    render(<CommandPalette />);
+    act(() => openCommandPalette());
+    const dialog = screen.getByRole("dialog");
+    const input = screen.getByPlaceholderText(
+      "Buscar casos, herramientas, certificaciones o secciones...",
+    );
+    await waitFor(() => expect(document.activeElement).toBe(input));
+
+    fireEvent.keyDown(window, { key: "Escape" });
+    await waitForElementToBeRemoved(dialog);
+    expect(document.activeElement).toBe(opener);
+    opener.remove();
+  });
+
   it("renders system sections and writeups", () => {
     render(<CommandPalette />);
 
@@ -81,7 +108,7 @@ describe("CommandPalette", () => {
     expect(screen.getByText("3CX Supply Chain")).toBeInTheDocument();
   });
 
-  it("selects a registry section and navigates to its matching hash", () => {
+  it("selects a registry section and navigates after the palette exits", async () => {
     const section = document.createElement("section");
     section.id = "formacion";
     section.scrollIntoView = vi.fn();
@@ -90,9 +117,38 @@ describe("CommandPalette", () => {
     render(<CommandPalette />);
     act(() => openCommandPalette());
     fireEvent.click(screen.getByText("Certificaciones"));
+    expect(document.body.style.overflow).toBe("hidden");
 
-    expect(section.scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" });
+    await waitFor(() =>
+      expect(section.scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" }),
+    );
+    expect(document.body.style.overflow).toBe("");
     expect(window.location.hash).toBe("#formacion");
+    section.remove();
+    history.replaceState(null, "", window.location.pathname);
+  });
+
+  it("uses an instant fallback scroll when reduced motion is preferred", async () => {
+    const section = document.createElement("section");
+    section.id = "formacion";
+    section.scrollIntoView = vi.fn();
+    document.body.appendChild(section);
+    vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
+      matches: query === "(prefers-reduced-motion: reduce)",
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    render(<CommandPalette />);
+    act(() => openCommandPalette());
+    fireEvent.click(screen.getByText("Certificaciones"));
+
+    await waitFor(() => expect(section.scrollIntoView).toHaveBeenCalledWith({ behavior: "auto" }));
     section.remove();
     history.replaceState(null, "", window.location.pathname);
   });

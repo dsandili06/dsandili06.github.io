@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { renderHook, act, cleanup } from "@testing-library/react";
+import { StrictMode, type PropsWithChildren } from "react";
 import { useModalHistory } from "@/hooks/useModalHistory";
 
 describe("useModalHistory", () => {
@@ -12,6 +13,9 @@ describe("useModalHistory", () => {
   });
 
   afterEach(() => {
+    cleanup();
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
@@ -31,6 +35,17 @@ describe("useModalHistory", () => {
       "",
       window.location.href,
     );
+  });
+
+  it("does not duplicate history entries under StrictMode effect replay", () => {
+    const onClose = vi.fn();
+    const wrapper = ({ children }: PropsWithChildren) => <StrictMode>{children}</StrictMode>;
+
+    renderHook(() => useModalHistory({ onClose }), { wrapper });
+
+    expect(pushStateSpy).toHaveBeenCalledTimes(1);
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it("does not push history state when isOpen is false", () => {
@@ -108,6 +123,58 @@ describe("useModalHistory", () => {
     expect(backSpy).not.toHaveBeenCalled();
     rerender({ isOpen: false });
     expect(backSpy).toHaveBeenCalledTimes(1);
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+  });
+
+  it("defers a new modal history entry until a pending programmatic back settles", () => {
+    const closedFirst = vi.fn();
+    const first = renderHook(() => useModalHistory({ onClose: closedFirst }));
+
+    act(() => first.result.current.handleClose());
+    expect(backSpy).toHaveBeenCalledTimes(1);
+    first.unmount();
+
+    const closedSecond = vi.fn();
+    const second = renderHook(() => useModalHistory({ onClose: closedSecond }));
+    expect(pushStateSpy).toHaveBeenCalledTimes(1);
+
+    // The first pop is the asynchronous result of closing the previous modal.
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+    expect(closedSecond).not.toHaveBeenCalled();
+    expect(pushStateSpy).toHaveBeenCalledTimes(2);
+
+    // A subsequent, user-initiated back closes the newly opened modal.
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+
+    expect(closedSecond).toHaveBeenCalledTimes(1);
+    second.unmount();
+  });
+
+  it("waits for all pending back traversals before pushing deferred overlays", () => {
+    const first = renderHook(() => useModalHistory({ onClose: vi.fn() }));
+    const second = renderHook(() => useModalHistory({ onClose: vi.fn() }));
+    act(() => second.result.current.handleClose());
+    act(() => first.result.current.handleClose());
+    expect(backSpy).toHaveBeenCalledTimes(2);
+
+    const onClose = vi.fn();
+    const next = renderHook(() => useModalHistory({ onClose }));
+    expect(pushStateSpy).toHaveBeenCalledTimes(2);
+
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+    expect(pushStateSpy).toHaveBeenCalledTimes(2);
+    expect(onClose).not.toHaveBeenCalled();
+
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+    expect(pushStateSpy).toHaveBeenCalledTimes(3);
+    expect(onClose).not.toHaveBeenCalled();
+
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+    expect(onClose).toHaveBeenCalledTimes(1);
+
+    first.unmount();
+    second.unmount();
+    next.unmount();
   });
 
   it("does not call history.back on unmount if modal was closed via popstate", () => {
@@ -144,9 +211,66 @@ describe("useModalHistory", () => {
     });
 
     expect(backSpy).toHaveBeenCalledTimes(1);
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
 
     unmount();
     // Should still only have been called once from handleClose
     expect(backSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("closes only the history-top modal on popstate", () => {
+    const lowerClose = vi.fn();
+    const upperClose = vi.fn();
+    const lower = renderHook(() => useModalHistory({ onClose: lowerClose }));
+    const upper = renderHook(() => useModalHistory({ onClose: upperClose }));
+
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+
+    expect(upperClose).toHaveBeenCalledTimes(1);
+    expect(lowerClose).not.toHaveBeenCalled();
+    expect(backSpy).not.toHaveBeenCalled();
+
+    act(() => lower.result.current.handleClose());
+    expect(lowerClose).toHaveBeenCalledTimes(1);
+    lower.unmount();
+    upper.unmount();
+  });
+
+  it("ignores the delayed pop for an explicit top close instead of closing the lower modal", () => {
+    const lowerClose = vi.fn();
+    const upperClose = vi.fn();
+    const lower = renderHook(() => useModalHistory({ onClose: lowerClose }));
+    const upper = renderHook(() => useModalHistory({ onClose: upperClose }));
+
+    act(() => upper.result.current.handleClose());
+    expect(backSpy).toHaveBeenCalledTimes(1);
+    expect(upperClose).toHaveBeenCalledTimes(1);
+    expect(lowerClose).not.toHaveBeenCalled();
+
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+    expect(lowerClose).not.toHaveBeenCalled();
+
+    act(() => lower.result.current.handleClose());
+    expect(lowerClose).toHaveBeenCalledTimes(1);
+    lower.unmount();
+    upper.unmount();
+  });
+
+  it("closes an out-of-order modal without navigating back over the upper entry", () => {
+    const lowerClose = vi.fn();
+    const upperClose = vi.fn();
+    const lower = renderHook(() => useModalHistory({ onClose: lowerClose }));
+    const upper = renderHook(() => useModalHistory({ onClose: upperClose }));
+
+    act(() => lower.result.current.handleClose());
+
+    expect(backSpy).not.toHaveBeenCalled();
+    expect(lowerClose).toHaveBeenCalledTimes(1);
+    expect(upperClose).not.toHaveBeenCalled();
+    act(() => window.dispatchEvent(new PopStateEvent("popstate")));
+    expect(upperClose).toHaveBeenCalledTimes(1);
+
+    lower.unmount();
+    upper.unmount();
   });
 });

@@ -1,7 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useCallback, useRef } from "react";
 
 const FOCUSABLE =
-  'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
+  'a[href], button:not([disabled]), iframe, textarea, input, select, [tabindex]:not([tabindex="-1"])';
+
+type FocusScope = { container: HTMLElement; returnFocus: HTMLElement | null };
+const focusScopes: FocusScope[] = [];
 
 /**
  * Traps keyboard focus inside the referenced container while mounted
@@ -10,14 +13,20 @@ const FOCUSABLE =
  * Restores focus to the previously focused element on unmount.
  */
 export function useFocusTrap<T extends HTMLElement>() {
-  const ref = useRef<T>(null);
+  const containerRef = useRef<T | null>(null);
+  const cleanupRef = useRef<(() => void) | null>(null);
 
-  useEffect(() => {
-    const container = ref.current;
+  return useCallback((container: T | null) => {
+    if (containerRef.current === container) return;
+
+    cleanupRef.current?.();
+    cleanupRef.current = null;
+    containerRef.current = container;
     if (!container) return;
 
     const previouslyFocused = document.activeElement as HTMLElement | null;
-
+    const scope: FocusScope = { container, returnFocus: previouslyFocused };
+    focusScopes.push(scope);
     const focusables = () => Array.from(container.querySelectorAll<HTMLElement>(FOCUSABLE));
 
     // Initial focus: first focusable element (usually the close button)
@@ -45,11 +54,25 @@ export function useFocusTrap<T extends HTMLElement>() {
     };
 
     container.addEventListener("keydown", onKeyDown);
-    return () => {
+    cleanupRef.current = () => {
       container.removeEventListener("keydown", onKeyDown);
-      previouslyFocused?.focus?.();
+      const scopeIndex = focusScopes.indexOf(scope);
+      if (scopeIndex !== -1) {
+        for (const childScope of focusScopes.slice(scopeIndex + 1)) {
+          if (container.contains(childScope.returnFocus)) {
+            childScope.returnFocus = scope.returnFocus;
+          }
+        }
+        focusScopes.splice(scopeIndex, 1);
+      }
+
+      const parentScope = focusScopes[focusScopes.length - 1];
+      if (
+        scope.returnFocus?.isConnected &&
+        (!parentScope || parentScope.container.contains(scope.returnFocus))
+      ) {
+        scope.returnFocus.focus();
+      }
     };
   }, []);
-
-  return ref;
 }

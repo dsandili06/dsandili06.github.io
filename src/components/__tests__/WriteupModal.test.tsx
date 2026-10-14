@@ -29,6 +29,7 @@ describe("WriteupModal", () => {
 
   afterEach(() => {
     cleanup();
+    window.dispatchEvent(new PopStateEvent("popstate"));
     vi.useRealTimers();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();

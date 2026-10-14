@@ -1,10 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X, Search } from "lucide-react";
 import { useActiveSection } from "@/hooks/useActiveSection";
-import { getLenis } from "@/lib/lenis";
+import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
 import { openCommandPalette } from "@/hooks/useCommandPalette";
 import { SECTIONS } from "@/data/sections";
+import { getLenis } from "@/lib/lenis";
 
 const links = SECTIONS.map((section) => ({
   href: `#${section.id}`,
@@ -15,33 +17,53 @@ const links = SECTIONS.map((section) => ({
 export function Nav() {
   const active = useActiveSection(links);
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useFocusTrap<HTMLDivElement>();
+  const pendingNavigationRef = useRef<string | null>(null);
+
+  const { overlayRef } = useOverlayLifecycle({
+    isOpen: menuOpen,
+    onEscape: () => {
+      setMenuOpen(false);
+      return true;
+    },
+  });
+  const drawerRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      menuRef(node);
+      overlayRef(node);
+    },
+    [menuRef, overlayRef],
+  );
+
+  const handleExitComplete = useCallback(() => {
+    const id = pendingNavigationRef.current;
+    pendingNavigationRef.current = null;
+    if (!id) return;
+
+    const target = document.getElementById(id);
+    if (!target) return;
+
+    const lenis = getLenis();
+    if (lenis) {
+      lenis.scrollTo(target, { offset: 0 });
+    } else {
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth" });
+    }
+    history.replaceState(null, "", `#${id}`);
+  }, []);
 
   useEffect(() => {
     if (!menuOpen) return;
-    const originalOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    const lenis = getLenis();
-    lenis?.stop();
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setMenuOpen(false);
-      }
-    };
-
     const handleResize = () => {
       if (window.innerWidth >= 768) {
         setMenuOpen(false);
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("resize", handleResize);
 
     return () => {
-      document.body.style.overflow = originalOverflow;
-      lenis?.start();
-      window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("resize", handleResize);
     };
   }, [menuOpen]);
@@ -126,7 +148,7 @@ export function Nav() {
         </div>
       </div>
 
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={handleExitComplete}>
         {menuOpen && (
           <>
             {/* Mobile Backdrop */}
@@ -143,6 +165,7 @@ export function Nav() {
 
             {/* Mobile Drawer */}
             <motion.div
+              ref={drawerRef}
               key="mobile-nav-drawer"
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
@@ -156,9 +179,9 @@ export function Nav() {
                   <li key={l.href}>
                     <a
                       href={l.href}
-                      onClick={() => {
-                        const lenis = getLenis();
-                        lenis?.start();
+                      onClick={(event) => {
+                        event.preventDefault();
+                        pendingNavigationRef.current = l.id;
                         setMenuOpen(false);
                       }}
                       className="nav-mobile-link flex items-center gap-3 min-h-[44px] py-3.5 border-b border-border-dim/60 text-foreground hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors opacity-100"

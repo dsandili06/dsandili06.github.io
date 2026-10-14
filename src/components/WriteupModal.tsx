@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef, useMemo, Component } from "re
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
 import { useModalHistory } from "@/hooks/useModalHistory";
 import { X, ExternalLink, Loader2, AlertTriangle, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -122,7 +123,6 @@ type WriteupModalProps = {
   onClose: () => void;
   onExitComplete?: () => void;
 };
-import { getLenis } from "@/lib/lenis";
 
 export function WriteupModal({
   investigationId,
@@ -136,6 +136,21 @@ export function WriteupModal({
     onClose,
     stateData: { modal: "writeup", id: investigationId },
   });
+  const { overlayRef } = useOverlayLifecycle({
+    isOpen,
+    onEscape: () => {
+      if (lightboxSrc) return false;
+      handleClose();
+      return true;
+    },
+  });
+  const panelLifecycleRef = useCallback(
+    (node: HTMLDivElement | null) => {
+      panelRef(node);
+      overlayRef(node);
+    },
+    [panelRef, overlayRef],
+  );
   const investigation = investigationById(investigationId);
   const [md, setMd] = useState<string | null>(null);
   const [error, setError] = useState(false);
@@ -226,31 +241,6 @@ export function WriteupModal({
     };
   }, [fetchWriteup]);
 
-  // Pause Lenis smooth scroll while modal is open; resume on close
-  useEffect(() => {
-    if (!isOpen) {
-      document.body.style.overflow = "";
-      getLenis()?.start();
-      return;
-    }
-    const lenis = getLenis();
-    lenis?.stop();
-    document.body.style.overflow = "hidden";
-    return () => {
-      lenis?.start();
-      document.body.style.overflow = "";
-    };
-  }, [isOpen]);
-
-  // ESC to close (but only the modal — lightbox handles its own ESC first)
-  useEffect(() => {
-    if (!isOpen) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && !lightboxSrc) handleClose();
-    };
-    document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
-  }, [isOpen, handleClose, lightboxSrc]);
   const title = investigation?.title || investigationId;
   const platform = investigation?.platform;
   const categories = investigation?.categories;
@@ -406,7 +396,7 @@ export function WriteupModal({
             onClick={handleClose}
           >
             <motion.div
-              ref={panelRef}
+              ref={panelLifecycleRef}
               key="writeup-panel"
               initial={{ opacity: 0, scale: 0.97, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
