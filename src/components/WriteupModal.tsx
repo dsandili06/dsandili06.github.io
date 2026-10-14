@@ -6,7 +6,6 @@ import { useModalHistory } from "@/hooks/useModalHistory";
 import { X, ExternalLink, Loader2, AlertTriangle, Copy, Check } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import GithubSlugger from "github-slugger";
 import Lightbox from "yet-another-react-lightbox";
@@ -14,6 +13,7 @@ import "yet-another-react-lightbox/styles.css";
 import type { ComponentProps, ReactNode } from "react";
 import { INVESTIGATIONS } from "@/data/investigations";
 import type { Investigation } from "@/types";
+import { resolveWriteupImageUri, safeMarkdownUrl } from "@/components/writeupMarkdownPolicy";
 
 /** Catches ReactMarkdown render errors so the modal doesn't crash silently. */
 class MarkdownErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
@@ -114,44 +114,6 @@ function toRawUrl(githubUrl: string): string {
     .replace("/blob/", "/");
 }
 
-function getImageBaseUrl(githubUrl: string): string {
-  const raw = githubUrl
-    .replace("https://github.com/", "https://raw.githubusercontent.com/")
-    .replace("/blob/", "/");
-  const lastSlash = raw.lastIndexOf("/");
-  return raw.slice(0, lastSlash + 1);
-}
-
-function resolveImageUri(uri: string, githubUrl: string): string {
-  // Allow data: URLs for inline base64 images permitted by CSP
-  if (uri.startsWith("data:image/")) {
-    return uri;
-  }
-  // Only allow images from GitHub domains and trusted CDNs matching CSP (security: block external tracking pixels)
-  if (/^https?:\/\//.test(uri)) {
-    try {
-      const host = new URL(uri).hostname;
-      const allowed = ["github.com", "githubusercontent.com", "s3.amazonaws.com"];
-      if (
-        !allowed.some(
-          (h) =>
-            host === h ||
-            host.endsWith("." + h) ||
-            /\.s3[.-][a-z0-9-]+\.amazonaws\.com$/.test(host),
-        )
-      ) {
-        return "";
-      }
-    } catch {
-      return "";
-    }
-    return uri;
-  }
-  const base = getImageBaseUrl(githubUrl);
-  const cleaned = uri.replace(/^\.?\//, "");
-  return base + cleaned;
-}
-
 type MarkdownComponents = ComponentProps<typeof ReactMarkdown>["components"];
 
 type WriteupModalProps = {
@@ -182,6 +144,7 @@ export function WriteupModal({
   const cacheKey = `writeup-${investigationId}`;
   const bodyScrollRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const lifecycleSignalRef = useRef<AbortSignal | null>(null);
 
   const fetchWriteup = useCallback(
     async (signal?: AbortSignal) => {
@@ -192,26 +155,39 @@ export function WriteupModal({
         setError(true);
         return;
       }
-      const cached = sessionStorage.getItem(cacheKey);
+      let cached: string | null = null;
+      try {
+        cached = sessionStorage.getItem(cacheKey);
+      } catch {
+        /* storage can be unavailable; fetching remains available */
+      }
       if (cached) {
         setMd(cached);
         setLoading(false);
         return;
       }
+      const controller = new AbortController();
+      let timedOut = false;
+      const timeout = setTimeout(() => {
+        timedOut = true;
+        controller.abort();
+      }, 10000);
+      const onAbort = () => controller.abort();
+      signal?.addEventListener("abort", onAbort, { once: true });
       try {
         const rawUrl = toRawUrl(investigation.href);
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 10000);
-        const onAbort = () => controller.abort();
-        signal?.addEventListener("abort", onAbort, { once: true });
-
         const res = await fetch(rawUrl, { signal: controller.signal });
-        clearTimeout(timeout);
-        signal?.removeEventListener("abort", onAbort);
-
+        if (timedOut) {
+          setError(true);
+          return;
+        }
         if (!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
         const text = await res.text();
         if (signal?.aborted) return;
+        if (timedOut) {
+          setError(true);
+          return;
+        }
         // Cache best-effort (QuotaExceededError in private Safari is swallowed)
         try {
           sessionStorage.setItem(cacheKey, text);
@@ -220,12 +196,17 @@ export function WriteupModal({
         }
         setMd(text);
       } catch (err: unknown) {
-        if ((err as Error)?.name === "AbortError" || signal?.aborted) {
+        if (signal?.aborted) return;
+        if (timedOut) {
+          setError(true);
           return;
         }
+        if ((err as Error)?.name === "AbortError") return;
         console.error(`[WriteupModal] Failed to fetch ${investigation.id}:`, err);
         setError(true);
       } finally {
+        clearTimeout(timeout);
+        signal?.removeEventListener("abort", onAbort);
         if (!signal?.aborted) {
           setLoading(false);
         }
@@ -237,9 +218,11 @@ export function WriteupModal({
   useEffect(() => {
     setMd(null);
     const controller = new AbortController();
+    lifecycleSignalRef.current = controller.signal;
     fetchWriteup(controller.signal);
     return () => {
       controller.abort();
+      lifecycleSignalRef.current = null;
     };
   }, [fetchWriteup]);
 
@@ -290,7 +273,7 @@ export function WriteupModal({
 
   const components: MarkdownComponents = {
     img: ({ src, alt, ...props }) => {
-      const resolved = src ? resolveImageUri(src, investigation?.href || "") : src;
+      const resolved = src ? resolveWriteupImageUri(src, investigation?.href || "") : src;
       if (!resolved) return null;
       return (
         <img
@@ -317,7 +300,7 @@ export function WriteupModal({
       <a
         href={href}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         className="text-[var(--accent)] hover:underline"
         {...props}
       >
@@ -519,17 +502,21 @@ export function WriteupModal({
                         <a
                           href={investigation.href}
                           target="_blank"
-                          rel="noreferrer"
+                          rel="noopener noreferrer"
                           className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] px-4 py-2 border border-[var(--accent)]/50 text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
                         >
                           <ExternalLink size={14} strokeWidth={1.5} /> Ver en GitHub
                         </a>
                         <button
                           onClick={() => {
-                            sessionStorage.removeItem(cacheKey);
+                            try {
+                              sessionStorage.removeItem(cacheKey);
+                            } catch {
+                              /* storage can be unavailable; retry still works */
+                            }
                             setError(false);
                             setLoading(true);
-                            fetchWriteup();
+                            fetchWriteup(lifecycleSignalRef.current || undefined);
                           }}
                           className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] hover:text-foreground transition-colors underline underline-offset-2"
                         >
@@ -550,8 +537,8 @@ export function WriteupModal({
                         <MarkdownErrorBoundary>
                           <ReactMarkdown
                             remarkPlugins={[remarkGfm]}
-                            rehypePlugins={[rehypeRaw, rehypeSlug]}
-                            urlTransform={(url) => url}
+                            rehypePlugins={[rehypeSlug]}
+                            urlTransform={safeMarkdownUrl}
                             components={components}
                           >
                             {md}
@@ -614,7 +601,7 @@ export function WriteupModal({
                   <a
                     href={investigation.href}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 min-h-[44px] py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline"
                   >
                     <ExternalLink size={12} strokeWidth={1.5} />

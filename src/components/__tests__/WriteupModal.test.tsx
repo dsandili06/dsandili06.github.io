@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, cleanup, fireEvent } from "@testing-library/react";
+import { render, screen, cleanup, fireEvent, act } from "@testing-library/react";
 import { WriteupModal } from "@/components/WriteupModal";
 
 /**
@@ -29,6 +29,7 @@ describe("WriteupModal", () => {
 
   afterEach(() => {
     cleanup();
+    vi.useRealTimers();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
     delete (window as unknown as Record<string, unknown>).__lenis;
@@ -72,9 +73,7 @@ describe("WriteupModal", () => {
       vi.fn().mockResolvedValue({
         ok: true,
         text: () =>
-          Promise.resolve(
-            '<img src="https://github.com/user-attachments/assets/test-uuid" alt="screenshot" />',
-          ),
+          Promise.resolve("![screenshot](https://github.com/user-attachments/assets/test-uuid)"),
       }),
     );
 
@@ -114,6 +113,79 @@ describe("WriteupModal", () => {
     expect(dataImg).toHaveAttribute("src", "data:image/png;base64,iVBORw0KGgo=");
 
     expect(screen.queryByAltText("blocked-tracker")).not.toBeInTheDocument();
+  });
+
+  it("does not render raw HTML and rejects dangerous link and image schemes", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn().mockResolvedValue({
+        ok: true,
+        text: () =>
+          Promise.resolve(`
+<script>window.__xss = true</script><img src="x" onerror="window.__xss = true">
+[javascript](javascript:alert%281%29)
+[vbscript](vbscript:alert%281%29)
+[html data](data:text/html,evil)
+![javascript image](javascript:alert%281%29)
+![vbscript image](vbscript:alert%281%29)
+![html data image](data:text/html,evil)
+[data image link](data:image/png;base64,AAAA)
+          `),
+      }),
+    );
+
+    render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
+
+    expect(await screen.findByText("javascript")).toBeInTheDocument();
+    expect(document.querySelector("script")).toBeNull();
+    expect(document.querySelector("img[onerror]")).toBeNull();
+    expect(
+      document.querySelector('a[href^="javascript:"], a[href^="vbscript:"], a[href^="data:"]'),
+    ).toBeNull();
+    expect(screen.getByText("data image link").closest("a")).not.toHaveAttribute("href");
+    expect(screen.queryByAltText("javascript image")).not.toBeInTheDocument();
+    expect(screen.queryByAltText("vbscript image")).not.toBeInTheDocument();
+    expect(screen.queryByAltText("html data image")).not.toBeInTheDocument();
+  });
+
+  it("shows a recoverable timeout error and can retry", async () => {
+    vi.useFakeTimers();
+    const fetchMock = vi.fn(
+      (_url: string, { signal }: { signal: AbortSignal }) =>
+        new Promise((_resolve, reject) => {
+          signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+        }),
+    );
+    vi.stubGlobal("fetch", fetchMock);
+    render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(10000);
+    });
+    expect(screen.getByText("No se pudo cargar el writeup")).toBeInTheDocument();
+
+    fetchMock.mockResolvedValueOnce({ ok: true, text: () => Promise.resolve(MD_CONTENT) });
+    await act(async () => {
+      fireEvent.click(screen.getByText("Reintentar"));
+    });
+    expect(screen.getByText(MD_CONTENT.split("\n\n")[1])).toBeInTheDocument();
+    vi.useRealTimers();
+  });
+
+  it("aborts an in-flight request when unmounted", () => {
+    let requestSignal: AbortSignal | undefined;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((_url: string, { signal }: { signal: AbortSignal }) => {
+        requestSignal = signal;
+        return new Promise(() => {});
+      }),
+    );
+
+    const { unmount } = render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
+    unmount();
+
+    expect(requestSignal?.aborted).toBe(true);
   });
 
   it("shows error state when fetch fails (HTTP 404)", async () => {
