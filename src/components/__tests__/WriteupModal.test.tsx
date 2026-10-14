@@ -108,7 +108,9 @@ describe("WriteupModal", () => {
       vi.fn().mockResolvedValue({
         ok: true,
         text: () =>
-          Promise.resolve("![screenshot](https://github.com/user-attachments/assets/test-uuid)"),
+          Promise.resolve(
+            '<img width="1919" height="1030" alt="screenshot" src="https://github.com/user-attachments/assets/test-uuid" />',
+          ),
       }),
     );
 
@@ -116,6 +118,8 @@ describe("WriteupModal", () => {
 
     const img = await screen.findByAltText("screenshot");
     expect(img).toHaveAttribute("src", "https://github.com/user-attachments/assets/test-uuid");
+    expect(img).toHaveAttribute("width", "1919");
+    expect(img).toHaveAttribute("height", "1030");
   });
 
   it("resolves user-attachments.githubusercontent.com and s3.amazonaws.com while blocking untrusted CDNs", async () => {
@@ -150,14 +154,18 @@ describe("WriteupModal", () => {
     expect(screen.queryByAltText("blocked-tracker")).not.toBeInTheDocument();
   });
 
-  it("does not render raw HTML and rejects dangerous link and image schemes", async () => {
+  it("sanitizes raw HTML and rejects dangerous link and image schemes", async () => {
     vi.stubGlobal(
       "fetch",
       vi.fn().mockResolvedValue({
         ok: true,
         text: () =>
           Promise.resolve(`
-<script>window.__xss = true</script><img src="x" onerror="window.__xss = true">
+<script>window.__xss = true</script>
+<img src="https://github.com/user-attachments/assets/safe" alt="sanitized image" onerror="window.__xss = true">
+<img src="javascript:alert(1)" alt="unsafe raw scheme">
+<img src="data:text/html,evil" alt="unsafe raw data">
+
 [javascript](javascript:alert%281%29)
 [vbscript](vbscript:alert%281%29)
 [html data](data:text/html,evil)
@@ -171,12 +179,18 @@ describe("WriteupModal", () => {
 
     render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
 
-    expect(await screen.findByText("javascript")).toBeInTheDocument();
+    expect(await screen.findByAltText("sanitized image")).toBeInTheDocument();
     expect(document.querySelector("script")).toBeNull();
     expect(document.querySelector("img[onerror]")).toBeNull();
+    expect(screen.getByAltText("sanitized image")).toHaveAttribute(
+      "src",
+      "https://github.com/user-attachments/assets/safe",
+    );
     expect(
       document.querySelector('a[href^="javascript:"], a[href^="vbscript:"], a[href^="data:"]'),
     ).toBeNull();
+    expect(screen.queryByAltText("unsafe raw scheme")).not.toBeInTheDocument();
+    expect(screen.queryByAltText("unsafe raw data")).not.toBeInTheDocument();
     expect(screen.getByText("data image link").closest("a")).not.toHaveAttribute("href");
     expect(screen.queryByAltText("javascript image")).not.toBeInTheDocument();
     expect(screen.queryByAltText("vbscript image")).not.toBeInTheDocument();
@@ -261,6 +275,8 @@ Content 4
 
     const tocLink = await screen.findByRole("link", { name: "Section 2" });
     expect(tocLink).toBeInTheDocument();
+    expect(tocLink).toHaveAttribute("href", "#writeup-content-section-2");
+    expect(document.getElementById("writeup-content-section-2")).toBeInTheDocument();
 
     const scrollContainer = document.body.querySelector("[data-lenis-prevent]") as HTMLElement;
     expect(scrollContainer).not.toBeNull();
