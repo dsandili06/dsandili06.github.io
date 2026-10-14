@@ -13,6 +13,7 @@
 - `src/components/sections/`: secciones del portafolio.
 - `src/components/fx/`: efectos visuales, animación, Lenis y WebGL.
 - `src/components/ui/` y `src/components/primitives/`: componentes compartidos.
+- `src/components/features/`: funcionalidades con varias piezas. `writeups/` contiene la carga de datos (`useWriteup`), el render de Markdown (`WriteupMarkdown`), el índice (`WriteupTocPanel`) y los helpers de origen/TOC.
 - `src/hooks/`: comportamiento reutilizable de React.
 - `src/data/` y `src/types/`: contenido y modelos TypeScript.
 - `src/**/__tests__/`: pruebas Vitest y Testing Library.

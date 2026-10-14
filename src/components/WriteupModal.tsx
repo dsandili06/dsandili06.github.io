@@ -1,121 +1,17 @@
-import { useState, useEffect, useCallback, useRef, useMemo, Component } from "react";
+import { useEffect, useCallback, useRef, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
 import { useModalHistory } from "@/hooks/useModalHistory";
-import { X, ExternalLink, Loader2, AlertTriangle, Copy, Check } from "lucide-react";
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeSlug from "rehype-slug";
-import GithubSlugger from "github-slugger";
+import { X, ExternalLink, Loader2, AlertTriangle } from "lucide-react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import type { ComponentProps, ReactNode } from "react";
-import { INVESTIGATIONS } from "@/data/investigations";
-import type { Investigation } from "@/types";
-import { resolveWriteupImageUri, safeMarkdownUrl } from "@/components/writeupMarkdownPolicy";
-
-/** Catches ReactMarkdown render errors so the modal doesn't crash silently. */
-class MarkdownErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
-  state = { error: null as Error | null };
-  static getDerivedStateFromError(error: Error) {
-    return { error };
-  }
-  render() {
-    if (this.state.error) {
-      console.error("[WriteupModal] Markdown render error:", this.state.error);
-      return (
-        <div role="alert" className="p-6 text-center">
-          <AlertTriangle size={24} className="mx-auto mb-3 text-[var(--accent-amber)]" />
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-            Error al renderizar el contenido
-          </p>
-          <p className="mt-2 font-mono text-[10px] text-[var(--muted-foreground)]/60">
-            {this.state.error.message}
-          </p>
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
-
-/** Recursively extracts plain text from React children (highlighted code included). */
-function extractText(node: ReactNode): string {
-  if (node == null || typeof node === "boolean") return "";
-  if (typeof node === "string" || typeof node === "number") return String(node);
-  if (Array.isArray(node)) return node.map(extractText).join("");
-  if (typeof node === "object" && "props" in node) {
-    return extractText((node as { props: { children?: ReactNode } }).props.children);
-  }
-  return "";
-}
-
-/** Copy-to-clipboard button shown on hover over writeup code blocks. */
-function CopyCodeButton({ children }: { children: ReactNode }) {
-  const [copied, setCopied] = useState(false);
-
-  const onCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(extractText(children));
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch {
-      /* clipboard unavailable — silently ignore */
-    }
-  };
-
-  return (
-    <button
-      type="button"
-      onClick={onCopy}
-      aria-label="Copiar comando"
-      className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded border border-border-dim bg-[#0D1117]/90 text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] opacity-100 md:opacity-0 md:group-hover/code:opacity-100 focus:opacity-100 transition-opacity"
-    >
-      {copied ? <Check size={12} strokeWidth={2} /> : <Copy size={12} strokeWidth={1.5} />}
-      {copied ? "Copiado" : "Copiar"}
-    </button>
-  );
-}
-
-type TocEntry = { depth: number; text: string; id: string };
-
-/**
- * Extracts h2/h3 entries from the raw markdown, skipping content inside code fences.
- * Uses the same github-slugger over ALL headings (in document order) as rehype-slug does, so ids match.
- */
-function parseToc(md: string): TocEntry[] {
-  const slugger = new GithubSlugger();
-  const toc: TocEntry[] = [];
-  let inFence = false;
-  for (const line of md.split("\n")) {
-    // Track code fences (``` or ~~~)
-    if (/^```/.test(line) || /^~~~/.test(line)) {
-      inFence = !inFence;
-      continue;
-    }
-    if (inFence) continue;
-    const m = line.match(/^(#{1,6})\s+(.+?)\s*$/);
-    if (!m) continue;
-    const depth = m[1].length;
-    const raw = m[2].replace(/[*_`~]/g, "").trim();
-    const id = slugger.slug(raw);
-    if (depth === 2 || depth === 3) toc.push({ depth, text: raw, id });
-  }
-  return toc;
-}
-function investigationById(id: string): Investigation | undefined {
-  return INVESTIGATIONS.find((i) => i.id === id);
-}
-
-function toRawUrl(githubUrl: string): string {
-  return githubUrl
-    .replace("https://github.com/", "https://raw.githubusercontent.com/")
-    .replace("/blob/", "/");
-}
-
-type MarkdownComponents = ComponentProps<typeof ReactMarkdown>["components"];
+import { investigationById } from "@/components/features/writeups/writeupSource";
+import { parseToc, TOC_VISIBLE_THRESHOLD } from "@/components/features/writeups/writeupToc";
+import { WriteupMarkdown } from "@/components/features/writeups/WriteupMarkdown";
+import { WriteupTocPanel } from "@/components/features/writeups/WriteupTocPanel";
+import { useWriteup } from "@/components/features/writeups/useWriteup";
 
 type WriteupModalProps = {
   investigationId: string;
@@ -152,101 +48,17 @@ export function WriteupModal({
     [panelRef, overlayRef],
   );
   const investigation = investigationById(investigationId);
-  const [md, setMd] = useState<string | null>(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { markdown: md, loading, error, retry } = useWriteup(investigation, investigationId);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const cacheKey = `writeup-${investigationId}`;
   const bodyScrollRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const lifecycleSignalRef = useRef<AbortSignal | null>(null);
-
-  const fetchWriteup = useCallback(
-    async (signal?: AbortSignal) => {
-      setError(false);
-      setLoading(true);
-      if (!investigation) {
-        setLoading(false);
-        setError(true);
-        return;
-      }
-      let cached: string | null = null;
-      try {
-        cached = sessionStorage.getItem(cacheKey);
-      } catch {
-        /* storage can be unavailable; fetching remains available */
-      }
-      if (cached) {
-        setMd(cached);
-        setLoading(false);
-        return;
-      }
-      const controller = new AbortController();
-      let timedOut = false;
-      const timeout = setTimeout(() => {
-        timedOut = true;
-        controller.abort();
-      }, 10000);
-      const onAbort = () => controller.abort();
-      signal?.addEventListener("abort", onAbort, { once: true });
-      try {
-        const rawUrl = toRawUrl(investigation.href);
-        const res = await fetch(rawUrl, { signal: controller.signal });
-        if (timedOut) {
-          setError(true);
-          return;
-        }
-        if (!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
-        const text = await res.text();
-        if (signal?.aborted) return;
-        if (timedOut) {
-          setError(true);
-          return;
-        }
-        // Cache best-effort (QuotaExceededError in private Safari is swallowed)
-        try {
-          sessionStorage.setItem(cacheKey, text);
-        } catch {
-          /* quota — cache is optional */
-        }
-        setMd(text);
-      } catch (err: unknown) {
-        if (signal?.aborted) return;
-        if (timedOut) {
-          setError(true);
-          return;
-        }
-        if ((err as Error)?.name === "AbortError") return;
-        console.error(`[WriteupModal] Failed to fetch ${investigation.id}:`, err);
-        setError(true);
-      } finally {
-        clearTimeout(timeout);
-        signal?.removeEventListener("abort", onAbort);
-        if (!signal?.aborted) {
-          setLoading(false);
-        }
-      }
-    },
-    [investigation, cacheKey],
-  );
-
-  useEffect(() => {
-    setMd(null);
-    const controller = new AbortController();
-    lifecycleSignalRef.current = controller.signal;
-    fetchWriteup(controller.signal);
-    return () => {
-      controller.abort();
-      lifecycleSignalRef.current = null;
-    };
-  }, [fetchWriteup]);
 
   const title = investigation?.title || investigationId;
   const platform = investigation?.platform;
   const categories = investigation?.categories;
   const summary = investigation?.summary;
   const toc = useMemo(() => (md ? parseToc(md) : []), [md]);
-  const showToc = toc.length >= 4;
+  const showToc = toc.length >= TOC_VISIBLE_THRESHOLD;
 
   // Reading progress — scaleX bar at the top of the panel (GPU transform)
   const handleBodyScroll = useCallback(() => {
@@ -261,126 +73,20 @@ export function WriteupModal({
     handleBodyScroll();
   }, [md, handleBodyScroll]);
 
-  const components: MarkdownComponents = {
-    img: ({ src, alt, ...props }) => {
-      const resolved = src ? resolveWriteupImageUri(src, investigation?.href || "") : src;
-      if (!resolved) return null;
-      return (
-        <img
-          src={resolved}
-          alt={alt || ""}
-          loading="lazy"
-          decoding="async"
-          referrerPolicy="no-referrer"
-          tabIndex={0}
-          role="button"
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              setLightboxSrc(resolved);
-            }
-          }}
-          onClick={() => setLightboxSrc(resolved)}
-          className="writeup-img max-w-full h-auto rounded border border-border-dim my-4 cursor-zoom-in"
-          {...props}
-        />
-      );
-    },
-    a: ({ href, children, ...props }) => (
-      <a
-        href={href}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-[var(--accent)] hover:underline"
-        {...props}
-      >
-        {children}
-      </a>
-    ),
-    h1: ({ children, ...props }) => (
-      <h1
-        className="font-display font-bold text-3xl md:text-4xl leading-tight tracking-tight text-foreground mt-8 mb-4"
-        {...props}
-      >
-        {children}
-      </h1>
-    ),
-    h2: ({ children, ...props }) => (
-      <h2
-        className="font-display font-bold text-2xl md:text-3xl leading-tight tracking-tight text-foreground mt-8 mb-3 scroll-mt-6"
-        {...props}
-      >
-        {children}
-      </h2>
-    ),
-    h3: ({ children, ...props }) => (
-      <h3
-        className="font-display font-bold text-xl md:text-2xl leading-tight tracking-tight text-foreground mt-6 mb-2 scroll-mt-6"
-        {...props}
-      >
-        {children}
-      </h3>
-    ),
-    p: ({ children, ...props }) => (
-      <p className="text-[15px] leading-relaxed text-foreground/85 mb-4" {...props}>
-        {children}
-      </p>
-    ),
-    ul: ({ children, ...props }) => (
-      <ul
-        className="list-disc list-inside space-y-1 mb-4 text-[15px] text-foreground/85"
-        {...props}
-      >
-        {children}
-      </ul>
-    ),
-    ol: ({ children, ...props }) => (
-      <ol
-        className="list-decimal list-inside space-y-1 mb-4 text-[15px] text-foreground/85"
-        {...props}
-      >
-        {children}
-      </ol>
-    ),
-    li: ({ children, ...props }) => (
-      <li className="text-[15px]" {...props}>
-        {children}
-      </li>
-    ),
-    code: ({ className, children, ...props }) => {
-      const isInline = !className;
-      if (isInline) {
-        return (
-          <code
-            className="font-mono text-[13px] px-1 py-0.5 rounded bg-[var(--surface)] border border-border-dim"
-            {...props}
-          >
-            {children}
-          </code>
-        );
-      }
-      return (
-        <div className="relative group/code">
-          <CopyCodeButton>{children}</CopyCodeButton>
-          <pre className="overflow-x-auto rounded border border-border-dim bg-[#0D1117] p-4 mb-4">
-            <code className="font-mono text-[13px] leading-relaxed text-[#c9d1d9]" {...props}>
-              {children}
-            </code>
-          </pre>
-        </div>
-      );
-    },
-    table: ({ children, ...props }) => (
-      <div className="overflow-x-auto mb-4">
-        <table className="w-full border-collapse border border-border-dim text-[14px]" {...props}>
-          {children}
-        </table>
-      </div>
-    ),
-    // react-markdown wraps code blocks in its own <pre>; our code component
-    // already returns a <pre> inside a <div>, so we strip the outer <pre>
-    pre: ({ children }) => <>{children}</>,
-  };
+  const scrollToHeading = useCallback((id: string) => {
+    const target = document.getElementById(id);
+    const container = bodyScrollRef.current;
+    if (!target || !container) return;
+    const targetRect = target.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
+    const targetOffset = targetRect.top - containerRect.top + container.scrollTop;
+    const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    container.scrollTo({
+      top: Math.max(0, targetOffset - 16),
+      behavior: prefersReduced ? "auto" : "smooth",
+    });
+  }, []);
+
   return createPortal(
     <>
       <AnimatePresence onExitComplete={onExitComplete}>
@@ -510,16 +216,7 @@ export function WriteupModal({
                           <ExternalLink size={14} strokeWidth={1.5} /> Ver en GitHub
                         </a>
                         <button
-                          onClick={() => {
-                            try {
-                              sessionStorage.removeItem(cacheKey);
-                            } catch {
-                              /* storage can be unavailable; retry still works */
-                            }
-                            setError(false);
-                            setLoading(true);
-                            fetchWriteup(lifecycleSignalRef.current || undefined);
-                          }}
+                          onClick={retry}
                           className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] hover:text-foreground transition-colors underline underline-offset-2"
                         >
                           Reintentar
@@ -539,61 +236,17 @@ export function WriteupModal({
                     )}
                     {md && (
                       <div className="p-4 sm:p-6 md:p-10 max-w-none">
-                        <MarkdownErrorBoundary>
-                          <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            rehypePlugins={[rehypeSlug]}
-                            urlTransform={safeMarkdownUrl}
-                            components={components}
-                          >
-                            {md}
-                          </ReactMarkdown>
-                        </MarkdownErrorBoundary>
+                        <WriteupMarkdown
+                          markdown={md}
+                          investigationHref={investigation?.href || ""}
+                          onOpenImage={setLightboxSrc}
+                        />
                       </div>
                     )}
                   </div>
 
                   {/* TOC — sticky index for long writeups (desktop only) */}
-                  {showToc && (
-                    <aside className="hidden lg:block w-56 shrink-0 sticky top-4 max-h-[76dvh] overflow-y-auto">
-                      <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mb-3">
-                        INDEX
-                      </div>
-                      <ul className="space-y-1.5 border-l border-border-dim">
-                        {toc.map((t) => (
-                          <li
-                            key={t.id}
-                            style={{ paddingLeft: t.depth === 3 ? "0.9rem" : "0.6rem" }}
-                          >
-                            <a
-                              href={`#${t.id}`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                const target = document.getElementById(t.id);
-                                const container = bodyScrollRef.current;
-                                if (target && container) {
-                                  const targetRect = target.getBoundingClientRect();
-                                  const containerRect = container.getBoundingClientRect();
-                                  const targetOffset =
-                                    targetRect.top - containerRect.top + container.scrollTop;
-                                  const prefersReduced = window.matchMedia(
-                                    "(prefers-reduced-motion: reduce)",
-                                  ).matches;
-                                  container.scrollTo({
-                                    top: Math.max(0, targetOffset - 16),
-                                    behavior: prefersReduced ? "auto" : "smooth",
-                                  });
-                                }
-                              }}
-                              className="block font-mono text-[10px] leading-snug text-[var(--muted-foreground)] hover:text-[var(--accent)] transition-colors"
-                            >
-                              {t.text}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </aside>
-                  )}
+                  {showToc && <WriteupTocPanel entries={toc} onSelect={scrollToHeading} />}
                 </div>
               </div>
               {/* Footer */}
