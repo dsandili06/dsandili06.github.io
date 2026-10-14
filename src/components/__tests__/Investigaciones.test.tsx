@@ -1,6 +1,8 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Investigaciones } from "@/components/sections/Investigaciones";
+
+vi.mock("@/components/WriteupModal", () => new Promise(() => {}));
 
 /**
  * Smoke tests for the Full case log view toggle: switching between the
@@ -78,5 +80,15 @@ describe("Investigaciones", () => {
     expect(screen.getAllByText("LAB_001").length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText("LAB_012").length).toBeGreaterThanOrEqual(1);
     expect(screen.getAllByText("LAB_003").length).toBeGreaterThanOrEqual(1);
+  });
+
+  it("announces the lazy writeup viewer while its module loads", () => {
+    render(<Investigaciones />);
+
+    fireEvent.click(screen.getAllByRole("button", { name: /FakeGPT/i })[0]);
+
+    const fallback = screen.getByText("Cargando visor del writeup...");
+    expect(fallback).toHaveAttribute("role", "status");
+    expect(fallback).toHaveAttribute("aria-live", "polite");
   });
 });

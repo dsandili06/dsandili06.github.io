@@ -674,6 +674,17 @@ html {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .animate-pulse,
+  .animate-spin {
+    animation: none !important;
+  }
+  .reveal-on-view,
+  .reveal-on-view[data-reveal],
+  .reveal-on-view[data-reveal="stagger-items"] > * {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
   .scanline {
     animation: none !important;
   }

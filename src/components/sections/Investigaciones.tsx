@@ -7,6 +7,7 @@ import { Section } from "@/components/primitives/Section";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
 import { lazy, Suspense } from "react";
 import { SpotlightCard } from "@/components/fx/SpotlightCard";
+import { WriteupModalFallback } from "@/components/primitives/WriteupModalFallback";
 import Autoplay from "embla-carousel-autoplay";
 
 type AutoplayPluginType = {
@@ -470,7 +471,7 @@ export function Investigaciones() {
       )}
 
       {modalWriteupId && (
-        <Suspense fallback={null}>
+        <Suspense fallback={<WriteupModalFallback />}>
           <WriteupModal
             investigationId={modalWriteupId}
             isOpen={Boolean(writeupId)}

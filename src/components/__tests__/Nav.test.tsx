@@ -14,6 +14,7 @@ describe("Nav component", () => {
 
   it("renders navigation brand and desktop links", () => {
     render(<Nav />);
+    expect(screen.getByRole("navigation", { name: "Navegación principal" })).toBeInTheDocument();
     expect(screen.getByLabelText("Inicio")).toBeInTheDocument();
     expect(screen.getAllByText("About").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Proyectos").length).toBeGreaterThan(0);
@@ -48,20 +49,38 @@ describe("Nav component", () => {
 
     // Open menu
     fireEvent.click(menuBtn);
-    expect(screen.getByRole("button", { name: /Cerrar menú/i })).toHaveAttribute(
+    expect(screen.getByRole("button", { name: /^Cerrar menú$/i })).toHaveAttribute(
       "aria-expanded",
       "true",
     );
     expect(document.body.style.overflow).toBe("hidden");
 
     // Close menu via button
-    const closeBtn = screen.getByRole("button", { name: /Cerrar menú/i });
+    const closeBtn = screen.getByRole("button", { name: /^Cerrar menú$/i });
     fireEvent.click(closeBtn);
     expect(screen.getByRole("button", { name: /Abrir menú/i })).toHaveAttribute(
       "aria-expanded",
       "false",
     );
     await waitFor(() => expect(document.body.style.overflow).toBe(""));
+  });
+
+  it("exposes the mobile drawer as a named modal connected to its trigger", () => {
+    render(<Nav />);
+    const menuButton = screen.getByRole("button", { name: /Abrir menú/i });
+
+    expect(menuButton).toHaveAttribute("aria-controls", "mobile-navigation-drawer");
+    expect(menuButton).toHaveAttribute("aria-haspopup", "dialog");
+
+    fireEvent.click(menuButton);
+    const drawer = screen.getByRole("dialog", { name: "Menú principal" });
+    expect(drawer).toHaveAttribute("id", "mobile-navigation-drawer");
+    expect(drawer).toHaveAttribute("aria-modal", "true");
+    expect(drawer.className).toContain("top-[calc(3.5rem+env(safe-area-inset-top))]");
+    expect(drawer.className).toContain(
+      "max-h-[calc(100dvh-3.5rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))]",
+    );
+    expect(drawer.querySelector('button[aria-label="Cerrar menú móvil"]')).toBeInTheDocument();
   });
 
   it("keeps body scroll locked until the backdrop exit completes", async () => {
@@ -119,7 +138,7 @@ describe("Nav component", () => {
     menuButton.focus();
     fireEvent.click(menuButton);
 
-    expect(document.activeElement).toBe(document.querySelector('.nav-mobile-link[href="#about"]'));
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Cerrar menú móvil" }));
 
     fireEvent.keyDown(window, { key: "Escape" });
     await waitFor(() => expect(document.activeElement).toBe(menuButton));

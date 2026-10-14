@@ -26,7 +26,7 @@ class MarkdownErrorBoundary extends Component<{ children: ReactNode }, { error: 
     if (this.state.error) {
       console.error("[WriteupModal] Markdown render error:", this.state.error);
       return (
-        <div className="p-6 text-center">
+        <div role="alert" className="p-6 text-center">
           <AlertTriangle size={24} className="mx-auto mb-3 text-[var(--accent-amber)]" />
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
             Error al renderizar el contenido
@@ -395,6 +395,11 @@ export function WriteupModal({
             style={{ background: "rgba(4, 7, 11, 0.9)", backdropFilter: "blur(12px)" }}
             onClick={handleClose}
           >
+            {loading && (
+              <div role="status" aria-live="polite" className="sr-only">
+                Fetching writeup...
+              </div>
+            )}
             <motion.div
               ref={panelLifecycleRef}
               key="writeup-panel"
@@ -408,6 +413,7 @@ export function WriteupModal({
               role="dialog"
               aria-modal="true"
               aria-labelledby="writeup-title"
+              aria-busy={loading}
             >
               {/* Header */}
               <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-3 shrink-0">
@@ -476,7 +482,10 @@ export function WriteupModal({
                     }`}
                   >
                     {loading && (
-                      <div className="flex flex-col items-center justify-center gap-3 py-20 text-[var(--muted-foreground)]">
+                      <div
+                        aria-hidden="true"
+                        className="flex flex-col items-center justify-center gap-3 py-20 text-[var(--muted-foreground)]"
+                      >
                         <Loader2 size={24} className="animate-spin" />
                         <span className="font-mono text-[11px] uppercase tracking-[0.2em]">
                           Fetching writeup...
@@ -484,7 +493,10 @@ export function WriteupModal({
                       </div>
                     )}
                     {error && !loading && investigation && (
-                      <div className="flex flex-col items-center justify-center gap-4 py-20 px-6 text-center">
+                      <div
+                        role="alert"
+                        className="flex flex-col items-center justify-center gap-4 py-20 px-6 text-center"
+                      >
                         <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
                         <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                           No se pudo cargar el writeup
@@ -515,7 +527,10 @@ export function WriteupModal({
                       </div>
                     )}
                     {!investigation && !loading && (
-                      <div className="flex flex-col items-center justify-center gap-4 py-20 text-center">
+                      <div
+                        role="alert"
+                        className="flex flex-col items-center justify-center gap-4 py-20 text-center"
+                      >
                         <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
                         <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                           Writeup no encontrado

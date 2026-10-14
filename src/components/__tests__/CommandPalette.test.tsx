@@ -10,6 +10,8 @@ import {
 import { CommandPalette } from "@/components/CommandPalette";
 import { openCommandPalette } from "@/hooks/useCommandPalette";
 
+vi.mock("@/components/WriteupModal", () => new Promise(() => {}));
+
 describe("CommandPalette", () => {
   beforeEach(() => {
     // Reset body style
@@ -108,6 +110,30 @@ describe("CommandPalette", () => {
     expect(screen.getByText("3CX Supply Chain")).toBeInTheDocument();
   });
 
+  it("provides 44px touch targets for compact actions and every command item", () => {
+    render(<CommandPalette />);
+    act(() => openCommandPalette());
+
+    const closeButton = screen.getByRole("button", { name: "Cerrar paleta de comandos" });
+    expect(closeButton.className).toContain("size-11");
+    expect(closeButton.className).toContain("min-h-[44px]");
+    expect(closeButton.className).toContain("min-w-[44px]");
+
+    const commandItems = Array.from(document.querySelectorAll<HTMLElement>("[cmdk-item]"));
+    expect(commandItems.length).toBeGreaterThan(0);
+    for (const item of commandItems) {
+      expect(item.className).toContain("min-h-[44px]");
+    }
+
+    fireEvent.change(
+      screen.getByPlaceholderText("Buscar casos, herramientas, certificaciones o secciones..."),
+      { target: { value: "FakeGPT" } },
+    );
+    const clearButton = screen.getByRole("button", { name: "LIMPIAR" });
+    expect(clearButton.className).toContain("min-h-[44px]");
+    expect(clearButton.className).toContain("min-w-[44px]");
+  });
+
   it("selects a registry section and navigates after the palette exits", async () => {
     const section = document.createElement("section");
     section.id = "formacion";
@@ -191,5 +217,16 @@ describe("CommandPalette", () => {
     });
 
     expect(writeTextMock).toHaveBeenCalledWith("sdsandili06@gmail.com");
+  });
+
+  it("announces the lazy writeup viewer while its module loads", () => {
+    render(<CommandPalette />);
+    act(() => openCommandPalette());
+
+    fireEvent.click(screen.getByText("FakeGPT"));
+
+    const fallback = screen.getByText("Cargando visor del writeup...");
+    expect(fallback).toHaveAttribute("role", "status");
+    expect(fallback).toHaveAttribute("aria-live", "polite");
   });
 });
