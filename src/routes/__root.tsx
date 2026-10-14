@@ -6,6 +6,7 @@ import {
   useRouter,
   HeadContent,
 } from "@tanstack/react-router";
+import { SITE } from "@/data/site";
 
 function NotFoundComponent() {
   return (
@@ -96,16 +97,12 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
-      { title: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team" },
-      {
-        name: "description",
-        content:
-          "Portfolio de Santiago Daniel Sandili — Analista de Seguridad L1 / Blue Team. DFIR, threat hunting, malware analysis y automatización defensiva.",
-      },
-      { property: "og:image", content: "https://dsandili06.github.io/og-image.png" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { name: "twitter:image", content: "https://dsandili06.github.io/og-image.png" },
+      { title: SITE.title },
+      { name: "description", content: SITE.description },
+      { property: "og:image", content: SITE.image },
+      { property: "og:image:width", content: SITE.imageWidth },
+      { property: "og:image:height", content: SITE.imageHeight },
+      { name: "twitter:image", content: SITE.image },
     ],
     links: [
       {
