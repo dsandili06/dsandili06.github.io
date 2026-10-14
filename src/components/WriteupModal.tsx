@@ -11,9 +11,12 @@ import rehypeSlug from "rehype-slug";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import type { ComponentProps, ReactNode } from "react";
-import { INVESTIGATIONS } from "@/data/investigations";
-import type { Investigation } from "@/types";
 import { resolveWriteupImageUri, safeMarkdownUrl } from "@/components/writeupMarkdownPolicy";
+import {
+  investigationById,
+  toRawUrl,
+  getWriteupCacheKey,
+} from "@/components/features/writeups/writeupSource";
 import { parseToc, TOC_VISIBLE_THRESHOLD } from "@/components/features/writeups/writeupToc";
 
 /** Catches ReactMarkdown render errors so the modal doesn't crash silently. */
@@ -79,16 +82,6 @@ function CopyCodeButton({ children }: { children: ReactNode }) {
   );
 }
 
-function investigationById(id: string): Investigation | undefined {
-  return INVESTIGATIONS.find((i) => i.id === id);
-}
-
-function toRawUrl(githubUrl: string): string {
-  return githubUrl
-    .replace("https://github.com/", "https://raw.githubusercontent.com/")
-    .replace("/blob/", "/");
-}
-
 type MarkdownComponents = ComponentProps<typeof ReactMarkdown>["components"];
 
 type WriteupModalProps = {
@@ -130,7 +123,7 @@ export function WriteupModal({
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(true);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const cacheKey = `writeup-${investigationId}`;
+  const cacheKey = getWriteupCacheKey(investigationId);
   const bodyScrollRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const lifecycleSignalRef = useRef<AbortSignal | null>(null);
