@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from "react";
+import { useEffect, useCallback, useRef, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
@@ -7,14 +7,11 @@ import { useModalHistory } from "@/hooks/useModalHistory";
 import { X, ExternalLink, Loader2, AlertTriangle } from "lucide-react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import {
-  investigationById,
-  toRawUrl,
-  getWriteupCacheKey,
-} from "@/components/features/writeups/writeupSource";
+import { investigationById } from "@/components/features/writeups/writeupSource";
 import { parseToc, TOC_VISIBLE_THRESHOLD } from "@/components/features/writeups/writeupToc";
 import { WriteupMarkdown } from "@/components/features/writeups/WriteupMarkdown";
 import { WriteupTocPanel } from "@/components/features/writeups/WriteupTocPanel";
+import { useWriteup } from "@/components/features/writeups/useWriteup";
 
 type WriteupModalProps = {
   investigationId: string;
@@ -51,94 +48,10 @@ export function WriteupModal({
     [panelRef, overlayRef],
   );
   const investigation = investigationById(investigationId);
-  const [md, setMd] = useState<string | null>(null);
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const { markdown: md, loading, error, retry } = useWriteup(investigation, investigationId);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
-  const cacheKey = getWriteupCacheKey(investigationId);
   const bodyScrollRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const lifecycleSignalRef = useRef<AbortSignal | null>(null);
-
-  const fetchWriteup = useCallback(
-    async (signal?: AbortSignal) => {
-      setError(false);
-      setLoading(true);
-      if (!investigation) {
-        setLoading(false);
-        setError(true);
-        return;
-      }
-      let cached: string | null = null;
-      try {
-        cached = sessionStorage.getItem(cacheKey);
-      } catch {
-        /* storage can be unavailable; fetching remains available */
-      }
-      if (cached) {
-        setMd(cached);
-        setLoading(false);
-        return;
-      }
-      const controller = new AbortController();
-      let timedOut = false;
-      const timeout = setTimeout(() => {
-        timedOut = true;
-        controller.abort();
-      }, 10000);
-      const onAbort = () => controller.abort();
-      signal?.addEventListener("abort", onAbort, { once: true });
-      try {
-        const rawUrl = toRawUrl(investigation.href);
-        const res = await fetch(rawUrl, { signal: controller.signal });
-        if (timedOut) {
-          setError(true);
-          return;
-        }
-        if (!res.ok) throw new Error(`HTTP ${res.status} — ${res.statusText}`);
-        const text = await res.text();
-        if (signal?.aborted) return;
-        if (timedOut) {
-          setError(true);
-          return;
-        }
-        // Cache best-effort (QuotaExceededError in private Safari is swallowed)
-        try {
-          sessionStorage.setItem(cacheKey, text);
-        } catch {
-          /* quota — cache is optional */
-        }
-        setMd(text);
-      } catch (err: unknown) {
-        if (signal?.aborted) return;
-        if (timedOut) {
-          setError(true);
-          return;
-        }
-        if ((err as Error)?.name === "AbortError") return;
-        console.error(`[WriteupModal] Failed to fetch ${investigation.id}:`, err);
-        setError(true);
-      } finally {
-        clearTimeout(timeout);
-        signal?.removeEventListener("abort", onAbort);
-        if (!signal?.aborted) {
-          setLoading(false);
-        }
-      }
-    },
-    [investigation, cacheKey],
-  );
-
-  useEffect(() => {
-    setMd(null);
-    const controller = new AbortController();
-    lifecycleSignalRef.current = controller.signal;
-    fetchWriteup(controller.signal);
-    return () => {
-      controller.abort();
-      lifecycleSignalRef.current = null;
-    };
-  }, [fetchWriteup]);
 
   const title = investigation?.title || investigationId;
   const platform = investigation?.platform;
@@ -303,16 +216,7 @@ export function WriteupModal({
                           <ExternalLink size={14} strokeWidth={1.5} /> Ver en GitHub
                         </a>
                         <button
-                          onClick={() => {
-                            try {
-                              sessionStorage.removeItem(cacheKey);
-                            } catch {
-                              /* storage can be unavailable; retry still works */
-                            }
-                            setError(false);
-                            setLoading(true);
-                            fetchWriteup(lifecycleSignalRef.current || undefined);
-                          }}
+                          onClick={retry}
                           className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] hover:text-foreground transition-colors underline underline-offset-2"
                         >
                           Reintentar
