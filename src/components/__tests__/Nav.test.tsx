@@ -32,6 +32,11 @@ describe("Nav component", () => {
       "#cursos",
       "#contacto",
     ]);
+    expect(
+      Array.from(container.querySelectorAll("div.hidden.md\\:flex > a")).map((a) =>
+        a.textContent?.trim(),
+      ),
+    ).toEqual(["About", "Certs", "Proyectos", "Labs", "Stack", "Cursos", "Contacto"]);
   });
 
   it("toggles mobile menu on hamburger button click and manages body scroll lock", () => {

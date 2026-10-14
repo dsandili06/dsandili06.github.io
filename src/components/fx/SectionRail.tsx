@@ -1,16 +1,7 @@
 import { useEffect, useState } from "react";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { getLenis } from "@/lib/lenis";
-
-const railLinks = [
-  { id: "about", label: "01" },
-  { id: "formacion", label: "02" },
-  { id: "proyectos", label: "03" },
-  { id: "investigaciones", label: "04" },
-  { id: "stack", label: "05" },
-  { id: "cursos", label: "06" },
-  { id: "contacto", label: "07" },
-];
+import { SECTIONS } from "@/data/sections";
 
 /**
  * Fixed right-side section indicator rail (desktop only).
@@ -18,7 +9,13 @@ const railLinks = [
  * Click scrolls smoothly via the global Lenis instance.
  */
 export function SectionRail() {
-  const active = useActiveSection(railLinks.map((l) => ({ ...l, href: `#${l.id}` })));
+  const active = useActiveSection(
+    SECTIONS.map((section) => ({
+      id: section.id,
+      label: section.number,
+      href: `#${section.id}`,
+    })),
+  );
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -26,32 +23,32 @@ export function SectionRail() {
     const lenis = getLenis();
     if (!lenis) {
       el.scrollIntoView({ behavior: "smooth" });
-      return;
+    } else {
+      lenis.scrollTo(el, { offset: 0 });
     }
-    lenis.scrollTo(el, { offset: 0 });
     history.replaceState(null, "", `#${id}`);
   };
 
   // Don't render rail items until at least one section exists (lazy sections)
   const [ready, setReady] = useState(false);
   useEffect(() => {
-    setReady(railLinks.some((l) => Boolean(document.getElementById(l.id))));
+    setReady(SECTIONS.some((section) => Boolean(document.getElementById(section.id))));
   }, []);
 
   if (!ready) return null;
 
   return (
     <nav aria-label="Secciones" className="section-rail">
-      {railLinks.map((l) => (
+      {SECTIONS.map((section) => (
         <button
-          key={l.id}
+          key={section.id}
           type="button"
-          data-active={active === l.id}
-          onClick={() => scrollTo(l.id)}
+          data-active={active === section.id}
+          onClick={() => scrollTo(section.id)}
           className="section-rail__item"
-          aria-label={l.id}
+          aria-label={section.id}
         >
-          <span>{l.label}</span>
+          <span>{section.number}</span>
           <span className="section-rail__line" />
         </button>
       ))}
