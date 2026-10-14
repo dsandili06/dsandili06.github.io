@@ -8,13 +8,13 @@ import { X, ExternalLink, Loader2, AlertTriangle, Copy, Check } from "lucide-rea
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
-import GithubSlugger from "github-slugger";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import type { ComponentProps, ReactNode } from "react";
 import { INVESTIGATIONS } from "@/data/investigations";
 import type { Investigation } from "@/types";
 import { resolveWriteupImageUri, safeMarkdownUrl } from "@/components/writeupMarkdownPolicy";
+import { parseToc, TOC_VISIBLE_THRESHOLD } from "@/components/features/writeups/writeupToc";
 
 /** Catches ReactMarkdown render errors so the modal doesn't crash silently. */
 class MarkdownErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
@@ -79,32 +79,6 @@ function CopyCodeButton({ children }: { children: ReactNode }) {
   );
 }
 
-type TocEntry = { depth: number; text: string; id: string };
-
-/**
- * Extracts h2/h3 entries from the raw markdown, skipping content inside code fences.
- * Uses the same github-slugger over ALL headings (in document order) as rehype-slug does, so ids match.
- */
-function parseToc(md: string): TocEntry[] {
-  const slugger = new GithubSlugger();
-  const toc: TocEntry[] = [];
-  let inFence = false;
-  for (const line of md.split("\n")) {
-    // Track code fences (``` or ~~~)
-    if (/^```/.test(line) || /^~~~/.test(line)) {
-      inFence = !inFence;
-      continue;
-    }
-    if (inFence) continue;
-    const m = line.match(/^(#{1,6})\s+(.+?)\s*$/);
-    if (!m) continue;
-    const depth = m[1].length;
-    const raw = m[2].replace(/[*_`~]/g, "").trim();
-    const id = slugger.slug(raw);
-    if (depth === 2 || depth === 3) toc.push({ depth, text: raw, id });
-  }
-  return toc;
-}
 function investigationById(id: string): Investigation | undefined {
   return INVESTIGATIONS.find((i) => i.id === id);
 }
@@ -246,7 +220,7 @@ export function WriteupModal({
   const categories = investigation?.categories;
   const summary = investigation?.summary;
   const toc = useMemo(() => (md ? parseToc(md) : []), [md]);
-  const showToc = toc.length >= 4;
+  const showToc = toc.length >= TOC_VISIBLE_THRESHOLD;
 
   // Reading progress — scaleX bar at the top of the panel (GPU transform)
   const handleBodyScroll = useCallback(() => {
