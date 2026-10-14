@@ -21,9 +21,11 @@ import {
   X,
   Radio,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { INVESTIGATIONS } from "@/data/investigations";
 import { STACK_GROUPS } from "@/data/stack";
 import { CERTIFICATIONS } from "@/data/certifications";
+import { SECTIONS, type SectionId } from "@/data/sections";
 import { getLenis } from "@/lib/lenis";
 import { COMMAND_PALETTE_OPEN_EVENT, COMMAND_PALETTE_CLOSE_EVENT } from "@/hooks/useCommandPalette";
 import { CertModal } from "@/components/CertModal";
@@ -33,57 +35,15 @@ const WriteupModal = lazy(() =>
   import("@/components/WriteupModal").then((m) => ({ default: m.WriteupModal })),
 );
 
-const SECTIONS = [
-  {
-    id: "about",
-    number: "01",
-    label: "Sobre Mí",
-    desc: "Perfil profesional, trayectoria en Blue Team y enfoque operacional",
-    icon: FileText,
-  },
-  {
-    id: "formacion",
-    number: "02",
-    label: "Certificaciones",
-    desc: "Credenciales verificadas de TryHackMe, Google, Fortinet y CompTIA",
-    icon: Award,
-  },
-  {
-    id: "proyectos",
-    number: "03",
-    label: "Proyectos & Repositorios",
-    desc: "Artifakt Labs, BlueTeam-Scripts y herramientas defensivas",
-    icon: Layers,
-  },
-  {
-    id: "investigaciones",
-    number: "04",
-    label: "Labs & Investigaciones DFIR",
-    desc: "15 writeups técnicos de CyberDefenders con análisis forense",
-    icon: Shield,
-  },
-  {
-    id: "stack",
-    number: "05",
-    label: "Arsenal & Stack Tecnológico",
-    desc: "SIEM, EDR, análisis de memoria, network forensics y scripting",
-    icon: Terminal,
-  },
-  {
-    id: "cursos",
-    number: "06",
-    label: "Cursos & Especializaciones",
-    desc: "Formación continua en Cisco, Palo Alto Networks, Infosec y Dojo",
-    icon: BookOpen,
-  },
-  {
-    id: "contacto",
-    number: "07",
-    label: "Canales de Contacto",
-    desc: "Contacto directo, redes profesionales y clave pública",
-    icon: Mail,
-  },
-];
+const SECTION_ICONS = {
+  about: FileText,
+  formacion: Award,
+  proyectos: Layers,
+  investigaciones: Shield,
+  stack: Terminal,
+  cursos: BookOpen,
+  contacto: Mail,
+} satisfies Record<SectionId, LucideIcon>;
 
 export function CommandPalette() {
   const [isOpen, setIsOpen] = useState(false);
@@ -381,11 +341,11 @@ export function CommandPalette() {
                     className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
                   >
                     {SECTIONS.map((sec) => {
-                      const Icon = sec.icon;
+                      const Icon = SECTION_ICONS[sec.id];
                       return (
                         <Command.Item
                           key={sec.id}
-                          value={`${sec.number} ${sec.label} ${sec.desc}`}
+                          value={`${sec.number} ${sec.title} ${sec.description}`}
                           onSelect={() => handleSelectSection(sec.id)}
                           className="flex items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                         >
@@ -395,9 +355,9 @@ export function CommandPalette() {
                             </span>
                             <Icon size={14} className="text-[var(--muted-foreground)] shrink-0" />
                             <div className="flex flex-col min-w-0">
-                              <span className="truncate font-medium">{sec.label}</span>
+                              <span className="truncate font-medium">{sec.title}</span>
                               <span className="text-[10px] text-[var(--muted-foreground)] truncate hidden sm:block">
-                                {sec.desc}
+                                {sec.description}
                               </span>
                             </div>
                           </div>

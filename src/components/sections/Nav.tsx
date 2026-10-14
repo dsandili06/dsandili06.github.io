@@ -4,16 +4,13 @@ import { Menu, X, Search } from "lucide-react";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { getLenis } from "@/lib/lenis";
 import { openCommandPalette } from "@/hooks/useCommandPalette";
+import { SECTIONS } from "@/data/sections";
 
-const links = [
-  { href: "#about", id: "about", label: "About" },
-  { href: "#formacion", id: "formacion", label: "Certs" },
-  { href: "#proyectos", id: "proyectos", label: "Proyectos" },
-  { href: "#investigaciones", id: "investigaciones", label: "Labs" },
-  { href: "#stack", id: "stack", label: "Stack" },
-  { href: "#cursos", id: "cursos", label: "Cursos" },
-  { href: "#contacto", id: "contacto", label: "Contacto" },
-];
+const links = SECTIONS.map((section) => ({
+  href: `#${section.id}`,
+  id: section.id,
+  label: section.navLabel,
+}));
 
 export function Nav() {
   const active = useActiveSection(links);

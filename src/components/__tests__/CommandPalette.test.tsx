@@ -70,11 +70,31 @@ describe("CommandPalette", () => {
     expect(screen.getByText("SECCIONES DEL SISTEMA")).toBeInTheDocument();
     expect(screen.getByText("Sobre Mí")).toBeInTheDocument();
     expect(screen.getByText("Labs & Investigaciones DFIR")).toBeInTheDocument();
+    expect(screen.getByText("Proyectos & Repositorios")).toBeInTheDocument();
+    expect(
+      screen.getByText("Perfil profesional, trayectoria en Blue Team y enfoque operacional"),
+    ).toBeInTheDocument();
 
     // Check presence of investigations
     expect(screen.getByText("INVESTIGACIONES & WRITEUPS DFIR")).toBeInTheDocument();
     expect(screen.getByText("FakeGPT")).toBeInTheDocument();
     expect(screen.getByText("3CX Supply Chain")).toBeInTheDocument();
+  });
+
+  it("selects a registry section and navigates to its matching hash", () => {
+    const section = document.createElement("section");
+    section.id = "formacion";
+    section.scrollIntoView = vi.fn();
+    document.body.appendChild(section);
+
+    render(<CommandPalette />);
+    act(() => openCommandPalette());
+    fireEvent.click(screen.getByText("Certificaciones"));
+
+    expect(section.scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" });
+    expect(window.location.hash).toBe("#formacion");
+    section.remove();
+    history.replaceState(null, "", window.location.pathname);
   });
 
   it("filters items when search text is entered", () => {
