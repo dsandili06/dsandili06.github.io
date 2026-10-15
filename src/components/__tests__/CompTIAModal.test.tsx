@@ -25,8 +25,8 @@ describe("CompTIAModal component", () => {
     expect(screen.getByText("Seguimiento CompTIA Security+")).toBeInTheDocument();
     expect(screen.getByText(/SIMULACROS JASON DION/i)).toBeInTheDocument();
     expect(screen.getByText(/Objetivo CompTIA Superado/i)).toBeInTheDocument();
-    expect(screen.getByText(/67% → 91%/i)).toBeInTheDocument();
-    expect(screen.getByText(/\(\+24%\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/67% → 90%/i)).toBeInTheDocument();
+    expect(screen.getByText(/\(\+23%\)/i)).toBeInTheDocument();
   });
 
   it("renders all 7 mock exams in timeline selector and selects the latest by default", () => {
@@ -39,11 +39,18 @@ describe("CompTIAModal component", () => {
     expect(screen.getByText("Simulacro #5")).toBeInTheDocument();
     expect(screen.getByText("Simulacro #6")).toBeInTheDocument();
     expect(screen.getByText("Simulacro #2 (2da)")).toBeInTheDocument();
+    expect(screen.getByText("Simulacro #3 (2da)")).toBeInTheDocument();
+    expect(screen.getByText("Simulacro #4 (2da)")).toBeInTheDocument();
+    expect(screen.getByText("Simulacro #5 (2da)")).toBeInTheDocument();
 
-    // Latest exam header is shown in domain breakdown
-    expect(screen.getByText(/Simulacro Dion #2 \(2da Pasada\)/i)).toBeInTheDocument();
-    expect(screen.getByText("82 de 90 aciertos")).toBeInTheDocument();
-    expect(screen.getByText("1h 00m")).toBeInTheDocument();
+    // Latest recorded second pass is selected in the domain breakdown.
+    expect(screen.getByText(/Simulacro Dion #5 \(2da Pasada\)/i)).toBeInTheDocument();
+    expect(screen.getByText("81 de 90 aciertos")).toBeInTheDocument();
+    expect(screen.getByText("52 min")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /Simulacro Dion #5 \(2da Pasada\)/i })).toHaveAttribute(
+      "src",
+      "/certs/comptia-prep/dion-test-5-pass2.png",
+    );
   });
 
   it("renders the scrollable body with data-lenis-prevent for Lenis compatibility", () => {
@@ -56,8 +63,8 @@ describe("CompTIAModal component", () => {
   it("switches displayed exam details and dynamic technical analysis when another mock is clicked", () => {
     render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
 
-    // Initially selects latest exam (Simulacro Dion #2 2da Pasada)
-    expect(screen.getByText(/Simulacro Dion #2 \(2da Pasada\)/i)).toBeInTheDocument();
+    // Initially selects latest exam (Simulacro Dion #5 2da Pasada)
+    expect(screen.getByText(/Simulacro Dion #5 \(2da Pasada\)/i)).toBeInTheDocument();
     expect(screen.getByText(/Segunda pasada/i)).toBeInTheDocument();
 
     // Click on Simulacro #6
@@ -113,9 +120,37 @@ describe("CompTIAModal component", () => {
     render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
 
     const previewBtn = screen.getByRole("button", {
-      name: /Ampliar captura de Simulacro Dion #2 \(2da Pasada\)/i,
+      name: /Ampliar captura de Simulacro Dion #5 \(2da Pasada\)/i,
     });
     expect(previewBtn).toBeInTheDocument();
+  });
+
+  it("shows the second-pass screenshots for mock exams 4 and 5", () => {
+    render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
+
+    const exam4Retake = screen.getByRole("tab", { name: /Simulacro #4 \(2da\)/i });
+    fireEvent.click(exam4Retake);
+    expect(screen.getByRole("img", { name: /Simulacro Dion #4 \(2da Pasada\)/i })).toHaveAttribute(
+      "src",
+      "/certs/comptia-prep/dion-test-4-pass2.png",
+    );
+
+    const exam5Retake = screen.getByRole("tab", { name: /Simulacro #5 \(2da\)/i });
+    fireEvent.click(exam5Retake);
+    expect(screen.getByRole("img", { name: /Simulacro Dion #5 \(2da Pasada\)/i })).toHaveAttribute(
+      "src",
+      "/certs/comptia-prep/dion-test-5-pass2.png",
+    );
+  });
+
+  it("shows the second-pass screenshot for mock exam 3", () => {
+    render(<CompTIAModal isOpen={true} onClose={vi.fn()} certification={comptiaCert} />);
+
+    fireEvent.click(screen.getByRole("tab", { name: /Simulacro #3 \(2da\)/i }));
+    expect(screen.getByRole("img", { name: /Simulacro Dion #3 \(2da Pasada\)/i })).toHaveAttribute(
+      "src",
+      "/certs/comptia-prep/dion-test-3-pass2.png",
+    );
   });
 
   it("calls onClose when close button is clicked", () => {
@@ -172,10 +207,10 @@ describe("CompTIAModal component", () => {
     expect(tablist.className).toContain("lg:grid-cols-7");
 
     const tabs = screen.getAllByRole("tab");
-    expect(tabs).toHaveLength(7);
-    // 7th exam is selected by default with roving tabindex
-    expect(tabs[6]).toHaveAttribute("aria-selected", "true");
-    expect(tabs[6]).toHaveAttribute("tabindex", "0");
+    expect(tabs).toHaveLength(10);
+    // Latest exam is selected by default with roving tabindex
+    expect(tabs[9]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[9]).toHaveAttribute("tabindex", "0");
     expect(tabs[0]).toHaveAttribute("aria-selected", "false");
     expect(tabs[0]).toHaveAttribute("tabindex", "-1");
     expect(tabs[6].className).toContain("focus-visible:ring-2");
@@ -200,9 +235,9 @@ describe("CompTIAModal component", () => {
     fireEvent.keyDown(tablist, { key: "ArrowLeft" });
     expect(tabs[0]).toHaveAttribute("aria-selected", "true");
 
-    // End key navigates to last exam (index 6)
+    // End key navigates to last exam (index 9)
     fireEvent.keyDown(tablist, { key: "End" });
-    expect(tabs[6]).toHaveAttribute("aria-selected", "true");
+    expect(tabs[9]).toHaveAttribute("aria-selected", "true");
   });
 
   it("renders detail tabpanel with accessible tabIndex for keyboard scrolling", () => {

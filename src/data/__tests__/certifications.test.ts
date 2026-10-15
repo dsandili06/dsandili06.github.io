@@ -32,7 +32,7 @@ describe("CERTIFICATIONS data integrity", () => {
   it("should contain CompTIA Security+ with mock exams tracking data", () => {
     const comptia = CERTIFICATIONS.find((c) => c.code === "SY0-701");
     expect(comptia?.mockExams).toBeDefined();
-    expect(comptia?.mockExams).toHaveLength(7);
+    expect(comptia?.mockExams).toHaveLength(10);
 
     const exam4 = comptia?.mockExams?.[3];
     expect(exam4?.score).toBe(87);
@@ -70,16 +70,38 @@ describe("CERTIFICATIONS data integrity", () => {
     });
     expect(exam6?.analysis).toContain("Simulacro #6 con 77%");
 
-    const latest = comptia?.mockExams?.[6];
-    expect(latest?.id).toBe("dion-test-2-v2");
-    expect(latest?.title).toBe("Simulacro Dion #2 (2da Pasada)");
-    expect(latest?.shortLabel).toBe("Simulacro #2 (2da)");
-    expect(latest?.date).toBe("30 Sep 2026");
-    expect(latest?.score).toBe(91);
-    expect(latest?.correctQuestions).toBe(82);
+    const exam3Retake = comptia?.mockExams?.[7];
+    expect(exam3Retake?.id).toBe("dion-test-3-v2");
+    expect(exam3Retake?.title).toBe("Simulacro Dion #3 (2da Pasada)");
+    expect(exam3Retake?.shortLabel).toBe("Simulacro #3 (2da)");
+    expect(exam3Retake?.date).toBe("04 Oct 2026");
+    expect(exam3Retake?.score).toBe(90);
+    expect(exam3Retake?.correctQuestions).toBe(81);
+    expect(exam3Retake?.timeSpent).toBe("51 min");
+    expect(exam3Retake?.image).toBe("/certs/comptia-prep/dion-test-3-pass2.png");
+    expect(exam3Retake?.domains).toHaveLength(5);
+
+    const exam4Retake = comptia?.mockExams?.[8];
+    expect(exam4Retake?.id).toBe("dion-test-4-v2");
+    expect(exam4Retake?.title).toBe("Simulacro Dion #4 (2da Pasada)");
+    expect(exam4Retake?.shortLabel).toBe("Simulacro #4 (2da)");
+    expect(exam4Retake?.date).toBe("05 Oct 2026");
+    expect(exam4Retake?.score).toBe(90);
+    expect(exam4Retake?.correctQuestions).toBe(81);
+    expect(exam4Retake?.timeSpent).toBe("48 min");
+    expect(exam4Retake?.image).toBe("/certs/comptia-prep/dion-test-4-pass2.png");
+    expect(exam4Retake?.domains).toHaveLength(5);
+
+    const latest = comptia?.mockExams?.[9];
+    expect(latest?.id).toBe("dion-test-5-v2");
+    expect(latest?.title).toBe("Simulacro Dion #5 (2da Pasada)");
+    expect(latest?.shortLabel).toBe("Simulacro #5 (2da)");
+    expect(latest?.date).toBe("14 Oct 2026");
+    expect(latest?.score).toBe(90);
+    expect(latest?.correctQuestions).toBe(81);
     expect(latest?.totalQuestions).toBe(90);
-    expect(latest?.timeSpent).toBe("1h 00m");
-    expect(latest?.image).toBe("/certs/comptia-prep/dion-test-2-pass2.jpg");
+    expect(latest?.timeSpent).toBe("52 min");
+    expect(latest?.image).toBe("/certs/comptia-prep/dion-test-5-pass2.png");
     expect(latest?.domains).toHaveLength(5);
     expect(latest?.domains?.[0]).toEqual({ domain: "1.0 General Security Concepts", score: 90 });
     expect(latest?.domains?.[1]).toEqual({
@@ -87,17 +109,17 @@ describe("CERTIFICATIONS data integrity", () => {
       score: 100,
     });
     expect(latest?.domains?.[2]).toEqual({ domain: "3.0 Security Architecture", score: 81 });
-    expect(latest?.domains?.[3]).toEqual({ domain: "4.0 Security Operations", score: 89 });
+    expect(latest?.domains?.[3]).toEqual({ domain: "4.0 Security Operations", score: 88 });
     expect(latest?.domains?.[4]).toEqual({
       domain: "5.0 Security Program Management and Oversight",
-      score: 94,
+      score: 89,
     });
     expect(latest?.highlightedDomains).toEqual([
       "2.0 Threats, Vulnerabilities, and Mitigations (100%)",
-      "5.0 Security Program Management and Oversight (94%)",
+      "1.0 General Security Concepts (90%)",
     ]);
     expect(latest?.analysis).toContain("Segunda pasada");
-    expect(latest?.analysis).toContain("91%");
+    expect(latest?.analysis).toContain("90%");
   });
 
   it("each certification should have required fields", () => {

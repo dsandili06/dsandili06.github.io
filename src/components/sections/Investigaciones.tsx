@@ -120,21 +120,15 @@ export function Investigaciones() {
                       {FEATURED_INVESTIGATIONS[0].summary}
                     </p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={() => openWriteup(FEATURED_INVESTIGATIONS[0].id)}
-                    aria-label={`Abrir investigación: ${FEATURED_INVESTIGATIONS[0].title}`}
-                    className="mt-8 inline-flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 border-t border-border-dim pt-3 text-left font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
+                  <span
+                    aria-hidden="true"
+                    className="mt-8 inline-flex min-h-11 w-full items-center justify-between gap-3 border-t border-border-dim pt-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)]"
                   >
-                    <span className="sr-only">SPOTLIGHT_01</span>
                     <span>Abrir investigación</span>
-                    <span
-                      aria-hidden="true"
-                      className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
-                    >
+                    <span className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none">
                       →
                     </span>
-                  </button>
+                  </span>
                 </div>
 
                 {FEATURED_INVESTIGATIONS[0].visual && (
@@ -156,6 +150,14 @@ export function Investigaciones() {
                   </figure>
                 )}
               </div>
+              <button
+                type="button"
+                onClick={() => openWriteup(FEATURED_INVESTIGATIONS[0].id)}
+                aria-label={`Abrir investigación: ${FEATURED_INVESTIGATIONS[0].title}`}
+                className="absolute inset-0 z-20 size-full cursor-pointer rounded-xs bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
+              >
+                <span className="sr-only">SPOTLIGHT_01</span>
+              </button>
             </article>
           )}
 
@@ -186,20 +188,22 @@ export function Investigaciones() {
                     {i.summary}
                   </span>
                 </span>
+                <span
+                  aria-hidden="true"
+                  className="relative z-10 mt-4 flex min-h-11 items-end justify-between border-t border-border-dim pt-2 font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--accent)]"
+                >
+                  <span>VER CASO</span>
+                  <span className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none">
+                    →
+                  </span>
+                </span>
                 <button
                   type="button"
                   onClick={() => openWriteup(i.id)}
                   aria-label={`Abrir caso: ${i.title}`}
-                  className="relative z-10 mt-4 flex min-h-11 cursor-pointer items-end justify-between border-t border-border-dim pt-2 text-left font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
+                  className="absolute inset-0 z-20 size-full cursor-pointer bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
                 >
                   <span className="sr-only">SPOTLIGHT_0{idx + 2}</span>
-                  <span>VER CASO</span>
-                  <span
-                    aria-hidden="true"
-                    className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
-                  >
-                    →
-                  </span>
                 </button>
               </article>
             ))}
@@ -398,25 +402,19 @@ export function Investigaciones() {
         <>
           {/* Classic Table View */}
           <div className="hidden md:block overflow-x-auto border border-border-dim">
-            <div className="grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 px-5 py-3 border-b border-border-dim font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] items-center">
-              <div>N°</div>
-              <div>CASO</div>
+            <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,2fr)] gap-4 px-5 py-3 border-b border-border-dim font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] items-center">
+              <div>LAB</div>
               <div>CATEGORÍA</div>
-              <div>PLATAFORMA</div>
-              <div>ESTADO</div>
-              <div></div>
+              <div>SOBRE EL LAB</div>
             </div>
             {INVESTIGATIONS.map((i) => (
               <button
                 type="button"
                 key={i.id}
                 onClick={() => openWriteup(i.id)}
-                className="group relative grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 items-start px-5 py-4 border-b border-border-dim last:border-b-0 w-full text-left transition-all duration-200 ease-out hover:bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] hover:z-10 transform-gpu backface-hidden cursor-pointer before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-[var(--accent)] before:opacity-0 hover:before:opacity-100 before:transition-opacity"
+                className="group relative grid grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,2fr)] gap-4 items-start px-5 py-4 border-b border-border-dim last:border-b-0 w-full text-left transition-all duration-200 ease-out hover:bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] hover:z-10 transform-gpu backface-hidden cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-[var(--accent)] before:opacity-0 hover:before:opacity-100 focus-visible:before:opacity-100 before:transition-opacity"
                 title={i.summary}
               >
-                <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums pt-0.5">
-                  {i.id.replace("LAB_", "")}
-                </div>
                 <div className="font-display font-semibold text-foreground text-[15px] tracking-tight leading-snug pt-0.5 group-hover:text-[var(--accent)] transition-colors duration-200">
                   {i.title}
                 </div>
@@ -430,38 +428,30 @@ export function Investigaciones() {
                     </span>
                   ))}
                 </div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] pt-0.5">
-                  {i.platform}
-                </div>
-                <div className="pt-0.5">
-                  <Badge variant="success" dot className="text-[10px]">
-                    PUBLICADO
-                  </Badge>
-                </div>
-                <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 ease-out transform-gpu pt-0.5 text-right">
-                  VER →
+                <div className="flex gap-2 text-sm leading-relaxed text-foreground/75">
+                  <span aria-hidden="true" className="font-mono text-[var(--accent)]">
+                    •
+                  </span>
+                  <span>{i.summary}</span>
                 </div>
               </button>
             ))}
-            <div className="grid grid-cols-[56px_1.2fr_1fr_120px_100px_52px] gap-3 items-center px-5 py-4 border-t border-dashed border-[var(--accent)]/30 opacity-50">
-              <div className="font-mono text-[11px] tracking-[0.2em] text-[var(--accent)] tabular-nums">
-                016
-              </div>
+            <div className="grid grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,2fr)] gap-4 items-start px-5 py-4 border-t border-dashed border-[var(--accent)]/30 opacity-60">
               <div className="font-display font-semibold text-foreground/70 text-[15px] tracking-tight">
                 Próximo writeup
               </div>
               <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                —
+                EN PROCESO
               </div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                CyberDefenders
-              </div>
-              <div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">
-                  EN PROCESO
+              <div className="flex gap-2 text-sm leading-relaxed text-foreground/60">
+                <span aria-hidden="true" className="font-mono text-[var(--accent)]">
+                  •
+                </span>
+                <span>
+                  Investigación forense en curso; documentación y análisis de artefactos
+                  próximamente.
                 </span>
               </div>
-              <div></div>
             </div>
           </div>
           <div className="md:hidden flex flex-col">
@@ -472,33 +462,32 @@ export function Investigaciones() {
                 onClick={() => openWriteup(i.id)}
                 className="group relative border-t border-border-dim w-full px-3 py-3.5 rounded-xs first:border-t-0 text-left cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] hover:z-10 transform-gpu backface-hidden transition-all duration-200 ease-out before:absolute before:left-0 before:top-1 before:bottom-1 before:w-[2px] before:bg-[var(--accent)] before:opacity-0 hover:before:opacity-100 before:transition-opacity"
               >
-                <div className="flex items-center gap-3">
-                  <span className="w-7 shrink-0 font-mono text-[10px] tracking-[0.2em] text-[var(--muted-foreground)] tabular-nums">
-                    {i.id.replace("LAB_", "")}
+                <span className="min-w-0 truncate font-display font-semibold text-[14px] tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors duration-200">
+                  {i.title}
+                </span>
+                <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--accent-green)]">
+                  {i.categories.join(" · ")}
+                </span>
+                <span className="mt-2 flex gap-2 pl-0.5 text-xs leading-relaxed text-foreground/70">
+                  <span aria-hidden="true" className="font-mono text-[var(--accent)]">
+                    •
                   </span>
-                  <span className="min-w-0 flex-1 truncate font-display font-semibold text-[14px] tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors duration-200">
-                    {i.title}
-                  </span>
-                  <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--accent)] group-hover:translate-x-0.5 transition-transform duration-200 ease-out transform-gpu">
-                    VER →
-                  </span>
-                </div>
-                <div className="mt-1 pl-10 font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
-                  {i.platform} · {i.categories.join(" · ")}
-                </div>
+                  <span>{i.summary}</span>
+                </span>
               </button>
             ))}
             <div className="border-t border-dashed border-[var(--accent)]/30 w-full px-3 py-3.5 rounded-xs opacity-60">
-              <div className="flex items-center gap-3">
-                <span className="w-7 shrink-0 font-mono text-[10px] tracking-[0.2em] text-[var(--accent)] tabular-nums">
-                  016
+              <div className="font-display font-semibold text-[14px] tracking-tight text-foreground/70">
+                Próximo writeup
+              </div>
+              <div className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+                EN PROCESO
+              </div>
+              <div className="mt-2 flex gap-2 text-xs leading-relaxed text-foreground/60">
+                <span aria-hidden="true" className="font-mono text-[var(--accent)]">
+                  •
                 </span>
-                <span className="min-w-0 flex-1 truncate font-display font-semibold text-[14px] tracking-tight text-foreground/70">
-                  Próximo writeup CyberDefenders
-                </span>
-                <span className="shrink-0 font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent)]/50 text-[var(--accent)]">
-                  EN PROCESO
-                </span>
+                <span>Documentación y análisis de artefactos próximamente.</span>
               </div>
             </div>
           </div>

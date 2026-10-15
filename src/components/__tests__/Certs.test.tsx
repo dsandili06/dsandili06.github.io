@@ -99,7 +99,7 @@ describe("Certs section", () => {
     render(<Certs />);
 
     expect(screen.getByText("ÚLTIMO SCORE")).toBeInTheDocument();
-    expect(screen.getByText("91%")).toBeInTheDocument();
+    expect(screen.getByText("90%")).toBeInTheDocument();
     expect(screen.getByText("VER SEGUIMIENTO DE SIMULACROS →")).toBeInTheDocument();
     expect(
       screen.getByRole("button", {
