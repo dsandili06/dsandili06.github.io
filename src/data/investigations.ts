@@ -11,6 +11,11 @@ export const INVESTIGATIONS: Investigation[] = [
       "Análisis de malware en extensión de navegador que simula ser ChatGPT para interceptar credenciales y sesiones web. Identificación de Image Beacons y exfiltración cifrada.",
     categories: ["Malware Analysis"],
     href: CD_BASE + "FakeGPT.md",
+    evidence: {
+      src: "https://github.com/user-attachments/assets/de5da17e-2d2b-42f9-a2fd-48429ae7a2eb",
+      alt: "Captura del manifest.json de FakeGPT con los permisos solicitados por la extensión",
+      caption: "Manifest de la extensión · permisos y superficies de acceso",
+    },
   },
   {
     id: "LAB_002",

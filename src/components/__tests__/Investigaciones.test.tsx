@@ -26,6 +26,18 @@ describe("Investigaciones", () => {
     expect(screen.getByRole("button", { name: /tabla/i })).toBeInTheDocument();
   });
 
+  it("gives the lead investigation an authentic, captioned evidence image", () => {
+    render(<Investigaciones />);
+
+    const evidence = screen.getByRole("img", { name: /manifest\.json de fakegpt/i });
+    expect(evidence).toHaveAttribute(
+      "src",
+      "https://github.com/user-attachments/assets/de5da17e-2d2b-42f9-a2fd-48429ae7a2eb",
+    );
+    expect(screen.getByText(/Manifest de la extensión/i)).toBeInTheDocument();
+    expect(screen.getAllByRole("img")).toHaveLength(1);
+  });
+
   it("toggles between carousel and table views without errors", () => {
     render(<Investigaciones />);
 

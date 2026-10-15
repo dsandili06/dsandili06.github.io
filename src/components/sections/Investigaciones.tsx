@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/primitives/Section";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
 import { lazy, Suspense } from "react";
-import { SpotlightCard } from "@/components/fx/SpotlightCard";
 import { WriteupModalFallback } from "@/components/primitives/WriteupModalFallback";
 import Autoplay from "embla-carousel-autoplay";
 
@@ -94,81 +93,117 @@ export function Investigaciones() {
             HANDPICKED // 03
           </span>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {FEATURED_INVESTIGATIONS.map((i, idx) => (
-            <SpotlightCard
-              key={i.id}
-              className="group relative flex flex-col justify-between min-h-[270px] rounded-xs border border-[var(--accent)]/30 hover:border-[var(--accent)]/55 bg-[color-mix(in_oklab,var(--surface)_94%,transparent)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_8px_30px_-6px_rgba(0,0,0,0.6)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.18),0_12px_32px_-4px_rgba(0,0,0,0.6)] hover:z-10 transform-gpu backface-hidden will-change-transform active:scale-[0.985] active:duration-100 transition-all duration-300 ease-out overflow-hidden cursor-pointer"
-            >
-              {/* Top ambient highlight line */}
-              <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/45 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20" />
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.8fr)]">
+          {FEATURED_INVESTIGATIONS[0] && (
+            <article className="group relative min-w-0 overflow-hidden rounded-xs border border-[var(--accent)]/35 bg-[color-mix(in_oklab,var(--surface)_96%,transparent)] text-left shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_14px_38px_-12px_rgba(0,0,0,0.7)] transition-[border-color,box-shadow] duration-300 hover:border-[var(--accent)]/70 hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.16),0_18px_44px_-12px_rgba(0,0,0,0.75)]">
+              <span className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/70 to-transparent" />
+              <span className="pointer-events-none absolute left-0 top-0 z-10 size-3 border-l border-t border-[var(--accent)]/70" />
+              <span className="pointer-events-none absolute bottom-0 right-0 z-10 size-3 border-b border-r border-[var(--accent)]/70" />
+              <div className="grid min-h-full grid-cols-1 md:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]">
+                <div className="relative z-10 flex flex-col justify-between p-5 sm:p-7">
+                  <div>
+                    <div className="mb-6 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] uppercase tracking-[0.2em]">
+                      <span className="text-[var(--accent)]">01 / CASO PRINCIPAL</span>
+                      <span className="text-[var(--muted-foreground)]">·</span>
+                      <span className="text-[var(--muted-foreground)]">
+                        {FEATURED_INVESTIGATIONS[0].id}
+                      </span>
+                    </div>
+                    <p className="mb-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[var(--accent-green)]">
+                      {FEATURED_INVESTIGATIONS[0].platform} /{" "}
+                      {FEATURED_INVESTIGATIONS[0].categories[0]}
+                    </p>
+                    <h3 className="mb-4 font-display text-3xl font-bold leading-[1.05] tracking-[-0.035em] text-foreground transition-colors group-hover:text-[var(--accent-secondary)] sm:text-4xl">
+                      {FEATURED_INVESTIGATIONS[0].title}
+                    </h3>
+                    <p className="max-w-[38ch] text-sm leading-relaxed text-foreground/80">
+                      {FEATURED_INVESTIGATIONS[0].summary}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => openWriteup(FEATURED_INVESTIGATIONS[0].id)}
+                    aria-label={`Abrir investigación: ${FEATURED_INVESTIGATIONS[0].title}`}
+                    className="mt-8 inline-flex min-h-11 w-full cursor-pointer items-center justify-between gap-3 border-t border-border-dim pt-3 text-left font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
+                  >
+                    <span className="sr-only">SPOTLIGHT_01</span>
+                    <span>Abrir investigación</span>
+                    <span
+                      aria-hidden="true"
+                      className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
+                    >
+                      →
+                    </span>
+                  </button>
+                </div>
 
-              {/* Tactical HUD Corner Accents */}
-              <span className="absolute top-0 left-0 size-2 border-t border-l border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-20" />
-              <span className="absolute top-0 right-0 size-2 border-t border-r border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-20" />
-              <span className="absolute bottom-0 left-0 size-2 border-b border-l border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-20" />
-              <span className="absolute bottom-0 right-0 size-2 border-b border-r border-[var(--accent)]/40 opacity-40 sm:opacity-0 group-hover:opacity-100 group-hover:border-[var(--accent)] transition-all pointer-events-none z-20" />
+                {FEATURED_INVESTIGATIONS[0].evidence && (
+                  <figure className="relative flex min-w-0 flex-col justify-end overflow-hidden border-t border-border-dim bg-[var(--background)] md:border-l md:border-t-0">
+                    <img
+                      src={FEATURED_INVESTIGATIONS[0].evidence.src}
+                      alt={FEATURED_INVESTIGATIONS[0].evidence.alt}
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      className="aspect-[16/9] w-full object-cover object-top opacity-85 transition-[opacity,transform] duration-500 group-hover:scale-[1.02] group-hover:opacity-100 md:aspect-auto md:h-full md:min-h-[300px] motion-reduce:transform-none motion-reduce:transition-none"
+                    />
+                    <figcaption className="flex min-h-11 items-center justify-between gap-3 border-t border-border-dim bg-[var(--surface)]/95 px-4 py-2 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+                      <span>{FEATURED_INVESTIGATIONS[0].evidence.caption}</span>
+                      <span aria-hidden="true" className="shrink-0 text-[var(--accent-green)]">
+                        EVIDENCIA
+                      </span>
+                    </figcaption>
+                  </figure>
+                )}
+              </div>
+            </article>
+          )}
 
-              <button
-                type="button"
-                onClick={() => openWriteup(i.id)}
-                className="relative flex flex-col justify-between h-full p-6 bg-transparent hover:bg-[color-mix(in_oklab,var(--accent)_2.5%,transparent)] transition-colors duration-300 ease-out text-left w-full cursor-pointer overflow-hidden z-10"
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            {FEATURED_INVESTIGATIONS.slice(1).map((i, idx) => (
+              <article
+                key={i.id}
+                className="group relative flex min-h-[184px] min-w-0 flex-col justify-between overflow-hidden border-l-2 border-[var(--accent)]/40 bg-[color-mix(in_oklab,var(--surface)_88%,transparent)] p-5 text-left transition-[background-color,border-color] duration-200 hover:border-[var(--accent)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))]"
               >
-                {/* Dossier ID Watermark */}
                 <span
+                  className="pointer-events-none absolute -right-2 -top-5 font-mono text-7xl font-bold tracking-tighter text-white/[0.035]"
                   aria-hidden="true"
-                  className="absolute -right-2 -bottom-2 font-mono font-bold text-6xl md:text-7xl tracking-tighter text-white/[0.03] group-hover:text-[var(--accent)]/[0.06] pointer-events-none select-none transition-colors duration-500 leading-none z-0"
                 >
-                  {i.id}
+                  {i.id.replace("LAB_", "")}
                 </span>
-
-                <div className="relative z-10 flex flex-col flex-1">
-                  <div className="flex items-center justify-between gap-3 mb-4">
-                    <div className="flex items-center gap-2">
-                      <span
-                        aria-hidden="true"
-                        className="font-mono text-[11px] text-[var(--accent)]/60 group-hover:text-[var(--accent)] transition-colors select-none font-bold"
-                      >
-                        +
-                      </span>
-                      <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold">
-                        SPOTLIGHT_0{idx + 1}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] bg-[var(--surface-2)]/60">
-                        {i.id}
-                      </span>
-                    </div>
-                  </div>
-
-                  <h3 className="font-display font-bold text-2xl leading-tight tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors mb-2.5 line-clamp-1">
-                    {i.title}
-                  </h3>
-
-                  <div className="flex flex-wrap gap-1.5 mb-3.5 min-h-[22px]">
-                    {i.categories.map((c) => (
-                      <span
-                        key={c}
-                        className="inline-flex items-center justify-center font-mono text-[9px] uppercase tracking-[0.14em] px-2.5 py-1 rounded-xs border border-border-dim/80 bg-[var(--surface-2)]/50 group-hover:border-[var(--accent)]/30 group-hover:bg-[var(--surface-2)]/80 text-foreground/80 transition-all whitespace-nowrap text-center leading-none"
-                      >
-                        {c}
-                      </span>
-                    ))}
-                  </div>
-
-                  <p className="text-sm text-foreground/80 leading-relaxed mb-4">{i.summary}</p>
-                </div>
-
-                <div className="relative z-10 mt-auto pt-4 border-t border-border-dim flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em]">
+                <span className="relative z-10 mb-3 flex items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.18em]">
+                  <span className="text-[var(--accent)]">{i.id}</span>
                   <span className="text-[var(--muted-foreground)]">{i.platform}</span>
-                  <span className="text-[var(--accent)] group-hover:translate-x-1 transition-transform duration-200 ease-out transform-gpu">
-                    VER WRITEUP →
+                </span>
+                <span className="relative z-10">
+                  <span className="mb-2 block font-display text-xl font-bold leading-tight tracking-tight text-foreground transition-colors group-hover:text-[var(--accent-secondary)]">
+                    {i.title}
                   </span>
-                </div>
-              </button>
-            </SpotlightCard>
-          ))}
+                  <span className="mb-3 block font-mono text-[9px] uppercase tracking-[0.14em] text-[var(--accent-green)]">
+                    {i.categories.join(" / ")}
+                  </span>
+                  <span className="line-clamp-2 block text-xs leading-relaxed text-foreground/75">
+                    {i.summary}
+                  </span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => openWriteup(i.id)}
+                  aria-label={`Abrir caso: ${i.title}`}
+                  className="relative z-10 mt-4 flex min-h-11 cursor-pointer items-end justify-between border-t border-border-dim pt-2 text-left font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
+                >
+                  <span className="sr-only">SPOTLIGHT_0{idx + 2}</span>
+                  <span>VER CASO</span>
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform group-hover:translate-x-1 motion-reduce:transition-none"
+                  >
+                    →
+                  </span>
+                </button>
+              </article>
+            ))}
+          </div>
         </div>
       </div>
 
