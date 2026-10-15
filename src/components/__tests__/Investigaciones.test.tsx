@@ -73,6 +73,23 @@ describe("Investigaciones", () => {
     }
   });
 
+  it("shows lab title, category and a bullet summary in table view without case numbers", () => {
+    render(<Investigaciones />);
+    fireEvent.click(screen.getByRole("button", { name: /tabla/i }));
+
+    expect(screen.getByText("SOBRE EL LAB")).toBeInTheDocument();
+    const labRows = screen
+      .getAllByRole("button")
+      .filter((button) => button.textContent?.includes("Análisis de malware en extensión"));
+
+    expect(labRows.length).toBeGreaterThan(0);
+    for (const row of labRows) {
+      expect(row.textContent).toContain("FakeGPT");
+      expect(row.textContent).toContain("Malware Analysis");
+      expect(row.textContent).not.toContain("LAB_001");
+    }
+  });
+
   it("featured cases show cursor affordance and can be clicked", () => {
     render(<Investigaciones />);
 
@@ -97,10 +114,22 @@ describe("Investigaciones", () => {
   it("announces the lazy writeup viewer while its module loads", () => {
     render(<Investigaciones />);
 
-    fireEvent.click(screen.getAllByRole("button", { name: /FakeGPT/i })[0]);
+    const featuredCard = screen.getByRole("button", { name: "Abrir investigación: FakeGPT" });
+    expect(featuredCard.className).toContain("absolute inset-0");
+    fireEvent.click(featuredCard);
 
     const fallback = screen.getByText("Cargando visor del writeup...");
     expect(fallback).toHaveAttribute("role", "status");
     expect(fallback).toHaveAttribute("aria-live", "polite");
+  });
+
+  it("opens a secondary featured case when its card body is clicked", () => {
+    render(<Investigaciones />);
+
+    const secondaryCard = screen.getByRole("button", { name: "Abrir caso: Brave" });
+    expect(secondaryCard.className).toContain("absolute inset-0");
+    fireEvent.click(secondaryCard);
+
+    expect(screen.getByText("Cargando visor del writeup...")).toBeInTheDocument();
   });
 });

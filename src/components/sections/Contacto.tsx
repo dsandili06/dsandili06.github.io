@@ -55,15 +55,8 @@ export function Contacto() {
             className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/30 to-transparent pointer-events-none"
           />
 
-          <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)] mb-6">
+          <div className="mb-6 font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)]">
             <span>ANALYST STATUS</span>
-            <span className="inline-flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.18em] text-[var(--accent-green)] border border-[var(--accent-green)]/30 bg-[var(--accent-green)]/5 px-2 py-0.5 rounded-xs">
-              <span
-                className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse motion-reduce:animate-none"
-                aria-hidden="true"
-              />
-              OPERATIONAL
-            </span>
           </div>
 
           <div className="flex items-center gap-3 mb-8">

@@ -36,11 +36,11 @@ describe("Contacto", () => {
     expect(screen.getByText(/SECTION_07 \/\/ SECURE_CHANNEL/i)).toBeInTheDocument();
   });
 
-  it("should render status card with availability and operational status badge", () => {
+  it("renders the availability status without a redundant operational badge", () => {
     render(<Contacto />);
     expect(screen.getByText("ANALYST STATUS")).toBeInTheDocument();
-    expect(screen.getByText("OPERATIONAL")).toBeInTheDocument();
     expect(screen.getByText(/DISPONIBLE PARA OPORTUNIDADES/)).toBeInTheDocument();
+    expect(screen.queryByText("OPERATIONAL")).not.toBeInTheDocument();
   });
 
   it("should render 3 channel cards with correct links", () => {
@@ -136,7 +136,6 @@ describe("Contacto", () => {
     const motionSpans = container.querySelectorAll(".bg-\\[var\\(--accent-green\\)\\].size-4");
     expect(motionSpans.length).toBe(0);
 
-    const operationalBadgeDot = container.querySelector(".animate-pulse");
-    expect(operationalBadgeDot?.className).toContain("motion-reduce:animate-none");
+    expect(container.querySelector(".animate-pulse")).not.toBeInTheDocument();
   });
 });
