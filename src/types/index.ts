@@ -35,6 +35,11 @@ export type Investigation = {
   summary: string;
   categories: string[];
   href: string;
+  evidence?: {
+    src: string;
+    alt: string;
+    caption: string;
+  };
 };
 
 export type Course = { n: string; title: string; org: string; cert?: string };
