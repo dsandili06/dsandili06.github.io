@@ -137,20 +137,20 @@ export function Investigaciones() {
                   </button>
                 </div>
 
-                {FEATURED_INVESTIGATIONS[0].evidence && (
+                {FEATURED_INVESTIGATIONS[0].visual && (
                   <figure className="relative flex min-w-0 flex-col justify-end overflow-hidden border-t border-border-dim bg-[var(--background)] md:border-l md:border-t-0">
                     <img
-                      src={FEATURED_INVESTIGATIONS[0].evidence.src}
-                      alt={FEATURED_INVESTIGATIONS[0].evidence.alt}
+                      src={FEATURED_INVESTIGATIONS[0].visual.src}
+                      alt={FEATURED_INVESTIGATIONS[0].visual.alt}
                       loading="lazy"
                       decoding="async"
                       referrerPolicy="no-referrer"
                       className="aspect-[16/9] w-full object-cover object-top opacity-85 transition-[opacity,transform] duration-500 group-hover:scale-[1.02] group-hover:opacity-100 md:aspect-auto md:h-full md:min-h-[300px] motion-reduce:transform-none motion-reduce:transition-none"
                     />
                     <figcaption className="flex min-h-11 items-center justify-between gap-3 border-t border-border-dim bg-[var(--surface)]/95 px-4 py-2 font-mono text-[9px] uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
-                      <span>{FEATURED_INVESTIGATIONS[0].evidence.caption}</span>
+                      <span>{FEATURED_INVESTIGATIONS[0].visual.caption}</span>
                       <span aria-hidden="true" className="shrink-0 text-[var(--accent-green)]">
-                        EVIDENCIA
+                        CONCEPTUAL
                       </span>
                     </figcaption>
                   </figure>

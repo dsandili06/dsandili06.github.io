@@ -26,15 +26,15 @@ describe("Investigaciones", () => {
     expect(screen.getByRole("button", { name: /tabla/i })).toBeInTheDocument();
   });
 
-  it("gives the lead investigation an authentic, captioned evidence image", () => {
+  it("renders a captioned conceptual illustration for the lead investigation", () => {
     render(<Investigaciones />);
 
-    const evidence = screen.getByRole("img", { name: /manifest\.json de fakegpt/i });
-    expect(evidence).toHaveAttribute(
-      "src",
-      "https://github.com/user-attachments/assets/de5da17e-2d2b-42f9-a2fd-48429ae7a2eb",
-    );
-    expect(screen.getByText(/Manifest de la extensión/i)).toBeInTheDocument();
+    const illustration = screen.getByRole("img", {
+      name: /ilustración conceptual.*extensión falsa/i,
+    });
+    expect(illustration).toHaveAttribute("src", "/investigations/fakegpt-concept.svg");
+    expect(screen.getByText(/Ilustración conceptual.*Image Beacon/i)).toBeInTheDocument();
+    expect(screen.getByText("CONCEPTUAL")).toBeInTheDocument();
     expect(screen.getAllByRole("img")).toHaveLength(1);
   });
 
