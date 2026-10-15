@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" fill="none" role="img" aria-labelledby="title desc">
+  <title id="title">FakeGPT: extensión falsa y exfiltración de datos</title>
+  <desc id="desc">Ilustración conceptual del flujo desde una extensión de navegador que suplanta a ChatGPT hasta la exfiltración cifrada mediante un Image Beacon.</desc>
+  <defs>
+    <linearGradient id="bg" x1="58" y1="55" x2="1214" y2="699" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D1721"/>
+      <stop offset=".52" stop-color="#080D14"/>
+      <stop offset="1" stop-color="#111019"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="115" y1="169" x2="523" y2="553" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#152431"/>
+      <stop offset="1" stop-color="#0C131B"/>
+    </linearGradient>
+    <linearGradient id="flow" x1="536" y1="375" x2="1129" y2="375" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#46D8E8" stop-opacity=".08"/>
+      <stop offset=".46" stop-color="#53DCEB"/>
+      <stop offset=".72" stop-color="#F09A65"/>
+      <stop offset="1" stop-color="#F17868" stop-opacity=".22"/>
+    </linearGradient>
+    <linearGradient id="danger" x1="818" y1="236" x2="999" y2="545" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F3A66D" stop-opacity=".19"/>
+      <stop offset="1" stop-color="#EF6E68" stop-opacity=".01"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0" cy="0" r="1" gradientTransform="matrix(1.73782 249.002 -386.934 2.7006 1009 371)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E88770" stop-opacity=".14"/>
+      <stop offset="1" stop-color="#E88770" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0v40" stroke="#91B3C6" stroke-opacity=".055"/>
+      <circle cx="1" cy="1" r="1" fill="#91B3C6" fill-opacity=".11"/>
+    </pattern>
+    <filter id="soft-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="shadow" x="72" y="132" width="494" height="478" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="14"/>
+      <feGaussianBlur stdDeviation="18"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.42 0"/>
+      <feBlend in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+    <clipPath id="clip"><rect width="1280" height="720" rx="8"/></clipPath>
+  </defs>
+
+  <g clip-path="url(#clip)">
+    <path fill="url(#bg)" d="M0 0h1280v720H0z"/>
+    <path fill="url(#grid)" d="M0 0h1280v720H0z"/>
+    <path fill="url(#halo)" d="M0 0h1280v720H0z"/>
+    <path d="M0 107.5h1280" stroke="#9DB8C8" stroke-opacity=".12"/>
+    <path d="M0 630.5h1280" stroke="#9DB8C8" stroke-opacity=".12"/>
+
+    <g font-family="'JetBrains Mono',ui-monospace,monospace">
+      <text x="64" y="65" fill="#61DCE8" font-size="12" letter-spacing="3.2">THREAT PATH / 001</text>
+      <text x="1216" y="65" fill="#9BAEBA" font-size="11" letter-spacing="2.2" text-anchor="end">MALWARE ANALYSIS</text>
+      <text x="64" y="674" fill="#71818D" font-size="10" letter-spacing="2.2">CONCEPTUAL VISUALIZATION</text>
+      <text x="1216" y="674" fill="#71818D" font-size="10" letter-spacing="2.2" text-anchor="end">FAKEGPT · CYBERDEFENDERS</text>
+    </g>
+
+    <!-- Browser extension under analysis -->
+    <g filter="url(#shadow)">
+      <rect x="112" y="155" width="410" height="420" rx="7" fill="url(#panel)" stroke="#8CA5B3" stroke-opacity=".28"/>
+      <path d="M113 203.5h408" stroke="#8CA5B3" stroke-opacity=".2"/>
+      <circle cx="139" cy="179" r="4" fill="#EE806F"/>
+      <circle cx="155" cy="179" r="4" fill="#E4B477" fill-opacity=".8"/>
+      <circle cx="171" cy="179" r="4" fill="#71C9C0" fill-opacity=".8"/>
+      <rect x="327" y="167" width="166" height="24" rx="3" fill="#091119" stroke="#829BAA" stroke-opacity=".18"/>
+      <text x="341" y="183" fill="#8799A5" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="9" letter-spacing=".7">EXTENSION://DETAILS</text>
+
+      <rect x="140" y="226" width="52" height="52" rx="12" fill="#122F3A" stroke="#66D5DE" stroke-opacity=".38"/>
+      <path d="M166 236.5l4.2 9.1 10 1.2-7.3 6.8 1.9 9.8-8.8-4.9-8.8 4.9 1.9-9.8-7.3-6.8 10-1.2 4.2-9.1Z" fill="#76DDE3"/>
+      <text x="208" y="246" fill="#EFF5F6" font-family="'Space Grotesk',Inter,ui-sans-serif,sans-serif" font-size="19" font-weight="700">ChatGPT Helper</text>
+      <text x="209" y="266" fill="#9EAFB8" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="10" letter-spacing="1">BROWSER EXTENSION</text>
+      <rect x="407" y="287" width="87" height="24" rx="2" fill="#F07F70" fill-opacity=".12" stroke="#EF8878" stroke-opacity=".54"/>
+      <circle cx="420" cy="299" r="3" fill="#F18A79"/>
+      <text x="430" y="302" fill="#F5A192" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="8" letter-spacing="1.1">IMPOSTOR</text>
+
+      <text x="140" y="316" fill="#70838F" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="9" letter-spacing="2">REQUESTED PERMISSIONS</text>
+      <path d="M140 329h354" stroke="#91A7B4" stroke-opacity=".14"/>
+      <g font-family="'JetBrains Mono',ui-monospace,monospace" font-size="11">
+        <circle cx="151" cy="353" r="3" fill="#F08D79"/><text x="165" y="357" fill="#CFD8DC">cookies</text><text x="488" y="357" fill="#8797A1" text-anchor="end">SESSION</text>
+        <circle cx="151" cy="384" r="3" fill="#F08D79"/><text x="165" y="388" fill="#CFD8DC">webRequest</text><text x="488" y="388" fill="#8797A1" text-anchor="end">TRAFFIC</text>
+        <circle cx="151" cy="415" r="3" fill="#F08D79"/><text x="165" y="419" fill="#CFD8DC">&lt;all_urls&gt;</text><text x="488" y="419" fill="#8797A1" text-anchor="end">SCOPE</text>
+      </g>
+      <path d="M140 438h354" stroke="#91A7B4" stroke-opacity=".14"/>
+      <rect x="140" y="460" width="354" height="77" rx="3" fill="#0A1118" stroke="#91A7B4" stroke-opacity=".16"/>
+      <path d="M161 479v39m0-39 17 9-17 9" stroke="#61D4DE" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      <text x="195" y="486" fill="#8E9EA8" font-family="'JetBrains Mono',ui-monospace,monospace" font-size="9" letter-spacing="1.4">DISGUISED AS</text>
+      <text x="195" y="510" fill="#E4EDF0" font-family="'Space Grotesk',Inter,ui-sans-serif,sans-serif" font-size="16" font-weight="600">a familiar assistant</text>
+    </g>
+
+    <!-- Exfiltration flow -->
+    <path d="M523 366h82c36 0 38-74 77-74h91c42 0 43 83 82 83h126" stroke="url(#flow)" stroke-width="2" stroke-dasharray="5 9"/>
+    <path d="M523 449h65c38 0 42 47 80 47h181c34 0 38-73 77-73h55" stroke="url(#flow)" stroke-opacity=".52" stroke-width="1.5" stroke-dasharray="3 10"/>
+    <circle cx="605" cy="366" r="4" fill="#67D8E1" filter="url(#soft-glow)"/>
+    <circle cx="773" cy="292" r="4" fill="#F0A270" filter="url(#soft-glow)"/>
+    <circle cx="855" cy="375" r="5" fill="#F28C75" filter="url(#soft-glow)"/>
+    <path d="m973 365 12 10-12 10" stroke="#F18D78" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+
+    <g font-family="'JetBrains Mono',ui-monospace,monospace">
+      <rect x="592" y="225" width="170" height="44" rx="3" fill="#101B22" stroke="#7ACCD2" stroke-opacity=".3"/>
+      <text x="609" y="243" fill="#7A929E" font-size="8" letter-spacing="1.5">CAPTURE</text>
+      <text x="609" y="258" fill="#D8E7EA" font-size="10" letter-spacing=".8">CREDENTIALS + SESSION</text>
+      <rect x="744" y="493" width="132" height="39" rx="3" fill="#1A1719" stroke="#E99A78" stroke-opacity=".34"/>
+      <text x="760" y="509" fill="#A58E85" font-size="8" letter-spacing="1.4">ENCODE</text>
+      <text x="760" y="523" fill="#EDC0A0" font-size="10" letter-spacing="1">AES-CBC</text>
+    </g>
+
+    <!-- Outbound beacon / abstract receiver, not a real C2 address -->
+    <circle cx="1094" cy="375" r="119" fill="url(#danger)"/>
+    <circle cx="1094" cy="375" r="94" stroke="#E89177" stroke-opacity=".13"/>
+    <circle cx="1094" cy="375" r="73" stroke="#E89177" stroke-opacity=".18" stroke-dasharray="2 8"/>
+    <circle cx="1094" cy="375" r="52" fill="#151618" stroke="#E79177" stroke-opacity=".54"/>
+    <circle cx="1094" cy="375" r="38" fill="#20191A" stroke="#F0A078" stroke-opacity=".31"/>
+    <path d="M1094 348v29l19 12" stroke="#F4B28A" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="1094" cy="375" r="4" fill="#F2A17B"/>
+    <path d="M1081 325c-17 7-29 23-31 42m57-42c17 7 29 23 31 42m-88 18c2 18 14 34 31 42m57-42c-2 18-14 34-31 42" stroke="#E9A07D" stroke-opacity=".55" stroke-width="1.5" stroke-linecap="round"/>
+    <g font-family="'JetBrains Mono',ui-monospace,monospace" text-anchor="middle">
+      <text x="1094" y="493" fill="#F2B097" font-size="10" letter-spacing="2">IMAGE BEACON</text>
+      <text x="1094" y="512" fill="#8B969C" font-size="8" letter-spacing="1.5">OUTBOUND CHANNEL</text>
+    </g>
+
+    <path d="M111 599h1058" stroke="#9DB8C8" stroke-opacity=".1"/>
+    <path d="M64 108v-16h16m1119 0h17v16M64 612v16h16m1119 0h17v-16" stroke="#67D7E0" stroke-opacity=".56" stroke-width="1.5"/>
+  </g>
+</svg>

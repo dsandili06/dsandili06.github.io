@@ -35,7 +35,7 @@ export type Investigation = {
   summary: string;
   categories: string[];
   href: string;
-  evidence?: {
+  visual?: {
     src: string;
     alt: string;
     caption: string;
