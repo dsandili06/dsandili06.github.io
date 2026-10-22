@@ -4,10 +4,21 @@ import { Certs } from "@/components/sections/Certs";
 
 // Mock CertModal to verify in-page rendering
 vi.mock("@/components/CertModal", () => ({
-  CertModal: ({ cert, title, onClose }: { cert: string; title: string; onClose: () => void }) => (
+  CertModal: ({
+    cert,
+    title,
+    initialTab,
+    onClose,
+  }: {
+    cert: string;
+    title: string;
+    initialTab?: string;
+    onClose: () => void;
+  }) => (
     <div data-testid="cert-modal">
       <span data-testid="modal-title">{title}</span>
       <span data-testid="modal-cert">{cert}</span>
+      <span data-testid="modal-tab">{initialTab}</span>
       <button data-testid="modal-close" onClick={onClose}>
         Close
       </button>
@@ -107,14 +118,25 @@ describe("Certs section", () => {
     expect(screen.getByTestId("modal-cert")).toHaveTextContent(
       "/certs/comptia-security-plus-sy0-701.webp",
     );
+    expect(screen.getByTestId("modal-tab")).toHaveTextContent("review");
 
     fireEvent.click(screen.getByTestId("modal-close"));
+  });
+
+  it("advertises review on Security+ card", () => {
+    render(<Certs />);
+    expect(
+      screen.getByRole("button", {
+        name: /Ver certificado y review técnica de CompTIA Security\+/i,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText("VER CERTIFICADO & REVIEW TÉCNICA →")).toHaveLength(2);
   });
 
   it("renders clean SAL1 card with review CTA and without simulation hours or review available badge", () => {
     render(<Certs />);
 
-    expect(screen.getByText("VER CERTIFICADO & REVIEW TÉCNICA →")).toBeInTheDocument();
+    expect(screen.getAllByText("VER CERTIFICADO & REVIEW TÉCNICA →")).toHaveLength(2);
     expect(
       screen.getByRole("button", { name: /Ver certificado y review técnica de SAL1/i }),
     ).toBeInTheDocument();

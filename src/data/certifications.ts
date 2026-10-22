@@ -11,6 +11,7 @@ export const CERTIFICATIONS: Certification[] = [
     badge: "CERTIFIED",
     href: "/certs/comptia-security-plus-sy0-701.webp",
     logo: "/badges/comptiabadge.png",
+    hasReview: true,
     mockExams: [
       {
         id: "dion-test-1",

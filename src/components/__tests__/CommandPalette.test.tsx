@@ -123,6 +123,8 @@ describe("CommandPalette", () => {
     fireEvent.click(screen.getByText("CompTIA Security+"));
 
     expect(screen.getByRole("dialog", { name: "CompTIA Security+" })).toBeInTheDocument();
+    expect(screen.getByText(/Professor Messer/)).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("tab", { name: /CERTIFICADO OFICIAL/i }));
     expect(screen.getByAltText("CompTIA Security+")).toHaveAttribute(
       "src",
       "/certs/comptia-security-plus-sy0-701.webp",

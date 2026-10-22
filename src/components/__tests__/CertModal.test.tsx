@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, cleanup, fireEvent } from "@testing-library/react";
+import { render, screen, cleanup, fireEvent, waitFor } from "@testing-library/react";
 import { CertModal } from "@/components/CertModal";
 
 describe("CertModal component", () => {
@@ -37,6 +37,155 @@ describe("CertModal component", () => {
     const closeBtn = screen.getByRole("button", { name: /Cerrar/i });
     expect(closeBtn.className).toContain("min-h-[44px]");
     expect(closeBtn.className).toContain("min-w-[44px]");
+  });
+
+  it("shows Security+ personal review by default with its score and no SAL1 evidence", () => {
+    render(
+      <CertModal
+        isOpen
+        onClose={vi.fn()}
+        cert="/certs/comptia-security-plus-sy0-701.webp"
+        title="CompTIA Security+"
+      />,
+    );
+    expect(screen.getByRole("tab", { name: /REVIEW TÉCNICA/i })).toBeInTheDocument();
+    expect(screen.getByText("791")).toBeInTheDocument();
+    expect(screen.getByText("/ 900")).toBeInTheDocument();
+    expect(screen.getByText(/Professor Messer/)).toBeInTheDocument();
+    expect(screen.getByText(/unas 1400 preguntas/i)).toBeInTheDocument();
+    expect(screen.queryByText(/948/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Ventana máx: 24 horas/)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Evidencia Oficial de Resultados/)).not.toBeInTheDocument();
+  });
+
+  it("respects certificate tab and falls back to certificate for unsupported review", () => {
+    const { rerender } = render(
+      <CertModal
+        isOpen
+        onClose={vi.fn()}
+        cert="/certs/comptia-security-plus-sy0-701.webp"
+        title="CompTIA Security+"
+        initialTab="cert"
+      />,
+    );
+    expect(screen.getByAltText("CompTIA Security+")).toBeInTheDocument();
+    rerender(
+      <CertModal
+        isOpen
+        onClose={vi.fn()}
+        cert="/certs/google.webp"
+        title="Google Cybersecurity"
+        initialTab="review"
+      />,
+    );
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.getByAltText("Google Cybersecurity")).toBeInTheDocument();
+    expect(screen.queryByText(/Professor Messer/)).not.toBeInTheDocument();
+  });
+
+  it("does not infer a review from course titles or similar SAL1 titles", () => {
+    const { rerender } = render(
+      <CertModal
+        isOpen
+        onClose={vi.fn()}
+        cert="/certs/CertificateOfCompletion_CompTIA Security SY0701 Cert Prep by Infosec.webp"
+        title="CompTIA Security+ (SY0-701) Cert Prep"
+        initialTab="cert"
+      />,
+    );
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.getByAltText("CompTIA Security+ (SY0-701) Cert Prep")).toBeInTheDocument();
+
+    rerender(
+      <CertModal
+        isOpen
+        onClose={vi.fn()}
+        cert="/certs/other-certificate.png"
+        title="SAL1 Training"
+        initialTab="review"
+      />,
+    );
+    expect(screen.queryByRole("tablist")).not.toBeInTheDocument();
+    expect(screen.getByAltText("SAL1 Training")).toBeInTheDocument();
+  });
+
+  it("restores focus inside the new credential after the real lightbox exit", async () => {
+    const { rerender } = render(
+      <CertModal isOpen onClose={vi.fn()} cert="/certs/THM-SAL1-Certificate.png" title="SAL1" />,
+    );
+    const evidenceButton = screen.getByRole("button", {
+      name: /Ampliar captura oficial de puntaje/i,
+    });
+    evidenceButton.focus();
+    fireEvent.keyDown(evidenceButton, { key: "Enter" });
+    // jsdom does not synthesize native button activation from Enter keydown.
+    fireEvent.click(evidenceButton);
+    await waitFor(() => expect(document.querySelector(".yarl__portal")).toBeInTheDocument());
+
+    rerender(
+      <CertModal
+        isOpen
+        onClose={vi.fn()}
+        cert="/certs/comptia-security-plus-sy0-701.webp"
+        title="CompTIA Security+"
+      />,
+    );
+
+    await waitFor(() => expect(document.querySelector(".yarl__portal")).not.toBeInTheDocument());
+    expect(
+      screen.queryByAltText(/Captura oficial de resultados de certificación TryHackMe SAL1/i),
+    ).not.toBeInTheDocument();
+    expect(document.activeElement).toBe(screen.getByRole("tab", { name: /REVIEW TÉCNICA/i }));
+    expect(document.activeElement).not.toBe(document.body);
+  });
+
+  it("does not restore focus into the dialog after it has closed", async () => {
+    const outsideButton = document.createElement("button");
+    document.body.append(outsideButton);
+    outsideButton.focus();
+    const { rerender, unmount } = render(
+      <CertModal isOpen onClose={vi.fn()} cert="/certs/THM-SAL1-Certificate.png" title="SAL1" />,
+    );
+    const evidenceButton = screen.getByRole("button", {
+      name: /Ampliar captura oficial de puntaje/i,
+    });
+    evidenceButton.focus();
+    fireEvent.keyDown(evidenceButton, { key: "Enter" });
+    fireEvent.click(evidenceButton);
+    await waitFor(() => expect(document.querySelector(".yarl__portal")).toBeInTheDocument());
+
+    outsideButton.focus();
+    rerender(
+      <CertModal
+        isOpen={false}
+        onClose={vi.fn()}
+        cert="/certs/comptia-security-plus-sy0-701.webp"
+        title="CompTIA Security+"
+      />,
+    );
+
+    await waitFor(() => expect(document.querySelector(".yarl__portal")).not.toBeInTheDocument());
+    expect(document.activeElement).toBe(outsideButton);
+    unmount();
+    outsideButton.remove();
+  });
+
+  it("recognizes SAL1 short title and resets the lightbox when credential changes", async () => {
+    const { rerender } = render(
+      <CertModal isOpen onClose={vi.fn()} cert="/certs/THM-SAL1-Certificate.png" title="SAL1" />,
+    );
+    expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
+    fireEvent.click(screen.getByRole("button", { name: /Ampliar captura oficial de puntaje/i }));
+    rerender(
+      <CertModal
+        isOpen
+        onClose={vi.fn()}
+        cert="/certs/comptia-security-plus-sy0-701.webp"
+        title="CompTIA Security+"
+      />,
+    );
+    await waitFor(() => expect(document.querySelector(".yarl__portal")).not.toBeInTheDocument());
+    expect(screen.getByText(/Professor Messer/)).toBeInTheDocument();
   });
 
   it("applies safe-area insets on modal backdrop container", () => {
@@ -162,24 +311,13 @@ describe("CertModal component", () => {
     expect(certTab).toBeInTheDocument();
     expect(reviewTab).toBeInTheDocument();
 
-    // Defaults to review tab or allows reading technical breakdown
-    expect(screen.getByText("Escenarios Evaluados")).toBeInTheDocument();
-    expect(screen.getByText("Security Analyst Fundamentals")).toBeInTheDocument();
-    expect(screen.getByText("Fowl Play B1 v2")).toBeInTheDocument();
-    expect(screen.getByText("Red Alert: Command and Control B2 V2")).toBeInTheDocument();
-
-    // Check takeaways and scores
-    const takeaways = screen.getAllByText("Takeaway:");
-    expect(takeaways.length).toBe(3);
-    expect(screen.queryByText(/Takeaway defensivo/i)).not.toBeInTheDocument();
-
-    // Check methodology is removed
-    expect(screen.queryByText("Metodología Aplicada en la Ventana de 24h")).not.toBeInTheDocument();
-
-    // Check verdict conclusion quote is removed
+    expect(screen.queryByText("Escenarios Evaluados")).not.toBeInTheDocument();
+    expect(screen.queryByText("Veredicto del Analista & Recomendaciones")).not.toBeInTheDocument();
+    expect(screen.queryByText("9.5 / 10")).not.toBeInTheDocument();
+    expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
     expect(
-      screen.queryByText(/El SAL1 de TryHackMe es una de las certificaciones más sólidas/i),
-    ).not.toBeInTheDocument();
+      screen.getByRole("button", { name: /Ampliar captura oficial de puntaje/i }),
+    ).toBeInTheDocument();
 
     // Score telemetry
     expect(screen.getByText(/4h 7m 55s/i)).toBeInTheDocument();
@@ -259,7 +397,7 @@ describe("CertModal component", () => {
     expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
   });
 
-  it("renders progress bars for each evaluated scenario with valid ARIA attributes", () => {
+  it("does not show removed scenario progress bars", () => {
     render(
       <CertModal
         isOpen={true}
@@ -270,13 +408,7 @@ describe("CertModal component", () => {
       />,
     );
 
-    const progressBars = screen.getAllByRole("progressbar");
-    expect(progressBars).toHaveLength(3);
-    for (const pb of progressBars) {
-      expect(pb).toHaveAttribute("aria-valuenow");
-      expect(pb).toHaveAttribute("aria-valuemin", "0");
-      expect(pb).toHaveAttribute("aria-valuemax", "100");
-    }
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
   });
 
   it("renders tabs with WAI-ARIA tablist, tab roles, aria-selected, roving tabindex and keyboard navigation", () => {
