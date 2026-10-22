@@ -110,6 +110,25 @@ describe("CommandPalette", () => {
     expect(screen.getByText("3CX Supply Chain")).toBeInTheDocument();
   });
 
+  it("finds the obtained CompTIA Security+ credential and opens its certificate", () => {
+    render(<CommandPalette />);
+    act(() => openCommandPalette());
+
+    fireEvent.change(
+      screen.getByPlaceholderText("Buscar casos, herramientas, certificaciones o secciones..."),
+      { target: { value: "SY0-701" } },
+    );
+
+    expect(screen.getByText("OBTENIDA")).toBeInTheDocument();
+    fireEvent.click(screen.getByText("CompTIA Security+"));
+
+    expect(screen.getByRole("dialog", { name: "CompTIA Security+" })).toBeInTheDocument();
+    expect(screen.getByAltText("CompTIA Security+")).toHaveAttribute(
+      "src",
+      "/certs/comptia-security-plus-sy0-701.webp",
+    );
+  });
+
   it("provides 44px touch targets for compact actions and every command item", () => {
     render(<CommandPalette />);
     act(() => openCommandPalette());

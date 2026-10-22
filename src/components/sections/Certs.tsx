@@ -3,8 +3,6 @@ import { ExternalLink } from "lucide-react";
 import { Section } from "@/components/primitives/Section";
 import { CERTIFICATIONS } from "@/data/certifications";
 import { CertModal } from "@/components/CertModal";
-import { CompTIAModal } from "@/components/CompTIAModal";
-import type { Certification } from "@/types";
 
 export function Certs() {
   const [activeCert, setActiveCert] = useState<{
@@ -17,17 +15,9 @@ export function Certs() {
     title: string;
     initialTab?: "cert" | "review";
   } | null>(null);
-  const [comptiaCert, setComptiaCert] = useState<Certification | null>(null);
-  const [modalComptia, setModalComptia] = useState<Certification | null>(null);
-
   const openCertificate = (cert: string, title: string, initialTab?: "cert" | "review") => {
     setModalCert({ cert, title, initialTab });
     setActiveCert({ cert, title, initialTab });
-  };
-
-  const openCompTIATracking = (cert: Certification) => {
-    setModalComptia(cert);
-    setComptiaCert(cert);
   };
 
   return (
@@ -36,23 +26,16 @@ export function Certs() {
         {CERTIFICATIONS.map((c) => {
           const obtained = c.status === "OBTENIDA";
           const accentColor = obtained ? "var(--accent-green)" : "var(--accent)";
-          const hasMockExams = Boolean(c.mockExams && c.mockExams.length > 0);
-          const isClickable = Boolean(c.href || hasMockExams);
+          const isClickable = Boolean(c.href);
           const Wrapper: React.ElementType = isClickable ? "button" : "div";
           const wrapperProps = isClickable
             ? {
                 type: "button" as const,
-                "aria-label": hasMockExams
-                  ? `Seguimiento de simulacros para ${c.title}`
-                  : c.hasReview
-                    ? `Ver certificado y review técnica de ${c.title}`
-                    : `Ver certificado de ${c.title}`,
+                "aria-label": c.hasReview
+                  ? `Ver certificado y review técnica de ${c.title}`
+                  : `Ver certificado de ${c.title}`,
                 onClick: () => {
-                  if (hasMockExams) {
-                    openCompTIATracking(c);
-                  } else if (c.href) {
-                    openCertificate(c.href, c.title, c.hasReview ? "review" : "cert");
-                  }
+                  if (c.href) openCertificate(c.href, c.title, c.hasReview ? "review" : "cert");
                 },
               }
             : {};
@@ -158,20 +141,6 @@ export function Certs() {
                       </span>
                     ) : null}
                   </>
-                ) : hasMockExams && c.mockExams ? (
-                  <>
-                    <div className="flex items-baseline md:flex-col md:items-end gap-2 md:gap-0">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] md:mb-1">
-                        ÚLTIMO SCORE
-                      </div>
-                      <div className="font-display font-bold text-2xl sm:text-3xl md:text-5xl text-[var(--accent)] leading-none">
-                        {c.mockExams[c.mockExams.length - 1].score}%
-                      </div>
-                    </div>
-                    <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
-                      VER SEGUIMIENTO DE SIMULACROS →
-                    </span>
-                  </>
                 ) : obtained && c.href ? (
                   <span className="ml-auto inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
                     VER CERTIFICADO →
@@ -248,15 +217,6 @@ export function Certs() {
           isOpen={Boolean(activeCert)}
           onClose={() => setActiveCert(null)}
           onExitComplete={() => setModalCert(null)}
-        />
-      )}
-
-      {modalComptia && (
-        <CompTIAModal
-          certification={modalComptia}
-          isOpen={Boolean(comptiaCert)}
-          onClose={() => setComptiaCert(null)}
-          onExitComplete={() => setModalComptia(null)}
         />
       )}
     </Section>

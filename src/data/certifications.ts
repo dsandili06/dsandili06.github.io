@@ -27,10 +27,11 @@ export const CERTIFICATIONS: Certification[] = [
     code: "SY0-701",
     title: "CompTIA Security+",
     org: "CompTIA",
-    year: "2026",
-    status: "EN PREPARACIÓN",
-    badge: "EN PREPARACIÓN",
-    note: "Objetivo para el Q3 de 2026",
+    year: "20/10/2026",
+    status: "OBTENIDA",
+    badge: "CERTIFIED",
+    href: "/certs/comptia-security-plus-sy0-701.webp",
+    note: "SY0-701 · Vigente hasta 20/10/2029",
     logo: "/badges/comptiabadge.png",
     mockExams: [
       {
