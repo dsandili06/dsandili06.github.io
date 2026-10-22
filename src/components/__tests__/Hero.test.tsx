@@ -31,25 +31,8 @@ vi.mock("@/components/CertModal", () => ({
   ),
 }));
 
-vi.mock("@/components/CompTIAModal", () => ({
-  CompTIAModal: ({
-    certification,
-    onClose,
-  }: {
-    certification: { title: string };
-    onClose: () => void;
-  }) => (
-    <div data-testid="comptia-modal">
-      <span data-testid="comptia-modal-title">{certification.title}</span>
-      <button data-testid="comptia-modal-close" onClick={onClose}>
-        Close
-      </button>
-    </div>
-  ),
-}));
-
 describe("Hero section", () => {
-  it("renders verified credentials badges dock with obtained certs and CompTIA in-progress", () => {
+  it("renders the credentials dock with the obtained CompTIA badge", () => {
     render(<Hero />);
 
     expect(screen.getByText("VERIFIED_CREDENTIALS")).toBeInTheDocument();
@@ -66,7 +49,7 @@ describe("Hero section", () => {
       "src",
       "/badges/comptiabadge.png",
     );
-    expect(screen.getByText("EN PREPARACIÓN")).toBeInTheDocument();
+    expect(screen.queryByText("EN PREPARACIÓN")).not.toBeInTheDocument();
     expect(
       screen.getByAltText("Badge Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta"),
     ).toHaveAttribute("src", "/badges/ciber.png");
@@ -98,18 +81,21 @@ describe("Hero section", () => {
     fireEvent.click(screen.getByTestId("modal-close"));
   });
 
-  it("opens in-page CompTIAModal when clicking the CompTIA credential badge in the Hero", () => {
+  it("opens the official CompTIA certificate when clicking its Hero badge", () => {
     render(<Hero />);
 
     const comptiaBtn = screen.getByRole("button", {
-      name: /Ver seguimiento de preparación CompTIA Security\+/i,
+      name: /Ver credencial CompTIA Security\+/i,
     });
     fireEvent.click(comptiaBtn);
 
-    expect(screen.getByTestId("comptia-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("comptia-modal-title")).toHaveTextContent("CompTIA Security+");
+    expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
+    expect(screen.getByTestId("modal-title")).toHaveTextContent("CompTIA Security+");
+    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
+      "/certs/comptia-security-plus-sy0-701.webp",
+    );
 
     // Close modal
-    fireEvent.click(screen.getByTestId("comptia-modal-close"));
+    fireEvent.click(screen.getByTestId("modal-close"));
   });
 });

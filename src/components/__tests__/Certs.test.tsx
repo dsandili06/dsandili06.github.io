@@ -15,24 +15,6 @@ vi.mock("@/components/CertModal", () => ({
   ),
 }));
 
-// Mock CompTIAModal to verify in-page tracking modal rendering
-vi.mock("@/components/CompTIAModal", () => ({
-  CompTIAModal: ({
-    certification,
-    onClose,
-  }: {
-    certification: { title: string };
-    onClose: () => void;
-  }) => (
-    <div data-testid="comptia-modal">
-      <span data-testid="comptia-modal-title">{certification.title}</span>
-      <button data-testid="comptia-modal-close" onClick={onClose}>
-        Close
-      </button>
-    </div>
-  ),
-}));
-
 describe("Certs section", () => {
   it("renders the section header with number 02 and credentials kicker", () => {
     render(<Certs />);
@@ -42,7 +24,7 @@ describe("Certs section", () => {
     expect(screen.getByText(/SECTION_02 \/\/ CREDENTIALS/i)).toBeInTheDocument();
   });
 
-  it("renders all 3 certifications with date and org", () => {
+  it("renders all 3 certifications with date, validity and issuer", () => {
     render(<Certs />);
 
     expect(screen.getByText("SAL1 (Security Analyst L1)")).toBeInTheDocument();
@@ -51,7 +33,8 @@ describe("Certs section", () => {
 
     expect(screen.getByText("19/03/2026 · TryHackMe")).toBeInTheDocument();
     expect(screen.getByText("15/08/2026 · Google")).toBeInTheDocument();
-    expect(screen.getByText("2026 · CompTIA")).toBeInTheDocument();
+    expect(screen.getByText("20/10/2026 · CompTIA")).toBeInTheDocument();
+    expect(screen.getByText("SY0-701 · Vigente hasta 20/10/2029")).toBeInTheDocument();
   });
 
   it("renders badge logo images next to certification titles", () => {
@@ -95,30 +78,27 @@ describe("Certs section", () => {
     expect(screen.getByTestId("modal-cert")).toHaveTextContent("/certs/THM-SAL1-Certificate.png");
   });
 
-  it("renders latest mock exam score and tracking CTA on CompTIA Security+ card", () => {
+  it("does not expose preparation tracking on the obtained CompTIA card", () => {
     render(<Certs />);
 
-    expect(screen.getByText("ÚLTIMO SCORE")).toBeInTheDocument();
-    expect(screen.getByText("90%")).toBeInTheDocument();
-    expect(screen.getByText("VER SEGUIMIENTO DE SIMULACROS →")).toBeInTheDocument();
-    expect(
-      screen.getByRole("button", {
-        name: /Seguimiento de simulacros para CompTIA Security\+/i,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.queryByText("ÚLTIMO SCORE")).not.toBeInTheDocument();
+    expect(screen.queryByText("VER SEGUIMIENTO DE SIMULACROS →")).not.toBeInTheDocument();
+    expect(screen.queryByText("EN PREPARACIÓN")).not.toBeInTheDocument();
   });
 
-  it("opens in-page CompTIAModal on click of CompTIA Security+ card", () => {
+  it("opens the official CompTIA certificate on click", () => {
     render(<Certs />);
 
     const comptiaBtn = screen.getByRole("button", { name: /CompTIA Security\+/i });
     fireEvent.click(comptiaBtn);
 
-    expect(screen.getByTestId("comptia-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("comptia-modal-title")).toHaveTextContent("CompTIA Security+");
+    expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
+    expect(screen.getByTestId("modal-title")).toHaveTextContent("CompTIA Security+");
+    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
+      "/certs/comptia-security-plus-sy0-701.webp",
+    );
 
-    // Close modal
-    fireEvent.click(screen.getByTestId("comptia-modal-close"));
+    fireEvent.click(screen.getByTestId("modal-close"));
   });
 
   it("renders clean SAL1 card with review CTA and without simulation hours or review available badge", () => {
