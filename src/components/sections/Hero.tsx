@@ -6,59 +6,31 @@ import { HeroShader } from "@/components/fx/HeroShader";
 import { TextScramble } from "@/components/fx/TextScramble";
 import { CertModal } from "@/components/CertModal";
 
-type HeroBadge = {
+type HeroCredential = {
   id: string;
   name: string;
   org: string;
   logo: string;
-  cert?: string;
-  featured?: boolean;
+  cert: string;
+  logoClassName: string;
 };
 
-const HERO_BADGES: HeroBadge[] = [
-  {
-    id: "sal1",
-    name: "SAL1 (Security Analyst L1)",
-    org: "TryHackMe",
-    logo: "/badges/sal1badge.png",
-    cert: "/certs/THM-SAL1-Certificate.png",
-    featured: true,
-  },
+const HERO_CREDENTIALS: HeroCredential[] = [
   {
     id: "comptia-secplus",
     name: "CompTIA Security+",
     org: "CompTIA",
     logo: "/badges/comptiabadge.png",
     cert: "/certs/comptia-security-plus-sy0-701.webp",
-    featured: true,
+    logoClassName: "scale-110",
   },
   {
-    id: "google",
-    name: "Google Cybersecurity",
-    org: "Google",
-    logo: "/badges/badgegoogle.png",
-    cert: "/certs/Google Cybersecurity Certificate.webp",
-  },
-  {
-    id: "blue-team",
-    name: "Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta",
-    org: "Academia de Capacitación en Ciberseguridad",
-    logo: "/badges/ciber.png",
-    cert: "/certs/Certificado_de_Aprobacion -  ACAD DE CIBERSEGURIDAD.webp",
-  },
-  {
-    id: "nse1",
-    name: "NSE 1 Network Security Associate",
-    org: "Fortinet",
-    logo: "/badges/fortinet-nse-1-certified-in-cybersecurity.png",
-    cert: "/certs/Fortinet NSE 1 Certified in Cybersecurity.webp",
-  },
-  {
-    id: "nse2",
-    name: "NSE 2 Network Security Associate",
-    org: "Fortinet",
-    logo: "/badges/fortinet-nse-2-certified-in-cybersecurity.1.png",
-    cert: "/certs/Fortinet NSE 2 Certified in Cybersecurity.webp",
+    id: "sal1",
+    name: "SAL1",
+    org: "TryHackMe",
+    logo: "/badges/sal1badge.png",
+    cert: "/certs/THM-SAL1-Certificate.png",
+    logoClassName: "scale-95",
   },
 ];
 
@@ -75,43 +47,37 @@ export function Hero() {
   const wmY = useTransform(scrollYProgress, [0, 1], [0, 160]);
   const wmOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
-  const renderBadge = (badge: HeroBadge) => (
+  const renderCredential = (credential: HeroCredential, index: number) => (
     <button
-      key={badge.id}
+      key={credential.id}
       type="button"
       onClick={() => {
-        if (!badge.cert) return;
-        setActiveCert({ cert: badge.cert, name: badge.name });
-        setModalCert({ cert: badge.cert, name: badge.name });
+        setActiveCert({ cert: credential.cert, name: credential.name });
+        setModalCert({ cert: credential.cert, name: credential.name });
       }}
-      className={`group relative shrink-0 flex items-center justify-center cursor-pointer hover:z-20 transform-gpu backface-hidden will-change-transform transition-[transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg ${
-        badge.featured
-          ? "size-16 md:size-24 drop-shadow-[0_0_18px_rgba(34,211,238,0.2)]"
-          : "size-12"
+      className={`group inline-flex min-h-16 items-center gap-3 text-left cursor-pointer active:scale-[0.99] transition-[color,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[#04070b] rounded-sm ${
+        index === 0 ? "sm:pr-8 sm:border-r sm:border-border-dim/70" : "sm:pl-1"
       }`}
-      title={`${badge.name} (${badge.org}) — Click para ver credencial`}
-      aria-label={`Ver credencial ${badge.name}`}
+      title={`${credential.name} (${credential.org}) — Click para ver credencial`}
+      aria-label={`Ver credencial ${credential.name}`}
     >
-      <img
-        src={badge.logo}
-        alt={`Badge ${badge.name}`}
-        className="size-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out pointer-events-none transform-gpu backface-hidden group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)] group-hover:brightness-115"
-        loading="eager"
-        decoding="async"
-      />
-      <div
-        className="absolute -top-1 -right-1 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu backface-hidden"
-        aria-hidden="true"
-      >
-        <div className="absolute -inset-1 rounded-full blur-sm bg-cyan-400/30" />
-        <svg
-          viewBox="0 0 24 24"
-          className="relative size-4 sm:size-5 filter transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45 transform-gpu backface-hidden text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.9)]"
-          fill="currentColor"
-        >
-          <path d="M12 0C6.627 0 12 6.627 12 12C0 12 6.627 17.373 12 24C17.373 12 24 17.373 24 12C17.373 6.627 12 0 12 0Z" />
-        </svg>
+      <div className="size-14 shrink-0 flex items-center justify-center">
+        <img
+          src={credential.logo}
+          alt={`Badge ${credential.name}`}
+          className={`size-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-[filter,transform] duration-200 ease-out pointer-events-none transform-gpu group-hover:scale-[1.03] group-hover:drop-shadow-[0_0_12px_rgba(59,130,246,0.45)] ${credential.logoClassName}`}
+          loading="eager"
+          decoding="async"
+        />
       </div>
+      <span className="flex flex-col gap-1">
+        <span className="font-display font-bold text-lg leading-none tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
+          {credential.name}
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+          {credential.org}
+        </span>
+      </span>
     </button>
   );
 
@@ -181,32 +147,18 @@ export function Hero() {
             <span className="text-foreground/60">·</span> DFIR
           </motion.p>
 
-          {/* Tactical Verified Credentials Dock */}
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25, duration: 0.5 }}
-            className="mt-8 pt-6 border-t border-[var(--border)]/40 flex flex-col gap-3"
+            className="mt-7 pt-5 border-t border-[var(--border)]/40"
           >
-            <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-              <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
-              <span>VERIFIED_CREDENTIALS</span>
-            </div>
-            <div className="flex flex-col gap-4">
-              <div
-                role="group"
-                aria-label="Certificaciones destacadas"
-                className="flex items-center gap-4 sm:gap-6"
-              >
-                {HERO_BADGES.filter((badge) => badge.featured).map(renderBadge)}
-              </div>
-              <div
-                role="group"
-                aria-label="Otras certificaciones"
-                className="flex items-center gap-3 sm:gap-4"
-              >
-                {HERO_BADGES.filter((badge) => !badge.featured).map(renderBadge)}
-              </div>
+            <div
+              role="group"
+              aria-label="Credenciales principales"
+              className="flex flex-wrap gap-x-6 gap-y-3"
+            >
+              {HERO_CREDENTIALS.map(renderCredential)}
             </div>
           </motion.div>
         </div>

@@ -27,8 +27,17 @@ describe("CERTIFICATIONS data integrity", () => {
     expect(comptia).toBeDefined();
     expect(comptia?.status).toBe("OBTENIDA");
     expect(comptia?.year).toBe("20/10/2026");
+    expect(comptia?.score).toBe("791 / 900");
     expect(comptia?.note).toBeUndefined();
     expect(comptia?.href).toBe("/certs/comptia-security-plus-sy0-701.webp");
+  });
+
+  it("should list CompTIA Security+ before the other certifications", () => {
+    expect(CERTIFICATIONS.map((certification) => certification.code)).toEqual([
+      "SY0-701",
+      "SAL1",
+      "GOOGLE",
+    ]);
   });
 
   it("should contain CompTIA Security+ with mock exams tracking data", () => {

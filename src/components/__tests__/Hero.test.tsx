@@ -32,65 +32,32 @@ vi.mock("@/components/CertModal", () => ({
 }));
 
 describe("Hero section", () => {
-  it("renders the credentials dock with the obtained CompTIA badge", () => {
+  it("renders only the primary Security+ and SAL1 credentials in display order", () => {
     render(<Hero />);
 
-    expect(screen.getByText("VERIFIED_CREDENTIALS")).toBeInTheDocument();
-
-    expect(screen.getByAltText("Badge SAL1 (Security Analyst L1)")).toHaveAttribute(
-      "src",
-      "/badges/sal1badge.png",
-    );
-    expect(screen.getByAltText("Badge Google Cybersecurity")).toHaveAttribute(
-      "src",
-      "/badges/badgegoogle.png",
-    );
     expect(screen.getByAltText("Badge CompTIA Security+")).toHaveAttribute(
       "src",
       "/badges/comptiabadge.png",
     );
-    expect(screen.queryByText("EN PREPARACIÓN")).not.toBeInTheDocument();
-    expect(
-      screen.getByAltText("Badge Fundamentos en Blue Team: Ciberinteligencia, Forense y Respuesta"),
-    ).toHaveAttribute("src", "/badges/ciber.png");
-    expect(screen.getByAltText("Badge NSE 1 Network Security Associate")).toHaveAttribute(
-      "src",
-      "/badges/fortinet-nse-1-certified-in-cybersecurity.png",
-    );
-    expect(screen.getByAltText("Badge NSE 2 Network Security Associate")).toHaveAttribute(
-      "src",
-      "/badges/fortinet-nse-2-certified-in-cybersecurity.1.png",
-    );
+    expect(screen.getByAltText("Badge SAL1")).toHaveAttribute("src", "/badges/sal1badge.png");
 
-    const featured = screen.getByRole("group", { name: "Certificaciones destacadas" });
-    expect(featured.querySelectorAll("button")).toHaveLength(2);
-    expect(screen.getByRole("button", { name: /Ver credencial SAL1/i }).className).toContain(
-      "size-16 md:size-24",
-    );
-    expect(
-      screen.getByRole("button", { name: /Ver credencial CompTIA Security\+/i }).className,
-    ).toContain("size-16 md:size-24");
-
-    const secondary = screen.getByRole("group", { name: "Otras certificaciones" });
-    expect(secondary.querySelectorAll("button")).toHaveLength(4);
-    expect(
-      screen.getByRole("button", { name: /Ver credencial Google Cybersecurity/i }).className,
-    ).toContain("size-12");
+    const credentials = screen.getByRole("group", { name: "Credenciales principales" });
+    expect(credentials.querySelectorAll("button")).toHaveLength(2);
+    expect(credentials.textContent).toMatch(/CompTIA Security\+.*SAL1/s);
+    expect(screen.queryByRole("button", { name: /Google Cybersecurity/i })).not.toBeInTheDocument();
   });
 
-  it("opens in-page CertModal when clicking an obtained credential badge in the Hero", () => {
+  it("opens the SAL1 certificate when clicking its Hero credential", () => {
     render(<Hero />);
 
-    const googleBtn = screen.getByRole("button", {
-      name: /Ver credencial Google Cybersecurity/i,
+    const sal1Btn = screen.getByRole("button", {
+      name: /Ver credencial SAL1/i,
     });
-    fireEvent.click(googleBtn);
+    fireEvent.click(sal1Btn);
 
     expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("Google Cybersecurity");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
-      "/certs/Google Cybersecurity Certificate.webp",
-    );
+    expect(screen.getByTestId("modal-title")).toHaveTextContent("SAL1");
+    expect(screen.getByTestId("modal-cert")).toHaveTextContent("/certs/THM-SAL1-Certificate.png");
 
     // Close modal
     fireEvent.click(screen.getByTestId("modal-close"));

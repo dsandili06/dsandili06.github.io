@@ -24,7 +24,7 @@ describe("Certs section", () => {
     expect(screen.getByText(/SECTION_02 \/\/ CREDENTIALS/i)).toBeInTheDocument();
   });
 
-  it("renders all 3 certifications with date and issuer", () => {
+  it("renders Security+ first with its official score, date and issuer", () => {
     render(<Certs />);
 
     expect(screen.getByText("SAL1 (Security Analyst L1)")).toBeInTheDocument();
@@ -34,7 +34,17 @@ describe("Certs section", () => {
     expect(screen.getByText("19/03/2026 · TryHackMe")).toBeInTheDocument();
     expect(screen.getByText("15/08/2026 · Google")).toBeInTheDocument();
     expect(screen.getByText("20/10/2026 · CompTIA")).toBeInTheDocument();
+    expect(screen.getByText("791 / 900")).toBeInTheDocument();
     expect(screen.queryByText(/SY0-701.*Vigente hasta/i)).not.toBeInTheDocument();
+
+    const certificationTitles = Array.from(document.querySelectorAll("h3")).map((title) =>
+      title.textContent?.trim(),
+    );
+    expect(certificationTitles.slice(0, 3)).toEqual([
+      "CompTIA Security+",
+      "SAL1 (Security Analyst L1)",
+      "Google Cybersecurity",
+    ]);
   });
 
   it("renders badge logo images next to certification titles", () => {
