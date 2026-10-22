@@ -24,7 +24,7 @@ describe("Certs section", () => {
     expect(screen.getByText(/SECTION_02 \/\/ CREDENTIALS/i)).toBeInTheDocument();
   });
 
-  it("renders all 3 certifications with date, validity and issuer", () => {
+  it("renders all 3 certifications with date and issuer", () => {
     render(<Certs />);
 
     expect(screen.getByText("SAL1 (Security Analyst L1)")).toBeInTheDocument();
@@ -34,7 +34,7 @@ describe("Certs section", () => {
     expect(screen.getByText("19/03/2026 · TryHackMe")).toBeInTheDocument();
     expect(screen.getByText("15/08/2026 · Google")).toBeInTheDocument();
     expect(screen.getByText("20/10/2026 · CompTIA")).toBeInTheDocument();
-    expect(screen.getByText("SY0-701 · Vigente hasta 20/10/2029")).toBeInTheDocument();
+    expect(screen.queryByText(/SY0-701.*Vigente hasta/i)).not.toBeInTheDocument();
   });
 
   it("renders badge logo images next to certification titles", () => {

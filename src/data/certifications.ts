@@ -31,7 +31,6 @@ export const CERTIFICATIONS: Certification[] = [
     status: "OBTENIDA",
     badge: "CERTIFIED",
     href: "/certs/comptia-security-plus-sy0-701.webp",
-    note: "SY0-701 · Vigente hasta 20/10/2029",
     logo: "/badges/comptiabadge.png",
     mockExams: [
       {

@@ -12,6 +12,7 @@ type HeroBadge = {
   org: string;
   logo: string;
   cert?: string;
+  featured?: boolean;
 };
 
 const HERO_BADGES: HeroBadge[] = [
@@ -21,13 +22,7 @@ const HERO_BADGES: HeroBadge[] = [
     org: "TryHackMe",
     logo: "/badges/sal1badge.png",
     cert: "/certs/THM-SAL1-Certificate.png",
-  },
-  {
-    id: "google",
-    name: "Google Cybersecurity",
-    org: "Google",
-    logo: "/badges/badgegoogle.png",
-    cert: "/certs/Google Cybersecurity Certificate.webp",
+    featured: true,
   },
   {
     id: "comptia-secplus",
@@ -35,6 +30,14 @@ const HERO_BADGES: HeroBadge[] = [
     org: "CompTIA",
     logo: "/badges/comptiabadge.png",
     cert: "/certs/comptia-security-plus-sy0-701.webp",
+    featured: true,
+  },
+  {
+    id: "google",
+    name: "Google Cybersecurity",
+    org: "Google",
+    logo: "/badges/badgegoogle.png",
+    cert: "/certs/Google Cybersecurity Certificate.webp",
   },
   {
     id: "blue-team",
@@ -71,6 +74,46 @@ export function Hero() {
   });
   const wmY = useTransform(scrollYProgress, [0, 1], [0, 160]);
   const wmOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+
+  const renderBadge = (badge: HeroBadge) => (
+    <button
+      key={badge.id}
+      type="button"
+      onClick={() => {
+        if (!badge.cert) return;
+        setActiveCert({ cert: badge.cert, name: badge.name });
+        setModalCert({ cert: badge.cert, name: badge.name });
+      }}
+      className={`group relative shrink-0 flex items-center justify-center cursor-pointer hover:z-20 transform-gpu backface-hidden will-change-transform transition-[transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg ${
+        badge.featured
+          ? "size-16 md:size-24 drop-shadow-[0_0_18px_rgba(34,211,238,0.2)]"
+          : "size-12"
+      }`}
+      title={`${badge.name} (${badge.org}) — Click para ver credencial`}
+      aria-label={`Ver credencial ${badge.name}`}
+    >
+      <img
+        src={badge.logo}
+        alt={`Badge ${badge.name}`}
+        className="size-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out pointer-events-none transform-gpu backface-hidden group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)] group-hover:brightness-115"
+        loading="eager"
+        decoding="async"
+      />
+      <div
+        className="absolute -top-1 -right-1 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu backface-hidden"
+        aria-hidden="true"
+      >
+        <div className="absolute -inset-1 rounded-full blur-sm bg-cyan-400/30" />
+        <svg
+          viewBox="0 0 24 24"
+          className="relative size-4 sm:size-5 filter transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45 transform-gpu backface-hidden text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.9)]"
+          fill="currentColor"
+        >
+          <path d="M12 0C6.627 0 12 6.627 12 12C0 12 6.627 17.373 12 24C17.373 12 24 17.373 24 12C17.373 6.627 12 0 12 0Z" />
+        </svg>
+      </div>
+    </button>
+  );
 
   return (
     <section
@@ -149,47 +192,21 @@ export function Hero() {
               <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
               <span>VERIFIED_CREDENTIALS</span>
             </div>
-            <div className="flex items-center gap-x-3 gap-y-4 sm:gap-4 flex-wrap">
-              {HERO_BADGES.map((b) => {
-                return (
-                  <button
-                    key={b.id}
-                    type="button"
-                    onClick={() => {
-                      if (b.cert) {
-                        setActiveCert({ cert: b.cert, name: b.name });
-                        setModalCert({ cert: b.cert, name: b.name });
-                      }
-                    }}
-                    className="group relative size-12 sm:size-14 md:size-20 shrink-0 flex items-center justify-center cursor-pointer hover:z-20 transform-gpu backface-hidden will-change-transform transition-[transform,box-shadow,background-color] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:scale-110 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] rounded-lg"
-                    title={`${b.name} (${b.org}) — Click para ver credencial`}
-                    aria-label={`Ver credencial ${b.name}`}
-                  >
-                    <img
-                      src={b.logo}
-                      alt={`Badge ${b.name}`}
-                      className="size-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-all duration-300 ease-out pointer-events-none transform-gpu backface-hidden group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)] group-hover:brightness-115"
-                      loading="eager"
-                      decoding="async"
-                    />
-
-                    {/* Micro-destello estelar en esquina */}
-                    <div
-                      className="absolute -top-1 -right-1 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu backface-hidden"
-                      aria-hidden="true"
-                    >
-                      <div className="absolute -inset-1 rounded-full blur-sm bg-cyan-400/30" />
-                      <svg
-                        viewBox="0 0 24 24"
-                        className="relative size-4 sm:size-5 filter transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:rotate-45 transform-gpu backface-hidden text-white drop-shadow-[0_0_6px_rgba(255,255,255,0.9)]"
-                        fill="currentColor"
-                      >
-                        <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" />
-                      </svg>
-                    </div>
-                  </button>
-                );
-              })}
+            <div className="flex flex-col gap-4">
+              <div
+                role="group"
+                aria-label="Certificaciones destacadas"
+                className="flex items-center gap-4 sm:gap-6"
+              >
+                {HERO_BADGES.filter((badge) => badge.featured).map(renderBadge)}
+              </div>
+              <div
+                role="group"
+                aria-label="Otras certificaciones"
+                className="flex items-center gap-3 sm:gap-4"
+              >
+                {HERO_BADGES.filter((badge) => !badge.featured).map(renderBadge)}
+              </div>
             </div>
           </motion.div>
         </div>

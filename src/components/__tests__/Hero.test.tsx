@@ -61,6 +61,21 @@ describe("Hero section", () => {
       "src",
       "/badges/fortinet-nse-2-certified-in-cybersecurity.1.png",
     );
+
+    const featured = screen.getByRole("group", { name: "Certificaciones destacadas" });
+    expect(featured.querySelectorAll("button")).toHaveLength(2);
+    expect(screen.getByRole("button", { name: /Ver credencial SAL1/i }).className).toContain(
+      "size-16 md:size-24",
+    );
+    expect(
+      screen.getByRole("button", { name: /Ver credencial CompTIA Security\+/i }).className,
+    ).toContain("size-16 md:size-24");
+
+    const secondary = screen.getByRole("group", { name: "Otras certificaciones" });
+    expect(secondary.querySelectorAll("button")).toHaveLength(4);
+    expect(
+      screen.getByRole("button", { name: /Ver credencial Google Cybersecurity/i }).className,
+    ).toContain("size-12");
   });
 
   it("opens in-page CertModal when clicking an obtained credential badge in the Hero", () => {
