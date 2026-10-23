@@ -123,7 +123,7 @@ describe("CommandPalette", () => {
     fireEvent.click(screen.getByText("CompTIA Security+"));
 
     expect(screen.getByRole("dialog", { name: "CompTIA Security+" })).toBeInTheDocument();
-    expect(screen.getByText(/Professor Messer/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Professor Messer/)).toHaveLength(2);
     fireEvent.click(screen.getByRole("tab", { name: /CERTIFICADO OFICIAL/i }));
     expect(screen.getByAltText("CompTIA Security+")).toHaveAttribute(
       "src",

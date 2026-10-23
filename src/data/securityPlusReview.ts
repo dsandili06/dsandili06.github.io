@@ -9,20 +9,21 @@ export const SECURITY_PLUS_REVIEW = {
     {
       heading: "Preparación",
       paragraphs: [
-        "Me preparé sobre todo con los videos gratuitos de Professor Messer en YouTube. También seguí un curso de preparación de Infosec en LinkedIn Learning, aprovechando que ya tenía Premium, y compré el Set 1 de Jason Dion. No hace falta gastar para prepararse: hay buenos recursos gratuitos; cuento estos dos de pago porque fueron parte de mi experiencia, no porque sean imprescindibles.",
-        "El primer simulacro me salió muy mal, pero me sirvió para detectar qué necesitaba reforzar. Después fui mejorando con la práctica. Además, con ayuda de IA creé una herramienta propia para hacer mock exams, repasar un glosario y practicar puertos habituales. En total estimo que trabajé con unas 1400 preguntas de práctica; es una aproximación, no un recuento exacto de preguntas únicas.",
+        "Lo que más usé para prepararme fueron los videos gratuitos de Professor Messer en YouTube. También vi el curso de preparación de Infosec en LinkedIn Learning, aprovechando que ya tenía Premium, y compré el Set 1 de los exámenes de práctica de Jason Dion.",
+        "El primer simulacro de Dion me salió malísimo. Pero me sirvió para ver dónde estaba flojo y qué tenía que repasar. También me vibecodeé una herramienta para practicar con mock exams, un glosario y puertos habituales. Entre todo, debo haber contestado unas 1400 preguntas de práctica.",
       ],
     },
     {
       heading: "El examen",
       paragraphs: [
-        "Aprobé con 791/900 en mi primer intento y usé los 90 minutos completos. Lo más difícil para mí fueron alrededor de diez preguntas en las que varias opciones parecían plausibles; los nervios también pesaron. Las PBQ me resultaron sencillas salvo una que no supe resolver. No comparto preguntas concretas ni contenido confidencial del examen.",
+        "Aprobé en el primer intento con 791/900 y usé los 90 minutos completos. Lo que más me costó fueron las preguntas donde dos o más respuestas parecían correctas. Me tocaron unas diez de ese estilo y ahí sí me ponía nervioso. Las PBQ me resultaron sencillas, salvo una que no tenía idea de cómo resolver; las demás las pude hacer sin problemas.",
       ],
     },
     {
-      heading: "Lo que me llevé",
+      heading: "Lo que recomiendo",
       paragraphs: [
-        "Aprendí mucho durante la preparación. En mi experiencia el examen es exigente, pero abordable. Me resultó más útil comprender los conceptos y practicar cómo aplicarlos que intentar memorizar exhaustivamente cada puerto y acrónimo. Eso no significa que no importen: conviene cubrir los objetivos, pero sin convertir la preparación en una lista interminable de datos aislados.",
+        "Si volviera a prepararme, no arrancaría comprando recursos. Professor Messer está gratis en YouTube y fue de lo que más usé. Yo aproveché LinkedIn Premium y pagué los simulacros de Dion, pero no creo que gastar sea un requisito para prepararse.",
+        "Tampoco dedicaría todo el estudio a memorizar puertos y acrónimos. Practiqué mucho, me equivoqué bastante y fui repasando lo que no entendía. Mi consejo es usar los simulacros para encontrar los puntos débiles, no estudiar solo para acumular respuestas correctas.",
       ],
     },
   ],

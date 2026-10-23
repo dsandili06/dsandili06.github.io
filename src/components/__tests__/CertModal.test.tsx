@@ -51,7 +51,7 @@ describe("CertModal component", () => {
     expect(screen.getByRole("tab", { name: /REVIEW TÉCNICA/i })).toBeInTheDocument();
     expect(screen.getByText("791")).toBeInTheDocument();
     expect(screen.getByText("/ 900")).toBeInTheDocument();
-    expect(screen.getByText(/Professor Messer/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Professor Messer/)).toHaveLength(2);
     expect(screen.getByText(/unas 1400 preguntas/i)).toBeInTheDocument();
     expect(screen.queryByText(/948/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Ventana máx: 24 horas/)).not.toBeInTheDocument();
@@ -185,7 +185,7 @@ describe("CertModal component", () => {
       />,
     );
     await waitFor(() => expect(document.querySelector(".yarl__portal")).not.toBeInTheDocument());
-    expect(screen.getByText(/Professor Messer/)).toBeInTheDocument();
+    expect(screen.getAllByText(/Professor Messer/)).toHaveLength(2);
   });
 
   it("applies safe-area insets on modal backdrop container", () => {
