@@ -72,24 +72,31 @@ export function About() {
         {/* Left Column: Authentic & Grounded Narrative Bio */}
         <div className="space-y-6 text-[15px] md:text-base leading-relaxed text-foreground/80 max-w-[58ch] lg:pt-5">
           <p className="text-base sm:text-[17px] text-foreground/90 font-normal leading-relaxed">
-            Mi vínculo con la informática empezó desde la curiosidad de entender cómo funcionan los
-            sistemas por dentro. Con el tiempo, esa inquietud se transformó en una vocación clara
-            por la{" "}
-            <span className="text-[var(--accent)] font-medium">ciberseguridad defensiva</span>:
-            comprender cómo se originan las amenazas, qué rastros dejan y cómo neutralizarlas de
-            raíz.
+            Mi interés por la informática nació de una curiosidad simple: entender qué sucede detrás
+            de cada sistema, cómo funciona y qué ocurre cuando algo deja de comportarse como
+            debería. Con el tiempo, esa curiosidad encontró su lugar en la{" "}
+            <span className="text-[var(--accent)] font-medium">ciberseguridad defensiva</span>,
+            especialmente en el <span className="text-[var(--accent)] font-medium">Blue Team</span>{" "}
+            y las operaciones de seguridad (SOC).
           </p>
           <p>
-            Me defino por un aprendizaje constante y experimental. Lejos de quedarme en la teoría,
-            dedico gran parte de mi tiempo a reconstruir incidentes en entornos simulados,
-            diseccionar muestras de malware y analizar telemetría real de endpoints. En el{" "}
-            <span className="text-[var(--accent)] font-medium">Blue Team</span> encontré la
-            combinación perfecta entre pensamiento crítico, paciencia y rigor técnico.
+            Disfruto el proceso de investigar, conectar evidencias y comprender el comportamiento de
+            una amenaza más allá de una alerta. Mi formación combina el estudio constante con la
+            práctica en laboratorios, donde analizo eventos de seguridad, investigo incidentes
+            simulados, examino artefactos forenses y busco entender no solo qué ocurrió, sino
+            también cómo y por qué.
+          </p>
+          <p>
+            Creo que un buen analista no se define únicamente por las herramientas que domina, sino
+            por su capacidad de hacer las preguntas correctas, prestar atención a los detalles y
+            mantener el criterio incluso frente a la incertidumbre.
           </p>
           <div className="border-l-2 border-[var(--accent)]/50 pl-4 py-2 bg-[color-mix(in_oklab,var(--accent)_3%,transparent)] rounded-r-xs">
             <p className="text-[14.5px] sm:text-base text-foreground/90 italic font-normal leading-relaxed">
-              Mi objetivo es aportar serenidad, análisis metódico y capacidad de respuesta inmediata
-              ante cualquier anomalía, convirtiendo datos aislados en defensas sólidas.
+              Hoy busco dar el siguiente paso hacia mi primera experiencia profesional en un SOC,
+              aportando curiosidad, pensamiento analítico y una mentalidad de mejora continua.
+              Porque, para mí, la ciberseguridad no consiste solamente en detectar amenazas, sino en
+              comprenderlas para construir mejores defensas.
             </p>
           </div>
         </div>
