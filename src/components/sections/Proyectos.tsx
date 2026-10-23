@@ -12,7 +12,7 @@ export function Proyectos() {
         {PROJECTS.map((p) => (
           <SpotlightCard
             key={p.id}
-            className="group relative flex flex-col justify-between border border-[var(--accent)]/30 hover:border-[var(--accent)]/55 rounded-xs bg-[color-mix(in_oklab,var(--surface)_96%,transparent)] backdrop-blur-md shadow-[inset_0_1px_0_0_rgba(255,255,255,0.07),0_12px_36px_-6px_rgba(0,0,0,0.6)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.18),0_16px_40px_-6px_rgba(0,0,0,0.65)] hover:z-10 transform-gpu backface-hidden will-change-transform active:scale-[0.99] active:duration-100 transition-all duration-300 ease-out overflow-hidden"
+            className="group relative flex flex-col justify-between border border-border-dim hover:border-[var(--accent)]/50 rounded-xs bg-[var(--surface)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.07),0_12px_36px_-6px_rgba(0,0,0,0.6)] hover:shadow-[inset_0_1px_0_0_rgba(121,172,255,0.12),0_16px_40px_-6px_rgba(0,0,0,0.65)] hover:z-10 transform-gpu backface-hidden will-change-transform active:scale-[0.99] active:duration-100 transition-all duration-300 ease-out overflow-hidden"
           >
             {/* Top ambient laser accent */}
             <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/45 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20" />
@@ -35,10 +35,10 @@ export function Proyectos() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[var(--surface)] via-[var(--surface)]/30 to-transparent" />
                 <div className="absolute top-3.5 left-4 right-4 flex items-center justify-between pointer-events-none z-10">
-                  <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold bg-[#07080A]/90 px-2.5 py-1 border border-border-dim backdrop-blur-xs shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
+                  <span className="font-mono text-[10px] tracking-[0.25em] text-[var(--accent)] font-bold bg-[var(--surface)] px-2.5 py-1 border border-border-dim shadow-[0_2px_8px_rgba(0,0,0,0.5)]">
                     PRJ_{p.id}
                   </span>
-                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] bg-[#07080A]/90 backdrop-blur-xs shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-1.5">
+                  <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)] bg-[var(--surface)] shadow-[0_2px_8px_rgba(0,0,0,0.5)] flex items-center gap-1.5">
                     <span className="size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
                     PUBLIC REPO
                   </span>
@@ -69,7 +69,7 @@ export function Proyectos() {
 
                 {/* Bento Metrics Strip */}
                 {p.metrics && (
-                  <div className="grid grid-cols-3 gap-2 my-4 p-3 bg-[color-mix(in_oklab,var(--surface-2)_75%,transparent)] backdrop-blur-xs border border-border-dim/70 rounded-xs group-hover:border-[var(--accent)]/30 transition-colors duration-200 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
+                  <div className="grid grid-cols-3 gap-2 my-4 p-3 bg-[var(--surface-2)] border border-border-dim/70 rounded-xs group-hover:border-[var(--accent)]/30 transition-colors duration-200 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)]">
                     {p.metrics.map((m) => (
                       <div key={m.label} className="min-w-0">
                         <div className="font-mono text-[8px] sm:text-[9px] uppercase tracking-[0.18em] text-[var(--muted-foreground)] truncate">
@@ -93,7 +93,7 @@ export function Proyectos() {
                     {p.scripts.map((s) => (
                       <div
                         key={s.name}
-                        className="group/item relative flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface-2)]/40 border border-border-dim/40 hover:border-[var(--accent)]/50 hover:bg-[color-mix(in_oklab,var(--accent)_3.5%,var(--surface-2))] transition-all duration-200 ease-out hover:z-10 transform-gpu backface-hidden"
+                        className="group/item relative flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface-2)] border border-border-dim/40 hover:border-[var(--accent)]/50 hover:bg-[color-mix(in_oklab,var(--accent)_3.5%,var(--surface-2))] transition-all duration-200 ease-out hover:z-10 transform-gpu backface-hidden"
                       >
                         {s.lang ? (
                           <span className="font-mono text-[9px] uppercase tracking-[0.15em] px-1.5 py-0.5 rounded-2xs border border-[var(--accent)]/40 text-[var(--accent)] bg-[var(--accent)]/10 shrink-0 mt-0.5">
@@ -153,7 +153,7 @@ export function Proyectos() {
       </div>
 
       {/* WIP Card — Minimalist with Animated Loading Bar */}
-      <div className="border border-dashed border-[var(--accent)]/40 hover:border-[var(--accent)]/70 rounded-xs bg-[radial-gradient(ellipse_at_top,_rgba(59,130,246,0.04),_transparent_65%)] bg-[var(--surface)] p-4 sm:p-6 md:p-8 transition-all duration-300 ease-out relative overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.15),0_12px_36px_rgba(0,0,0,0.5)] hover:z-10 transform-gpu backface-hidden">
+      <div className="border border-dashed border-border-dim hover:border-[var(--accent)]/50 rounded-xs bg-[var(--surface)] p-4 sm:p-6 md:p-8 transition-all duration-300 ease-out relative overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[inset_0_1px_0_0_rgba(121,172,255,0.12),0_12px_36px_rgba(0,0,0,0.5)] hover:z-10 transform-gpu backface-hidden">
         {/* Tactical Corner HUD Accents */}
         <span className="absolute top-0 left-0 size-3 border-t-2 border-l-2 border-[var(--accent)]/50 opacity-40 sm:opacity-60 pointer-events-none" />
         <span className="absolute top-0 right-0 size-3 border-t-2 border-r-2 border-[var(--accent)]/50 opacity-40 sm:opacity-60 pointer-events-none" />
@@ -194,7 +194,7 @@ export function Proyectos() {
                 role="progressbar"
                 aria-label="Progreso del próximo proyecto"
               >
-                <div className="h-full bg-gradient-to-r from-[var(--accent)]/60 via-[var(--accent)] to-cyan-400 relative rounded-xs w-[68%]">
+                <div className="h-full bg-gradient-to-r from-[var(--accent)]/60 via-[var(--accent)] to-[var(--accent-secondary)] relative rounded-xs w-[68%]">
                   <motion.div
                     className="absolute inset-0 bg-gradient-to-r from-transparent via-white/35 to-transparent"
                     initial={{ x: "-100%" }}

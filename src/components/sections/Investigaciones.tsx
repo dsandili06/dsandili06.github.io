@@ -95,7 +95,7 @@ export function Investigaciones() {
         </div>
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.8fr)]">
           {FEATURED_INVESTIGATIONS[0] && (
-            <article className="group relative min-w-0 overflow-hidden rounded-xs border border-[var(--accent)]/35 bg-[color-mix(in_oklab,var(--surface)_96%,transparent)] text-left shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_14px_38px_-12px_rgba(0,0,0,0.7)] transition-[border-color,box-shadow] duration-300 hover:border-[var(--accent)]/70 hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.16),0_18px_44px_-12px_rgba(0,0,0,0.75)]">
+            <article className="group relative min-w-0 overflow-hidden rounded-xs border border-border-dim bg-[var(--surface)] text-left shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_14px_38px_-12px_rgba(0,0,0,0.7)] transition-[border-color,box-shadow] duration-300 hover:border-[var(--accent)]/50 hover:shadow-[inset_0_1px_0_0_rgba(121,172,255,0.12),0_18px_44px_-12px_rgba(0,0,0,0.75)]">
               <span className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/70 to-transparent" />
               <span className="pointer-events-none absolute left-0 top-0 z-10 size-3 border-l border-t border-[var(--accent)]/70" />
               <span className="pointer-events-none absolute bottom-0 right-0 z-10 size-3 border-b border-r border-[var(--accent)]/70" />
@@ -165,7 +165,7 @@ export function Investigaciones() {
             {FEATURED_INVESTIGATIONS.slice(1).map((i, idx) => (
               <article
                 key={i.id}
-                className="group relative flex min-h-[184px] min-w-0 flex-col justify-between overflow-hidden border-l-2 border-[var(--accent)]/40 bg-[color-mix(in_oklab,var(--surface)_88%,transparent)] p-5 text-left transition-[background-color,border-color] duration-200 hover:border-[var(--accent)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))]"
+                className="group relative flex min-h-[184px] min-w-0 flex-col justify-between overflow-hidden border-l-2 border-[var(--accent)]/40 bg-[var(--surface)] p-5 text-left transition-[background-color,border-color] duration-200 hover:border-[var(--accent)] hover:bg-[color-mix(in_oklab,var(--accent)_5%,var(--surface))]"
               >
                 <span
                   className="pointer-events-none absolute -right-2 -top-5 font-mono text-7xl font-bold tracking-tighter text-white/[0.035]"
@@ -313,7 +313,7 @@ export function Investigaciones() {
                 <button
                   type="button"
                   onClick={() => openWriteup(i.id)}
-                  className="group relative flex flex-col justify-between h-full p-6 rounded-xs bg-[color-mix(in_oklab,var(--surface)_94%,transparent)] border border-border-dim hover:border-[var(--accent)]/55 hover:bg-[color-mix(in_oklab,var(--accent)_2.5%,var(--surface))] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_6px_24px_rgba(0,0,0,0.35)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.18),0_8px_24px_-4px_rgba(0,0,0,0.5)] hover:z-10 transform-gpu backface-hidden will-change-transform active:scale-[0.985] active:duration-100 transition-all duration-300 ease-out text-left w-full cursor-pointer overflow-hidden"
+                  className="group relative flex flex-col justify-between h-full p-6 rounded-xs bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/50 hover:bg-[var(--surface-2)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06),0_6px_24px_rgba(0,0,0,0.35)] hover:shadow-[inset_0_1px_0_0_rgba(121,172,255,0.12),0_8px_24px_-4px_rgba(0,0,0,0.5)] hover:z-10 transform-gpu backface-hidden will-change-transform active:scale-[0.985] active:duration-100 transition-all duration-300 ease-out text-left w-full cursor-pointer overflow-hidden"
                 >
                   {/* Top ambient highlight line */}
                   <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/45 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
@@ -363,7 +363,7 @@ export function Investigaciones() {
 
             {/* WIP Card */}
             <div className="relative hover:z-10 flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] pl-4">
-              <div className="relative flex flex-col justify-between h-full p-6 rounded-xs bg-[radial-gradient(ellipse_at_top,_rgba(59,130,246,0.04),_transparent_65%)] bg-[var(--surface)]/60 border border-dashed border-[var(--accent)]/40 hover:border-[var(--accent)]/70 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.12),0_6px_20px_rgba(0,0,0,0.4)] backdrop-blur-xs opacity-80 hover:opacity-100 hover:z-10 transform-gpu backface-hidden transition-all duration-300 ease-out overflow-hidden">
+              <div className="relative flex flex-col justify-between h-full p-6 rounded-xs bg-[var(--surface)] border border-dashed border-border-dim hover:border-[var(--accent)]/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.06)] hover:shadow-[inset_0_1px_0_0_rgba(121,172,255,0.12),0_6px_20px_rgba(0,0,0,0.4)] hover:z-10 transform-gpu backface-hidden transition-all duration-300 ease-out overflow-hidden">
                 {/* Tactical HUD Corner Accents */}
                 <span className="absolute top-0 left-0 size-2.5 border-t border-l border-[var(--accent)]/40 opacity-40 sm:opacity-60 pointer-events-none" />
                 <span className="absolute top-0 right-0 size-2.5 border-t border-r border-[var(--accent)]/40 opacity-40 sm:opacity-60 pointer-events-none" />

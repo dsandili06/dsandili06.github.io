@@ -60,7 +60,7 @@ export function SectionHeader({ number, title, kicker }: SectionHeaderProps) {
           </div>
           <h2
             ref={titleRef}
-            className="font-display font-bold leading-none tracking-[-0.02em] text-[var(--accent)]"
+            className="font-display font-bold leading-none tracking-[-0.02em] text-foreground"
             style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
           >
             {title}

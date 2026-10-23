@@ -63,7 +63,7 @@ function CopyCodeButton({ children }: { children: ReactNode }) {
       type="button"
       onClick={onCopy}
       aria-label="Copiar comando"
-      className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded border border-border-dim bg-[#0D1117]/90 text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] opacity-100 md:opacity-0 md:group-hover/code:opacity-100 focus:opacity-100 transition-opacity"
+      className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded border border-border-dim bg-[var(--surface)] text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] opacity-100 md:opacity-0 md:group-hover/code:opacity-100 focus:opacity-100 transition-opacity"
     >
       {copied ? <Check size={12} strokeWidth={2} /> : <Copy size={12} strokeWidth={1.5} />}
       {copied ? "Copiado" : "Copiar"}
@@ -197,8 +197,8 @@ export function WriteupMarkdown({
       return (
         <div className="relative group/code">
           <CopyCodeButton>{children}</CopyCodeButton>
-          <pre className="overflow-x-auto rounded border border-border-dim bg-[#0D1117] p-4 mb-4">
-            <code className="font-mono text-[13px] leading-relaxed text-[#c9d1d9]" {...props}>
+          <pre className="overflow-x-auto rounded border border-border-dim bg-[var(--surface)] p-4 mb-4">
+            <code className="font-mono text-[13px] leading-relaxed text-foreground" {...props}>
               {children}
             </code>
           </pre>

@@ -4,52 +4,61 @@ import { motion } from "motion/react";
 type Line = { text: string; color: string };
 
 const BOOT_LINES: Line[] = [
-  { text: "$ volatility3 -f memory.raw windows.pslist", color: "#94A3B8" },
-  { text: "[*] Analyzing process list...", color: "#E2E8F0" },
-  { text: "[+] 87 processes found", color: "#22D3EE" },
-  { text: '$ strings malware.exe | grep -i "http"', color: "#94A3B8" },
-  { text: "[!] C2 detected: 185.220.101.47", color: "#3B82F6" },
-  { text: '$ splunk search "EventCode=4625"', color: "#94A3B8" },
-  { text: "[+] 847 failed logons — threshold exceeded", color: "#22D3EE" },
-  { text: "[ALERT] Escalating to T1 analyst...", color: "#3B82F6" },
+  { text: "$ volatility3 -f memory.raw windows.pslist", color: "var(--muted-foreground)" },
+  { text: "[*] Analyzing process list...", color: "var(--foreground)" },
+  { text: "[+] 87 processes found", color: "var(--accent-green)" },
+  { text: '$ strings malware.exe | grep -i "http"', color: "var(--muted-foreground)" },
+  { text: "[!] C2 detected: 185.220.101.47", color: "var(--accent-amber)" },
+  { text: '$ splunk search "EventCode=4625"', color: "var(--muted-foreground)" },
+  { text: "[+] 847 failed logons — threshold exceeded", color: "var(--accent-green)" },
+  { text: "[ALERT] Escalating to T1 analyst...", color: "var(--accent-amber)" },
 ];
 
 const COMMANDS: Record<string, Line[]> = {
   help: [
-    { text: "Comandos disponibles:", color: "#E2E8F0" },
-    { text: "  help      — Muestra esta ayuda", color: "#94A3B8" },
-    { text: "  whoami    — Info del analista", color: "#94A3B8" },
-    { text: "  ls        — Lista secciones del portfolio", color: "#94A3B8" },
-    { text: "  skills    — Stack técnico", color: "#94A3B8" },
-    { text: "  contact   — Info de contacto", color: "#94A3B8" },
-    { text: "  clear     — Limpia el terminal", color: "#94A3B8" },
-    { text: "  exit      — Cierra la sesión", color: "#94A3B8" },
+    { text: "Comandos disponibles:", color: "var(--foreground)" },
+    { text: "  help      — Muestra esta ayuda", color: "var(--muted-foreground)" },
+    { text: "  whoami    — Info del analista", color: "var(--muted-foreground)" },
+    { text: "  ls        — Lista secciones del portfolio", color: "var(--muted-foreground)" },
+    { text: "  skills    — Stack técnico", color: "var(--muted-foreground)" },
+    { text: "  contact   — Info de contacto", color: "var(--muted-foreground)" },
+    { text: "  clear     — Limpia el terminal", color: "var(--muted-foreground)" },
+    { text: "  exit      — Cierra la sesión", color: "var(--muted-foreground)" },
   ],
   whoami: [
-    { text: "Santiago Daniel Sandili", color: "#3B82F6" },
-    { text: "SOC Analyst Jr. · Blue Team · DFIR", color: "#E2E8F0" },
-    { text: "Tucumán, Argentina", color: "#94A3B8" },
+    { text: "Santiago Daniel Sandili", color: "var(--accent)" },
+    { text: "SOC Analyst Jr. · Blue Team · DFIR", color: "var(--foreground)" },
+    { text: "Tucumán, Argentina", color: "var(--muted-foreground)" },
   ],
   ls: [
-    { text: "about/        proyectos/    investigaciones/", color: "#22D3EE" },
-    { text: "stack/        certs/        cursos/", color: "#22D3EE" },
-    { text: "contacto/", color: "#22D3EE" },
+    { text: "about/        proyectos/    investigaciones/", color: "var(--accent)" },
+    { text: "stack/        certs/        cursos/", color: "var(--accent)" },
+    { text: "contacto/", color: "var(--accent)" },
   ],
   skills: [
-    { text: "Forense:      Volatility 3, Autopsy, FTK Imager, Velociraptor", color: "#E2E8F0" },
-    { text: "Malware:      dnSpy, ExtAnalysis, Hybrid Analysis, Any.Run", color: "#E2E8F0" },
-    { text: "SIEM:         Splunk SPL, ELK Stack, Wireshark, Suricata", color: "#E2E8F0" },
-    { text: "Scripting:    Python, Bash, PowerShell", color: "#E2E8F0" },
-    { text: "OSINT:        Shodan, VirusTotal, AbuseIPDB, CyberChef", color: "#E2E8F0" },
+    {
+      text: "Forense:      Volatility 3, Autopsy, FTK Imager, Velociraptor",
+      color: "var(--foreground)",
+    },
+    {
+      text: "Malware:      dnSpy, ExtAnalysis, Hybrid Analysis, Any.Run",
+      color: "var(--foreground)",
+    },
+    {
+      text: "SIEM:         Splunk SPL, ELK Stack, Wireshark, Suricata",
+      color: "var(--foreground)",
+    },
+    { text: "Scripting:    Python, Bash, PowerShell", color: "var(--foreground)" },
+    { text: "OSINT:        Shodan, VirusTotal, AbuseIPDB, CyberChef", color: "var(--foreground)" },
   ],
   contact: [
-    { text: "LinkedIn:  /in/santiagodsandili", color: "#3B82F6" },
-    { text: "Email:     sdsandili06@gmail.com", color: "#3B82F6" },
-    { text: "GitHub:    github.com/dsandili06", color: "#3B82F6" },
+    { text: "LinkedIn:  /in/santiagodsandili", color: "var(--accent)" },
+    { text: "Email:     sdsandili06@gmail.com", color: "var(--accent)" },
+    { text: "GitHub:    github.com/dsandili06", color: "var(--accent)" },
   ],
   exit: [
-    { text: "[*] Cerrando sesión...", color: "#94A3B8" },
-    { text: "[+] Hasta la próxima. Stay curious.", color: "#22D3EE" },
+    { text: "[*] Cerrando sesión...", color: "var(--muted-foreground)" },
+    { text: "[+] Hasta la próxima. Stay curious.", color: "var(--accent-green)" },
   ],
 };
 
@@ -112,7 +121,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
     const trimmed = cmd.trim().toLowerCase();
     const newHistory: Line[] = [
       ...history,
-      { text: `analyst@soc-lab:~$ ${cmd}`, color: "#22D3EE" },
+      { text: `analyst@soc-lab:~$ ${cmd}`, color: "var(--accent)" },
     ];
 
     if (trimmed === "clear") {
@@ -134,8 +143,11 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
     } else if (trimmed) {
       setHistory([
         ...newHistory,
-        { text: `bash: ${trimmed}: command not found`, color: "#FF5F56" },
-        { text: "Escribí 'help' para ver los comandos disponibles.", color: "#475569" },
+        { text: `bash: ${trimmed}: command not found`, color: "var(--accent-error)" },
+        {
+          text: "Escribí 'help' para ver los comandos disponibles.",
+          color: "var(--muted-foreground)",
+        },
       ]);
     } else {
       setHistory(newHistory);
@@ -156,8 +168,8 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
       transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
       className="w-full overflow-hidden"
       style={{
-        backgroundColor: "#0A0F11",
-        border: "1px solid rgba(255,255,255,0.08)",
+        backgroundColor: "var(--surface)",
+        border: "1px solid var(--border-dim)",
         borderRadius: 4,
       }}
       onClick={() => interactive && inputRef.current?.focus()}
@@ -165,7 +177,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
       {/* Header */}
       <div
         className="flex items-center gap-2 px-4 py-2.5 border-b"
-        style={{ borderColor: "rgba(255,255,255,0.06)" }}
+        style={{ borderColor: "var(--border-dim)" }}
       >
         <span className="block size-2 rounded-full" style={{ background: "#FF5F56" }} />
         <span className="block size-2 rounded-full" style={{ background: "#FFBD2E" }} />
@@ -192,7 +204,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
             {l.text.endsWith("$ ") && i === BOOT_LINES.length - 1 && !interactive && (
               <span
                 className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]"
-                style={{ width: "0.6em", height: "1em", background: "#22D3EE" }}
+                style={{ width: "0.6em", height: "1em", background: "var(--accent)" }}
               />
             )}
           </div>
@@ -217,20 +229,20 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
         ))}
         {interactive && !isMobile && (
           <div className="flex items-center">
-            <span style={{ color: "#22D3EE" }}>analyst@soc-lab:~$ </span>
+            <span style={{ color: "var(--accent)" }}>analyst@soc-lab:~$ </span>
             <input
               ref={inputRef}
               type="text"
               value={userInput}
               onChange={(e) => setUserInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="flex-1 bg-transparent border-none outline-none text-[#E2E8F0] font-mono text-[12px] ml-1"
-              style={{ caretColor: "#22D3EE" }}
+              className="flex-1 bg-transparent border-none outline-none text-foreground font-mono text-[12px] ml-1"
+              style={{ caretColor: "var(--accent)" }}
               aria-label="Terminal input"
             />
             <span
               className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]"
-              style={{ width: "0.6em", height: "1em", background: "#22D3EE" }}
+              style={{ width: "0.6em", height: "1em", background: "var(--accent)" }}
             />
           </div>
         )}

@@ -19,39 +19,43 @@ const CATEGORY_META: Record<
 > = {
   "FORENSE & TRIAGE": {
     icon: FileSearch,
-    accentColor: "text-cyan-400",
-    borderActive: "border-cyan-400/50 bg-[color-mix(in_oklab,#22d3ee_6%,var(--surface))]",
-    borderHover: "hover:border-cyan-400/40",
-    dotColor: "bg-cyan-400",
-    borderCorner: "border-cyan-400/60",
-    barBg: "bg-cyan-400",
+    accentColor: "text-[var(--accent)]",
+    borderActive:
+      "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--accent)_6%,var(--surface))]",
+    borderHover: "hover:border-[var(--accent)]/40",
+    dotColor: "bg-[var(--accent)]",
+    borderCorner: "border-[var(--accent)]/60",
+    barBg: "bg-[var(--accent)]",
   },
   "MALWARE ANALYSIS": {
     icon: Binary,
-    accentColor: "text-sky-400",
-    borderActive: "border-sky-400/50 bg-[color-mix(in_oklab,#38bdf8_6%,var(--surface))]",
-    borderHover: "hover:border-sky-400/40",
-    dotColor: "bg-sky-400",
-    borderCorner: "border-sky-400/60",
-    barBg: "bg-sky-400",
+    accentColor: "text-[var(--accent)]",
+    borderActive:
+      "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--accent)_6%,var(--surface))]",
+    borderHover: "hover:border-[var(--accent)]/40",
+    dotColor: "bg-[var(--accent)]",
+    borderCorner: "border-[var(--accent)]/60",
+    barBg: "bg-[var(--accent)]",
   },
   "SIEM & NETWORK": {
     icon: Network,
-    accentColor: "text-blue-400",
-    borderActive: "border-blue-500/50 bg-[color-mix(in_oklab,#3b82f6_6%,var(--surface))]",
-    borderHover: "hover:border-blue-500/40",
-    dotColor: "bg-blue-400",
-    borderCorner: "border-blue-500/60",
-    barBg: "bg-blue-500",
+    accentColor: "text-[var(--accent)]",
+    borderActive:
+      "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--accent)_6%,var(--surface))]",
+    borderHover: "hover:border-[var(--accent)]/40",
+    dotColor: "bg-[var(--accent)]",
+    borderCorner: "border-[var(--accent)]/60",
+    barBg: "bg-[var(--accent)]",
   },
   "SCRIPTING & OSINT": {
     icon: Terminal,
-    accentColor: "text-indigo-400",
-    borderActive: "border-indigo-500/50 bg-[color-mix(in_oklab,#6366f1_6%,var(--surface))]",
-    borderHover: "hover:border-indigo-500/40",
-    dotColor: "bg-indigo-400",
-    borderCorner: "border-indigo-500/60",
-    barBg: "bg-indigo-500",
+    accentColor: "text-[var(--accent)]",
+    borderActive:
+      "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--accent)_6%,var(--surface))]",
+    borderHover: "hover:border-[var(--accent)]/40",
+    dotColor: "bg-[var(--accent)]",
+    borderCorner: "border-[var(--accent)]/60",
+    barBg: "bg-[var(--accent)]",
   },
 };
 
@@ -72,12 +76,13 @@ export function Stack() {
   const activeGroup = STACK_GROUPS.find((g) => g.title === selectedCategory) ?? STACK_GROUPS[0];
   const activeMeta = CATEGORY_META[activeGroup.title] ?? {
     icon: Terminal,
-    accentColor: "text-cyan-400",
-    borderActive: "border-cyan-400/50 bg-[color-mix(in_oklab,#22d3ee_6%,var(--surface))]",
-    borderHover: "hover:border-cyan-400/40",
-    dotColor: "bg-cyan-400",
-    borderCorner: "border-cyan-400/60",
-    barBg: "bg-cyan-400",
+    accentColor: "text-[var(--accent)]",
+    borderActive:
+      "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--accent)_6%,var(--surface))]",
+    borderHover: "hover:border-[var(--accent)]/40",
+    dotColor: "bg-[var(--accent)]",
+    borderCorner: "border-[var(--accent)]/60",
+    barBg: "bg-[var(--accent)]",
   };
   const ActiveIcon = activeMeta.icon;
 
@@ -88,7 +93,7 @@ export function Stack() {
         <div className="flex flex-col gap-3">
           <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] flex items-center justify-between pb-2 border-b border-border-dim">
             <span>OPERATIONAL_DOMAINS</span>
-            <span className="flex items-center gap-1.5 text-cyan-400">
+            <span className="flex items-center gap-1.5 text-[var(--accent)]">
               <Activity className="size-3 animate-pulse" />
               <span>LIVE_DECK</span>
             </span>
@@ -98,13 +103,13 @@ export function Stack() {
             {STACK_GROUPS.map((group) => {
               const meta = CATEGORY_META[group.title] ?? {
                 icon: Terminal,
-                accentColor: "text-cyan-400",
+                accentColor: "text-[var(--accent)]",
                 borderActive:
-                  "border-cyan-400/50 bg-[color-mix(in_oklab,#22d3ee_6%,var(--surface))]",
-                borderHover: "hover:border-cyan-400/40",
-                dotColor: "bg-cyan-400",
-                borderCorner: "border-cyan-400/60",
-                barBg: "bg-cyan-400",
+                  "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--accent)_6%,var(--surface))]",
+                borderHover: "hover:border-[var(--accent)]/40",
+                dotColor: "bg-[var(--accent)]",
+                borderCorner: "border-[var(--accent)]/60",
+                barBg: "bg-[var(--accent)]",
                 code: "BAY_01",
               };
               const Icon = meta.icon;
@@ -192,7 +197,7 @@ export function Stack() {
         </div>
 
         {/* Right: Tactical Instrument Bay */}
-        <div className="relative flex flex-col p-4 sm:p-6 md:p-8 rounded-xs border border-[var(--accent)]/35 bg-[color-mix(in_oklab,var(--surface)_94%,transparent)] backdrop-blur-xl min-h-[380px] overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_20px_50px_-10px_rgba(0,0,0,0.7)]">
+        <div className="relative flex flex-col p-4 sm:p-6 md:p-8 rounded-xs border border-border-dim bg-[var(--surface)] min-h-[380px] overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_20px_50px_-10px_rgba(0,0,0,0.7)]">
           {/* Tactical HUD Corner Brackets */}
           <span
             className={cn(
@@ -265,7 +270,7 @@ export function Stack() {
                   ease: [0.16, 1, 0.3, 1],
                   scale: { duration: 0.18, ease: [0.16, 1, 0.3, 1] },
                 }}
-                className="group/tool relative flex items-center justify-between p-3.5 rounded-xs border border-border-dim/80 bg-[color-mix(in_oklab,var(--background)_45%,var(--surface))] hover:bg-[color-mix(in_oklab,var(--accent)_2.5%,var(--surface))] hover:border-[var(--accent)]/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] hover:shadow-[inset_0_1px_0_0_rgba(59,130,246,0.12),0_4px_16px_-2px_rgba(0,0,0,0.4)] hover:z-10 transform-gpu backface-hidden will-change-transform transition-[background-color,border-color,box-shadow,color] duration-200 ease-out cursor-default select-none overflow-hidden"
+                className="group/tool relative flex items-center justify-between p-3.5 rounded-xs border border-border-dim/80 bg-[var(--surface-2)] hover:bg-[color-mix(in_oklab,var(--accent)_2.5%,var(--surface-2))] hover:border-[var(--accent)]/50 shadow-[inset_0_1px_0_0_rgba(255,255,255,0.04)] hover:shadow-[inset_0_1px_0_0_rgba(121,172,255,0.12),0_4px_16px_-2px_rgba(0,0,0,0.4)] hover:z-10 transform-gpu backface-hidden will-change-transform transition-[background-color,border-color,box-shadow,color] duration-200 ease-out cursor-default select-none overflow-hidden"
               >
                 {/* Top laser accent on hover */}
                 <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/35 to-transparent opacity-0 group-hover/tool:opacity-100 transition-opacity duration-200 pointer-events-none" />

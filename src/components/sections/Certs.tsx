@@ -44,7 +44,7 @@ export function Certs() {
             <Wrapper
               key={c.code}
               {...wrapperProps}
-              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-all duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#04070b] focus-visible:z-20 ${isClickable ? "hover:bg-[var(--surface-2)] active:scale-[0.997] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
+              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-all duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] focus-visible:z-20 ${isClickable ? "hover:bg-[var(--surface-2)] active:scale-[0.997] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
               style={{ borderLeft: `3px solid ${accentColor}` }}
             >
               {/* Top ambient highlight on hover */}
@@ -94,7 +94,7 @@ export function Certs() {
                     {/* Halo suave de luz */}
                     <div
                       className={`absolute -inset-1 rounded-full ${
-                        obtained ? "bg-emerald-400/30" : "bg-cyan-400/30"
+                        obtained ? "bg-[var(--accent-green)]/30" : "bg-[var(--accent)]/30"
                       } blur-sm`}
                     />
                     {/* Destello estelar reluciente */}
@@ -109,8 +109,8 @@ export function Certs() {
                     <svg
                       viewBox="0 0 24 24"
                       className={`absolute -bottom-1 -left-1 size-2 ${
-                        obtained ? "text-emerald-200" : "text-cyan-200"
-                      } filter drop-shadow-[0_0_3px_rgba(103,232,249,0.8)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-rotate-45 transform-gpu backface-hidden`}
+                        obtained ? "text-[var(--accent-green)]" : "text-[var(--accent)]"
+                      } filter drop-shadow-[0_0_3px_rgba(121,172,255,0.65)] transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-rotate-45 transform-gpu backface-hidden`}
                       fill="currentColor"
                     >
                       <path d="M12 0C12 6.627 17.373 12 24 12C17.373 12 12 17.373 12 24C12 17.373 6.627 12 0 12C6.627 12 12 6.627 12 0Z" />
@@ -163,7 +163,7 @@ export function Certs() {
           target="_blank"
           rel="noreferrer"
           aria-label="Ver perfil oficial de credenciales e insignias en Credly (abre en pestaña nueva)"
-          className="group bg-[var(--surface)] p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border-dim hover:border-[#FF6B00]/50 hover:bg-[var(--surface-2)] transition-all duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B00] focus-visible:ring-offset-2 focus-visible:ring-offset-[#04070b] cursor-pointer"
+          className="group bg-[var(--surface)] p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border-dim hover:border-[#FF6B00]/50 hover:bg-[var(--surface-2)] transition-all duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B00] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] cursor-pointer"
           style={{ borderLeft: "3px solid #FF6B00" }}
         >
           {/* Top ambient highlight on hover */}

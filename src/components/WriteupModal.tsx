@@ -98,7 +98,10 @@ export function WriteupModal({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[9999] flex flex-col items-center justify-center"
-            style={{ background: "rgba(4, 7, 11, 0.9)", backdropFilter: "blur(12px)" }}
+            style={{
+              background: "color-mix(in srgb, var(--background) 90%, transparent)",
+              backdropFilter: "blur(12px)",
+            }}
             onClick={handleClose}
           >
             {loading && (
@@ -113,7 +116,7 @@ export function WriteupModal({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.97, y: 16 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="relative mx-auto w-full max-w-7xl flex flex-col"
+              className="relative mx-auto w-full max-w-7xl flex flex-col bg-[var(--surface)] border border-border-dim"
               style={{ maxHeight: "100dvh" }}
               onClick={(e) => e.stopPropagation()}
               role="dialog"
@@ -122,7 +125,7 @@ export function WriteupModal({
               aria-busy={loading}
             >
               {/* Header */}
-              <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-3 shrink-0">
+              <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-3 shrink-0 bg-[var(--surface)]">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-3 flex-wrap mb-1">
                     <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
@@ -178,12 +181,12 @@ export function WriteupModal({
                 ref={bodyScrollRef}
                 data-lenis-prevent
                 onScroll={handleBodyScroll}
-                className="flex-1 overflow-y-auto px-4 md:px-6 pb-6"
+                className="flex-1 overflow-y-auto px-4 md:px-6 pb-6 bg-[var(--surface)]"
                 style={{ WebkitOverflowScrolling: "touch" }}
               >
                 <div className={showToc ? "flex items-start gap-6" : ""}>
                   <div
-                    className={`border border-border-dim rounded bg-[#0B1118] min-h-[200px] ${
+                    className={`border border-border-dim rounded bg-[var(--surface-2)] min-h-[200px] ${
                       showToc ? "flex-1 min-w-0" : ""
                     }`}
                   >
@@ -250,7 +253,7 @@ export function WriteupModal({
                 </div>
               </div>
               {/* Footer */}
-              <div className="flex items-center justify-between px-4 md:px-6 pb-[max(1rem,env(safe-area-inset-bottom))] shrink-0">
+              <div className="flex items-center justify-between px-4 md:px-6 pb-[max(1rem,env(safe-area-inset-bottom))] shrink-0 bg-[var(--surface)]">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                   <span className="md:hidden">Tocá fuera para cerrar</span>
                   <span className="hidden md:inline">ESC para cerrar</span>

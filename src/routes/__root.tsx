@@ -10,32 +10,23 @@ import { SITE } from "@/data/site";
 
 function NotFoundComponent() {
   return (
-    <div className="min-h-screen bg-[#060A10] flex flex-col items-center justify-center px-4 relative overflow-hidden">
-      {/* Grid background */}
-      <div
-        className="absolute inset-0 opacity-[0.04] pointer-events-none"
-        style={{
-          backgroundImage:
-            "linear-gradient(#3B82F6 1px, transparent 1px), linear-gradient(90deg, #3B82F6 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-        }}
-      />
+    <div className="min-h-screen bg-background grid-bg flex flex-col items-center justify-center px-4 relative overflow-hidden">
       {/* Scanline */}
       <div className="scanline" />
 
       <div className="relative max-w-md text-center">
         {/* Terminal-style error */}
         <div className="font-mono text-xs text-[var(--muted-foreground)] mb-6">
-          <span className="text-[#22D3EE]">analyst@soc-lab</span>:~$ cd /requested-page
+          <span className="text-[var(--accent)]">analyst@soc-lab</span>:~$ cd /requested-page
         </div>
-        <div className="font-mono text-xs text-[#FF5F56] mb-8">
+        <div className="font-mono text-xs text-[var(--accent-error)] mb-8">
           bash: cd: /requested-page: No such file or directory
         </div>
 
         {/* Glitch 404 */}
         <h1
           className="glitch font-display font-bold leading-none tracking-tight mb-4"
-          style={{ fontSize: "clamp(5rem, 15vw, 9rem)", color: "#3B82F6" }}
+          style={{ fontSize: "clamp(5rem, 15vw, 9rem)", color: "var(--accent)" }}
         >
           404
         </h1>
@@ -49,10 +40,10 @@ function NotFoundComponent() {
 
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-[#3B82F6]/30 text-[#3B82F6] hover:bg-[#3B82F6]/10 hover:border-[#3B82F6] transition-colors"
+          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-border-dim text-[var(--accent)] hover:bg-[var(--surface-2)] hover:border-[var(--accent)] transition-colors"
         >
           <span>cd ~</span>
-          <span className="text-[#22D3EE]">→</span>
+          <span className="text-[var(--accent)]">→</span>
         </Link>
       </div>
     </div>
@@ -64,9 +55,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-[#060A10] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-mono text-sm uppercase tracking-[0.25em] text-[#FF5F56] mb-4">
+        <h1 className="font-mono text-sm uppercase tracking-[0.25em] text-[var(--accent-error)] mb-4">
           [ERROR] Sesión caída
         </h1>
         <p className="font-mono text-xs text-[var(--muted-foreground)] mb-8 max-w-sm mx-auto leading-relaxed">
@@ -78,7 +69,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-[#3B82F6]/30 text-[#3B82F6] hover:bg-[#3B82F6]/10 hover:border-[#3B82F6] transition-colors"
+            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-border-dim text-[var(--accent)] hover:bg-[var(--surface-2)] hover:border-[var(--accent)] transition-colors"
           >
             <span>reintentar</span>
           </button>

@@ -130,7 +130,7 @@ export function CertModal({
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-3 sm:p-4 md:p-6 pt-[max(1rem,env(safe-area-inset-top))] pb-[max(1rem,env(safe-area-inset-bottom))]"
             style={{
-              background: "rgba(4, 7, 11, 0.92)",
+              background: "color-mix(in srgb, var(--background) 92%, transparent)",
               backdropFilter: "blur(14px) saturate(160%)",
               WebkitBackdropFilter: "blur(14px) saturate(160%)",
             }}
@@ -143,7 +143,7 @@ export function CertModal({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 16 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className={`relative w-full flex flex-col bg-[#070b12]/98 border border-white/10 rounded-lg shadow-2xl overflow-hidden ${
+              className={`relative w-full flex flex-col bg-[var(--surface)] border border-border-dim rounded-lg shadow-2xl overflow-hidden ${
                 hasReview ? "max-w-5xl" : "max-w-4xl"
               }`}
               style={{
@@ -157,7 +157,7 @@ export function CertModal({
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-start justify-between p-4 sm:p-5 border-b border-white/10 bg-[#090e17]/90 shrink-0">
+              <div className="flex items-start justify-between p-4 sm:p-5 border-b border-border-dim bg-[var(--surface-2)] shrink-0">
                 <div className="min-w-0 pr-2">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
                     <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] flex items-center gap-1.5">
@@ -200,7 +200,7 @@ export function CertModal({
                   role="tablist"
                   aria-label="Vistas del expediente de certificación"
                   onKeyDown={handleTabKeyDown}
-                  className="flex border-b border-white/10 px-4 sm:px-6 bg-[#080d15] gap-2 shrink-0"
+                  className="flex border-b border-border-dim px-4 sm:px-6 bg-[var(--surface-2)] gap-2 shrink-0"
                 >
                   <button
                     type="button"
@@ -212,7 +212,7 @@ export function CertModal({
                     onClick={() => setActiveTab("cert")}
                     className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
                       activeTab === "cert"
-                        ? "border-[var(--accent)] text-[var(--accent)] font-semibold bg-white/[0.02]"
+                        ? "border-[var(--accent)] text-[var(--accent)] font-semibold bg-[var(--surface)]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-foreground"
                     }`}
                   >
@@ -229,7 +229,7 @@ export function CertModal({
                     onClick={() => setActiveTab("review")}
                     className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
                       activeTab === "review"
-                        ? "border-[var(--accent)] text-[var(--accent)] font-semibold bg-white/[0.02]"
+                        ? "border-[var(--accent)] text-[var(--accent)] font-semibold bg-[var(--surface)]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-foreground"
                     }`}
                   >
@@ -255,7 +255,7 @@ export function CertModal({
                 >
                   <div
                     className="flex-1 overflow-hidden flex items-center justify-center p-3 sm:p-4"
-                    style={{ background: "#0b1118", minHeight: 0 }}
+                    style={{ background: "var(--surface-2)", minHeight: 0 }}
                   >
                     {cert.toLowerCase().endsWith(".pdf") ? (
                       <iframe
@@ -288,7 +288,7 @@ export function CertModal({
                   </div>
 
                   {/* Footer for Cert Tab */}
-                  <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 border-t border-white/10 bg-[#06090e] shrink-0">
+                  <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 border-t border-border-dim bg-[var(--surface-2)] shrink-0">
                     <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                       <span className="md:hidden">Tocá fuera para cerrar</span>
                       <span className="hidden md:inline">ESC para cerrar</span>
@@ -324,13 +324,13 @@ export function CertModal({
                   tabIndex={hasReview ? 0 : undefined}
                   data-lenis-prevent
                   className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-8 focus-visible:outline-none"
-                  style={{ background: "#070b12" }}
+                  style={{ background: "var(--surface)" }}
                 >
                   {/* Telemetry Metric Cards */}
                   <div
                     className={`grid grid-cols-2 ${isSal1 ? "lg:grid-cols-4" : "lg:grid-cols-3"} gap-3`}
                   >
-                    <div className="p-3.5 sm:p-4 rounded bg-[#0b121c] border border-white/10 flex flex-col justify-between">
+                    <div className="p-3.5 sm:p-4 rounded bg-[var(--surface-2)] border border-border-dim flex flex-col justify-between">
                       <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
                         <span>Puntaje Obtenido</span>
                         <Target size={14} className="text-[var(--accent-green)]" />
@@ -348,7 +348,7 @@ export function CertModal({
                       </div>
                     </div>
 
-                    <div className="p-3.5 sm:p-4 rounded bg-[#0b121c] border border-white/10 flex flex-col justify-between">
+                    <div className="p-3.5 sm:p-4 rounded bg-[var(--surface-2)] border border-border-dim flex flex-col justify-between">
                       <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
                         <span>Tiempo de Examen</span>
                         <Clock size={14} className="text-[var(--accent)]" />
@@ -365,7 +365,7 @@ export function CertModal({
                       </div>
                     </div>
 
-                    <div className="p-3.5 sm:p-4 rounded bg-[#0b121c] border border-white/10 flex flex-col justify-between">
+                    <div className="p-3.5 sm:p-4 rounded bg-[var(--surface-2)] border border-border-dim flex flex-col justify-between">
                       <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
                         <span>Resultado Oficial</span>
                         <CheckCircle2 size={14} className="text-[var(--accent-green)]" />
@@ -381,7 +381,7 @@ export function CertModal({
                     </div>
 
                     {isSal1 && (
-                      <div className="p-3.5 sm:p-4 rounded bg-[#0b121c] border border-white/10 flex flex-col justify-between">
+                      <div className="p-3.5 sm:p-4 rounded bg-[var(--surface-2)] border border-border-dim flex flex-col justify-between">
                         <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
                           <span>Simulaciones SOC</span>
                           <Terminal size={14} className="text-[var(--accent)]" />
@@ -401,7 +401,7 @@ export function CertModal({
                   {review.evidenceImage && (
                     <>
                       {/* Official Evidence Banner with Lightbox Trigger */}
-                      <div className="p-4 sm:p-5 rounded-md bg-[#090f18] border border-white/10 space-y-3">
+                      <div className="p-4 sm:p-5 rounded-md bg-[var(--surface-2)] border border-border-dim space-y-3">
                         <div className="flex flex-wrap items-center justify-between gap-2">
                           <div className="flex items-center gap-2">
                             <span className="size-2 rounded-full bg-[var(--accent-green)] shadow-[0_0_8px_var(--accent-green)]" />
@@ -422,7 +422,7 @@ export function CertModal({
                         <button
                           type="button"
                           onClick={() => setLightboxImage(review.evidenceImage)}
-                          className="group relative w-full rounded-md border border-white/10 overflow-hidden bg-[#04080e] cursor-pointer flex items-center justify-center text-left py-4 px-2 sm:px-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                          className="group relative w-full rounded-md border border-border-dim overflow-hidden bg-[var(--background)] cursor-pointer flex items-center justify-center text-left py-4 px-2 sm:px-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
                           aria-label="Ampliar captura oficial de puntaje y escenarios SAL1"
                         >
                           <img
@@ -469,7 +469,7 @@ export function CertModal({
                       <div className="h-px flex-1 bg-border-dim/60" />
                     </div>
 
-                    <div className="border-l-2 border-[var(--accent)]/60 pl-4 sm:pl-5 py-2 bg-white/[0.02] rounded-r space-y-3 text-xs sm:text-sm text-foreground/85 leading-relaxed">
+                    <div className="border-l-2 border-[var(--accent)]/60 pl-4 sm:pl-5 py-2 bg-[var(--surface-2)] rounded-r space-y-3 text-xs sm:text-sm text-foreground/85 leading-relaxed">
                       {review.executiveSummary.map((item) =>
                         typeof item === "string" ? (
                           <p key={item.slice(0, 30)}>{item}</p>
@@ -491,7 +491,7 @@ export function CertModal({
 
               {/* Footer for Review Tab */}
               {activeTab === "review" && review && (
-                <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 border-t border-white/10 bg-[#06090e] shrink-0">
+                <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 border-t border-border-dim bg-[var(--surface-2)] shrink-0">
                   <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                     <span className="md:hidden">Tocá fuera para cerrar</span>
                     <span className="hidden md:inline">ESC para cerrar</span>

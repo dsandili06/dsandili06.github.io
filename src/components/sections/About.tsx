@@ -95,7 +95,7 @@ export function About() {
         </div>
 
         {/* Right Column: Tactical Rack Accordion */}
-        <SpotlightCard className="backdrop-blur-md bg-[color-mix(in_oklab,var(--surface)_92%,transparent)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_32px_-4px_rgba(0,0,0,0.5)] border border-[var(--accent)]/30 hover:border-[var(--accent)] hover:z-10 transform-gpu backface-hidden transition-all duration-300 ease-out p-6 sm:p-7">
+        <SpotlightCard className="bg-[var(--surface)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_32px_-4px_rgba(0,0,0,0.5)] border border-border-dim hover:border-[var(--accent)]/50 hover:z-10 transform-gpu backface-hidden transition-all duration-300 ease-out p-6 sm:p-7">
           <div className="relative z-2">
             {/* Header: Centered Titular with hairline architectural anchors */}
             <div className="flex items-center gap-3 mb-5">

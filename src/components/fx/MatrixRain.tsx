@@ -36,7 +36,7 @@ export function MatrixRain({ active, onClose }: MatrixRainProps) {
       const fadeStart = DURATION - 500;
       const alpha = elapsed > fadeStart ? 1 - (elapsed - fadeStart) / 500 : 1;
 
-      ctx.fillStyle = `rgba(6, 10, 16, ${0.1 * alpha})`;
+      ctx.fillStyle = `rgba(8, 10, 14, ${0.1 * alpha})`;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       ctx.font = `${fontSize}px monospace`;
@@ -48,7 +48,7 @@ export function MatrixRain({ active, onClose }: MatrixRainProps) {
 
         // Green with varying opacity
         const opacity = Math.random() * 0.5 + 0.5;
-        ctx.fillStyle = `rgba(34, 211, 238, ${opacity * alpha})`;
+        ctx.fillStyle = `rgba(134, 203, 160, ${opacity * alpha})`;
         ctx.fillText(char, x, y);
 
         if (y > canvas.height && Math.random() > 0.975) {
@@ -97,10 +97,10 @@ export function MatrixRain({ active, onClose }: MatrixRainProps) {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           className="fixed inset-0 z-[10000] pointer-events-auto"
-          style={{ background: "rgba(6, 10, 16, 0.9)" }}
+          style={{ background: "rgba(8, 10, 14, 0.9)" }}
         >
           <canvas ref={canvasRef} className="w-full h-full" style={{ display: "block" }} />
-          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-xs text-[#22D3EE] opacity-70">
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2 font-mono text-xs text-[var(--accent-green)] opacity-70">
             ESC o click para salir
           </div>
         </motion.div>

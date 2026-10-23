@@ -7,9 +7,9 @@
   container-type: inline-size;
   width: min(100%, 560px);
   padding: 0.5rem;
-  border: 1px solid rgb(115 146 168 / 16%);
+  border: 1px solid var(--border-dim);
   border-radius: 0.5rem;
-  background: linear-gradient(135deg, rgb(10 20 30 / 94%), rgb(5 11 18 / 94%));
+  background: var(--surface);
   box-shadow: 0 2px 8px rgb(0 0 0 / 18%);
 }
 
@@ -21,13 +21,18 @@
 
 .hero-credential {
   background: transparent;
-  transition: background-color 200ms ease, color 200ms ease;
+  transition:
+    background-color 200ms ease,
+    color 200ms ease;
 }
 
 .hero-credential__badge,
 .hero-credential__name,
 .hero-credential__arrow {
-  transition: color 200ms ease, opacity 200ms ease, background-color 200ms ease;
+  transition:
+    color 200ms ease,
+    opacity 200ms ease,
+    background-color 200ms ease;
 }
 
 .hero-credential--google {
@@ -69,7 +74,7 @@
 }
 
 .hero-credential:focus-visible {
-  background-color: rgb(67 144 188 / 9%);
+  background-color: var(--surface-2);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -78,7 +83,7 @@
   }
 
   .hero-credential:hover {
-    background-color: rgb(67 144 188 / 9%);
+    background-color: var(--surface-2);
   }
 
   .hero-credential:hover .hero-credential__arrow,
@@ -230,19 +235,20 @@
 }
 
 :root {
-  /* Cyber Blue / Incident Room Palette */
-  --background: #060a10;
-  --foreground: #e2e8f0;
-  --surface: #0b1118;
-  --surface-2: #101823;
-  --border-dim: rgba(59, 130, 246, 0.15);
-  --border: rgba(59, 130, 246, 0.15);
-  --accent: #3b82f6; /* Electric Blue — primary accent */
-  --accent-secondary: #60a5fa;
-  --accent-foreground: #060a10;
-  --accent-amber: #f59e0b;
-  --accent-green: #22d3ee; /* Cyan Status Badges */
-  --muted-foreground: #a0aec0; /* Elevated ~10% for crisp, effortless readability */
+  /* Graphite + pale ice blue portfolio palette */
+  --background: #080a0e;
+  --surface: #11151c;
+  --surface-2: #19212d;
+  --foreground: #edf2f7;
+  --muted-foreground: #a5b0c0;
+  --accent: #79acff;
+  --accent-secondary: #c5dcff;
+  --accent-foreground: #080a0e;
+  --accent-green: #86cba0;
+  --accent-amber: #f2bd65;
+  --accent-error: #ff7b72;
+  --border-dim: rgba(165, 176, 192, 0.16);
+  --border: rgba(165, 176, 192, 0.16);
 }
 
 html {
@@ -372,9 +378,20 @@ html {
   }
 }
 
-/* Solid background without grid lines */
+/* One static, responsive grid for the whole portfolio surface. */
 @utility grid-bg {
   background-color: var(--background);
+  background-image:
+    linear-gradient(rgba(220, 232, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(220, 232, 255, 0.06) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center top;
+}
+
+@media (min-width: 768px) {
+  .grid-bg {
+    background-size: 80px 80px;
+  }
 }
 
 @utility tactical-corner {

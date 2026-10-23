@@ -2,7 +2,6 @@ import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
-import { HeroShader } from "@/components/fx/HeroShader";
 import { TextScramble } from "@/components/fx/TextScramble";
 import { CertModal } from "@/components/CertModal";
 
@@ -59,7 +58,7 @@ export function Hero() {
         setActiveCert({ cert: credential.cert, name: credential.name });
         setModalCert({ cert: credential.cert, name: credential.name });
       }}
-      className={`hero-credential group flex min-h-[4.75rem] min-w-0 items-center gap-2 rounded-sm px-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#04070b] ${credential.id === "google-cybersecurity" ? "hero-credential--google" : ""}`}
+      className={`hero-credential group flex min-h-[4.75rem] min-w-0 items-center gap-2 rounded-sm px-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] ${credential.id === "google-cybersecurity" ? "hero-credential--google" : ""}`}
       aria-label={`Ver credencial ${credential.name}`}
     >
       <span className="hero-credential__badge flex size-16 shrink-0 items-center justify-center">
@@ -87,23 +86,8 @@ export function Hero() {
     <section
       ref={sectionRef}
       id="top"
-      className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden border-b border-border-dim grid-bg"
+      className="relative min-h-[100dvh] flex flex-col justify-between overflow-hidden border-b border-border-dim"
     >
-      {/* WebGL fluid gradient — accent flow + pointer glow */}
-      <HeroShader />
-      {/* Grid pattern overlay — subtle cyber grid for depth */}
-      <div
-        className="absolute inset-0 -z-20 pointer-events-none opacity-[0.04]"
-        aria-hidden
-        style={{
-          backgroundImage:
-            "linear-gradient(var(--accent) 1px, transparent 1px), linear-gradient(90deg, var(--accent) 1px, transparent 1px)",
-          backgroundSize: "48px 48px",
-          maskImage: "radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 80%)",
-          WebkitMaskImage:
-            "radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 80%)",
-        }}
-      />
       {/* Kinetic watermark — oversized outlined text with parallax */}
       <motion.div aria-hidden className="hero-watermark" style={{ y: wmY, opacity: wmOpacity }}>
         <span>

@@ -21,6 +21,6 @@ export const SITE = {
   imageHeight: "630",
   locale: "es_AR",
   author: "Santiago Daniel Sandili",
-  themeColor: "#060A10",
+  themeColor: "#080A0E",
   role: "SECURITY ANALYST L1 / Blue Team",
 } as const;

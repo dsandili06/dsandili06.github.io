@@ -104,7 +104,7 @@ export function CompTIAModal({
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[9999] flex flex-col items-center justify-center p-3 sm:p-4 md:p-6 pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))]"
             style={{
-              background: "rgba(4, 7, 11, 0.88)",
+              background: "color-mix(in srgb, var(--background) 88%, transparent)",
               backdropFilter: "blur(14px) saturate(180%)",
               WebkitBackdropFilter: "blur(14px) saturate(180%)",
             }}
@@ -117,7 +117,7 @@ export function CompTIAModal({
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 16 }}
               transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-5xl flex flex-col bg-[#070b12]/95 border border-white/10 rounded-lg shadow-2xl overflow-hidden"
+              className="relative w-full max-w-5xl flex flex-col bg-[var(--surface)] border border-border-dim rounded-lg shadow-2xl overflow-hidden"
               style={{
                 maxHeight: "92dvh",
                 boxShadow:
@@ -129,7 +129,7 @@ export function CompTIAModal({
               onClick={(e) => e.stopPropagation()}
             >
               {/* Header */}
-              <div className="flex items-start justify-between p-4 sm:p-6 pb-4 border-b border-white/10 bg-[#090e17]/80 shrink-0">
+              <div className="flex items-start justify-between p-4 sm:p-6 pb-4 border-b border-border-dim bg-[var(--surface-2)] shrink-0">
                 <div className="min-w-0 pr-2">
                   <div className="flex flex-wrap items-center gap-2 mb-1.5">
                     <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] flex items-center gap-1.5">
@@ -165,9 +165,9 @@ export function CompTIAModal({
               {/* Scrollable Content Body */}
               <div data-lenis-prevent className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6">
                 {/* Global Benchmark Banner */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 sm:p-4 rounded-md bg-[#0d1420] border border-white/5 font-mono text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 p-3.5 sm:p-4 rounded-md bg-[var(--surface-2)] border border-border-dim font-mono text-xs">
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded bg-cyan-500/10 text-[var(--accent)] shrink-0">
+                    <div className="p-2 rounded bg-[var(--accent)]/10 text-[var(--accent)] shrink-0">
                       <TrendingUp size={18} />
                     </div>
                     <div>
@@ -178,7 +178,9 @@ export function CompTIAModal({
                         {firstExam.score}% → {latestExam.score}%{" "}
                         <span
                           className={`font-semibold ${
-                            totalGain >= 0 ? "text-[var(--accent-green)]" : "text-amber-400"
+                            totalGain >= 0
+                              ? "text-[var(--accent-green)]"
+                              : "text-[var(--accent-amber)]"
                           }`}
                         >
                           ({totalGain >= 0 ? `+${totalGain}%` : `${totalGain}%`})
@@ -188,7 +190,7 @@ export function CompTIAModal({
                   </div>
 
                   <div className="flex items-center gap-3">
-                    <div className="p-2 rounded bg-green-500/10 text-[var(--accent-green)] shrink-0">
+                    <div className="p-2 rounded bg-[var(--accent-green)]/10 text-[var(--accent-green)] shrink-0">
                       <Target size={18} />
                     </div>
                     <div>
@@ -205,8 +207,8 @@ export function CompTIAModal({
                     <div
                       className={`p-2 rounded shrink-0 ${
                         maxScore >= 90
-                          ? "bg-green-500/10 text-[var(--accent-green)]"
-                          : "bg-amber-500/10 text-amber-400"
+                          ? "bg-[var(--accent-green)]/10 text-[var(--accent-green)]"
+                          : "bg-[var(--accent-amber)]/10 text-[var(--accent-amber)]"
                       }`}
                     >
                       <Clock size={18} />
@@ -219,7 +221,9 @@ export function CompTIAModal({
                         90% Target ·{" "}
                         <span
                           className={`font-semibold ${
-                            maxScore >= 90 ? "text-[var(--accent-green)]" : "text-amber-400"
+                            maxScore >= 90
+                              ? "text-[var(--accent-green)]"
+                              : "text-[var(--accent-amber)]"
                           }`}
                         >
                           {maxScore >= 90
@@ -266,14 +270,14 @@ export function CompTIAModal({
                           aria-controls="panel-exam-details"
                           tabIndex={isSelected ? 0 : -1}
                           onClick={() => setSelectedIndex(idx)}
-                          className={`p-2.5 sm:p-3 rounded-md text-left transition-all relative border cursor-pointer transform-gpu backface-hidden active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#070b12] ${
+                          className={`p-2.5 sm:p-3 rounded-md text-left transition-all relative border cursor-pointer transform-gpu backface-hidden active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)] ${
                             isOddTotal
                               ? "last:col-span-2 sm:last:col-span-1 lg:last:col-span-1"
                               : ""
                           } ${
                             isSelected
-                              ? "bg-[var(--surface-2)] border-[var(--accent)] shadow-[0_0_16px_rgba(34,211,238,0.15)] ring-1 ring-[var(--accent)]"
-                              : "bg-[#0b1017] border-white/5 hover:border-white/20 hover:bg-[#0f1622]"
+                              ? "bg-[var(--surface-2)] border-[var(--accent)] shadow-[0_0_16px_color-mix(in_srgb,var(--accent)_15%,transparent)] ring-1 ring-[var(--accent)]"
+                              : "bg-[var(--surface)] border-border-dim hover:border-[var(--muted-foreground)]/40 hover:bg-[var(--surface-2)]"
                           }`}
                         >
                           <div className="flex items-center justify-between gap-1 mb-1">
@@ -283,7 +287,9 @@ export function CompTIAModal({
                             {delta !== null && (
                               <span
                                 className={`font-mono text-[9px] font-bold ${
-                                  delta >= 0 ? "text-[var(--accent-green)]" : "text-amber-400"
+                                  delta >= 0
+                                    ? "text-[var(--accent-green)]"
+                                    : "text-[var(--accent-amber)]"
                                 }`}
                               >
                                 {delta > 0 ? `+${delta}%` : `${delta}%`}
@@ -343,17 +349,17 @@ export function CompTIAModal({
                           ? "bg-[var(--accent-green)]"
                           : pass
                             ? "bg-[var(--accent)]"
-                            : "bg-amber-400";
+                            : "bg-[var(--accent-amber)]";
                         const textColor = excellent
                           ? "text-[var(--accent-green)]"
                           : pass
                             ? "text-[var(--accent)]"
-                            : "text-amber-400";
+                            : "text-[var(--accent-amber)]";
 
                         return (
                           <div
                             key={d.domain}
-                            className="p-2.5 rounded bg-[#0b1119] border border-white/5 space-y-1.5"
+                            className="p-2.5 rounded bg-[var(--surface-2)] border border-border-dim space-y-1.5"
                           >
                             <div className="flex items-center justify-between text-xs font-mono">
                               <span className="text-foreground/90 font-medium truncate pr-2">
@@ -386,7 +392,7 @@ export function CompTIAModal({
                     </div>
 
                     {/* Summary Notes */}
-                    <div className="p-3 rounded bg-white/[0.02] border border-white/5 font-mono text-[11px] text-[var(--muted-foreground)] leading-relaxed">
+                    <div className="p-3 rounded bg-[var(--surface-2)] border border-border-dim font-mono text-[11px] text-[var(--muted-foreground)] leading-relaxed">
                       💡 <strong className="text-foreground/90">Análisis técnico:</strong>{" "}
                       {currentExam.analysis ? (
                         <span>{currentExam.analysis}</span>
@@ -435,7 +441,7 @@ export function CompTIAModal({
                           <Maximize2 size={14} className="text-[var(--accent)]" />
                           Clic para pantalla completa
                         </span>
-                        <span className="font-mono text-[10px] text-cyan-300 font-bold">
+                        <span className="font-mono text-[10px] text-[var(--accent)] font-bold">
                           {currentExam.score}%
                         </span>
                       </div>
@@ -460,7 +466,7 @@ export function CompTIAModal({
               </div>
 
               {/* Footer */}
-              <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3 border-t border-white/10 bg-[#06090e] shrink-0">
+              <div className="flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3 border-t border-border-dim bg-[var(--surface-2)] shrink-0">
                 <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
                   <span className="md:hidden">Tocá fuera para cerrar</span>
                   <span className="hidden md:inline">ESC para cerrar</span>

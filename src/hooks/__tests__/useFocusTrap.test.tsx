@@ -2,8 +2,14 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, fireEvent, screen } from "@testing-library/react";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 
-function TrapTest({ children }: { children: React.ReactNode }) {
-  const ref = useFocusTrap<HTMLDivElement>();
+function TrapTest({
+  children,
+  preventScroll = false,
+}: {
+  children: React.ReactNode;
+  preventScroll?: boolean;
+}) {
+  const ref = useFocusTrap<HTMLDivElement>({ preventScroll });
   return (
     <div ref={ref} data-testid="trap-container">
       {children}
@@ -36,6 +42,48 @@ describe("useFocusTrap", () => {
 
     const btn1 = screen.getByTestId("btn-1");
     expect(document.activeElement).toBe(btn1);
+  });
+
+  it("prevents scroll for initial focus and focus restoration when opted in", () => {
+    const outsideBtn = document.getElementById("outside-btn")!;
+    outsideBtn.focus();
+    const focusSpy = vi.spyOn(HTMLElement.prototype, "focus");
+
+    const { unmount } = render(
+      <TrapTest preventScroll>
+        <button data-testid="prevent-scroll-first">First</button>
+      </TrapTest>,
+    );
+
+    expect(document.activeElement).toBe(screen.getByTestId("prevent-scroll-first"));
+    expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true });
+
+    unmount();
+    expect(document.activeElement).toBe(outsideBtn);
+    expect(focusSpy.mock.calls.filter(([options]) => options?.preventScroll === true)).toHaveLength(
+      2,
+    );
+    focusSpy.mockRestore();
+  });
+
+  it("keeps default initial and restored focus calls unchanged", () => {
+    const outsideBtn = document.getElementById("outside-btn")!;
+    outsideBtn.focus();
+    const focusSpy = vi.spyOn(HTMLElement.prototype, "focus");
+
+    const { unmount } = render(
+      <TrapTest>
+        <button data-testid="default-first">First</button>
+      </TrapTest>,
+    );
+
+    expect(document.activeElement).toBe(screen.getByTestId("default-first"));
+    expect(focusSpy.mock.calls[0]).toHaveLength(0);
+
+    unmount();
+    expect(document.activeElement).toBe(outsideBtn);
+    expect(focusSpy.mock.calls[1]).toHaveLength(0);
+    focusSpy.mockRestore();
   });
 
   it("wraps Tab from last to first focusable element", () => {

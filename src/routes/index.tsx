@@ -52,7 +52,7 @@ function Portfolio() {
     <TooltipProvider delayDuration={150}>
       <MotionConfig reducedMotion="user">
         <LenisProvider />
-        <div className="min-h-screen bg-background text-foreground font-body relative overflow-x-clip selection:bg-accent selection:text-[var(--accent-foreground)]">
+        <div className="min-h-screen bg-background grid-bg text-foreground font-body relative overflow-x-clip selection:bg-accent selection:text-[var(--accent-foreground)]">
           {/* Skip to content — a11y */}
           <a
             href="#main-content"

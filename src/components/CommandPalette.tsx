@@ -194,7 +194,7 @@ export function CommandPalette() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.18 }}
-              className="fixed inset-0 bg-[#04070B]/80 backdrop-blur-md"
+              className="fixed inset-0 bg-[var(--background)]/85 backdrop-blur-md"
               onClick={() => setIsOpen(false)}
               aria-hidden="true"
             />
@@ -209,10 +209,10 @@ export function CommandPalette() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.97, y: -10 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="relative w-full max-w-2xl bg-[#080D14] border border-[var(--accent)]/30 rounded-xs shadow-[0_24px_64px_rgba(0,0,0,0.85),inset_0_1px_0_0_rgba(255,255,255,0.08)] overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[75vh]"
+              className="relative w-full max-w-2xl bg-[var(--surface)] border border-border-dim rounded-xs shadow-[0_24px_64px_rgba(0,0,0,0.85),inset_0_1px_0_0_rgba(255,255,255,0.08)] overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[75vh]"
             >
               {/* Tactical HUD Header Bar */}
-              <div className="flex items-center justify-between px-3.5 sm:px-4 py-2 bg-[var(--surface)]/90 border-b border-border-dim text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--muted-foreground)] select-none">
+              <div className="flex items-center justify-between px-3.5 sm:px-4 py-2 bg-[var(--surface-2)] border-b border-border-dim text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--muted-foreground)] select-none">
                 <div className="flex items-center gap-2">
                   <span className="inline-block size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
                   <span className="text-foreground/90">SOC_OPERATIONS // COMMAND_PALETTE</span>
@@ -235,7 +235,7 @@ export function CommandPalette() {
                 className="flex flex-col flex-1 min-h-0 bg-transparent"
               >
                 {/* Search Input Bar */}
-                <div className="flex items-center px-3.5 sm:px-4 border-b border-border-dim/80 bg-[#0A1017]">
+                <div className="flex items-center px-3.5 sm:px-4 border-b border-border-dim/80 bg-[var(--surface-2)]">
                   <Search className="size-4 text-[var(--accent)] shrink-0 select-none mr-3" />
                   <Command.Input
                     ref={inputRef}

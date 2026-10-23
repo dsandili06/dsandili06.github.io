@@ -268,7 +268,7 @@ export function Cursos() {
                   aria-label={`${group.org}, ${group.courses.length} ${group.courses.length === 1 ? "curso" : "cursos"}`}
                   className={`group/tab relative shrink-0 snap-start flex items-center gap-3 w-[240px] sm:w-[260px] md:w-full px-3 py-2.5 sm:px-3.5 sm:py-3 text-left hover:z-10 transform-gpu backface-hidden transition-all duration-200 ease-out cursor-pointer min-h-[58px] sm:min-h-[62px] border active:scale-[0.99] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-inset ${
                     isSelected
-                      ? "bg-[color-mix(in_oklab,var(--accent)_12%,var(--surface-2))] border-[var(--accent)]/70 text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_0_18px_-3px_rgba(59,130,246,0.2)] z-[1]"
+                      ? "bg-[color-mix(in_oklab,var(--accent)_12%,var(--surface-2))] border-[var(--accent)]/70 text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_0_18px_-3px_rgba(121,172,255,0.16)] z-[1]"
                       : "bg-[var(--surface)]/80 hover:bg-[var(--surface-2)] border-border-dim/60 text-[var(--muted-foreground)] hover:text-foreground hover:border-border-dim"
                   }`}
                 >

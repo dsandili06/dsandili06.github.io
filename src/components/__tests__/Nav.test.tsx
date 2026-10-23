@@ -2,6 +2,8 @@ import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Nav } from "@/components/sections/Nav";
 
+const originalInnerWidth = window.innerWidth;
+
 describe("Nav component", () => {
   beforeEach(() => {
     document.body.style.overflow = "";
@@ -9,6 +11,7 @@ describe("Nav component", () => {
 
   afterEach(() => {
     document.body.style.overflow = "";
+    window.innerWidth = originalInnerWidth;
     delete (window as unknown as Record<string, unknown>).__lenis;
   });
 
@@ -22,7 +25,7 @@ describe("Nav component", () => {
 
   it("renders navigation links in the updated order", () => {
     const { container } = render(<Nav />);
-    const desktopLinks = Array.from(container.querySelectorAll("div.hidden.md\\:flex > a")).map(
+    const desktopLinks = Array.from(container.querySelectorAll("div.hidden.xl\\:flex > a")).map(
       (a) => a.getAttribute("href"),
     );
     expect(desktopLinks).toEqual([
@@ -35,7 +38,7 @@ describe("Nav component", () => {
       "#contacto",
     ]);
     expect(
-      Array.from(container.querySelectorAll("div.hidden.md\\:flex > a")).map((a) =>
+      Array.from(container.querySelectorAll("div.hidden.xl\\:flex > a")).map((a) =>
         a.textContent?.trim(),
       ),
     ).toEqual(["About", "Certs", "Proyectos", "Labs", "Stack", "Cursos", "Contacto"]);
@@ -133,15 +136,21 @@ describe("Nav component", () => {
   });
 
   it("focuses the mobile drawer on open and restores focus to its trigger on close", async () => {
+    const focusSpy = vi.spyOn(HTMLElement.prototype, "focus");
     render(<Nav />);
     const menuButton = screen.getByRole("button", { name: /Abrir menú/i });
     menuButton.focus();
     fireEvent.click(menuButton);
 
     expect(document.activeElement).toBe(screen.getByRole("button", { name: "Cerrar menú móvil" }));
+    expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true });
 
     fireEvent.keyDown(window, { key: "Escape" });
     await waitFor(() => expect(document.activeElement).toBe(menuButton));
+    expect(focusSpy.mock.calls.filter(([options]) => options?.preventScroll === true)).toHaveLength(
+      2,
+    );
+    focusSpy.mockRestore();
   });
 
   it("keeps body scroll locked until Escape exit completes", async () => {
@@ -158,13 +167,41 @@ describe("Nav component", () => {
     await waitFor(() => expect(document.body.style.overflow).toBe(""));
   });
 
-  it("keeps body scroll locked until resize exit completes", async () => {
+  it("keeps the drawer open and scroll locked at tablet widths below 1280px", () => {
+    window.innerWidth = 375;
     render(<Nav />);
     const menuBtn = screen.getByRole("button", { name: /Abrir menú/i });
     fireEvent.click(menuBtn);
     expect(document.body.style.overflow).toBe("hidden");
 
-    window.innerWidth = 1024;
+    for (const width of [1024, 1279]) {
+      window.innerWidth = width;
+      fireEvent(window, new Event("resize"));
+      expect(screen.getByRole("button", { name: /^Cerrar menú$/i })).toHaveAttribute(
+        "aria-expanded",
+        "true",
+      );
+      expect(document.body.style.overflow).toBe("hidden");
+    }
+  });
+
+  it("moves focus to the first desktop link after a 1280px resize exit", async () => {
+    window.innerWidth = 375;
+    const { container } = render(<Nav />);
+    const menuBtn = screen.getByRole("button", { name: /Abrir menú/i });
+    const firstDesktopLink = container.querySelector<HTMLElement>("div.hidden.xl\\:flex > a")!;
+    const desktopLinkFocus = vi.spyOn(firstDesktopLink, "focus");
+    menuBtn.focus();
+    fireEvent.click(menuBtn);
+
+    window.innerWidth = 1279;
+    fireEvent(window, new Event("resize"));
+    expect(screen.getByRole("button", { name: /^Cerrar menú$/i })).toHaveAttribute(
+      "aria-expanded",
+      "true",
+    );
+
+    window.innerWidth = 1280;
     fireEvent(window, new Event("resize"));
 
     expect(screen.getByRole("button", { name: /Abrir menú/i })).toHaveAttribute(
@@ -172,6 +209,30 @@ describe("Nav component", () => {
       "false",
     );
     await waitFor(() => expect(document.body.style.overflow).toBe(""));
+    await waitFor(() => expect(document.activeElement).toBe(firstDesktopLink));
+    expect(desktopLinkFocus).toHaveBeenCalledWith({ preventScroll: true });
+    expect(document.activeElement).not.toBe(menuBtn);
+    expect(document.activeElement).not.toBe(document.body);
+    desktopLinkFocus.mockRestore();
+  });
+
+  it("does not focus the hidden desktop navigation if the viewport returns below 1280px before exit", async () => {
+    window.innerWidth = 375;
+    render(<Nav />);
+    const menuBtn = screen.getByRole("button", { name: /Abrir menú/i });
+    menuBtn.focus();
+    fireEvent.click(menuBtn);
+
+    window.innerWidth = 1280;
+    fireEvent(window, new Event("resize"));
+    expect(screen.getByRole("button", { name: /Abrir menú/i })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
+
+    window.innerWidth = 1279;
+    await waitFor(() => expect(document.body.style.overflow).toBe(""));
+    expect(document.activeElement).toBe(menuBtn);
   });
 
   it("omits backdrop-blur on nav root when menu is open to prevent containing-block trap, and drawer has data-lenis-prevent", () => {
