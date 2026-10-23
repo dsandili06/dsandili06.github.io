@@ -29,6 +29,13 @@ const HERO_CREDENTIALS: HeroCredential[] = [
     logo: "/badges/sal1badge.png",
     cert: "/certs/THM-SAL1-Certificate.png",
   },
+  {
+    id: "google-cybersecurity",
+    name: "Google Cybersecurity",
+    shortName: "Google Cybersecurity",
+    logo: "/badges/badgegoogle.png",
+    cert: "/certs/Google Cybersecurity Certificate.webp",
+  },
 ];
 
 export function Hero() {
@@ -52,10 +59,10 @@ export function Hero() {
         setActiveCert({ cert: credential.cert, name: credential.name });
         setModalCert({ cert: credential.cert, name: credential.name });
       }}
-      className="hero-credential group inline-flex min-h-[9.25rem] w-28 shrink-0 flex-col items-center justify-start gap-1 rounded-sm text-center transition-transform duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[#04070b]"
+      className={`hero-credential group flex min-h-[4.75rem] min-w-0 items-center gap-2 rounded-sm px-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[#04070b] ${credential.id === "google-cybersecurity" ? "hero-credential--google" : ""}`}
       aria-label={`Ver credencial ${credential.name}`}
     >
-      <span className="hero-credential__badge flex size-[4.25rem] shrink-0 items-center justify-center">
+      <span className="hero-credential__badge flex size-16 shrink-0 items-center justify-center">
         <img
           src={credential.logo}
           alt={`Insignia ${credential.shortName}`}
@@ -64,11 +71,14 @@ export function Hero() {
           decoding="async"
         />
       </span>
-      <span className="hero-credential__name font-display text-base font-bold leading-none tracking-tight text-foreground transition-colors duration-200">
+      <span className="hero-credential__name flex min-w-0 flex-1 items-center font-display text-sm font-bold leading-tight tracking-tight text-foreground">
         {credential.shortName}
       </span>
-      <span className="hero-credential__hint font-mono text-[10px] leading-4 text-[var(--accent)]">
-        Ver credencial →
+      <span
+        className="hero-credential__arrow shrink-0 font-mono text-sm leading-none text-[var(--accent)]"
+        aria-hidden="true"
+      >
+        →
       </span>
     </button>
   );
@@ -112,7 +122,7 @@ export function Hero() {
           </span>
         </div>
       </div>
-      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 flex-1 grid grid-cols-1 md:grid-cols-[1fr_minmax(0,440px)] gap-10 md:gap-12 items-center py-6 sm:py-8 md:py-12">
+      <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 md:px-10 flex-1 grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_minmax(0,440px)] gap-10 xl:gap-12 items-center py-6 sm:py-8 md:py-12">
         <div className="flex flex-col">
           <div className="hidden sm:block mb-8 min-h-[5.5rem]">
             <BootSequence />
@@ -140,16 +150,18 @@ export function Hero() {
           </motion.p>
 
           <div className="mt-7 pt-5 border-t border-[var(--border)]/40">
-            <div
-              role="group"
-              aria-label="Credenciales principales"
-              className="flex flex-wrap gap-x-6 gap-y-3 overflow-visible"
-            >
-              {HERO_CREDENTIALS.map(renderCredential)}
+            <div className="hero-credential__surface">
+              <div
+                role="group"
+                aria-label="Credenciales principales"
+                className="hero-credential__grid"
+              >
+                {HERO_CREDENTIALS.map(renderCredential)}
+              </div>
             </div>
           </div>
         </div>
-        <div className="md:max-w-[440px]">
+        <div className="xl:max-w-[440px]">
           <TerminalWindow start />
         </div>
       </div>

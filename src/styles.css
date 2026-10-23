@@ -3,51 +3,96 @@
 @source inline("reveal-on-view in-view");
 @import "tw-animate-css";
 
-.hero-credential__badge {
-  transform-origin: center;
-  transition: transform 200ms ease-out;
+.hero-credential__surface {
+  container-type: inline-size;
+  width: min(100%, 560px);
+  padding: 0.5rem;
+  border: 1px solid rgb(115 146 168 / 16%);
+  border-radius: 0.5rem;
+  background: linear-gradient(135deg, rgb(10 20 30 / 94%), rgb(5 11 18 / 94%));
+  box-shadow: 0 2px 8px rgb(0 0 0 / 18%);
 }
 
-.hero-credential__hint {
+.hero-credential__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.25rem;
+}
+
+.hero-credential {
+  background: transparent;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+.hero-credential__badge,
+.hero-credential__name,
+.hero-credential__arrow {
+  transition: color 200ms ease, opacity 200ms ease, background-color 200ms ease;
+}
+
+.hero-credential--google {
+  grid-column: 1 / -1;
+}
+
+.hero-credential--google .hero-credential__badge {
+  width: 3.125rem;
+  height: 3.125rem;
+}
+
+.hero-credential--google .hero-credential__name {
+  font-size: 0.8125rem;
+}
+
+.hero-credential__arrow {
   opacity: 1;
-  transition: opacity 200ms ease-out;
+}
+
+@container (min-width: 540px) {
+  .hero-credential__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .hero-credential--google {
+    grid-column: auto;
+  }
+}
+
+@container (300px <= width < 540px) {
+  .hero-credential__grid {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  }
+
+  .hero-credential:not(.hero-credential--google) .hero-credential__badge {
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+}
+
+.hero-credential:focus-visible {
+  background-color: rgb(67 144 188 / 9%);
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .hero-credential__hint {
+  .hero-credential__arrow {
     opacity: 0;
   }
 
-  .hero-credential:hover .hero-credential__badge,
-  .hero-credential:focus-visible .hero-credential__badge {
-    transform: translateY(-2px) scale(1.03);
+  .hero-credential:hover {
+    background-color: rgb(67 144 188 / 9%);
   }
 
-  .hero-credential:hover .hero-credential__hint,
-  .hero-credential:focus-visible .hero-credential__hint {
+  .hero-credential:hover .hero-credential__arrow,
+  .hero-credential:focus-visible .hero-credential__arrow {
     opacity: 1;
   }
 }
 
-.hero-credential:hover .hero-credential__name,
-.hero-credential:focus-visible .hero-credential__name {
-  color: var(--accent);
-}
-
-.hero-credential:active .hero-credential__badge {
-  transform: scale(0.98);
-}
-
 @media (prefers-reduced-motion: reduce) {
+  .hero-credential,
   .hero-credential__badge,
-  .hero-credential__hint {
+  .hero-credential__name,
+  .hero-credential__arrow {
     transition: none;
-  }
-
-  .hero-credential:hover .hero-credential__badge,
-  .hero-credential:focus-visible .hero-credential__badge,
-  .hero-credential:active .hero-credential__badge {
-    transform: none;
   }
 }
 

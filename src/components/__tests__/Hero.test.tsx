@@ -25,11 +25,13 @@ vi.mock("@/components/CertModal", () => ({
     title,
     isOpen,
     onClose,
+    onExitComplete,
   }: {
     cert: string;
     title: string;
     isOpen: boolean;
     onClose: () => void;
+    onExitComplete: () => void;
   }) => (
     <div data-testid="cert-modal" data-open={isOpen}>
       <span data-testid="modal-title">{title}</span>
@@ -37,12 +39,15 @@ vi.mock("@/components/CertModal", () => ({
       <button data-testid="modal-close" onClick={onClose}>
         Close
       </button>
+      <button data-testid="modal-exit-complete" onClick={onExitComplete}>
+        Exit complete
+      </button>
     </div>
   ),
 }));
 
 describe("Hero section", () => {
-  it("renders only the primary Security+ and SAL1 credentials in display order", () => {
+  it("renders the three primary credentials in order without issuer or score metadata", () => {
     render(<Hero />);
 
     expect(screen.getByAltText("Insignia Security+")).toHaveAttribute(
@@ -50,13 +55,21 @@ describe("Hero section", () => {
       "/badges/comptiabadge.png",
     );
     expect(screen.getByAltText("Insignia SAL1")).toHaveAttribute("src", "/badges/sal1badge.png");
+    expect(screen.getByAltText("Insignia Google Cybersecurity")).toHaveAttribute(
+      "src",
+      "/badges/badgegoogle.png",
+    );
 
     const credentials = screen.getByRole("group", { name: "Credenciales principales" });
-    expect(credentials.querySelectorAll("button")).toHaveLength(2);
-    expect(credentials.textContent).toMatch(/Security\+.*SAL1/s);
-    expect(credentials.textContent).toContain("Ver credencial →");
-    expect(credentials.textContent).not.toMatch(/CompTIA|TryHackMe|948|1000/);
-    expect(screen.queryByRole("button", { name: /Google Cybersecurity/i })).not.toBeInTheDocument();
+    const buttons = [...credentials.querySelectorAll("button")];
+    expect(buttons).toHaveLength(3);
+    expect(buttons.map((button) => button.getAttribute("aria-label"))).toEqual([
+      "Ver credencial CompTIA Security+",
+      "Ver credencial SAL1",
+      "Ver credencial Google Cybersecurity",
+    ]);
+    expect(credentials.textContent).toMatch(/Security\+.*SAL1.*Google Cybersecurity/s);
+    expect(credentials.textContent).not.toMatch(/Ver credencial →|TryHackMe|948|1000/);
   });
 
   it("opens the SAL1 certificate when clicking its Hero credential", () => {
@@ -95,5 +108,21 @@ describe("Hero section", () => {
     // Close modal
     fireEvent.click(screen.getByTestId("modal-close"));
     expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "false");
+  });
+
+  it("opens and closes the Google certificate while preserving exit completion", () => {
+    render(<Hero />);
+
+    fireEvent.click(screen.getByRole("button", { name: "Ver credencial Google Cybersecurity" }));
+    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "true");
+    expect(screen.getByTestId("modal-title")).toHaveTextContent("Google Cybersecurity");
+    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
+      "/certs/Google Cybersecurity Certificate.webp",
+    );
+
+    fireEvent.click(screen.getByTestId("modal-close"));
+    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "false");
+    fireEvent.click(screen.getByTestId("modal-exit-complete"));
+    expect(screen.queryByTestId("cert-modal")).not.toBeInTheDocument();
   });
 });
