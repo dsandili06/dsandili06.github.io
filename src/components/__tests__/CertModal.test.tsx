@@ -142,32 +142,42 @@ describe("CertModal component", () => {
   it("does not restore focus into the dialog after it has closed", async () => {
     const outsideButton = document.createElement("button");
     document.body.append(outsideButton);
-    outsideButton.focus();
-    const { rerender, unmount } = render(
-      <CertModal isOpen onClose={vi.fn()} cert="/certs/THM-SAL1-Certificate.png" title="SAL1" />,
-    );
-    const evidenceButton = screen.getByRole("button", {
-      name: /Ampliar captura oficial de puntaje/i,
-    });
-    evidenceButton.focus();
-    fireEvent.keyDown(evidenceButton, { key: "Enter" });
-    fireEvent.click(evidenceButton);
-    await waitFor(() => expect(document.querySelector(".yarl__portal")).toBeInTheDocument());
+    try {
+      outsideButton.focus();
+      const onExitComplete = vi.fn();
+      const { rerender } = render(
+        <CertModal
+          isOpen
+          onClose={vi.fn()}
+          onExitComplete={onExitComplete}
+          cert="/certs/THM-SAL1-Certificate.png"
+          title="SAL1"
+        />,
+      );
+      const evidenceButton = screen.getByRole("button", {
+        name: /Ampliar captura oficial de puntaje/i,
+      });
+      evidenceButton.focus();
+      fireEvent.keyDown(evidenceButton, { key: "Enter" });
+      fireEvent.click(evidenceButton);
+      await waitFor(() => expect(document.querySelector(".yarl__portal")).toBeInTheDocument());
 
-    outsideButton.focus();
-    rerender(
-      <CertModal
-        isOpen={false}
-        onClose={vi.fn()}
-        cert="/certs/comptia-security-plus-sy0-701.webp"
-        title="CompTIA Security+"
-      />,
-    );
+      rerender(
+        <CertModal
+          isOpen={false}
+          onClose={vi.fn()}
+          onExitComplete={onExitComplete}
+          cert="/certs/comptia-security-plus-sy0-701.webp"
+          title="CompTIA Security+"
+        />,
+      );
 
-    await waitFor(() => expect(document.querySelector(".yarl__portal")).not.toBeInTheDocument());
-    expect(document.activeElement).toBe(outsideButton);
-    unmount();
-    outsideButton.remove();
+      await waitFor(() => expect(onExitComplete).toHaveBeenCalledOnce());
+      await waitFor(() => expect(document.querySelector(".yarl__portal")).not.toBeInTheDocument());
+      expect(document.activeElement).toBe(outsideButton);
+    } finally {
+      outsideButton.remove();
+    }
   });
 
   it("recognizes SAL1 short title and resets the lightbox when credential changes", async () => {
