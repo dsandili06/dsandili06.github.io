@@ -9,28 +9,25 @@ import { CertModal } from "@/components/CertModal";
 type HeroCredential = {
   id: string;
   name: string;
-  org: string;
+  shortName: string;
   logo: string;
   cert: string;
-  logoClassName: string;
 };
 
 const HERO_CREDENTIALS: HeroCredential[] = [
   {
     id: "comptia-secplus",
     name: "CompTIA Security+",
-    org: "CompTIA",
+    shortName: "Security+",
     logo: "/badges/comptiabadge.png",
     cert: "/certs/comptia-security-plus-sy0-701.webp",
-    logoClassName: "scale-110",
   },
   {
     id: "sal1",
     name: "SAL1",
-    org: "TryHackMe",
+    shortName: "SAL1",
     logo: "/badges/sal1badge.png",
     cert: "/certs/THM-SAL1-Certificate.png",
-    logoClassName: "scale-95",
   },
 ];
 
@@ -47,7 +44,7 @@ export function Hero() {
   const wmY = useTransform(scrollYProgress, [0, 1], [0, 160]);
   const wmOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
 
-  const renderCredential = (credential: HeroCredential, index: number) => (
+  const renderCredential = (credential: HeroCredential) => (
     <button
       key={credential.id}
       type="button"
@@ -55,28 +52,23 @@ export function Hero() {
         setActiveCert({ cert: credential.cert, name: credential.name });
         setModalCert({ cert: credential.cert, name: credential.name });
       }}
-      className={`group inline-flex min-h-16 items-center gap-3 text-left cursor-pointer active:scale-[0.99] transition-[color,transform] duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[#04070b] rounded-sm ${
-        index === 0 ? "sm:pr-8 sm:border-r sm:border-border-dim/70" : "sm:pl-1"
-      }`}
-      title={`${credential.name} (${credential.org}) — Click para ver credencial`}
+      className="hero-credential group inline-flex min-h-[9.25rem] w-28 shrink-0 flex-col items-center justify-start gap-1 rounded-sm text-center transition-transform duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-4 focus-visible:ring-offset-[#04070b]"
       aria-label={`Ver credencial ${credential.name}`}
     >
-      <div className="size-14 shrink-0 flex items-center justify-center">
+      <span className="hero-credential__badge flex size-[4.25rem] shrink-0 items-center justify-center">
         <img
           src={credential.logo}
-          alt={`Badge ${credential.name}`}
-          className={`size-full object-contain filter drop-shadow-[0_4px_10px_rgba(0,0,0,0.5)] transition-[filter,transform] duration-200 ease-out pointer-events-none transform-gpu group-hover:scale-[1.03] group-hover:drop-shadow-[0_0_12px_rgba(59,130,246,0.45)] ${credential.logoClassName}`}
+          alt={`Insignia ${credential.shortName}`}
+          className="size-full object-contain pointer-events-none"
           loading="eager"
           decoding="async"
         />
-      </div>
-      <span className="flex flex-col gap-1">
-        <span className="font-display font-bold text-lg leading-none tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors">
-          {credential.name}
-        </span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-          {credential.org}
-        </span>
+      </span>
+      <span className="hero-credential__name font-display text-base font-bold leading-none tracking-tight text-foreground transition-colors duration-200">
+        {credential.shortName}
+      </span>
+      <span className="hero-credential__hint font-mono text-[10px] leading-4 text-[var(--accent)]">
+        Ver credencial →
       </span>
     </button>
   );
@@ -147,20 +139,15 @@ export function Hero() {
             <span className="text-foreground/60">·</span> DFIR
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.5 }}
-            className="mt-7 pt-5 border-t border-[var(--border)]/40"
-          >
+          <div className="mt-7 pt-5 border-t border-[var(--border)]/40">
             <div
               role="group"
               aria-label="Credenciales principales"
-              className="flex flex-wrap gap-x-6 gap-y-3"
+              className="flex flex-wrap gap-x-6 gap-y-3 overflow-visible"
             >
               {HERO_CREDENTIALS.map(renderCredential)}
             </div>
-          </motion.div>
+          </div>
         </div>
         <div className="md:max-w-[440px]">
           <TerminalWindow start />

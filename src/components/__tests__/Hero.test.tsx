@@ -20,8 +20,18 @@ vi.mock("@/components/fx/TextScramble", () => ({
 }));
 
 vi.mock("@/components/CertModal", () => ({
-  CertModal: ({ cert, title, onClose }: { cert: string; title: string; onClose: () => void }) => (
-    <div data-testid="cert-modal">
+  CertModal: ({
+    cert,
+    title,
+    isOpen,
+    onClose,
+  }: {
+    cert: string;
+    title: string;
+    isOpen: boolean;
+    onClose: () => void;
+  }) => (
+    <div data-testid="cert-modal" data-open={isOpen}>
       <span data-testid="modal-title">{title}</span>
       <span data-testid="modal-cert">{cert}</span>
       <button data-testid="modal-close" onClick={onClose}>
@@ -35,15 +45,17 @@ describe("Hero section", () => {
   it("renders only the primary Security+ and SAL1 credentials in display order", () => {
     render(<Hero />);
 
-    expect(screen.getByAltText("Badge CompTIA Security+")).toHaveAttribute(
+    expect(screen.getByAltText("Insignia Security+")).toHaveAttribute(
       "src",
       "/badges/comptiabadge.png",
     );
-    expect(screen.getByAltText("Badge SAL1")).toHaveAttribute("src", "/badges/sal1badge.png");
+    expect(screen.getByAltText("Insignia SAL1")).toHaveAttribute("src", "/badges/sal1badge.png");
 
     const credentials = screen.getByRole("group", { name: "Credenciales principales" });
     expect(credentials.querySelectorAll("button")).toHaveLength(2);
-    expect(credentials.textContent).toMatch(/CompTIA Security\+.*SAL1/s);
+    expect(credentials.textContent).toMatch(/Security\+.*SAL1/s);
+    expect(credentials.textContent).toContain("Ver credencial →");
+    expect(credentials.textContent).not.toMatch(/CompTIA|TryHackMe|948|1000/);
     expect(screen.queryByRole("button", { name: /Google Cybersecurity/i })).not.toBeInTheDocument();
   });
 
@@ -56,22 +68,25 @@ describe("Hero section", () => {
     fireEvent.click(sal1Btn);
 
     expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
+    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "true");
     expect(screen.getByTestId("modal-title")).toHaveTextContent("SAL1");
     expect(screen.getByTestId("modal-cert")).toHaveTextContent("/certs/THM-SAL1-Certificate.png");
 
     // Close modal
     fireEvent.click(screen.getByTestId("modal-close"));
+    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "false");
   });
 
   it("opens the official CompTIA certificate when clicking its Hero badge", () => {
     render(<Hero />);
 
     const comptiaBtn = screen.getByRole("button", {
-      name: /Ver credencial CompTIA Security\+/i,
+      name: "Ver credencial CompTIA Security+",
     });
     fireEvent.click(comptiaBtn);
 
     expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
+    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "true");
     expect(screen.getByTestId("modal-title")).toHaveTextContent("CompTIA Security+");
     expect(screen.getByTestId("modal-cert")).toHaveTextContent(
       "/certs/comptia-security-plus-sy0-701.webp",
@@ -79,5 +94,6 @@ describe("Hero section", () => {
 
     // Close modal
     fireEvent.click(screen.getByTestId("modal-close"));
+    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "false");
   });
 });
