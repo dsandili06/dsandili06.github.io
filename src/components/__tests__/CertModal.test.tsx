@@ -1,6 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup, fireEvent, waitFor } from "@testing-library/react";
 import { CertModal } from "@/components/CertModal";
+import { SAL1_REVIEW } from "@/data/sal1Review";
+import { SECURITY_PLUS_REVIEW } from "@/data/securityPlusReview";
+
+const securityPlusParagraphs = SECURITY_PLUS_REVIEW.executiveSummary.flatMap((item) =>
+  typeof item === "string" ? [item] : item.paragraphs,
+);
 
 describe("CertModal component", () => {
   beforeEach(() => {
@@ -56,6 +62,28 @@ describe("CertModal component", () => {
     expect(screen.queryByText(/948/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Ventana máx: 24 horas/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Evidencia Oficial de Resultados/)).not.toBeInTheDocument();
+  });
+
+  it("renders Security+ review as its complete ordered paragraphs without section headings", () => {
+    render(
+      <CertModal
+        isOpen
+        onClose={vi.fn()}
+        cert="/certs/comptia-security-plus-sy0-701.webp"
+        title="CompTIA Security+"
+      />,
+    );
+
+    const narrative = document.body.querySelector('[role="tabpanel"]');
+    expect(narrative).not.toBeNull();
+    expect(
+      Array.from(narrative!.querySelectorAll("p"), (paragraph) => paragraph.textContent),
+    ).toEqual(securityPlusParagraphs);
+    expect(narrative!.querySelector("h3, h4")).toBeNull();
+    expect(narrative!.textContent).not.toContain("Resumen Ejecutivo & Alcance");
+    expect(narrative!.textContent).not.toMatch(
+      /Preparación|El examen|Lo que recomiendo|Lo que me llevé/,
+    );
   });
 
   it("respects certificate tab and falls back to certificate for unsupported review", () => {
@@ -184,7 +212,7 @@ describe("CertModal component", () => {
     const { rerender } = render(
       <CertModal isOpen onClose={vi.fn()} cert="/certs/THM-SAL1-Certificate.png" title="SAL1" />,
     );
-    expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
+    expect(screen.getByText(SAL1_REVIEW.executiveSummary[0])).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Ampliar captura oficial de puntaje/i }));
     rerender(
       <CertModal
@@ -324,7 +352,13 @@ describe("CertModal component", () => {
     expect(screen.queryByText("Escenarios Evaluados")).not.toBeInTheDocument();
     expect(screen.queryByText("Veredicto del Analista & Recomendaciones")).not.toBeInTheDocument();
     expect(screen.queryByText("9.5 / 10")).not.toBeInTheDocument();
-    expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
+    const narrative = document.body.querySelector('[role="tabpanel"]');
+    expect(narrative).not.toBeNull();
+    expect(
+      Array.from(narrative!.querySelectorAll("p"), (paragraph) => paragraph.textContent),
+    ).toEqual(SAL1_REVIEW.executiveSummary);
+    expect(narrative!.querySelector("h3, h4")).toBeNull();
+    expect(narrative!.textContent).not.toContain("Resumen Ejecutivo & Alcance");
     expect(
       screen.getByRole("button", { name: /Ampliar captura oficial de puntaje/i }),
     ).toBeInTheDocument();
@@ -356,7 +390,7 @@ describe("CertModal component", () => {
 
     // Click review tab
     fireEvent.click(reviewTab);
-    expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
+    expect(screen.getByText(SAL1_REVIEW.executiveSummary[0])).toBeInTheDocument();
     expect(
       screen.getByRole("button", { name: /Ampliar captura oficial de puntaje/i }),
     ).toBeInTheDocument();
@@ -404,7 +438,7 @@ describe("CertModal component", () => {
       />,
     );
 
-    expect(screen.getByText("Resumen Ejecutivo & Alcance")).toBeInTheDocument();
+    expect(screen.getByText(SAL1_REVIEW.executiveSummary[0])).toBeInTheDocument();
   });
 
   it("does not show removed scenario progress bars", () => {

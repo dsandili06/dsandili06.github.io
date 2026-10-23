@@ -152,10 +152,7 @@ describe("Certs section", () => {
       name: /Ver perfil oficial de credenciales e insignias en Credly/i,
     });
     expect(credlyLink).toBeInTheDocument();
-    expect(credlyLink).toHaveAttribute(
-      "href",
-      "https://www.credly.com/users/santiago-daniel-sandili/badges/credly",
-    );
+    expect(credlyLink).toHaveAttribute("href", "https://www.credly.com/users/sdsandili");
     expect(credlyLink).toHaveAttribute("target", "_blank");
     expect(credlyLink).toHaveAttribute("rel", "noreferrer");
 

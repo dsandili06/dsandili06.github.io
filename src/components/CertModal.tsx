@@ -459,32 +459,12 @@ export function CertModal({
                     </>
                   )}
 
-                  {/* Resumen Ejecutivo */}
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="h-px flex-1 bg-border-dim/60" />
-                      <h3 className="font-mono text-xs uppercase tracking-[0.25em] text-[var(--accent)] font-semibold">
-                        Resumen Ejecutivo & Alcance
-                      </h3>
-                      <div className="h-px flex-1 bg-border-dim/60" />
-                    </div>
-
-                    <div className="border-l-2 border-[var(--accent)]/60 pl-4 sm:pl-5 py-2 bg-[var(--surface-2)] rounded-r space-y-3 text-xs sm:text-sm text-foreground/85 leading-relaxed">
-                      {review.executiveSummary.map((item) =>
-                        typeof item === "string" ? (
-                          <p key={item.slice(0, 30)}>{item}</p>
-                        ) : (
-                          <section key={item.heading} className="space-y-2">
-                            <h4 className="font-mono text-xs uppercase tracking-wider text-[var(--accent)]">
-                              {item.heading}
-                            </h4>
-                            {item.paragraphs.map((paragraph) => (
-                              <p key={paragraph.slice(0, 40)}>{paragraph}</p>
-                            ))}
-                          </section>
-                        ),
-                      )}
-                    </div>
+                  <div className="space-y-3 text-sm sm:text-[15px] text-foreground/85 leading-relaxed">
+                    {review.executiveSummary
+                      .flatMap((item) => (typeof item === "string" ? [item] : item.paragraphs))
+                      .map((paragraph, index) => (
+                        <p key={index}>{paragraph}</p>
+                      ))}
                   </div>
                 </div>
               ) : null}

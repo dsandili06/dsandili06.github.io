@@ -159,7 +159,7 @@ export function Certs() {
       {/* Verificación de Expediente Digital en Credly */}
       <div className="mt-4 sm:mt-5">
         <a
-          href="https://www.credly.com/users/santiago-daniel-sandili/badges/credly"
+          href="https://www.credly.com/users/sdsandili"
           target="_blank"
           rel="noreferrer"
           aria-label="Ver perfil oficial de credenciales e insignias en Credly (abre en pestaña nueva)"
