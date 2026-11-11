@@ -5,8 +5,7 @@ import { ChevronLeft, ChevronRight, LayoutGrid, Table, Play, Pause } from "lucid
 import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/primitives/Section";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
-import { lazy, Suspense } from "react";
-import { WriteupModalFallback } from "@/components/primitives/WriteupModalFallback";
+import { openWriteup } from "@/components/features/modals/modalRequests";
 import Autoplay from "embla-carousel-autoplay";
 
 type AutoplayPluginType = {
@@ -15,24 +14,12 @@ type AutoplayPluginType = {
   stop?: () => void;
 };
 
-// Lazy: react-markdown (~250KB) solo se descarga al abrir un writeup
-const WriteupModal = lazy(() =>
-  import("@/components/WriteupModal").then((m) => ({ default: m.WriteupModal })),
-);
-
 export function Investigaciones() {
   const [viewMode, setViewMode] = useState<"carousel" | "table">(() =>
     typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches
       ? "table" // mobile lands on the compact table format
       : "carousel",
   );
-  const [writeupId, setWriteupId] = useState<string | null>(null);
-  const [modalWriteupId, setModalWriteupId] = useState<string | null>(null);
-
-  const openWriteup = (id: string) => {
-    setModalWriteupId(id);
-    setWriteupId(id);
-  };
 
   // Reduced motion: no autoplay plugin
   const prefersReduced =
@@ -492,17 +479,6 @@ export function Investigaciones() {
             </div>
           </div>
         </>
-      )}
-
-      {modalWriteupId && (
-        <Suspense fallback={<WriteupModalFallback />}>
-          <WriteupModal
-            investigationId={modalWriteupId}
-            isOpen={Boolean(writeupId)}
-            onClose={() => setWriteupId(null)}
-            onExitComplete={() => setModalWriteupId(null)}
-          />
-        </Suspense>
       )}
     </Section>
   );

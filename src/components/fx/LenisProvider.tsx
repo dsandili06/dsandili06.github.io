@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { replaceHash } from "@/lib/hash";
 
 export function LenisProvider() {
   useEffect(() => {
@@ -42,7 +43,7 @@ export function LenisProvider() {
       if (el instanceof HTMLElement) {
         el.focus({ preventScroll: true });
       }
-      history.replaceState(null, "", hash);
+      replaceHash(hash.slice(1));
     };
     document.addEventListener("click", onAnchorClick);
 

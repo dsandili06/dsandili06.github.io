@@ -1,9 +1,7 @@
 import { useEffect, useCallback, useRef, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
-import { useFocusTrap } from "@/hooks/useFocusTrap";
-import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
-import { useModalHistory } from "@/hooks/useModalHistory";
+import { useDialogLifecycle } from "@/hooks/useDialogLifecycle";
 import { X, ExternalLink, Loader2, AlertTriangle } from "lucide-react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
@@ -26,13 +24,9 @@ export function WriteupModal({
   onClose,
   onExitComplete,
 }: WriteupModalProps) {
-  const panelRef = useFocusTrap<HTMLDivElement>();
-  const { handleClose } = useModalHistory({
-    isOpen,
-    onClose,
-    stateData: { modal: "writeup", id: investigationId },
-  });
-  const { overlayRef } = useOverlayLifecycle({
+  // Browser history is owned by the router (see ModalHost); closing is the caller's job.
+  const handleClose = onClose;
+  const panelLifecycleRef = useDialogLifecycle({
     isOpen,
     onEscape: () => {
       if (lightboxSrc) return false;
@@ -40,13 +34,6 @@ export function WriteupModal({
       return true;
     },
   });
-  const panelLifecycleRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      panelRef(node);
-      overlayRef(node);
-    },
-    [panelRef, overlayRef],
-  );
   const investigation = investigationById(investigationId);
   const { markdown: md, loading, error, retry } = useWriteup(investigation, investigationId);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);

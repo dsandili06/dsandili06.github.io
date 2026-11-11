@@ -4,6 +4,7 @@ import { FileSearch, Binary, Network, Terminal, Activity } from "lucide-react";
 import { Section } from "@/components/primitives/Section";
 import { STACK_GROUPS } from "@/data/stack";
 import { cn } from "@/lib/utils";
+import { STACK_CATEGORY_EVENT, type StackCategoryDetail } from "@/lib/stackCategory";
 
 const CATEGORY_META: Record<
   string,
@@ -64,13 +65,13 @@ export function Stack() {
 
   useEffect(() => {
     const handleCategoryChange = (e: Event) => {
-      const customEvent = e as CustomEvent<{ category: string }>;
+      const customEvent = e as CustomEvent<StackCategoryDetail>;
       if (customEvent.detail?.category) {
         setSelectedCategory(customEvent.detail.category);
       }
     };
-    window.addEventListener("set-stack-category", handleCategoryChange);
-    return () => window.removeEventListener("set-stack-category", handleCategoryChange);
+    window.addEventListener(STACK_CATEGORY_EVENT, handleCategoryChange);
+    return () => window.removeEventListener(STACK_CATEGORY_EVENT, handleCategoryChange);
   }, []);
 
   const activeGroup = STACK_GROUPS.find((g) => g.title === selectedCategory) ?? STACK_GROUPS[0];

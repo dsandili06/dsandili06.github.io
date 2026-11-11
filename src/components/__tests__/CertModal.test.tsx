@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup, fireEvent, waitFor } from "@testing-library/react";
-import { CertModal } from "@/components/CertModal";
+import { CertModal } from "@/components/features/certificates/CertModal";
 import { SAL1_REVIEW } from "@/data/sal1Review";
 import { SECURITY_PLUS_REVIEW } from "@/data/securityPlusReview";
 
@@ -10,14 +10,11 @@ const securityPlusParagraphs = SECURITY_PLUS_REVIEW.executiveSummary.flatMap((it
 
 describe("CertModal component", () => {
   beforeEach(() => {
-    vi.spyOn(window.history, "pushState").mockImplementation(() => {});
-    vi.spyOn(window.history, "back").mockImplementation(() => {});
     document.body.style.overflow = "";
   });
 
   afterEach(() => {
     cleanup();
-    window.dispatchEvent(new PopStateEvent("popstate"));
     vi.restoreAllMocks();
     document.body.style.overflow = "";
   });
@@ -242,34 +239,25 @@ describe("CertModal component", () => {
     expect(backdrop?.className).toContain("pb-[max(1rem,env(safe-area-inset-bottom))]");
   });
 
-  it("pushes history state on open and calls onClose on popstate (mobile back gesture)", () => {
+  it("does not touch browser history itself (the router owns it)", () => {
     const pushStateSpy = vi.spyOn(window.history, "pushState");
     const backSpy = vi.spyOn(window.history, "back");
-    const onClose = vi.fn();
 
     render(
       <CertModal
         isOpen={true}
-        onClose={onClose}
+        onClose={vi.fn()}
         cert="/certs/Google Cybersecurity Certificate.webp"
         title="Google Cybersecurity"
       />,
     );
+    screen.getByRole("button", { name: /Cerrar/i }).click();
 
-    expect(pushStateSpy).toHaveBeenCalledWith(
-      { modal: "cert", title: "Google Cybersecurity" },
-      "",
-      window.location.href,
-    );
-
-    window.dispatchEvent(new PopStateEvent("popstate"));
-
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(pushStateSpy).not.toHaveBeenCalled();
     expect(backSpy).not.toHaveBeenCalled();
   });
 
-  it("reverts history when closed via X button", () => {
-    const backSpy = vi.spyOn(window.history, "back");
+  it("calls onClose when closed via X button", () => {
     const onClose = vi.fn();
 
     render(
@@ -281,15 +269,12 @@ describe("CertModal component", () => {
       />,
     );
 
-    const closeBtn = screen.getByRole("button", { name: /Cerrar/i });
-    closeBtn.click();
+    screen.getByRole("button", { name: /Cerrar/i }).click();
 
-    expect(backSpy).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("reverts history when closed via backdrop click", () => {
-    const backSpy = vi.spyOn(window.history, "back");
+  it("calls onClose when closed via backdrop click", () => {
     const onClose = vi.fn();
 
     const { baseElement } = render(
@@ -305,12 +290,10 @@ describe("CertModal component", () => {
     expect(backdrop).not.toBeNull();
     backdrop.click();
 
-    expect(backSpy).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("reverts history when closed via Escape key", () => {
-    const backSpy = vi.spyOn(window.history, "back");
+  it("calls onClose when closed via Escape key", () => {
     const onClose = vi.fn();
 
     render(
@@ -324,7 +307,6 @@ describe("CertModal component", () => {
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
 
-    expect(backSpy).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 

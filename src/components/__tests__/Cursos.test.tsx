@@ -1,7 +1,9 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Cursos } from "@/components/sections/Cursos";
 import { COURSE_GROUPS, COURSES } from "@/data/courses";
+import { certificateBySrc } from "@/data/certificateCatalog";
+import { captureModalRequests } from "@/test/modalRequests";
 
 const reducedMotionState = vi.hoisted(() => ({ value: false }));
 
@@ -13,36 +15,14 @@ vi.mock("motion/react", async (importOriginal) => {
   };
 });
 
-// Mock CertModal
-vi.mock("@/components/CertModal", () => ({
-  CertModal: ({
-    title,
-    cert,
-    initialTab,
-    isOpen = true,
-    onClose,
-  }: {
-    title: string;
-    cert?: string;
-    initialTab?: "cert" | "review";
-    isOpen?: boolean;
-    onClose: () => void;
-  }) =>
-    isOpen ? (
-      <div data-testid="cert-modal">
-        <span data-testid="modal-title">{title}</span>
-        <span data-testid="modal-cert">{cert}</span>
-        <span data-testid="modal-tab">{initialTab || "none"}</span>
-        <button data-testid="modal-close" onClick={onClose}>
-          Close
-        </button>
-      </div>
-    ) : null,
-}));
-
 describe("Cursos", () => {
+  let capture: ReturnType<typeof captureModalRequests>;
   beforeEach(() => {
     reducedMotionState.value = false;
+    capture = captureModalRequests();
+  });
+  afterEach(() => {
+    capture.stop();
   });
 
   it("renders the section header with number 06 and learning log kicker", () => {
@@ -183,44 +163,33 @@ describe("Cursos", () => {
     expect(badgeImg).toHaveAttribute("src", "/badges/dojo.png");
   });
 
-  it("should open CertModal when clicking course row for TryHackMe SOC L1 and close it", () => {
+  it("requests the SOC L1 Path certificate when clicking its TryHackMe course row", () => {
     render(<Cursos />);
 
-    // Switch to TryHackMe where SOC L1 is located
-    const thmTab = screen.getByRole("tab", { name: /TryHackMe/i });
-    fireEvent.click(thmTab);
+    fireEvent.click(screen.getByRole("tab", { name: /TryHackMe/i }));
+    fireEvent.click(screen.getByLabelText(/Ver certificado oficial: SOC L1 Path/i));
 
-    const sal1Btn = screen.getByLabelText(/Ver certificado oficial: SOC L1 Path/i);
-    fireEvent.click(sal1Btn);
-
-    expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("SOC L1 Path");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent("THM-SOC L1 PATH.webp");
-
-    // Close the modal
-    const closeBtn = screen.getByTestId("modal-close");
-    fireEvent.click(closeBtn);
-    expect(screen.queryByTestId("cert-modal")).toBeNull();
+    const expected = certificateBySrc("/certs/THM-SOC L1 PATH.webp");
+    expect(expected?.title).toBe("SOC L1 Path");
+    expect(capture.requests).toEqual([{ type: "cert", id: expected?.id }]);
   });
 
-  it("should open CertModal when clicking a course row and close it", () => {
+  it("requests the course certificate when clicking a course row", () => {
     render(<Cursos />);
 
-    const courseBtn = screen.getByLabelText(
-      /Ver certificado oficial: Foundations of Cybersecurity/i,
-    );
-    fireEvent.click(courseBtn);
-
-    expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("Foundations of Cybersecurity");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
-      "Coursera - Foundations of Cybersecurity.webp",
+    fireEvent.click(
+      screen.getByLabelText(/Ver certificado oficial: Foundations of Cybersecurity/i),
     );
 
-    // Close the modal
-    const closeBtn = screen.getByTestId("modal-close");
-    fireEvent.click(closeBtn);
-    expect(screen.queryByTestId("cert-modal")).toBeNull();
+    const expected = certificateBySrc("/certs/Coursera - Foundations of Cybersecurity.webp");
+    expect(expected?.title).toBe("Foundations of Cybersecurity");
+    expect(capture.requests).toEqual([{ type: "cert", id: expected?.id }]);
+  });
+
+  it("links every course certificate to the certificate catalog", () => {
+    for (const course of COURSES.filter((c) => c.cert)) {
+      expect(certificateBySrc(course.cert!)?.title).toBe(course.title);
+    }
   });
 
   it("should support keyboard navigation between institution tabs", () => {

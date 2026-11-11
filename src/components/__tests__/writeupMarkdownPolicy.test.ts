@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { resolveWriteupImageUri, safeMarkdownUrl } from "@/components/writeupMarkdownPolicy";
+import {
+  resolveWriteupImageUri,
+  safeMarkdownUrl,
+} from "@/components/features/writeups/writeupMarkdownPolicy";
 
 describe("writeupMarkdownPolicy", () => {
   it("allows small raster data images only as image sources", () => {

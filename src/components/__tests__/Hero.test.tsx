@@ -1,6 +1,9 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Hero } from "@/components/sections/Hero";
+import { certificateBySrc } from "@/data/certificateCatalog";
+import { HERO_CREDENTIALS } from "@/data/heroCredentials";
+import { captureModalRequests } from "@/test/modalRequests";
 
 // Mock child components with canvas / complex timers
 vi.mock("@/components/fx/TerminalWindow", () => ({
@@ -15,34 +18,15 @@ vi.mock("@/components/fx/TextScramble", () => ({
   TextScramble: ({ text }: { text: string }) => <span>{text}</span>,
 }));
 
-vi.mock("@/components/CertModal", () => ({
-  CertModal: ({
-    cert,
-    title,
-    isOpen,
-    onClose,
-    onExitComplete,
-  }: {
-    cert: string;
-    title: string;
-    isOpen: boolean;
-    onClose: () => void;
-    onExitComplete: () => void;
-  }) => (
-    <div data-testid="cert-modal" data-open={isOpen}>
-      <span data-testid="modal-title">{title}</span>
-      <span data-testid="modal-cert">{cert}</span>
-      <button data-testid="modal-close" onClick={onClose}>
-        Close
-      </button>
-      <button data-testid="modal-exit-complete" onClick={onExitComplete}>
-        Exit complete
-      </button>
-    </div>
-  ),
-}));
-
 describe("Hero section", () => {
+  let capture: ReturnType<typeof captureModalRequests>;
+  beforeEach(() => {
+    capture = captureModalRequests();
+  });
+  afterEach(() => {
+    capture.stop();
+  });
+
   it("keeps the three primary credentials in order", () => {
     render(<Hero />);
 
@@ -68,57 +52,21 @@ describe("Hero section", () => {
     expect(credentials.textContent).not.toMatch(/Ver credencial →|TryHackMe|948|1000/);
   });
 
-  it("opens the SAL1 certificate when clicking its Hero credential", () => {
-    render(<Hero />);
-
-    const sal1Btn = screen.getByRole("button", {
-      name: /Ver credencial SAL1/i,
-    });
-    fireEvent.click(sal1Btn);
-
-    expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "true");
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("SAL1");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent("/certs/THM-SAL1-Certificate.png");
-
-    // Close modal
-    fireEvent.click(screen.getByTestId("modal-close"));
-    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "false");
+  it("links every Hero credential to a known certificate", () => {
+    for (const credential of HERO_CREDENTIALS) {
+      expect(certificateBySrc(credential.cert)).toBeDefined();
+    }
   });
 
-  it("opens the official CompTIA certificate when clicking its Hero badge", () => {
+  it.each([
+    ["Ver credencial SAL1", "sal1"],
+    ["Ver credencial CompTIA Security+", "sy0-701"],
+    ["Ver credencial Google Cybersecurity", "google"],
+  ])("requests the certificate modal when clicking %s", (name, id) => {
     render(<Hero />);
 
-    const comptiaBtn = screen.getByRole("button", {
-      name: "Ver credencial CompTIA Security+",
-    });
-    fireEvent.click(comptiaBtn);
+    fireEvent.click(screen.getByRole("button", { name }));
 
-    expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "true");
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("CompTIA Security+");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
-      "/certs/comptia-security-plus-sy0-701.webp",
-    );
-
-    // Close modal
-    fireEvent.click(screen.getByTestId("modal-close"));
-    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "false");
-  });
-
-  it("opens and closes the Google certificate while preserving exit completion", () => {
-    render(<Hero />);
-
-    fireEvent.click(screen.getByRole("button", { name: "Ver credencial Google Cybersecurity" }));
-    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "true");
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("Google Cybersecurity");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
-      "/certs/Google Cybersecurity Certificate.webp",
-    );
-
-    fireEvent.click(screen.getByTestId("modal-close"));
-    expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "false");
-    fireEvent.click(screen.getByTestId("modal-exit-complete"));
-    expect(screen.queryByTestId("cert-modal")).not.toBeInTheDocument();
+    expect(capture.requests).toEqual([{ type: "cert", id }]);
   });
 });

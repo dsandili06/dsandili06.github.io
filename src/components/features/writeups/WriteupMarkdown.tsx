@@ -6,7 +6,10 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeSlug from "rehype-slug";
 import { AlertTriangle, Check, Copy } from "lucide-react";
-import { resolveWriteupImageUri, safeMarkdownUrl } from "@/components/writeupMarkdownPolicy";
+import {
+  resolveWriteupImageUri,
+  safeMarkdownUrl,
+} from "@/components/features/writeups/writeupMarkdownPolicy";
 
 /** Catches ReactMarkdown render errors so the modal doesn't crash silently. */
 class MarkdownErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {

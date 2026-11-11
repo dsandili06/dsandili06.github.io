@@ -1,25 +1,9 @@
-import { useState } from "react";
 import { ExternalLink } from "lucide-react";
 import { Section } from "@/components/primitives/Section";
 import { CERTIFICATIONS } from "@/data/certifications";
-import { CertModal } from "@/components/CertModal";
+import { openCertificateBySrc } from "@/components/features/modals/modalRequests";
 
 export function Certs() {
-  const [activeCert, setActiveCert] = useState<{
-    cert: string;
-    title: string;
-    initialTab?: "cert" | "review";
-  } | null>(null);
-  const [modalCert, setModalCert] = useState<{
-    cert: string;
-    title: string;
-    initialTab?: "cert" | "review";
-  } | null>(null);
-  const openCertificate = (cert: string, title: string, initialTab?: "cert" | "review") => {
-    setModalCert({ cert, title, initialTab });
-    setActiveCert({ cert, title, initialTab });
-  };
-
   return (
     <Section id="formacion" number="02" title="Certificaciones" kicker="CREDENTIALS">
       <div className="flex flex-col gap-px bg-border-dim border border-border-dim">
@@ -31,11 +15,11 @@ export function Certs() {
           const wrapperProps = isClickable
             ? {
                 type: "button" as const,
-                "aria-label": c.hasReview
+                "aria-label": c.review
                   ? `Ver certificado y review técnica de ${c.title}`
                   : `Ver certificado de ${c.title}`,
                 onClick: () => {
-                  if (c.href) openCertificate(c.href, c.title, c.hasReview ? "review" : "cert");
+                  if (c.href) openCertificateBySrc(c.href);
                 },
               }
             : {};
@@ -131,7 +115,7 @@ export function Certs() {
                         {c.score}
                       </div>
                     </div>
-                    {c.hasReview ? (
+                    {c.review ? (
                       <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-85 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right font-medium">
                         VER CERTIFICADO & REVIEW TÉCNICA →
                       </span>
@@ -208,17 +192,6 @@ export function Certs() {
           </div>
         </a>
       </div>
-
-      {modalCert && (
-        <CertModal
-          cert={modalCert.cert}
-          title={modalCert.title}
-          initialTab={modalCert.initialTab}
-          isOpen={Boolean(activeCert)}
-          onClose={() => setActiveCert(null)}
-          onExitComplete={() => setModalCert(null)}
-        />
-      )}
     </Section>
   );
 }

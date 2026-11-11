@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, lazy, Suspense } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import { CONTACT } from "@/data/site";
 import { Command } from "cmdk";
@@ -28,16 +28,11 @@ import { STACK_GROUPS } from "@/data/stack";
 import { CERTIFICATIONS } from "@/data/certifications";
 import { SECTIONS, type SectionId } from "@/data/sections";
 import { getLenis } from "@/lib/lenis";
-import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
-import { useFocusTrap } from "@/hooks/useFocusTrap";
+import { useDialogLifecycle } from "@/hooks/useDialogLifecycle";
 import { COMMAND_PALETTE_OPEN_EVENT, COMMAND_PALETTE_CLOSE_EVENT } from "@/hooks/useCommandPalette";
-import { CertModal } from "@/components/CertModal";
-import { WriteupModalFallback } from "@/components/primitives/WriteupModalFallback";
-
-// Lazy-load WriteupModal so react-markdown is only fetched if a writeup is opened
-const WriteupModal = lazy(() =>
-  import("@/components/WriteupModal").then((m) => ({ default: m.WriteupModal })),
-);
+import { openCertificateBySrc, openWriteup } from "@/components/features/modals/modalRequests";
+import { replaceHash } from "@/lib/hash";
+import { selectStackCategory } from "@/lib/stackCategory";
 
 const SECTION_ICONS = {
   about: FileText,
@@ -54,31 +49,14 @@ export function CommandPalette() {
   const [search, setSearch] = useState("");
   const [copiedEmail, setCopiedEmail] = useState(false);
 
-  // Writeup modal trigger from palette
-  const [modalWriteupId, setModalWriteupId] = useState<string | null>(null);
-  const [activeWriteupId, setActiveWriteupId] = useState<string | null>(null);
-
-  // Cert modal trigger from palette
-  const [modalCert, setModalCert] = useState<{ cert: string; title: string } | null>(null);
-  const [activeCert, setActiveCert] = useState<{ cert: string; title: string } | null>(null);
-
   const inputRef = useRef<HTMLInputElement>(null);
-  const dialogRef = useFocusTrap<HTMLDivElement>();
-
-  const { overlayRef } = useOverlayLifecycle({
+  const dialogLifecycleRef = useDialogLifecycle({
     isOpen,
     onEscape: () => {
       setIsOpen(false);
       return true;
     },
   });
-  const dialogLifecycleRef = useCallback(
-    (node: HTMLDivElement | null) => {
-      dialogRef(node);
-      overlayRef(node);
-    },
-    [dialogRef, overlayRef],
-  );
   const pendingSectionRef = useRef<string | null>(null);
 
   // Global keyboard shortcut: Ctrl+K or Cmd+K
@@ -136,7 +114,7 @@ export function CommandPalette() {
       const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       element.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth" });
     }
-    history.replaceState(null, "", `#${id}`);
+    replaceHash(id);
   }, []);
 
   const handleSelectSection = useCallback(
@@ -148,26 +126,19 @@ export function CommandPalette() {
 
   const handleSelectWriteup = useCallback((labId: string) => {
     setIsOpen(false);
-    setModalWriteupId(labId);
-    setActiveWriteupId(labId);
+    openWriteup(labId);
   }, []);
 
-  const handleSelectCert = useCallback((certHref: string, certTitle: string) => {
+  const handleSelectCert = useCallback((certHref: string) => {
     setIsOpen(false);
-    setModalCert({ cert: certHref, title: certTitle });
-    setActiveCert({ cert: certHref, title: certTitle });
+    openCertificateBySrc(certHref);
   }, []);
 
   const handleSelectTool = useCallback(
     (groupTitle: string) => {
       setIsOpen(false);
       scrollToElement("stack");
-      // Notify Stack.tsx to select the respective tool category
-      if (typeof window !== "undefined") {
-        window.dispatchEvent(
-          new CustomEvent("set-stack-category", { detail: { category: groupTitle } }),
-        );
-      }
+      selectStackCategory(groupTitle);
     },
     [scrollToElement],
   );
@@ -453,7 +424,7 @@ export function CommandPalette() {
                         value={`${cert.code} ${cert.title} ${cert.org} ${cert.status}`}
                         onSelect={() => {
                           if (cert.href) {
-                            handleSelectCert(cert.href, cert.title);
+                            handleSelectCert(cert.href);
                           } else {
                             handleSelectSection("formacion");
                           }
@@ -514,29 +485,6 @@ export function CommandPalette() {
           </div>
         )}
       </AnimatePresence>
-
-      {/* Writeup Modal Triggered from Command Palette */}
-      {modalWriteupId && (
-        <Suspense fallback={<WriteupModalFallback />}>
-          <WriteupModal
-            investigationId={modalWriteupId}
-            isOpen={Boolean(activeWriteupId)}
-            onClose={() => setActiveWriteupId(null)}
-            onExitComplete={() => setModalWriteupId(null)}
-          />
-        </Suspense>
-      )}
-
-      {/* Cert Modal Triggered from Command Palette */}
-      {modalCert && (
-        <CertModal
-          cert={modalCert.cert}
-          title={modalCert.title}
-          isOpen={Boolean(activeCert)}
-          onClose={() => setActiveCert(null)}
-          onExitComplete={() => setModalCert(null)}
-        />
-      )}
     </>,
     document.body,
   );

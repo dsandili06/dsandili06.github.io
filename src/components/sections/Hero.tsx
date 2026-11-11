@@ -1,46 +1,14 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
 import { TextScramble } from "@/components/fx/TextScramble";
-import { CertModal } from "@/components/CertModal";
-
-type HeroCredential = {
-  id: string;
-  name: string;
-  shortName: string;
-  logo: string;
-  cert: string;
-};
-
-const HERO_CREDENTIALS: HeroCredential[] = [
-  {
-    id: "comptia-secplus",
-    name: "CompTIA Security+",
-    shortName: "Security+",
-    logo: "/badges/comptiabadge.png",
-    cert: "/certs/comptia-security-plus-sy0-701.webp",
-  },
-  {
-    id: "sal1",
-    name: "SAL1",
-    shortName: "SAL1",
-    logo: "/badges/sal1badge.png",
-    cert: "/certs/THM-SAL1-Certificate.png",
-  },
-  {
-    id: "google-cybersecurity",
-    name: "Google Cybersecurity",
-    shortName: "Google Cybersecurity",
-    logo: "/badges/badgegoogle.png",
-    cert: "/certs/Google Cybersecurity Certificate.webp",
-  },
-];
+import { openCertificateBySrc } from "@/components/features/modals/modalRequests";
+import { HERO_CREDENTIALS } from "@/data/heroCredentials";
+import type { HeroCredential } from "@/types";
 
 export function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
-  const [activeCert, setActiveCert] = useState<{ cert: string; name: string } | null>(null);
-  const [modalCert, setModalCert] = useState<{ cert: string; name: string } | null>(null);
 
   // Watermark parallax — drifts slower than scroll, fades out
   const { scrollYProgress } = useScroll({
@@ -54,10 +22,7 @@ export function Hero() {
     <button
       key={credential.id}
       type="button"
-      onClick={() => {
-        setActiveCert({ cert: credential.cert, name: credential.name });
-        setModalCert({ cert: credential.cert, name: credential.name });
-      }}
+      onClick={() => openCertificateBySrc(credential.cert)}
       className={`hero-credential group flex min-h-[4.75rem] min-w-0 items-center gap-2 rounded-sm px-2 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] ${credential.id === "google-cybersecurity" ? "hero-credential--google" : ""}`}
       aria-label={`Ver credencial ${credential.name}`}
     >
@@ -160,16 +125,6 @@ export function Hero() {
           <div className="mt-1">BASE: TUC, AR.</div>
         </div>
       </div>
-
-      {modalCert && (
-        <CertModal
-          cert={modalCert.cert}
-          title={modalCert.name}
-          isOpen={Boolean(activeCert)}
-          onClose={() => setActiveCert(null)}
-          onExitComplete={() => setModalCert(null)}
-        />
-      )}
     </section>
   );
 }

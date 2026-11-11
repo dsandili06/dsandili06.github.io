@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { getLenis } from "@/lib/lenis";
+import { replaceHash } from "@/lib/hash";
 import { SECTIONS } from "@/data/sections";
 
 /**
@@ -27,7 +28,7 @@ export function SectionRail() {
     } else {
       lenis.scrollTo(el, { offset: 0 });
     }
-    history.replaceState(null, "", `#${id}`);
+    replaceHash(id);
   };
 
   // Don't render rail items until at least one section exists (lazy sections)

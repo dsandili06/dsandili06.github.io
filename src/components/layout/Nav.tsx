@@ -7,6 +7,7 @@ import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
 import { openCommandPalette } from "@/hooks/useCommandPalette";
 import { SECTIONS } from "@/data/sections";
 import { getLenis } from "@/lib/lenis";
+import { replaceHash } from "@/lib/hash";
 
 const links = SECTIONS.map((section) => ({
   href: `#${section.id}`,
@@ -80,7 +81,7 @@ export function Nav() {
       const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       target.scrollIntoView({ behavior: prefersReduced ? "auto" : "smooth" });
     }
-    history.replaceState(null, "", `#${id}`);
+    replaceHash(id);
   }, [focusDesktopAfterResizeExit]);
 
   useEffect(() => {

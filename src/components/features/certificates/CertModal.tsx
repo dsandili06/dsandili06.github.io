@@ -16,11 +16,16 @@ import {
 import Lightbox from "yet-another-react-lightbox";
 import type { ControllerRef } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
-import { useFocusTrap } from "@/hooks/useFocusTrap";
-import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
-import { useModalHistory } from "@/hooks/useModalHistory";
+import { useDialogLifecycle } from "@/hooks/useDialogLifecycle";
 import { SAL1_REVIEW } from "@/data/sal1Review";
 import { SECURITY_PLUS_REVIEW } from "@/data/securityPlusReview";
+import { certificateBySrc } from "@/data/certificateCatalog";
+import type { CertificateReviewId } from "@/types";
+
+const REVIEWS = {
+  sal1: SAL1_REVIEW,
+  "security-plus": SECURITY_PLUS_REVIEW,
+} satisfies Record<CertificateReviewId, unknown>;
 
 type CertModalProps = {
   cert: string;
@@ -39,10 +44,10 @@ export function CertModal({
   onClose,
   onExitComplete,
 }: CertModalProps) {
-  const isSal1 = cert === "/certs/THM-SAL1-Certificate.png";
-  const isSecurityPlus = cert === "/certs/comptia-security-plus-sy0-701.webp";
-  const hasReview = isSal1 || isSecurityPlus;
-  const review = isSal1 ? SAL1_REVIEW : hasReview ? SECURITY_PLUS_REVIEW : null;
+  const reviewId = certificateBySrc(cert)?.review;
+  const isSal1 = reviewId === "sal1";
+  const hasReview = reviewId !== undefined;
+  const review = reviewId ? REVIEWS[reviewId] : null;
   const [activeTab, setActiveTab] = useState<"cert" | "review">(() =>
     initialTab === "cert" ? "cert" : hasReview ? "review" : "cert",
   );
@@ -54,13 +59,9 @@ export function CertModal({
   const previousIdentity = useRef(`${cert}\0${title}`);
   const restoreDialogFocusOnLightboxExit = useRef(false);
 
-  const panelRef = useFocusTrap<HTMLDivElement>();
-  const { handleClose } = useModalHistory({
-    isOpen,
-    onClose,
-    stateData: { modal: "cert", title },
-  });
-  const { overlayRef } = useOverlayLifecycle({
+  // Browser history is owned by the router (see ModalHost); closing is the caller's job.
+  const handleClose = onClose;
+  const dialogLifecycleRef = useDialogLifecycle({
     isOpen,
     onEscape: () => {
       if (lightboxImage) return false;
@@ -71,10 +72,9 @@ export function CertModal({
   const panelLifecycleRef = useCallback(
     (node: HTMLDivElement | null) => {
       dialogRef.current = node;
-      panelRef(node);
-      overlayRef(node);
+      dialogLifecycleRef(node);
     },
-    [panelRef, overlayRef],
+    [dialogLifecycleRef],
   );
 
   useEffect(() => {
@@ -173,7 +173,8 @@ export function CertModal({
                     {isSal1 && (
                       <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xs font-mono text-[9px] uppercase tracking-wider bg-[var(--accent-green)]/15 border border-[var(--accent-green)]/40 text-[var(--accent-green)]">
                         <CheckCircle2 size={10} />
-                        Score Oficial: 948 / 1000 · Aprobado (Intento 1)
+                        Score Oficial: {SAL1_REVIEW.score} / {SAL1_REVIEW.maxScore} · Aprobado
+                        (Intento {SAL1_REVIEW.attempt})
                       </span>
                     )}
                   </div>
@@ -236,7 +237,7 @@ export function CertModal({
                     <FileText size={14} />
                     <span>[ REVIEW TÉCNICA DEL EXAMEN ]</span>
                     <span className="hidden sm:inline-flex ml-1 px-1.5 py-0.5 rounded-xs text-[9px] bg-[var(--accent-green)]/20 text-[var(--accent-green)] border border-[var(--accent-green)]/40 font-mono font-bold">
-                      {isSal1 ? "948 PTS" : "791 PTS"}
+                      {review?.score} PTS
                     </span>
                   </button>
                 </div>
@@ -343,7 +344,9 @@ export function CertModal({
                           </span>
                         </div>
                         <span className="text-[10px] font-mono text-[var(--accent-green)]">
-                          {isSal1 ? "+198 pts s/ umbral (750)" : "Primer intento"}
+                          {isSal1
+                            ? `+${SAL1_REVIEW.score - SAL1_REVIEW.requiredScore} pts s/ umbral (${SAL1_REVIEW.requiredScore})`
+                            : "Primer intento"}
                         </span>
                       </div>
                     </div>
@@ -427,7 +430,7 @@ export function CertModal({
                         >
                           <img
                             src={review.evidenceImage}
-                            alt="Captura oficial de resultados de certificación TryHackMe SAL1: 948 puntos sobre 1000, aprobado en 4h 7m 55s"
+                            alt={`Captura oficial de resultados de certificación TryHackMe SAL1: ${SAL1_REVIEW.score} puntos sobre ${SAL1_REVIEW.maxScore}, aprobado en ${SAL1_REVIEW.duration}`}
                             className="max-h-[380px] sm:max-h-[460px] w-auto max-w-full object-contain mx-auto rounded shadow-lg transition-transform duration-300 ease-out group-hover:scale-[1.01] transform-gpu backface-hidden will-change-transform"
                             loading="lazy"
                             decoding="async"
@@ -438,7 +441,8 @@ export function CertModal({
                               Clic para ver captura en pantalla completa
                             </span>
                             <span className="font-mono text-xs text-[var(--accent-green)] font-bold">
-                              948 / 1000 · PASS (INTENTO 1)
+                              {SAL1_REVIEW.score} / {SAL1_REVIEW.maxScore} · PASS (INTENTO{" "}
+                              {SAL1_REVIEW.attempt})
                             </span>
                           </div>
                         </button>

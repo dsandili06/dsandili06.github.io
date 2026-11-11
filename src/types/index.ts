@@ -77,7 +77,55 @@ export type Certification = {
   note?: string;
   logo?: string;
   mockExams?: MockExam[];
-  hasReview?: boolean;
+  /** Technical exam review shown in the certificate modal, if any. */
+  review?: CertificateReviewId;
+};
+
+export type AboutTabId = "triage" | "dfir" | "hunting";
+
+/** A focus area tab in the About dossier. */
+export type AboutTab = {
+  id: AboutTabId;
+  label: string;
+  title: string;
+  description: string;
+  highlights: string[];
+};
+
+/** A contact channel card in the Contacto section. */
+export type ContactChannel = {
+  code: string;
+  label: string;
+  value: string;
+  href: string;
+  cta: string;
+  ariaLabel: string;
+  external: boolean;
+  icon: "linkedin" | "mail" | "github";
+};
+
+export type ContactMetaItem = { k: string; v: string };
+
+/** A credential badge shown in the Hero. `cert` must exist in the certificate catalog. */
+export type HeroCredential = {
+  id: string;
+  name: string;
+  shortName: string;
+  logo: string;
+  cert: string;
+};
+
+/** Identifies which exam review a certificate modal renders. */
+export type CertificateReviewId = "sal1" | "security-plus";
+
+/** A certificate image that can be opened in the certificate modal. */
+export type CertificateEntry = {
+  /** Stable, URL-safe id used in the `?cert=` search param. */
+  id: string;
+  /** Public path of the certificate image or PDF. */
+  src: string;
+  title: string;
+  review?: CertificateReviewId;
 };
 
 export type StackGroup = { title: string; items: string[] };
