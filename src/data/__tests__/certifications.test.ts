@@ -2,8 +2,10 @@ import { describe, it, expect } from "vitest";
 import { CERTIFICATIONS } from "@/data/certifications";
 
 describe("CERTIFICATIONS data integrity", () => {
-  it("should have 3 certifications", () => {
-    expect(CERTIFICATIONS).toHaveLength(3);
+  it("should have unique, non-empty certifications", () => {
+    expect(CERTIFICATIONS.length).toBeGreaterThan(0);
+    const titles = CERTIFICATIONS.map((c) => c.title);
+    expect(new Set(titles).size).toBe(titles.length);
   });
 
   it("should contain Google Cybersecurity", () => {

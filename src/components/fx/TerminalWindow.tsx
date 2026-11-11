@@ -64,7 +64,6 @@ const COMMANDS: Record<string, Line[]> = {
 };
 
 const CHAR_MS = 12;
-const LINE_DELAY = 300;
 
 export function TerminalWindow({ start = true }: { start?: boolean }) {
   const [printed, setPrinted] = useState<Line[]>([]);

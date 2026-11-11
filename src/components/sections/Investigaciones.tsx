@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { motion } from "motion/react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ChevronLeft, ChevronRight, LayoutGrid, Table, Play, Pause } from "lucide-react";
 import { Badge } from "@/components/ui/badge";

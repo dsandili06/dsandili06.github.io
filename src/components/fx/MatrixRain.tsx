@@ -24,7 +24,7 @@ export function MatrixRain({ active, onClose }: MatrixRainProps) {
     const charArray = chars.split("");
     const fontSize = 14;
     const columns = Math.floor(canvas.width / fontSize);
-    const drops: number[] = Array(columns).fill(1);
+    const drops: number[] = Array<number>(columns).fill(1);
 
     let animationId: number;
     const startTime = Date.now();

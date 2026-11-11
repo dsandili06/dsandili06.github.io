@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Investigaciones } from "@/components/sections/Investigaciones";
-import { INVESTIGATIONS } from "@/data/investigations";
+import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
 import { captureModalRequests } from "@/test/modalRequests";
 
 const idByTitle = (title: string) => INVESTIGATIONS.find((i) => i.title.includes(title))?.id;
@@ -107,7 +107,7 @@ describe("Investigaciones", () => {
       .getAllByRole("button")
       .filter((b) => b.textContent?.includes("SPOTLIGHT_0"));
 
-    expect(spotlightButtons.length).toBe(3);
+    expect(spotlightButtons).toHaveLength(FEATURED_INVESTIGATIONS.length);
     for (const btn of spotlightButtons) {
       expect(btn.className).toContain("cursor-pointer");
     }

@@ -28,7 +28,7 @@ export function LenisProvider() {
     // Skip clicks inside data-lenis-prevent containers (modals) or already prevented
     const onAnchorClick = (e: MouseEvent) => {
       if (e.defaultPrevented) return;
-      const target = (e.target as HTMLElement)?.closest("a[href^='#']") as HTMLAnchorElement | null;
+      const target = (e.target as HTMLElement)?.closest<HTMLAnchorElement>("a[href^='#']");
       if (!target) return;
       // Skip if the anchor is inside a lenis-prevent container (e.g. writeup modal TOC)
       // but allow nav drawer links to smoothly scroll the page

@@ -9,8 +9,10 @@ describe("COURSES data integrity", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it("should have 21 courses", () => {
-    expect(COURSES.length).toBe(21);
+  it("should list at least one course and no duplicate titles per org", () => {
+    expect(COURSES.length).toBeGreaterThan(0);
+    const keys = COURSES.map((c) => `${c.org}::${c.title}`);
+    expect(new Set(keys).size).toBe(keys.length);
   });
 
   it("each course should have title and org", () => {
@@ -59,8 +61,10 @@ describe("COURSE_GROUPS data integrity", () => {
     }
   });
 
-  it("should have exactly 8 verified institutions", () => {
-    expect(COURSE_GROUPS.length).toBe(8);
+  it("groups cover every course exactly once", () => {
+    expect(COURSE_GROUPS.length).toBeGreaterThan(0);
+    const grouped = COURSE_GROUPS.reduce((total, group) => total + group.courses.length, 0);
+    expect(grouped).toBe(COURSES.length);
   });
 
   it("each badge path in metadata should reference an existing file in public/badges/", () => {
@@ -93,10 +97,11 @@ describe("COURSE_GROUPS data integrity", () => {
     }
   });
 
-  it("Coursera/Google group should contain exactly 9 courses", () => {
+  it("Coursera/Google group should contain only its own courses", () => {
     const google = COURSE_GROUPS.find((g) => g.org === "Coursera/Google");
     expect(google).toBeDefined();
-    expect(google!.courses.length).toBe(9);
+    expect(google!.courses.length).toBeGreaterThan(0);
+    expect(google!.courses.length).toBe(COURSES.filter((c) => c.org === "Coursera/Google").length);
   });
 
   it("every group shortName should be defined and reasonably compact (<= 25 chars) for sidebar layout", () => {

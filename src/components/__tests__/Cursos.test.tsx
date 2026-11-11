@@ -114,11 +114,12 @@ describe("Cursos", () => {
       throw new Error("scrollTo unavailable");
     });
     const targetTab = screen.getAllByRole("tab")[1];
-    targetTab.scrollIntoView = vi.fn();
+    const scrollIntoView = vi.fn();
+    targetTab.scrollIntoView = scrollIntoView;
 
     fireEvent.click(targetTab);
 
-    expect(targetTab.scrollIntoView).toHaveBeenCalledWith({
+    expect(scrollIntoView).toHaveBeenCalledWith({
       behavior: "auto",
       block: "nearest",
       inline: "nearest",
@@ -232,11 +233,11 @@ describe("Cursos", () => {
     expect(tabs[0]).toHaveAttribute("aria-selected", "true");
   });
 
-  it("should navigate to each of the 8 institutions and display their respective courses and metadata", () => {
+  it("should navigate to each institution and display their respective courses and metadata", () => {
     render(<Cursos />);
 
     const tabs = screen.getAllByRole("tab");
-    expect(tabs.length).toBe(8);
+    expect(tabs).toHaveLength(COURSE_GROUPS.length);
 
     for (let i = 0; i < COURSE_GROUPS.length; i++) {
       const group = COURSE_GROUPS[i];

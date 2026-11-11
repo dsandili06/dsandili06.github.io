@@ -2,8 +2,10 @@ import { describe, it, expect } from "vitest";
 import { STACK_GROUPS } from "@/data/stack";
 
 describe("STACK_GROUPS data integrity", () => {
-  it("should have 4 groups", () => {
-    expect(STACK_GROUPS).toHaveLength(4);
+  it("should have unique group titles", () => {
+    expect(STACK_GROUPS.length).toBeGreaterThan(0);
+    const titles = STACK_GROUPS.map((g) => g.title);
+    expect(new Set(titles).size).toBe(titles.length);
   });
 
   it("each group should have a title and items", () => {

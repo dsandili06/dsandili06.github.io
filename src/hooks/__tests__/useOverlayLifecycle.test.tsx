@@ -27,7 +27,6 @@ describe("useOverlayLifecycle", () => {
     cleanup();
     document.body.style.overflow = "";
     lenisAvailable.current = true;
-    vi.clearAllMocks();
   });
 
   it("shares the body lock and Lenis lease until the last overlay node unmounts", () => {
@@ -98,7 +97,9 @@ describe("useOverlayLifecycle", () => {
       </>,
     );
     const event = new KeyboardEvent("keydown", { key: "Escape", cancelable: true });
-    act(() => window.dispatchEvent(event));
+    act(() => {
+      window.dispatchEvent(event);
+    });
     expect(blockedEscape).toHaveBeenCalledTimes(1);
     expect(parentEscape).not.toHaveBeenCalled();
     expect(event.defaultPrevented).toBe(false);

@@ -26,7 +26,6 @@ describe("useWriteup", () => {
   });
 
   afterEach(() => {
-    vi.restoreAllMocks();
     vi.unstubAllGlobals();
   });
 
@@ -39,7 +38,7 @@ describe("useWriteup", () => {
     expect(fetchMock).toHaveBeenCalledTimes(1);
     expect(fetchMock).toHaveBeenCalledWith(
       "https://raw.githubusercontent.com/dsandili06/Artifakt-Labs/main/Writeups/CyberDefenders/FakeGPT.md",
-      expect.objectContaining({ signal: expect.any(AbortSignal) }),
+      expect.objectContaining({ signal: expect.any(AbortSignal) as AbortSignal }),
     );
     expect(result.current.markdown).toBe(MARKDOWN);
     expect(result.current.error).toBe(false);
