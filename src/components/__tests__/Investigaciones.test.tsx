@@ -1,8 +1,10 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Investigaciones } from "@/components/sections/Investigaciones";
+import { INVESTIGATIONS } from "@/data/investigations";
+import { captureModalRequests } from "@/test/modalRequests";
 
-vi.mock("@/components/WriteupModal", () => new Promise(() => {}));
+const idByTitle = (title: string) => INVESTIGATIONS.find((i) => i.title.includes(title))?.id;
 
 /**
  * Smoke tests for the Full case log view toggle: switching between the
@@ -10,6 +12,14 @@ vi.mock("@/components/WriteupModal", () => new Promise(() => {}));
  * (autoplay plugin stops on unmount — regression guard).
  */
 describe("Investigaciones", () => {
+  let capture: ReturnType<typeof captureModalRequests>;
+  beforeEach(() => {
+    capture = captureModalRequests();
+  });
+  afterEach(() => {
+    capture.stop();
+  });
+
   it("renders the section header with number 04 and case log kicker", () => {
     render(<Investigaciones />);
     expect(screen.getByText(/SECTION_04 \/\/ CASE_LOG/i)).toBeInTheDocument();
@@ -111,25 +121,23 @@ describe("Investigaciones", () => {
     expect(screen.getAllByText("LAB_003").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("announces the lazy writeup viewer while its module loads", () => {
+  it("requests the lead writeup when its featured card is clicked", () => {
     render(<Investigaciones />);
 
     const featuredCard = screen.getByRole("button", { name: "Abrir investigación: FakeGPT" });
     expect(featuredCard.className).toContain("absolute inset-0");
     fireEvent.click(featuredCard);
 
-    const fallback = screen.getByText("Cargando visor del writeup...");
-    expect(fallback).toHaveAttribute("role", "status");
-    expect(fallback).toHaveAttribute("aria-live", "polite");
+    expect(capture.requests).toEqual([{ type: "writeup", id: idByTitle("FakeGPT") }]);
   });
 
-  it("opens a secondary featured case when its card body is clicked", () => {
+  it("requests a secondary featured case when its card body is clicked", () => {
     render(<Investigaciones />);
 
     const secondaryCard = screen.getByRole("button", { name: "Abrir caso: Brave" });
     expect(secondaryCard.className).toContain("absolute inset-0");
     fireEvent.click(secondaryCard);
 
-    expect(screen.getByText("Cargando visor del writeup...")).toBeInTheDocument();
+    expect(capture.requests).toEqual([{ type: "writeup", id: idByTitle("Brave") }]);
   });
 });

@@ -1,32 +1,17 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Certs } from "@/components/sections/Certs";
-
-// Mock CertModal to verify in-page rendering
-vi.mock("@/components/CertModal", () => ({
-  CertModal: ({
-    cert,
-    title,
-    initialTab,
-    onClose,
-  }: {
-    cert: string;
-    title: string;
-    initialTab?: string;
-    onClose: () => void;
-  }) => (
-    <div data-testid="cert-modal">
-      <span data-testid="modal-title">{title}</span>
-      <span data-testid="modal-cert">{cert}</span>
-      <span data-testid="modal-tab">{initialTab}</span>
-      <button data-testid="modal-close" onClick={onClose}>
-        Close
-      </button>
-    </div>
-  ),
-}));
+import { captureModalRequests } from "@/test/modalRequests";
 
 describe("Certs section", () => {
+  let capture: ReturnType<typeof captureModalRequests>;
+  beforeEach(() => {
+    capture = captureModalRequests();
+  });
+  afterEach(() => {
+    capture.stop();
+  });
+
   it("renders the section header with number 02 and credentials kicker", () => {
     render(<Certs />);
     expect(
@@ -71,32 +56,20 @@ describe("Certs section", () => {
     expect(comptiaImg).toHaveAttribute("src", "/badges/comptiabadge.png");
   });
 
-  it("opens in-page CertModal on click without redirecting", () => {
+  it("requests the certificate modal on click without redirecting", () => {
     render(<Certs />);
 
-    // Click Google Cybersecurity card
-    const googleBtn = screen.getByRole("button", { name: /Google Cybersecurity/i });
-    fireEvent.click(googleBtn);
+    fireEvent.click(screen.getByRole("button", { name: /Google Cybersecurity/i }));
 
-    expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("Google Cybersecurity");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
-      "/certs/Google Cybersecurity Certificate.webp",
-    );
-
-    // Close modal
-    fireEvent.click(screen.getByTestId("modal-close"));
+    expect(capture.requests).toEqual([{ type: "cert", id: "google" }]);
   });
 
-  it("opens in-page CertModal for SAL1 PNG on click", () => {
+  it("requests the SAL1 certificate modal on click", () => {
     render(<Certs />);
 
-    const sal1Btn = screen.getByRole("button", { name: /SAL1 \(Security Analyst L1\)/i });
-    fireEvent.click(sal1Btn);
+    fireEvent.click(screen.getByRole("button", { name: /SAL1 \(Security Analyst L1\)/i }));
 
-    expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("SAL1 (Security Analyst L1)");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent("/certs/THM-SAL1-Certificate.png");
+    expect(capture.requests).toEqual([{ type: "cert", id: "sal1" }]);
   });
 
   it("does not expose preparation tracking on the obtained CompTIA card", () => {
@@ -107,20 +80,12 @@ describe("Certs section", () => {
     expect(screen.queryByText("EN PREPARACIÓN")).not.toBeInTheDocument();
   });
 
-  it("opens the official CompTIA certificate on click", () => {
+  it("requests the official CompTIA certificate on click", () => {
     render(<Certs />);
 
-    const comptiaBtn = screen.getByRole("button", { name: /CompTIA Security\+/i });
-    fireEvent.click(comptiaBtn);
+    fireEvent.click(screen.getByRole("button", { name: /CompTIA Security\+/i }));
 
-    expect(screen.getByTestId("cert-modal")).toBeInTheDocument();
-    expect(screen.getByTestId("modal-title")).toHaveTextContent("CompTIA Security+");
-    expect(screen.getByTestId("modal-cert")).toHaveTextContent(
-      "/certs/comptia-security-plus-sy0-701.webp",
-    );
-    expect(screen.getByTestId("modal-tab")).toHaveTextContent("review");
-
-    fireEvent.click(screen.getByTestId("modal-close"));
+    expect(capture.requests).toEqual([{ type: "cert", id: "sy0-701" }]);
   });
 
   it("advertises review on Security+ card", () => {

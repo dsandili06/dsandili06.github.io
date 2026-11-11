@@ -1,46 +1,14 @@
 import { motion, useReducedMotion } from "motion/react";
-import { Linkedin, Mail, Github } from "lucide-react";
+import { Linkedin, Mail, Github, type LucideIcon } from "lucide-react";
 import { Section } from "@/components/primitives/Section";
-import { CONTACT } from "@/data/site";
+import { CONTACT_CHANNELS, CONTACT_META } from "@/data/contact";
+import type { ContactChannel } from "@/types";
 
-const channels = [
-  {
-    code: "01",
-    label: "LinkedIn",
-    value: "/in/santiagodsandili",
-    href: CONTACT.linkedin,
-    cta: "CONECTAR →",
-    ariaLabel: "Conectar con Santiago en LinkedIn (abre en pestaña nueva)",
-    external: true,
-    icon: Linkedin,
-  },
-  {
-    code: "02",
-    label: "Email",
-    value: CONTACT.email,
-    href: `mailto:${CONTACT.email}`,
-    cta: "ENVIAR EMAIL →",
-    ariaLabel: `Enviar correo a ${CONTACT.email}`,
-    external: false,
-    icon: Mail,
-  },
-  {
-    code: "03",
-    label: "GitHub",
-    value: "github.com/dsandili06",
-    href: CONTACT.github,
-    cta: "VER PERFIL →",
-    ariaLabel: "Ver perfil y repositorios de Santiago en GitHub (abre en pestaña nueva)",
-    external: true,
-    icon: Github,
-  },
-];
-
-const meta = [
-  { k: "UBICACIÓN", v: "Tucumán, Argentina" },
-  { k: "MODALIDAD", v: "Remoto / Híbrido" },
-  { k: "RESPUESTA", v: "< 24 horas" },
-];
+const CHANNEL_ICONS = {
+  linkedin: Linkedin,
+  mail: Mail,
+  github: Github,
+} satisfies Record<ContactChannel["icon"], LucideIcon>;
 
 export function Contacto() {
   const prefersReduced = useReducedMotion();
@@ -80,7 +48,7 @@ export function Contacto() {
           </div>
 
           <dl className="flex flex-col">
-            {meta.map((m) => (
+            {CONTACT_META.map((m) => (
               <div
                 key={m.k}
                 className="flex items-center justify-between py-4 border-t border-border-dim gap-4 flex-wrap"
@@ -98,8 +66,8 @@ export function Contacto() {
 
         {/* Right Column: Secure Communication Channels */}
         <div className="flex flex-col gap-3">
-          {channels.map((c) => {
-            const Icon = c.icon;
+          {CONTACT_CHANNELS.map((c) => {
+            const Icon = CHANNEL_ICONS[c.icon];
             return (
               <a
                 key={c.code}

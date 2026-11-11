@@ -7,18 +7,21 @@ import {
   waitFor,
   waitForElementToBeRemoved,
 } from "@testing-library/react";
-import { CommandPalette } from "@/components/CommandPalette";
+import { CommandPalette } from "@/components/features/command-palette/CommandPalette";
 import { openCommandPalette } from "@/hooks/useCommandPalette";
-
-vi.mock("@/components/WriteupModal", () => new Promise(() => {}));
+import { INVESTIGATIONS } from "@/data/investigations";
+import { captureModalRequests } from "@/test/modalRequests";
 
 describe("CommandPalette", () => {
+  let capture: ReturnType<typeof captureModalRequests>;
   beforeEach(() => {
     // Reset body style
     document.body.style.overflow = "";
+    capture = captureModalRequests();
   });
 
   afterEach(() => {
+    capture.stop();
     vi.restoreAllMocks();
   });
 
@@ -110,7 +113,7 @@ describe("CommandPalette", () => {
     expect(screen.getByText("3CX Supply Chain")).toBeInTheDocument();
   });
 
-  it("finds the obtained CompTIA Security+ credential and opens its certificate", () => {
+  it("finds the obtained CompTIA Security+ credential and requests its certificate", () => {
     render(<CommandPalette />);
     act(() => openCommandPalette());
 
@@ -122,13 +125,7 @@ describe("CommandPalette", () => {
     expect(screen.getByText("OBTENIDA")).toBeInTheDocument();
     fireEvent.click(screen.getByText("CompTIA Security+"));
 
-    expect(screen.getByRole("dialog", { name: "CompTIA Security+" })).toBeInTheDocument();
-    expect(screen.getAllByText(/Professor Messer/)).toHaveLength(2);
-    fireEvent.click(screen.getByRole("tab", { name: /CERTIFICADO OFICIAL/i }));
-    expect(screen.getByAltText("CompTIA Security+")).toHaveAttribute(
-      "src",
-      "/certs/comptia-security-plus-sy0-701.webp",
-    );
+    expect(capture.requests).toEqual([{ type: "cert", id: "sy0-701" }]);
   });
 
   it("provides 44px touch targets for compact actions and every command item", () => {
@@ -240,14 +237,13 @@ describe("CommandPalette", () => {
     expect(writeTextMock).toHaveBeenCalledWith("sdsandili06@gmail.com");
   });
 
-  it("announces the lazy writeup viewer while its module loads", () => {
+  it("requests the writeup modal when a writeup is selected", () => {
     render(<CommandPalette />);
     act(() => openCommandPalette());
 
     fireEvent.click(screen.getByText("FakeGPT"));
 
-    const fallback = screen.getByText("Cargando visor del writeup...");
-    expect(fallback).toHaveAttribute("role", "status");
-    expect(fallback).toHaveAttribute("aria-live", "polite");
+    const id = INVESTIGATIONS.find((i) => i.title.includes("FakeGPT"))?.id;
+    expect(capture.requests).toEqual([{ type: "writeup", id }]);
   });
 });

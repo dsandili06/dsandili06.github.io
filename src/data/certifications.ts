@@ -11,7 +11,7 @@ export const CERTIFICATIONS: Certification[] = [
     badge: "CERTIFIED",
     href: "/certs/comptia-security-plus-sy0-701.webp",
     logo: "/badges/comptiabadge.png",
-    hasReview: true,
+    review: "security-plus",
     mockExams: [
       {
         id: "dion-test-1",
@@ -253,7 +253,7 @@ export const CERTIFICATIONS: Certification[] = [
     badge: "CERTIFIED",
     href: "/certs/THM-SAL1-Certificate.png",
     logo: "/badges/sal1badge.png",
-    hasReview: true,
+    review: "sal1",
   },
   {
     code: "GOOGLE",

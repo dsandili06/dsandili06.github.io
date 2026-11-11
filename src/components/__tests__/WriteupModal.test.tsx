@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, cleanup, fireEvent, act } from "@testing-library/react";
-import { WriteupModal } from "@/components/WriteupModal";
+import { WriteupModal } from "@/components/features/writeups/WriteupModal";
 
 /**
  * Regression tests for the mobile scroll bug:
@@ -23,13 +23,10 @@ describe("WriteupModal", () => {
       vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve(MD_CONTENT) }),
     );
     sessionStorage.clear();
-    vi.spyOn(window.history, "pushState").mockImplementation(() => {});
-    vi.spyOn(window.history, "back").mockImplementation(() => {});
   });
 
   afterEach(() => {
     cleanup();
-    window.dispatchEvent(new PopStateEvent("popstate"));
     vi.useRealTimers();
     vi.restoreAllMocks();
     vi.unstubAllGlobals();
@@ -288,55 +285,31 @@ Content 4
     expect(scrollToMock).toHaveBeenCalled();
   });
 
-  it("calls onClose and reverts history when Escape is pressed", async () => {
+  it("calls onClose when Escape is pressed, without touching history", async () => {
     const backSpy = vi.spyOn(window.history, "back");
+    const pushStateSpy = vi.spyOn(window.history, "pushState");
     const onClose = vi.fn();
     const { findByText } = render(<WriteupModal investigationId="LAB_001" onClose={onClose} />);
     await findByText(MD_CONTENT.split("\n\n")[1]);
 
     document.dispatchEvent(new KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
     expect(onClose).toHaveBeenCalledTimes(1);
-    expect(backSpy).toHaveBeenCalledTimes(1);
-  });
-
-  it("pushes history state on open and calls onClose when popstate fires (mobile back gesture)", async () => {
-    const pushStateSpy = vi.spyOn(window.history, "pushState");
-    const backSpy = vi.spyOn(window.history, "back");
-    const onClose = vi.fn();
-
-    const { findByText } = render(<WriteupModal investigationId="LAB_001" onClose={onClose} />);
-    await findByText(MD_CONTENT.split("\n\n")[1]);
-
-    expect(pushStateSpy).toHaveBeenCalledWith(
-      { modal: "writeup", id: "LAB_001" },
-      "",
-      window.location.href,
-    );
-
-    // Simulate mobile back button / swipe gesture
-    window.dispatchEvent(new PopStateEvent("popstate"));
-
-    expect(onClose).toHaveBeenCalledTimes(1);
-    // Browser already popped the entry, so history.back must NOT be called redundantly
     expect(backSpy).not.toHaveBeenCalled();
+    expect(pushStateSpy).not.toHaveBeenCalled();
   });
 
-  it("reverts history when closed via X button", async () => {
-    const backSpy = vi.spyOn(window.history, "back");
+  it("calls onClose when closed via X button", async () => {
     const onClose = vi.fn();
 
     const { findByText } = render(<WriteupModal investigationId="LAB_001" onClose={onClose} />);
     await findByText(MD_CONTENT.split("\n\n")[1]);
 
-    const closeBtn = screen.getByRole("button", { name: /Cerrar/i });
-    fireEvent.click(closeBtn);
+    fireEvent.click(screen.getByRole("button", { name: /Cerrar/i }));
 
-    expect(backSpy).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("reverts history when closed via backdrop click", async () => {
-    const backSpy = vi.spyOn(window.history, "back");
+  it("calls onClose when closed via backdrop click", async () => {
     const onClose = vi.fn();
 
     const { findByText } = render(<WriteupModal investigationId="LAB_001" onClose={onClose} />);
@@ -346,7 +319,6 @@ Content 4
     expect(backdrop).not.toBeNull();
     fireEvent.click(backdrop);
 
-    expect(backSpy).toHaveBeenCalledTimes(1);
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 

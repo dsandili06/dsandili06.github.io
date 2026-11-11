@@ -3,7 +3,7 @@ import { ChevronRight, ExternalLink, Terminal } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Section } from "@/components/primitives/Section";
-import { CertModal } from "@/components/CertModal";
+import { openCertificateBySrc } from "@/components/features/modals/modalRequests";
 import { COURSES, COURSE_GROUPS, type CourseGroup } from "@/data/courses";
 import type { Course } from "@/types";
 
@@ -77,16 +77,6 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
 }
 
 export function Cursos() {
-  const [activeCert, setActiveCert] = useState<{
-    cert: string;
-    title: string;
-    initialTab?: "cert" | "review";
-  } | null>(null);
-  const [modalCert, setModalCert] = useState<{
-    cert: string;
-    title: string;
-    initialTab?: "cert" | "review";
-  } | null>(null);
   const [selectedOrg, setSelectedOrg] = useState<string>(
     COURSE_GROUPS[0]?.org || "Coursera/Google",
   );
@@ -104,16 +94,7 @@ export function Cursos() {
   const activeSlug = getGroupSlug(activeGroup);
 
   const openCertificate = (course: Course) => {
-    if (course.cert) {
-      const isSal1 = course.title.includes("SAL1") || course.cert.includes("SAL1");
-      const item = {
-        cert: course.cert,
-        title: course.title,
-        initialTab: (isSal1 ? "review" : "cert") as "cert" | "review",
-      };
-      setModalCert(item);
-      setActiveCert(item);
-    }
+    if (course.cert) openCertificateBySrc(course.cert);
   };
 
   const handleSelectOrg = (org: string, buttonElement?: HTMLButtonElement | null) => {
@@ -425,17 +406,6 @@ export function Cursos() {
           </div>
         </div>
       </div>
-
-      {modalCert && (
-        <CertModal
-          cert={modalCert.cert}
-          title={modalCert.title}
-          initialTab={modalCert.initialTab}
-          isOpen={Boolean(activeCert)}
-          onClose={() => setActiveCert(null)}
-          onExitComplete={() => setModalCert(null)}
-        />
-      )}
     </Section>
   );
 }

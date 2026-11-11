@@ -4,16 +4,19 @@ import { MotionConfig } from "motion/react";
 import { LenisProvider } from "@/components/fx/LenisProvider";
 import { GrainOverlay } from "@/components/fx/GrainOverlay";
 import { SectionRail } from "@/components/fx/SectionRail";
-import { Nav } from "@/components/sections/Nav";
+import { Nav } from "@/components/layout/Nav";
 import { Hero } from "@/components/sections/Hero";
 import { About } from "@/components/sections/About";
 import { Proyectos } from "@/components/sections/Proyectos";
-import { Footer } from "@/components/sections/Footer";
+import { Footer } from "@/components/layout/Footer";
 import { useRevealOnView } from "@/hooks/useRevealOnView";
 import { useKonamiCode } from "@/hooks/useKonamiCode";
 import { MatrixRain } from "@/components/fx/MatrixRain";
 import { ScrollProgress } from "@/components/fx/ScrollProgress";
-import { CommandPalette } from "@/components/CommandPalette";
+import { CommandPalette } from "@/components/features/command-palette/CommandPalette";
+import { ModalHost } from "@/components/features/modals/ModalHost";
+import { validateModalSearch } from "@/components/features/modals/modalSearch";
+import { SectionSkeleton } from "@/components/layout/SectionSkeleton";
 import { SITE } from "@/data/site";
 
 // Lazy load below-the-fold sections for better initial load performance
@@ -38,6 +41,7 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: SITE.tagline },
     ],
   }),
+  validateSearch: validateModalSearch,
   component: Portfolio,
 });
 
@@ -62,6 +66,7 @@ function Portfolio() {
         <GrainOverlay />
         <SectionRail />
         <CommandPalette />
+        <ModalHost />
         <Nav />
         <main id="main-content" tabIndex={-1} className="outline-none">
           <Hero />
@@ -89,23 +94,5 @@ function Portfolio() {
         <MatrixRain active={matrixActive} onClose={() => setMatrixActive(false)} />
       </div>
     </MotionConfig>
-  );
-}
-
-/* ---------- Suspense fallback ---------- */
-
-function SectionSkeleton() {
-  return (
-    <div className="py-16 md:py-32 border-b border-border-dim">
-      <div className="mb-14 md:mb-20">
-        <div className="h-8 w-32 bg-[var(--surface)] rounded animate-pulse" />
-        <div className="mt-3 h-12 w-64 bg-[var(--surface)] rounded animate-pulse" />
-      </div>
-      <div className="space-y-4">
-        <div className="h-24 bg-[var(--surface)] rounded animate-pulse" />
-        <div className="h-24 bg-[var(--surface)] rounded animate-pulse" />
-        <div className="h-24 bg-[var(--surface)] rounded animate-pulse" />
-      </div>
-    </div>
   );
 }
