@@ -22,7 +22,7 @@ export function useSplitReveal<T extends HTMLElement>() {
     if (words.length === 0) return;
 
     words.forEach((w) => {
-      const word = w as HTMLElement;
+      const word = w;
       word.style.display = "inline-block";
       word.style.opacity = "0";
       word.style.transform = "translateY(0.6em)";
@@ -35,7 +35,7 @@ export function useSplitReveal<T extends HTMLElement>() {
         for (const entry of entries) {
           if (!entry.isIntersecting) continue;
           words.forEach((w, i) => {
-            const word = w as HTMLElement;
+            const word = w;
             word.style.transitionDelay = `${i * 55}ms`;
             word.style.opacity = "1";
             word.style.transform = "translateY(0)";

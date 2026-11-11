@@ -101,16 +101,18 @@ describe("ModalHost", () => {
   it("pushes a history entry on request and closes with Back", async () => {
     const { router, history } = await renderHost("/");
 
-    await act(async () => {
+    await act(() => {
       requestModal({ type: "cert", id: "google" });
+      return Promise.resolve();
     });
 
     expect(router.state.location.search).toEqual({ cert: "google" });
     expect(await screen.findByTestId("cert-modal")).toHaveAttribute("data-open", "true");
     expect(history.length).toBe(2);
 
-    await act(async () => {
+    await act(() => {
       fireEvent.click(screen.getByText("Cerrar certificado"));
+      return Promise.resolve();
     });
 
     expect(router.state.location.search).toEqual({});
@@ -125,8 +127,9 @@ describe("ModalHost", () => {
     const { router, history } = await renderHost("/?writeup=LAB_001");
     await screen.findByTestId("writeup-modal");
 
-    await act(async () => {
+    await act(() => {
       fireEvent.click(screen.getByText("Cerrar writeup"));
+      return Promise.resolve();
     });
 
     expect(router.state.location.search).toEqual({});
@@ -138,8 +141,9 @@ describe("ModalHost", () => {
     const { router } = await renderHost("/?cert=sal1");
     await screen.findByTestId("cert-modal");
 
-    await act(async () => {
+    await act(() => {
       requestModal({ type: "writeup", id: "LAB_001" });
+      return Promise.resolve();
     });
 
     expect(router.state.location.search).toEqual({ writeup: "LAB_001" });

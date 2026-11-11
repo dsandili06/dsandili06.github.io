@@ -28,7 +28,6 @@ describe("WriteupModal", () => {
   afterEach(() => {
     cleanup();
     vi.useRealTimers();
-    vi.restoreAllMocks();
     vi.unstubAllGlobals();
     delete (window as unknown as Record<string, unknown>).__lenis;
   });
@@ -71,8 +70,9 @@ describe("WriteupModal", () => {
         .find((element) => element.closest('[aria-hidden="true"]')),
     ).toBeDefined();
 
-    await act(async () => {
+    await act(() => {
       resolveFetch({ ok: true, text: () => Promise.resolve(MD_CONTENT) });
+      return Promise.resolve();
     });
 
     expect(await screen.findByText(MD_CONTENT.split("\n\n")[1])).toBeInTheDocument();
@@ -211,8 +211,9 @@ describe("WriteupModal", () => {
     expect(screen.getByRole("alert")).toHaveTextContent("No se pudo cargar el writeup");
 
     fetchMock.mockResolvedValueOnce({ ok: true, text: () => Promise.resolve(MD_CONTENT) });
-    await act(async () => {
+    await act(() => {
       fireEvent.click(screen.getByText("Reintentar"));
+      return Promise.resolve();
     });
     expect(screen.getByText(MD_CONTENT.split("\n\n")[1])).toBeInTheDocument();
     vi.useRealTimers();
@@ -331,5 +332,35 @@ Content 4
     );
     expect(summaryEl).toBeInTheDocument();
     expect(summaryEl.className).not.toContain("line-clamp");
+  });
+
+  it("moves focus inside the dialog when it opens", async () => {
+    const { findByText } = render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
+    await findByText(MD_CONTENT.split("\n\n")[1]);
+
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.contains(document.activeElement)).toBe(true);
+  });
+
+  it("cycles Tab from the last focusable element back inside the dialog", async () => {
+    const { findByText } = render(<WriteupModal investigationId="LAB_001" onClose={() => {}} />);
+    await findByText(MD_CONTENT.split("\n\n")[1]);
+
+    const dialog = screen.getByRole("dialog");
+    const focusables = Array.from(
+      dialog.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), iframe, textarea, input, select, [tabindex]:not([tabindex="-1"])',
+      ),
+    );
+    expect(focusables.length).toBeGreaterThan(1);
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+
+    last.focus();
+    expect(document.activeElement).toBe(last);
+    fireEvent.keyDown(last, { key: "Tab" });
+
+    expect(document.activeElement).toBe(first);
+    expect(dialog.contains(document.activeElement)).toBe(true);
   });
 });

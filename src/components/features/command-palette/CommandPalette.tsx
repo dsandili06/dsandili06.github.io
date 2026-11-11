@@ -17,7 +17,6 @@ import {
   Copy,
   Check,
   Layers,
-  Sparkles,
   ArrowRight,
   X,
   Radio,
@@ -254,7 +253,7 @@ export function CommandPalette() {
                   >
                     <Command.Item
                       value="copiar correo email contacto santiago sandili"
-                      onSelect={handleCopyEmail}
+                      onSelect={() => void handleCopyEmail()}
                       className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">

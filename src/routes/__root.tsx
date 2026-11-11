@@ -59,7 +59,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
         <div className="flex flex-wrap justify-center gap-3">
           <button
             onClick={() => {
-              router.invalidate();
+              void router.invalidate();
               reset();
             }}
             className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-border-dim text-[var(--accent)] hover:bg-[var(--surface-2)] hover:border-[var(--accent)] transition-colors"

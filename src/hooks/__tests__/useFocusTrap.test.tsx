@@ -33,7 +33,7 @@ describe("useFocusTrap", () => {
   });
 
   it("focuses the first focusable element on mount", () => {
-    const { container } = render(
+    render(
       <TrapTest>
         <button data-testid="btn-1">First</button>
         <button data-testid="btn-2">Last</button>
@@ -170,7 +170,6 @@ describe("useFocusTrap", () => {
 
     const { rerender } = render(<NestedTraps showChild />);
     const opener = screen.getByRole("button", { name: "Parent opener" });
-    const childAction = screen.getByRole("button", { name: "Child action" });
     opener.focus();
     rerender(<NestedTraps showChild={false} />);
 

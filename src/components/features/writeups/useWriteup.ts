@@ -100,7 +100,7 @@ export function useWriteup(
     setMarkdown(null);
     const controller = new AbortController();
     lifecycleSignalRef.current = controller.signal;
-    fetchWriteup(controller.signal);
+    void fetchWriteup(controller.signal);
     return () => {
       controller.abort();
       lifecycleSignalRef.current = null;

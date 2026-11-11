@@ -22,7 +22,6 @@ describe("CommandPalette", () => {
 
   afterEach(() => {
     capture.stop();
-    vi.restoreAllMocks();
   });
 
   it("does not render dialog initially", () => {
@@ -155,7 +154,8 @@ describe("CommandPalette", () => {
   it("selects a registry section and navigates after the palette exits", async () => {
     const section = document.createElement("section");
     section.id = "formacion";
-    section.scrollIntoView = vi.fn();
+    const scrollIntoView = vi.fn();
+    section.scrollIntoView = scrollIntoView;
     document.body.appendChild(section);
 
     render(<CommandPalette />);
@@ -163,9 +163,7 @@ describe("CommandPalette", () => {
     fireEvent.click(screen.getByText("Certificaciones"));
     expect(document.body.style.overflow).toBe("hidden");
 
-    await waitFor(() =>
-      expect(section.scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" }),
-    );
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "smooth" }));
     expect(document.body.style.overflow).toBe("");
     expect(window.location.hash).toBe("#formacion");
     section.remove();
@@ -175,7 +173,8 @@ describe("CommandPalette", () => {
   it("uses an instant fallback scroll when reduced motion is preferred", async () => {
     const section = document.createElement("section");
     section.id = "formacion";
-    section.scrollIntoView = vi.fn();
+    const scrollIntoView = vi.fn();
+    section.scrollIntoView = scrollIntoView;
     document.body.appendChild(section);
     vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
       matches: query === "(prefers-reduced-motion: reduce)",
@@ -192,7 +191,7 @@ describe("CommandPalette", () => {
     act(() => openCommandPalette());
     fireEvent.click(screen.getByText("Certificaciones"));
 
-    await waitFor(() => expect(section.scrollIntoView).toHaveBeenCalledWith({ behavior: "auto" }));
+    await waitFor(() => expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "auto" }));
     section.remove();
     history.replaceState(null, "", window.location.pathname);
   });
@@ -230,8 +229,9 @@ describe("CommandPalette", () => {
     });
 
     const copyItem = screen.getByText(/Copiar correo del analista/i);
-    await act(async () => {
+    await act(() => {
       fireEvent.click(copyItem);
+      return Promise.resolve();
     });
 
     expect(writeTextMock).toHaveBeenCalledWith("sdsandili06@gmail.com");

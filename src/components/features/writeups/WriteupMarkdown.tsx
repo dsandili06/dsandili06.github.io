@@ -64,7 +64,7 @@ function CopyCodeButton({ children }: { children: ReactNode }) {
   return (
     <button
       type="button"
-      onClick={onCopy}
+      onClick={() => void onCopy()}
       aria-label="Copiar comando"
       className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded border border-border-dim bg-[var(--surface)] text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] opacity-100 md:opacity-0 md:group-hover/code:opacity-100 focus:opacity-100 transition-opacity"
     >

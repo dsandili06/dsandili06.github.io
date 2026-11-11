@@ -9,7 +9,6 @@ describe("TerminalWindow", () => {
 
   afterEach(() => {
     vi.useRealTimers();
-    vi.restoreAllMocks();
   });
 
   it("skips the typing animation and enables the input with reduced motion", () => {

@@ -54,4 +54,16 @@ describe("writeupMarkdownPolicy", () => {
       ),
     ).toBe("https://raw.githubusercontent.com/user/repo/main/images/evidence.png");
   });
+
+  it.each([
+    "javascript:alert(1)",
+    "JavaScript:alert(1)",
+    " javascript:alert(1)",
+    "java	script:alert(1)",
+    "vbscript:msgbox(1)",
+    "data:text/html,<script>alert(1)</script>",
+  ])("rejects script-capable scheme %j for href and src", (value) => {
+    expect(safeMarkdownUrl(value, "href")).toBeUndefined();
+    expect(safeMarkdownUrl(value, "src")).toBeUndefined();
+  });
 });

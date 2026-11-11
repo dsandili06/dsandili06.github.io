@@ -17,7 +17,6 @@ const mockMatchMedia = (reduced: boolean) =>
 describe("BootSequence", () => {
   afterEach(() => {
     vi.useRealTimers();
-    vi.restoreAllMocks();
   });
 
   it("shows the final text immediately and calls onDone once with reduced motion", () => {
