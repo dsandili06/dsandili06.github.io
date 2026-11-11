@@ -69,7 +69,7 @@ describe("Contacto", () => {
     render(<Contacto />);
 
     const linkedinLink = screen.getByLabelText(/Conectar con Santiago en LinkedIn/i);
-    expect(linkedinLink).toHaveAttribute("href", "https://linkedin.com/in/santiagodsandili");
+    expect(linkedinLink).toHaveAttribute("href", "https://www.linkedin.com/in/santiagodsandili/");
     expect(linkedinLink).toHaveAttribute("target", "_blank");
     expect(linkedinLink).toHaveAttribute("rel", "noreferrer noopener");
 

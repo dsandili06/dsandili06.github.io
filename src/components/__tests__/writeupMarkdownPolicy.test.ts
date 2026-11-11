@@ -9,6 +9,25 @@ describe("writeupMarkdownPolicy", () => {
     expect(safeMarkdownUrl(dataImage, "href")).toBeUndefined();
   });
 
+  it.each([
+    "javascript:alert(1)",
+    "JaVaScRiPt:alert(1)",
+    "vbscript:msgbox(1)",
+    "java	script:alert(1)",
+    "//evil.example/x",
+    "/\\evil.example/x",
+  ])("rejects unsafe or protocol-relative url %j for href and src", (value) => {
+    expect(safeMarkdownUrl(value, "href")).toBeUndefined();
+    expect(safeMarkdownUrl(value, "src")).toBeUndefined();
+  });
+
+  it.each(["#seccion", "/certs/a.webp", "./img.png", "https://example.com/", "mailto:a@b.co"])(
+    "keeps safe href %j unchanged",
+    (value) => {
+      expect(safeMarkdownUrl(value, "href")).toBe(value);
+    },
+  );
+
   it("rejects oversized inline images", () => {
     const oversized = `data:image/png;base64,${"A".repeat(1_398_104)}`;
 

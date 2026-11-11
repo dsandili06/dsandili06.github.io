@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "motion/react";
+import { CONTACT } from "@/data/site";
 
 type Line = { text: string; color: string };
 
@@ -53,7 +54,7 @@ const COMMANDS: Record<string, Line[]> = {
   ],
   contact: [
     { text: "LinkedIn:  /in/santiagodsandili", color: "var(--accent)" },
-    { text: "Email:     sdsandili06@gmail.com", color: "var(--accent)" },
+    { text: `Email:     ${CONTACT.email}`, color: "var(--accent)" },
     { text: "GitHub:    github.com/dsandili06", color: "var(--accent)" },
   ],
   exit: [
@@ -89,6 +90,14 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
   // Auto-typing animation — single interval chain, no state per character
   useEffect(() => {
     if (!start || done) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPrinted(BOOT_LINES);
+      setCurrent("");
+      setLineIdx(BOOT_LINES.length);
+      setDone(true);
+      setInteractive(true);
+      return;
+    }
     if (lineIdx >= BOOT_LINES.length) {
       setDone(true);
       setInteractive(true);
@@ -203,7 +212,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
             {l.text}
             {l.text.endsWith("$ ") && i === BOOT_LINES.length - 1 && !interactive && (
               <span
-                className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]"
+                className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite] motion-reduce:animate-none"
                 style={{ width: "0.6em", height: "1em", background: "var(--accent)" }}
               />
             )}
@@ -213,7 +222,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
           <div style={{ color: BOOT_LINES[lineIdx].color }}>
             {current}
             <span
-              className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]"
+              className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite] motion-reduce:animate-none"
               style={{
                 width: "0.6em",
                 height: "1em",
@@ -228,7 +237,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
           </div>
         ))}
         {interactive && !isMobile && (
-          <div className="flex items-center">
+          <div className="flex items-center focus-within:ring-2 focus-within:ring-[var(--accent)] focus-within:ring-inset">
             <span style={{ color: "var(--accent)" }}>analyst@soc-lab:~$ </span>
             <input
               ref={inputRef}
@@ -241,7 +250,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
               aria-label="Terminal input"
             />
             <span
-              className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]"
+              className="inline-block align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite] motion-reduce:animate-none"
               style={{ width: "0.6em", height: "1em", background: "var(--accent)" }}
             />
           </div>

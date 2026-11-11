@@ -41,4 +41,20 @@ describe("WriteupMarkdown", () => {
     );
     expect(screen.queryByAltText("blocked")).not.toBeInTheDocument();
   });
+
+  it("gives zoomable images an accessible name with and without alt text", () => {
+    render(
+      <WriteupMarkdown
+        markdown={[
+          "![](https://user-attachments.githubusercontent.com/1/a.png)",
+          "![Diagrama](https://user-attachments.githubusercontent.com/1/b.png)",
+        ].join("\n\n")}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("button", { name: "Ampliar imagen" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ampliar imagen: Diagrama" })).toBeInTheDocument();
+  });
 });

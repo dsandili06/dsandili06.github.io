@@ -24,3 +24,10 @@ export const SITE = {
   themeColor: "#080A0E",
   role: "SECURITY ANALYST L1 / Blue Team",
 } as const;
+
+/** Public contact channels, single source for UI components. */
+export const CONTACT = {
+  email: "sdsandili06@gmail.com",
+  linkedin: "https://www.linkedin.com/in/santiagodsandili/",
+  github: "https://github.com/dsandili06",
+} as const;

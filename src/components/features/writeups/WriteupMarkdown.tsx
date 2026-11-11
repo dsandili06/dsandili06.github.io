@@ -109,6 +109,7 @@ export function WriteupMarkdown({
           referrerPolicy="no-referrer"
           tabIndex={0}
           role="button"
+          aria-label={alt ? `Ampliar imagen: ${alt}` : "Ampliar imagen"}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();

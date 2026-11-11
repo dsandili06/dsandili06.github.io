@@ -9,6 +9,25 @@ describe("TerminalWindow", () => {
 
   afterEach(() => {
     vi.useRealTimers();
+    vi.restoreAllMocks();
+  });
+
+  it("skips the typing animation and enables the input with reduced motion", () => {
+    vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
+      matches: query === "(prefers-reduced-motion: reduce)",
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    const { container } = render(<TerminalWindow start={true} />);
+
+    expect(container.textContent).toContain("[ALERT] Escalating to T1 analyst...");
+    expect(screen.getByLabelText("Terminal input")).toBeInTheDocument();
   });
 
   it("does not passively focus the input element when boot animation completes", () => {

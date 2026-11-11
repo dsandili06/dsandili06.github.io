@@ -15,6 +15,14 @@ export function BootSequence({ onDone }: { onDone?: () => void }) {
 
   useEffect(() => {
     if (done) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setPrinted(LINES);
+      setCurrent("");
+      setLineIdx(LINES.length);
+      setDone(true);
+      onDone?.();
+      return;
+    }
     if (lineIdx >= LINES.length) {
       setDone(true);
       onDone?.();
@@ -45,7 +53,7 @@ export function BootSequence({ onDone }: { onDone?: () => void }) {
       {!done && (
         <div>
           {current}
-          <span className="inline-block w-[2px] h-[1em] bg-[var(--accent)] align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite]" />
+          <span className="inline-block w-[2px] h-[1em] bg-[var(--accent)] align-[-2px] ml-0.5 animate-[blink_1s_steps(2)_infinite] motion-reduce:animate-none" />
         </div>
       )}
     </pre>

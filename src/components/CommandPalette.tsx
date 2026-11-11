@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, lazy, Suspense } from "react";
 import { createPortal } from "react-dom";
+import { CONTACT } from "@/data/site";
 import { Command } from "cmdk";
 import { motion, AnimatePresence } from "motion/react";
 import {
@@ -173,7 +174,7 @@ export function CommandPalette() {
 
   const handleCopyEmail = useCallback(async () => {
     try {
-      await navigator.clipboard.writeText("sdsandili06@gmail.com");
+      await navigator.clipboard.writeText(CONTACT.email);
       setCopiedEmail(true);
       setTimeout(() => setCopiedEmail(false), 2200);
     } catch {
@@ -235,7 +236,7 @@ export function CommandPalette() {
                 className="flex flex-col flex-1 min-h-0 bg-transparent"
               >
                 {/* Search Input Bar */}
-                <div className="flex items-center px-3.5 sm:px-4 border-b border-border-dim/80 bg-[var(--surface-2)]">
+                <div className="flex items-center px-3.5 sm:px-4 border-b border-border-dim/80 bg-[var(--surface-2)] focus-within:ring-2 focus-within:ring-[var(--accent)] focus-within:ring-inset">
                   <Search className="size-4 text-[var(--accent)] shrink-0 select-none mr-3" />
                   <Command.Input
                     ref={inputRef}
@@ -294,7 +295,7 @@ export function CommandPalette() {
                         <span className="truncate">
                           {copiedEmail
                             ? "¡Correo copiado al portapapeles!"
-                            : "Copiar correo del analista (sdsandili06@gmail.com)"}
+                            : `Copiar correo del analista (${CONTACT.email})`}
                         </span>
                       </div>
                       <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 border border-border-dim text-[var(--muted-foreground)] shrink-0 ml-2">
@@ -306,11 +307,7 @@ export function CommandPalette() {
                       value="github repositorio perfil artifakt labs blueteam scripts"
                       onSelect={() => {
                         setIsOpen(false);
-                        window.open(
-                          "https://github.com/dsandili06",
-                          "_blank",
-                          "noopener,noreferrer",
-                        );
+                        window.open(CONTACT.github, "_blank", "noopener,noreferrer");
                       }}
                       className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                     >
@@ -328,11 +325,7 @@ export function CommandPalette() {
                       value="linkedin perfil profesional santiago sandili"
                       onSelect={() => {
                         setIsOpen(false);
-                        window.open(
-                          "https://www.linkedin.com/in/santiagodsandili/",
-                          "_blank",
-                          "noopener,noreferrer",
-                        );
+                        window.open(CONTACT.linkedin, "_blank", "noopener,noreferrer");
                       }}
                       className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                     >

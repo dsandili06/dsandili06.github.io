@@ -3,10 +3,6 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import { Hero } from "@/components/sections/Hero";
 
 // Mock child components with canvas / complex timers
-vi.mock("@/components/fx/HeroShader", () => ({
-  HeroShader: () => <div data-testid="hero-shader" />,
-}));
-
 vi.mock("@/components/fx/TerminalWindow", () => ({
   TerminalWindow: () => <div data-testid="terminal-window" />,
 }));
@@ -47,10 +43,8 @@ vi.mock("@/components/CertModal", () => ({
 }));
 
 describe("Hero section", () => {
-  it("renders without mounting the removed shader and keeps the three primary credentials in order", () => {
+  it("keeps the three primary credentials in order", () => {
     render(<Hero />);
-
-    expect(screen.queryByTestId("hero-shader")).not.toBeInTheDocument();
 
     expect(screen.getByAltText("Insignia Security+")).toHaveAttribute(
       "src",

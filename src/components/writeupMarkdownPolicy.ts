@@ -22,6 +22,7 @@ export function safeMarkdownUrl(uri: string, key?: string): string | undefined {
     const code = character.charCodeAt(0);
     if (code <= 0x1f || code === 0x7f) return undefined;
   }
+  if (value.startsWith("//") || value.startsWith("/\\")) return undefined;
   if (
     value.startsWith("#") ||
     value.startsWith("/") ||

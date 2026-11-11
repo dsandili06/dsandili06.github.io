@@ -1,13 +1,14 @@
 import { motion, useReducedMotion } from "motion/react";
 import { Linkedin, Mail, Github } from "lucide-react";
 import { Section } from "@/components/primitives/Section";
+import { CONTACT } from "@/data/site";
 
 const channels = [
   {
     code: "01",
     label: "LinkedIn",
     value: "/in/santiagodsandili",
-    href: "https://linkedin.com/in/santiagodsandili",
+    href: CONTACT.linkedin,
     cta: "CONECTAR →",
     ariaLabel: "Conectar con Santiago en LinkedIn (abre en pestaña nueva)",
     external: true,
@@ -16,10 +17,10 @@ const channels = [
   {
     code: "02",
     label: "Email",
-    value: "sdsandili06@gmail.com",
-    href: "mailto:sdsandili06@gmail.com",
+    value: CONTACT.email,
+    href: `mailto:${CONTACT.email}`,
     cta: "ENVIAR EMAIL →",
-    ariaLabel: "Enviar correo a sdsandili06@gmail.com",
+    ariaLabel: `Enviar correo a ${CONTACT.email}`,
     external: false,
     icon: Mail,
   },
@@ -27,7 +28,7 @@ const channels = [
     code: "03",
     label: "GitHub",
     value: "github.com/dsandili06",
-    href: "https://github.com/dsandili06",
+    href: CONTACT.github,
     cta: "VER PERFIL →",
     ariaLabel: "Ver perfil y repositorios de Santiago en GitHub (abre en pestaña nueva)",
     external: true,
