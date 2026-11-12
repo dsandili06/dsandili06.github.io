@@ -175,7 +175,7 @@ export function Cursos() {
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
     const total = COURSE_GROUPS.length;
-    let nextIndex = index;
+    let nextIndex: number;
 
     if (e.key === "ArrowDown" || e.key === "ArrowRight") {
       e.preventDefault();

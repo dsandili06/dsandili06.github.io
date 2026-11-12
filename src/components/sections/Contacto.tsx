@@ -1,15 +1,20 @@
 import { motion, useReducedMotion } from "motion/react";
-import { Download, FileText, Linkedin, Mail, Github, type LucideIcon } from "lucide-react";
+import type { ComponentType } from "react";
+import { Download, FileText, Mail } from "lucide-react";
+import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { Section } from "@/components/primitives/Section";
 import { CONTACT_CHANNELS, CONTACT_META } from "@/data/contact";
 import { CONTACT } from "@/data/site";
 import type { ContactChannel } from "@/types";
 
 const CHANNEL_ICONS = {
-  linkedin: Linkedin,
+  linkedin: LinkedinIcon,
   mail: Mail,
-  github: Github,
-} satisfies Record<ContactChannel["icon"], LucideIcon>;
+  github: GithubIcon,
+} satisfies Record<
+  ContactChannel["icon"],
+  ComponentType<{ className?: string; "aria-hidden"?: boolean | "true" | "false" }>
+>;
 
 export function Contacto() {
   const prefersReduced = useReducedMotion();

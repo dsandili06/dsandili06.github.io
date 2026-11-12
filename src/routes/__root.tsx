@@ -1,4 +1,11 @@
-import { Outlet, Link, createRootRoute, useRouter, HeadContent } from "@tanstack/react-router";
+import {
+  Outlet,
+  Link,
+  createRootRoute,
+  useRouter,
+  HeadContent,
+  type ErrorComponentProps,
+} from "@tanstack/react-router";
 import { SITE } from "@/data/site";
 
 function NotFoundComponent() {
@@ -43,8 +50,8 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
-  console.error(error);
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
+  console.error(error instanceof Error ? error : new Error(String(error)));
   const router = useRouter();
 
   return (
