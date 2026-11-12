@@ -6,6 +6,7 @@ import rehypeRaw from "rehype-raw";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeSlug from "rehype-slug";
 import { AlertTriangle, Check, Copy } from "lucide-react";
+import { stripLeadingEmoji } from "@/components/features/writeups/writeupToc";
 import {
   resolveWriteupImageUri,
   safeMarkdownUrl,
@@ -23,10 +24,10 @@ class MarkdownErrorBoundary extends Component<{ children: ReactNode }, { error: 
       return (
         <div role="alert" className="p-6 text-center">
           <AlertTriangle size={24} className="mx-auto mb-3 text-[var(--accent-amber)]" />
-          <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+          <p className="font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
             Error al renderizar el contenido
           </p>
-          <p className="mt-2 font-mono text-[10px] text-[var(--muted-foreground)]/60">
+          <p className="mt-2 font-mono text-label text-[var(--muted-foreground)]/60">
             {this.state.error.message}
           </p>
         </div>
@@ -45,6 +46,16 @@ function extractText(node: ReactNode): string {
     return extractText((node as { props: { children?: ReactNode } }).props.children);
   }
   return "";
+}
+
+/** Strips a leading emoji from the first text child of a heading (display only; ids are untouched). */
+function stripHeadingEmoji(children: ReactNode): ReactNode {
+  if (typeof children === "string") return stripLeadingEmoji(children);
+  if (Array.isArray(children)) {
+    const [first, ...rest] = children as ReactNode[];
+    if (typeof first === "string") return [stripLeadingEmoji(first), ...rest];
+  }
+  return children;
 }
 
 /** Copy-to-clipboard button shown on hover over writeup code blocks. */
@@ -66,7 +77,7 @@ function CopyCodeButton({ children }: { children: ReactNode }) {
       type="button"
       onClick={() => void onCopy()}
       aria-label="Copiar comando"
-      className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-1 rounded border border-border-dim bg-[var(--surface)] text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] opacity-100 md:opacity-0 md:group-hover/code:opacity-100 focus:opacity-100 transition-opacity"
+      className="absolute top-2.5 right-2.5 z-10 flex items-center gap-1.5 font-mono text-label uppercase tracking-[0.15em] px-2 py-1 rounded border border-border-dim bg-[var(--surface)] text-[var(--muted-foreground)] hover:text-[var(--accent)] hover:border-[var(--accent)] opacity-100 md:opacity-0 md:group-hover/code:opacity-100 focus:opacity-100 transition-opacity"
     >
       {copied ? <Check size={12} strokeWidth={2} /> : <Copy size={12} strokeWidth={1.5} />}
       {copied ? "Copiado" : "Copiar"}
@@ -99,6 +110,10 @@ export function WriteupMarkdown({
   investigationHref,
   onOpenImage,
 }: WriteupMarkdownProps) {
+  // The modal header already shows the writeup title: hide a leading H1 visually (kept in the DOM).
+  const firstBlockOffset = markdown.length - markdown.trimStart().length;
+  const startsWithH1 = /^#\s+\S/.test(markdown.slice(firstBlockOffset));
+
   const components: MarkdownComponents = {
     img: ({ src, alt, ...props }) => {
       const resolved = src ? resolveWriteupImageUri(src, investigationHref) : src;
@@ -136,20 +151,27 @@ export function WriteupMarkdown({
         {children}
       </a>
     ),
-    h1: ({ children, ...props }) => (
-      <h1
-        className="font-display font-bold text-3xl md:text-4xl leading-tight tracking-tight text-foreground mt-8 mb-4"
-        {...props}
-      >
-        {children}
-      </h1>
-    ),
+    h1: ({ node, children, ...props }) => {
+      const isDuplicateTitle = startsWithH1 && node?.position?.start.offset === firstBlockOffset;
+      return (
+        <h1
+          className={
+            isDuplicateTitle
+              ? "sr-only"
+              : "font-display font-bold text-3xl md:text-4xl leading-tight tracking-tight text-foreground mt-8 mb-4"
+          }
+          {...props}
+        >
+          {stripHeadingEmoji(children)}
+        </h1>
+      );
+    },
     h2: ({ children, ...props }) => (
       <h2
         className="font-display font-bold text-2xl md:text-3xl leading-tight tracking-tight text-foreground mt-8 mb-3 scroll-mt-6"
         {...props}
       >
-        {children}
+        {stripHeadingEmoji(children)}
       </h2>
     ),
     h3: ({ children, ...props }) => (
@@ -157,7 +179,7 @@ export function WriteupMarkdown({
         className="font-display font-bold text-xl md:text-2xl leading-tight tracking-tight text-foreground mt-6 mb-2 scroll-mt-6"
         {...props}
       >
-        {children}
+        {stripHeadingEmoji(children)}
       </h3>
     ),
     p: ({ children, ...props }) => (

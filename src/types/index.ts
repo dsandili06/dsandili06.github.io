@@ -42,7 +42,13 @@ export type Investigation = {
   };
 };
 
-export type Course = { n: string; title: string; org: string; cert?: string };
+export type Course = {
+  n: string;
+  title: string;
+  org: string;
+  cert?: string;
+  featured?: boolean;
+};
 
 export type MockExamDomain = {
   domain: string;

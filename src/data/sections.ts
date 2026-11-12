@@ -1,17 +1,19 @@
+import { INVESTIGATIONS } from "@/data/investigations";
+
 export const SECTIONS = [
   {
     id: "about",
     number: "01",
-    navLabel: "About",
+    navLabel: "Sobre mí",
     title: "Sobre Mí",
     description: "Perfil profesional, trayectoria en Blue Team y enfoque operacional",
   },
   {
     id: "formacion",
     number: "02",
-    navLabel: "Certs",
+    navLabel: "Certificaciones",
     title: "Certificaciones",
-    description: "Credenciales verificadas de TryHackMe, Google, Fortinet y CompTIA",
+    description: "Credenciales verificadas de TryHackMe, Google y CompTIA",
   },
   {
     id: "proyectos",
@@ -23,9 +25,9 @@ export const SECTIONS = [
   {
     id: "investigaciones",
     number: "04",
-    navLabel: "Labs",
+    navLabel: "Investigaciones",
     title: "Labs & Investigaciones DFIR",
-    description: "15 writeups técnicos de CyberDefenders con análisis forense",
+    description: `${INVESTIGATIONS.length} writeups técnicos de CyberDefenders con análisis forense`,
   },
   {
     id: "stack",

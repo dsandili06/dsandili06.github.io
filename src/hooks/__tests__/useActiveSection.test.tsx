@@ -4,7 +4,7 @@ import { useActiveSection } from "@/hooks/useActiveSection";
 
 describe("useActiveSection", () => {
   const links = [
-    { href: "#about", id: "about", label: "About" },
+    { href: "#about", id: "about", label: "Sobre mí" },
     { href: "#stack", id: "stack", label: "Stack" },
     { href: "#contacto", id: "contacto", label: "Contacto" },
   ];

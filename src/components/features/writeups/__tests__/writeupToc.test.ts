@@ -6,6 +6,13 @@ import {
 } from "@/components/features/writeups/writeupToc";
 
 describe("parseToc", () => {
+  it("strips leading emoji from text but keeps the original slug", () => {
+    const [entry] = parseToc("## \u{1F9E9} Resumen");
+    expect(entry.text).toBe("Resumen");
+    expect(entry.id).toBe(`${WRITEUP_HEADING_ID_PREFIX}-resumen`);
+    expect(parseToc("## \u{1F9E9}️ Resumen")[0].text).toBe("Resumen");
+  });
+
   it("keeps document order and only h2/h3 entries", () => {
     const md = ["# Title", "## First", "### Nested", "#### Too deep", "## Second"].join("\n");
 

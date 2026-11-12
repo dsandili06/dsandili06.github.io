@@ -115,18 +115,18 @@ export function WriteupModal({
               <div className="flex items-start justify-between gap-4 px-4 md:px-6 pt-[max(1.5rem,env(safe-area-inset-top))] pb-3 shrink-0 bg-[var(--surface)]">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-3 flex-wrap mb-1">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+                    <span className="font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
                       {investigationId}
                     </span>
                     {platform && (
-                      <span className="font-mono text-[9px] uppercase tracking-[0.2em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)]">
+                      <span className="font-mono text-label uppercase tracking-[0.12em] px-2 py-0.5 border border-[var(--accent-green)]/50 text-[var(--accent-green)]">
                         {platform}
                       </span>
                     )}
                     {categories?.map((cat) => (
                       <span
                         key={cat}
-                        className="font-mono text-[9px] uppercase tracking-[0.15em] px-2 py-0.5 border border-border-dim text-[var(--muted-foreground)]"
+                        className="font-mono text-label uppercase tracking-[0.15em] px-2 py-0.5 border border-border-dim text-[var(--muted-foreground)]"
                       >
                         {cat}
                       </span>
@@ -183,7 +183,7 @@ export function WriteupModal({
                         className="flex flex-col items-center justify-center gap-3 py-20 text-[var(--muted-foreground)]"
                       >
                         <Loader2 size={24} className="animate-spin" />
-                        <span className="font-mono text-[11px] uppercase tracking-[0.2em]">
+                        <span className="font-mono text-label uppercase tracking-[0.12em]">
                           Fetching writeup...
                         </span>
                       </div>
@@ -194,20 +194,20 @@ export function WriteupModal({
                         className="flex flex-col items-center justify-center gap-4 py-20 px-6 text-center"
                       >
                         <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
-                        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                        <span className="font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
                           No se pudo cargar el writeup
                         </span>
                         <a
                           href={investigation.href}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] px-4 py-2 border border-[var(--accent)]/50 text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
+                          className="inline-flex items-center gap-2 font-mono text-label uppercase tracking-[0.14em] px-4 py-2 border border-[var(--accent)]/50 text-[var(--accent)] hover:bg-[var(--accent)]/10 transition-colors"
                         >
                           <ExternalLink size={14} strokeWidth={1.5} /> Ver en GitHub
                         </a>
                         <button
                           onClick={retry}
-                          className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)] hover:text-foreground transition-colors underline underline-offset-2"
+                          className="font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)] hover:text-foreground transition-colors underline underline-offset-2"
                         >
                           Reintentar
                         </button>
@@ -219,7 +219,7 @@ export function WriteupModal({
                         className="flex flex-col items-center justify-center gap-4 py-20 text-center"
                       >
                         <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
-                        <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                        <span className="font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
                           Writeup no encontrado
                         </span>
                       </div>
@@ -241,7 +241,7 @@ export function WriteupModal({
               </div>
               {/* Footer */}
               <div className="flex items-center justify-between px-4 md:px-6 pb-[max(1rem,env(safe-area-inset-bottom))] shrink-0 bg-[var(--surface)]">
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                <span className="font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
                   <span className="md:hidden">Tocá fuera para cerrar</span>
                   <span className="hidden md:inline">ESC para cerrar</span>
                 </span>
@@ -250,7 +250,7 @@ export function WriteupModal({
                     href={investigation.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 min-h-[44px] py-2 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline"
+                    className="inline-flex items-center gap-2 min-h-[44px] py-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] hover:underline"
                   >
                     <ExternalLink size={12} strokeWidth={1.5} />
                     Ver en GitHub →

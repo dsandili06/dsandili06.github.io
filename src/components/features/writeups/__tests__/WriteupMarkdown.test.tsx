@@ -6,6 +6,46 @@ const HREF =
   "https://github.com/dsandili06/Artifakt-Labs/blob/main/Writeups/CyberDefenders/FakeGPT.md";
 
 describe("WriteupMarkdown", () => {
+  it("strips a leading emoji from heading text but keeps the heading id", () => {
+    render(
+      <WriteupMarkdown
+        markdown={"## \u{1F50D} Análisis inicial\n\nCuerpo \u{1F50D} intacto"}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+
+    const heading = screen.getByRole("heading", { level: 2 });
+    expect(heading).toHaveTextContent(/^Análisis inicial$/);
+    expect(heading).toHaveAttribute("id", "writeup-content--análisis-inicial");
+    expect(screen.getByText("Cuerpo \u{1F50D} intacto")).toBeInTheDocument();
+  });
+
+  it("visually hides only a leading H1 that duplicates the modal title", () => {
+    const { unmount } = render(
+      <WriteupMarkdown
+        markdown={["# FakeGPT Lab WriteUp", "", "Intro", "", "# Otro titulo"].join("\n")}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+
+    const [first, second] = screen.getAllByRole("heading", { level: 1 });
+    expect(first).toHaveClass("sr-only");
+    expect(first).toHaveAttribute("id", "writeup-content-fakegpt-lab-writeup");
+    expect(second).not.toHaveClass("sr-only");
+    unmount();
+
+    render(
+      <WriteupMarkdown
+        markdown={["Intro primero", "", "# Titulo tardio"].join("\n")}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+    expect(screen.getByRole("heading", { level: 1 })).not.toHaveClass("sr-only");
+  });
+
   it("renders an accessible copy action for fenced code blocks", () => {
     render(
       <WriteupMarkdown

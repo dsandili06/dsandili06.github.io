@@ -4,6 +4,9 @@ import { Investigaciones } from "@/components/sections/Investigaciones";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
 import { captureModalRequests } from "@/test/modalRequests";
 
+const expandLog = () =>
+  fireEvent.click(screen.getByRole("button", { name: `Ver los ${INVESTIGATIONS.length} casos` }));
+
 const idByTitle = (title: string) => INVESTIGATIONS.find((i) => i.title.includes(title))?.id;
 
 /**
@@ -27,6 +30,7 @@ describe("Investigaciones", () => {
 
   it("renders featured cases and the view toggle", () => {
     render(<Investigaciones />);
+    expandLog();
 
     expect(screen.getByText("FEATURED_CASES")).toBeInTheDocument();
     expect(screen.getByText("FULL_CASE_LOG")).toBeInTheDocument();
@@ -34,6 +38,24 @@ describe("Investigaciones", () => {
     const carouselBtns = screen.getAllByRole("button", { name: /carrusel/i });
     expect(carouselBtns.length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole("button", { name: /tabla/i })).toBeInTheDocument();
+  });
+
+  it("keeps the full case log collapsed until the disclosure is opened", () => {
+    render(<Investigaciones />);
+
+    const toggle = screen.getByRole("button", { name: `Ver los ${INVESTIGATIONS.length} casos` });
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveAttribute("aria-controls", "investigaciones-case-log");
+    expect(screen.queryByText("FULL_CASE_LOG")).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /tabla/i })).not.toBeInTheDocument();
+
+    fireEvent.click(toggle);
+    expect(toggle).toHaveAccessibleName("Ocultar casos");
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByText("FULL_CASE_LOG")).toBeInTheDocument();
+
+    fireEvent.click(toggle);
+    expect(screen.queryByText("FULL_CASE_LOG")).not.toBeInTheDocument();
   });
 
   it("renders a captioned conceptual illustration for the lead investigation", () => {
@@ -50,6 +72,7 @@ describe("Investigaciones", () => {
 
   it("toggles between carousel and table views without errors", () => {
     render(<Investigaciones />);
+    expandLog();
 
     // Carousel is the default view (desktop jsdom mock)
     const tableBtn = screen.getByRole("button", { name: /tabla/i });
@@ -62,7 +85,7 @@ describe("Investigaciones", () => {
     // Switch to table — embla (with autoplay) unmounts cleanly
     fireEvent.click(tableBtn);
     expect(tableBtn).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getAllByText(/Próximo writeup/i).length).toBeGreaterThanOrEqual(1);
+    expect(screen.queryByText(/Próximo writeup/i)).not.toBeInTheDocument();
 
     // Switch back — carousel remounts, autoplay restarts
     fireEvent.click(carouselToggle!);
@@ -71,6 +94,7 @@ describe("Investigaciones", () => {
 
   it("table lab rows show click affordance (cursor + hover styles)", () => {
     render(<Investigaciones />);
+    expandLog();
 
     fireEvent.click(screen.getByRole("button", { name: /tabla/i }));
     const allButtons = screen.getAllByRole("button");
@@ -85,6 +109,7 @@ describe("Investigaciones", () => {
 
   it("shows lab title, category and a bullet summary in table view without case numbers", () => {
     render(<Investigaciones />);
+    expandLog();
     fireEvent.click(screen.getByRole("button", { name: /tabla/i }));
 
     expect(screen.getByText("SOBRE EL LAB")).toBeInTheDocument();

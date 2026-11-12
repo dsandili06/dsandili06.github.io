@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { Proyectos } from "@/components/sections/Proyectos";
 import { PROJECTS } from "@/data/projects";
+import { INVESTIGATIONS } from "@/data/investigations";
 
 describe("Proyectos section - Tactical Repository Dossiers", () => {
   it("renders the section header and kicker", () => {
@@ -63,20 +64,15 @@ describe("Proyectos section - Tactical Repository Dossiers", () => {
 
   it("renders tactical bento metrics on both projects", () => {
     render(<Proyectos />);
-    expect(screen.getByText("15+ Writeups")).toBeInTheDocument();
+    expect(screen.getByText(`${INVESTIGATIONS.length} Writeups`)).toBeInTheDocument();
     expect(screen.getByText("12+ Scripts")).toBeInTheDocument();
     expect(screen.getByText("CyberDefenders · THM")).toBeInTheDocument();
     expect(screen.getByText("Blue Team · DFIR")).toBeInTheDocument();
   });
 
-  it("renders the minimalist WIP card with animated progress bar", () => {
+  it("does not render a placeholder progress card", () => {
     render(<Proyectos />);
-    expect(screen.getByText("PRJ_03")).toBeInTheDocument();
-    expect(screen.getByText("EN PROCESO")).toBeInTheDocument();
-    expect(
-      screen.getByRole("heading", { name: /Próximo proyecto en construcción/i }),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/ESTADO: EN DESARROLLO/i)).toBeInTheDocument();
-    expect(screen.getByRole("progressbar")).toBeInTheDocument();
+    expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+    expect(screen.queryByText(/Próximo proyecto en construcción/i)).not.toBeInTheDocument();
   });
 });

@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, Search } from "lucide-react";
+import { Menu, X, Search, Download } from "lucide-react";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useOverlayLifecycle } from "@/hooks/useOverlayLifecycle";
 import { openCommandPalette } from "@/hooks/useCommandPalette";
 import { SECTIONS } from "@/data/sections";
+import { CONTACT } from "@/data/site";
 import { getLenis } from "@/lib/lenis";
 import { replaceHash } from "@/lib/hash";
 
@@ -114,7 +115,7 @@ export function Nav() {
         <a
           href="#top"
           aria-label="Inicio"
-          className="group font-mono text-[11px] sm:text-xs leading-none flex items-center whitespace-nowrap"
+          className="group font-mono text-meta leading-none inline-flex items-center min-h-[44px] whitespace-nowrap"
         >
           <span className="text-[var(--muted-foreground)]">[</span>
           <span className="text-[var(--accent)]">artif4kt</span>
@@ -125,7 +126,7 @@ export function Nav() {
         </a>
         <div
           ref={desktopNavRef}
-          className="hidden xl:flex items-center gap-7 lg:gap-9 font-mono text-[11px] uppercase tracking-[0.18em]"
+          className="hidden xl:flex items-center gap-5 min-[1440px]:gap-9 whitespace-nowrap font-mono text-label uppercase tracking-[0.12em]"
         >
           {links.map((l) => {
             const isActive = active === l.id;
@@ -151,15 +152,23 @@ export function Nav() {
           <button
             type="button"
             onClick={openCommandPalette}
-            className="flex items-center gap-2 px-2.5 py-1 rounded-xs border border-border-dim bg-[var(--surface-2)]/60 text-[var(--muted-foreground)] hover:text-foreground hover:border-[var(--accent)]/50 transition-colors text-[11px] font-mono cursor-pointer"
+            className="flex items-center gap-2 px-2.5 py-1 rounded-xs border border-border-dim bg-[var(--surface-2)]/60 text-[var(--muted-foreground)] hover:text-foreground hover:border-[var(--accent)]/50 transition-colors text-label font-mono cursor-pointer"
             title="Abrir buscador"
             aria-label="Abrir buscador"
           >
             <Search size={13} className="text-[var(--accent)]" />
-            <span className="text-[10px] tracking-wider text-[var(--muted-foreground)]">
-              BUSCAR
-            </span>
+            <span className="text-label tracking-wider text-[var(--muted-foreground)]">BUSCAR</span>
           </button>
+
+          <a
+            href={CONTACT.cv}
+            download
+            aria-label="Descargar CV (PDF)"
+            className="inline-flex items-center gap-2 min-h-[44px] px-2.5 rounded-xs border border-border-dim text-[var(--muted-foreground)] hover:text-foreground hover:border-[var(--accent)]/50 transition-colors text-label font-mono focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface)]"
+          >
+            <Download size={13} className="text-[var(--accent)]" aria-hidden="true" />
+            <span className="text-label tracking-wider">CV</span>
+          </a>
         </div>
 
         {/* Mobile Actions: Search + Hamburger Menu */}
@@ -218,15 +227,7 @@ export function Nav() {
               aria-label="Menú principal"
               className="fixed inset-x-0 top-[calc(3.5rem+env(safe-area-inset-top))] sm:top-[calc(4rem+env(safe-area-inset-top))] z-50 xl:hidden bg-[var(--surface)] border-b border-border-dim shadow-2xl overflow-y-auto max-h-[calc(100dvh-3.5rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] sm:max-h-[calc(100dvh-4rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))]"
             >
-              <button
-                type="button"
-                onClick={() => setMenuOpen(false)}
-                aria-label="Cerrar menú móvil"
-                className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:right-4 focus:z-10 focus:inline-flex focus:size-11 focus:min-h-[44px] focus:min-w-[44px] focus:items-center focus:justify-center focus:border focus:border-[var(--accent)] focus:bg-[var(--surface)] focus:text-[var(--accent)]"
-              >
-                <X size={18} strokeWidth={1.5} />
-              </button>
-              <ul className="flex flex-col px-4 sm:px-6 py-2 font-mono text-xs uppercase tracking-[0.2em]">
+              <ul className="flex flex-col px-4 sm:px-6 py-2 font-mono text-xs uppercase tracking-[0.12em]">
                 {links.map((l) => (
                   <li key={l.href}>
                     <a
@@ -245,6 +246,19 @@ export function Nav() {
                     </a>
                   </li>
                 ))}
+                <li>
+                  <a
+                    href={CONTACT.cv}
+                    download
+                    aria-label="Descargar CV (PDF)"
+                    className="nav-mobile-link flex items-center gap-3 min-h-[44px] py-3.5 text-foreground hover:text-[var(--accent)] active:text-[var(--accent)] transition-colors"
+                  >
+                    <Download size={14} className="text-[var(--accent)]/70" aria-hidden="true" />
+                    <span className="text-foreground tracking-wider font-medium text-[13px]">
+                      CV
+                    </span>
+                  </a>
+                </li>
               </ul>
             </motion.div>
           </>

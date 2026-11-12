@@ -13,6 +13,7 @@ import {
   Mail,
   Github,
   Linkedin,
+  Download,
   ExternalLink,
   Copy,
   Check,
@@ -32,6 +33,9 @@ import { COMMAND_PALETTE_OPEN_EVENT, COMMAND_PALETTE_CLOSE_EVENT } from "@/hooks
 import { openCertificateBySrc, openWriteup } from "@/components/features/modals/modalRequests";
 import { replaceHash } from "@/lib/hash";
 import { selectStackCategory } from "@/lib/stackCategory";
+
+const TOOL_COUNT = STACK_GROUPS.reduce((total, group) => total + group.items.length, 0);
+const CERT_COUNT = CERTIFICATIONS.filter((cert) => cert.status === "OBTENIDA").length;
 
 const SECTION_ICONS = {
   about: FileText,
@@ -152,6 +156,16 @@ export function CommandPalette() {
     }
   }, []);
 
+  const handleDownloadCv = useCallback(() => {
+    setIsOpen(false);
+    const link = document.createElement("a");
+    link.href = CONTACT.cv;
+    link.download = "";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  }, []);
+
   if (typeof document === "undefined") return null;
 
   return createPortal(
@@ -183,7 +197,7 @@ export function CommandPalette() {
               className="relative w-full max-w-2xl bg-[var(--surface)] border border-border-dim rounded-xs shadow-[0_24px_64px_rgba(0,0,0,0.85),inset_0_1px_0_0_rgba(255,255,255,0.08)] overflow-hidden flex flex-col max-h-[85vh] sm:max-h-[75vh]"
             >
               {/* Tactical HUD Header Bar */}
-              <div className="flex items-center justify-between px-3.5 sm:px-4 py-2 bg-[var(--surface-2)] border-b border-border-dim text-[10px] font-mono uppercase tracking-[0.2em] text-[var(--muted-foreground)] select-none">
+              <div className="flex items-center justify-between px-3.5 sm:px-4 py-2 bg-[var(--surface-2)] border-b border-border-dim text-label font-mono uppercase tracking-[0.12em] text-[var(--muted-foreground)] select-none">
                 <div className="flex items-center gap-2">
                   <span className="inline-block size-1.5 rounded-full bg-[var(--accent-green)] animate-pulse" />
                   <span className="text-foreground/90">SOC_OPERATIONS // COMMAND_PALETTE</span>
@@ -219,7 +233,7 @@ export function CommandPalette() {
                     <button
                       type="button"
                       onClick={() => setSearch("")}
-                      className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-[10px] font-mono uppercase text-[var(--muted-foreground)] hover:text-foreground px-1.5 py-0.5 rounded-xs border border-border-dim"
+                      className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center text-label font-mono uppercase text-[var(--muted-foreground)] hover:text-foreground px-1.5 py-0.5 rounded-xs border border-border-dim"
                     >
                       LIMPIAR
                     </button>
@@ -237,7 +251,7 @@ export function CommandPalette() {
                     <p className="font-display font-semibold text-sm text-foreground">
                       No se encontraron resultados para &ldquo;{search}&rdquo;
                     </p>
-                    <p className="mt-1.5 text-[11px] font-mono text-[var(--muted-foreground)]">
+                    <p className="mt-1.5 text-meta font-mono text-[var(--muted-foreground)]">
                       Probá buscando: <span className="text-[var(--accent)]">3CX</span>,{" "}
                       <span className="text-[var(--accent)]">Volatility</span>,{" "}
                       <span className="text-[var(--accent)]">SAL1</span>,{" "}
@@ -249,7 +263,7 @@ export function CommandPalette() {
                   {/* Grupo: Acciones Rápidas */}
                   <Command.Group
                     heading="ACCIONES RÁPIDAS"
-                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
+                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-label [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.12em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
                   >
                     <Command.Item
                       value="copiar correo email contacto santiago sandili"
@@ -268,8 +282,22 @@ export function CommandPalette() {
                             : `Copiar correo del analista (${CONTACT.email})`}
                         </span>
                       </div>
-                      <span className="font-mono text-[9px] uppercase px-1.5 py-0.5 border border-border-dim text-[var(--muted-foreground)] shrink-0 ml-2">
+                      <span className="font-mono text-label uppercase px-1.5 py-0.5 border border-border-dim text-[var(--muted-foreground)] shrink-0 ml-2">
                         {copiedEmail ? "COPIADO" : "CLICK / ↵"}
+                      </span>
+                    </Command.Item>
+
+                    <Command.Item
+                      value="descargar cv curriculum pdf santiago sandili"
+                      onSelect={handleDownloadCv}
+                      className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <Download size={14} className="text-[var(--accent)] shrink-0" />
+                        <span className="truncate">Descargar CV</span>
+                      </div>
+                      <span className="font-mono text-label uppercase px-1.5 py-0.5 border border-border-dim text-[var(--muted-foreground)] shrink-0 ml-2">
+                        PDF
                       </span>
                     </Command.Item>
 
@@ -315,7 +343,7 @@ export function CommandPalette() {
                   {/* Grupo: Secciones */}
                   <Command.Group
                     heading="SECCIONES DEL SISTEMA"
-                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
+                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-label [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.12em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
                   >
                     {SECTIONS.map((sec) => {
                       const Icon = SECTION_ICONS[sec.id];
@@ -327,13 +355,13 @@ export function CommandPalette() {
                           className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                         >
                           <div className="flex items-center gap-2.5 min-w-0">
-                            <span className="font-mono text-[10px] text-[var(--accent)] font-semibold shrink-0">
+                            <span className="font-mono text-label text-[var(--accent)] font-semibold shrink-0">
                               {sec.number}
                             </span>
                             <Icon size={14} className="text-[var(--muted-foreground)] shrink-0" />
                             <div className="flex flex-col min-w-0">
                               <span className="truncate font-medium">{sec.title}</span>
-                              <span className="text-[10px] text-[var(--muted-foreground)] truncate hidden sm:block">
+                              <span className="font-body text-meta text-[var(--muted-foreground)] truncate hidden sm:block">
                                 {sec.description}
                               </span>
                             </div>
@@ -352,7 +380,7 @@ export function CommandPalette() {
                   {/* Grupo: Writeups & Casos DFIR */}
                   <Command.Group
                     heading="INVESTIGACIONES & WRITEUPS DFIR"
-                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
+                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-label [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.12em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
                   >
                     {INVESTIGATIONS.map((lab) => (
                       <Command.Item
@@ -362,19 +390,19 @@ export function CommandPalette() {
                         className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">
-                          <span className="font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-xs bg-[var(--surface)] border border-border-dim text-[var(--accent)] shrink-0">
+                          <span className="font-mono text-label uppercase tracking-wider px-1.5 py-0.5 rounded-xs bg-[var(--surface)] border border-border-dim text-[var(--accent)] shrink-0">
                             {lab.id}
                           </span>
                           <div className="flex flex-col min-w-0">
                             <span className="truncate font-medium text-foreground">
                               {lab.title}
                             </span>
-                            <span className="text-[10px] text-[var(--muted-foreground)] truncate">
+                            <span className="font-body text-meta text-[var(--muted-foreground)] truncate">
                               {lab.platform} · {lab.categories.join(" · ")}
                             </span>
                           </div>
                         </div>
-                        <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--accent-green)] border border-[var(--accent-green)]/40 px-1.5 py-0.5 rounded-xs shrink-0 ml-2 hidden sm:inline-block">
+                        <span className="font-mono text-label uppercase tracking-wider text-[var(--accent-green)] border border-[var(--accent-green)]/40 px-1.5 py-0.5 rounded-xs shrink-0 ml-2 hidden sm:inline-block">
                           LEER CASO
                         </span>
                       </Command.Item>
@@ -386,7 +414,7 @@ export function CommandPalette() {
                   {/* Grupo: Herramientas del Arsenal */}
                   <Command.Group
                     heading="ARSENAL DE HERRAMIENTAS"
-                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
+                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-label [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.12em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
                   >
                     {STACK_GROUPS.flatMap((grp) =>
                       grp.items.map((tool) => (
@@ -402,7 +430,7 @@ export function CommandPalette() {
                             </span>
                             <span className="truncate font-medium">{tool}</span>
                           </div>
-                          <span className="font-mono text-[9px] uppercase tracking-wider text-[var(--muted-foreground)]/70 shrink-0 ml-2">
+                          <span className="font-mono text-label uppercase tracking-wider text-[var(--muted-foreground)]/70 shrink-0 ml-2">
                             {grp.title}
                           </span>
                         </Command.Item>
@@ -415,7 +443,7 @@ export function CommandPalette() {
                   {/* Grupo: Certificaciones */}
                   <Command.Group
                     heading="CERTIFICACIONES"
-                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.2em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
+                    className="[&_[cmdk-group-heading]]:px-2.5 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-label [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-[0.12em] [&_[cmdk-group-heading]]:text-[var(--muted-foreground)]/80 mb-2"
                   >
                     {CERTIFICATIONS.map((cert) => (
                       <Command.Item
@@ -434,13 +462,13 @@ export function CommandPalette() {
                           <Award size={14} className="text-[var(--accent)] shrink-0" />
                           <div className="flex flex-col min-w-0">
                             <span className="truncate font-medium">{cert.title}</span>
-                            <span className="text-[10px] text-[var(--muted-foreground)] truncate">
+                            <span className="font-body text-meta text-[var(--muted-foreground)] truncate">
                               {cert.org} · {cert.year}
                             </span>
                           </div>
                         </div>
                         <span
-                          className={`font-mono text-[9px] uppercase tracking-wider px-1.5 py-0.5 rounded-xs border shrink-0 ml-2 ${
+                          className={`font-mono text-label uppercase tracking-wider px-1.5 py-0.5 rounded-xs border shrink-0 ml-2 ${
                             cert.status === "OBTENIDA"
                               ? "border-[var(--accent-green)]/40 text-[var(--accent-green)]"
                               : "border-[var(--accent)]/40 text-[var(--accent)]"
@@ -454,7 +482,7 @@ export function CommandPalette() {
                 </Command.List>
 
                 {/* Tactical Footer Telemetry Bar */}
-                <div className="flex items-center justify-between px-3.5 sm:px-4 py-2 border-t border-border-dim bg-[var(--surface)] text-[10px] font-mono text-[var(--muted-foreground)] select-none">
+                <div className="flex items-center justify-between px-3.5 sm:px-4 py-2 border-t border-border-dim bg-[var(--surface)] text-label font-mono text-[var(--muted-foreground)] select-none">
                   <div className="flex items-center gap-3">
                     <span className="hidden sm:inline-flex items-center gap-1">
                       <kbd className="px-1 py-0.5 bg-[var(--surface-2)] border border-border-dim rounded-xs text-foreground/80">
@@ -475,8 +503,8 @@ export function CommandPalette() {
                       Cerrar
                     </span>
                   </div>
-                  <div className="hidden sm:block text-[9px] text-[var(--accent)] font-semibold tracking-wider">
-                    15 CASOS · 20+ TOOLS · 5 CERTS
+                  <div className="hidden sm:block text-label text-[var(--accent)] font-semibold tracking-wider">
+                    {INVESTIGATIONS.length} CASOS · {TOOL_COUNT} TOOLS · {CERT_COUNT} CERTS
                   </div>
                 </div>
               </Command>

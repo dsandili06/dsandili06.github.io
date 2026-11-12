@@ -8,6 +8,15 @@ export const WRITEUP_HEADING_ID_PREFIX = "writeup-content-";
 /** Minimum number of headings before the writeup index becomes visible. */
 export const TOC_VISIBLE_THRESHOLD = 4;
 
+const LEADING_EMOJI_RE =
+  /^(?:\p{Extended_Pictographic}[️‍\p{Emoji_Modifier}\p{Extended_Pictographic}]*)+\s*/u;
+
+/** Removes a leading emoji from heading display text. Never use it to derive ids. */
+export function stripLeadingEmoji(text: string): string {
+  const stripped = text.replace(LEADING_EMOJI_RE, "");
+  return stripped.length > 0 ? stripped : text;
+}
+
 /**
  * Extracts h2/h3 entries from the raw markdown, skipping content inside code fences.
  * Uses the same github-slugger over ALL headings (in document order) as rehype-slug does, so ids match.
@@ -28,7 +37,7 @@ export function parseToc(md: string): TocEntry[] {
     const depth = m[1].length;
     const raw = m[2].replace(/[*_`~]/g, "").trim();
     const id = `${WRITEUP_HEADING_ID_PREFIX}${slugger.slug(raw)}`;
-    if (depth === 2 || depth === 3) toc.push({ depth, text: raw, id });
+    if (depth === 2 || depth === 3) toc.push({ depth, text: stripLeadingEmoji(raw), id });
   }
   return toc;
 }

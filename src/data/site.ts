@@ -30,4 +30,6 @@ export const CONTACT = {
   email: "sdsandili06@gmail.com",
   linkedin: "https://www.linkedin.com/in/santiagodsandili/",
   github: "https://github.com/dsandili06",
+  /** Public CV (PDF) served from `public/`. */
+  cv: "/CV_Santiago_Sandili.pdf",
 } as const;

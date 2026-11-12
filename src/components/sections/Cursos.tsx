@@ -1,10 +1,12 @@
 import { useState, useRef } from "react";
-import { ChevronRight, ExternalLink, Terminal } from "lucide-react";
+import { ChevronDown, ChevronRight, ExternalLink, Terminal } from "lucide-react";
 import { motion, useReducedMotion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
+import { CornerBrackets } from "@/components/ui/CornerBrackets";
+import { ACTION_SECONDARY_CLASS } from "@/components/ui/actionLinkStyles";
 import { Section } from "@/components/primitives/Section";
 import { openCertificateBySrc } from "@/components/features/modals/modalRequests";
-import { COURSES, COURSE_GROUPS, type CourseGroup } from "@/data/courses";
+import { COURSES, COURSE_GROUPS, FEATURED_COURSES, type CourseGroup } from "@/data/courses";
 import type { Course } from "@/types";
 
 function getGroupSlug(group: CourseGroup): string {
@@ -25,7 +27,7 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
           ? `Ver certificado oficial: ${course.title}`
           : `${course.title}, certificado pendiente`
       }
-      className={`group relative flex w-full min-h-[56px] items-center gap-3 sm:gap-4 p-3.5 sm:p-4 text-left hover:z-10 transform-gpu backface-hidden transition-all duration-200 ease-out ${
+      className={`group relative flex w-full min-h-[56px] items-center gap-3 sm:gap-4 p-3.5 sm:p-4 text-left hover:z-10 transform-gpu backface-hidden transition-[background-color,opacity,transform] duration-200 ease-out ${
         hasCert
           ? "hover:bg-[var(--surface-2)]/90 cursor-pointer active:scale-[0.995] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-inset"
           : "cursor-default opacity-85"
@@ -35,7 +37,7 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
       <span className="absolute left-0 inset-y-0 w-[2px] bg-[var(--accent)] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200" />
 
       {/* Course Sequence */}
-      <span className="w-7 shrink-0 font-mono text-[11px] font-semibold tracking-[0.16em] text-[var(--accent-secondary)] tabular-nums">
+      <span className="w-7 shrink-0 font-mono text-label font-semibold tracking-[0.12em] text-[var(--accent-secondary)] tabular-nums">
         {course.n}
       </span>
 
@@ -51,24 +53,24 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
         >
           {course.title}
         </span>
-        <span className="mt-0.5 inline-block font-mono text-[9px] uppercase tracking-[0.16em] text-[var(--muted-foreground)] sm:hidden">
+        <span className="mt-0.5 inline-block font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)] sm:hidden">
           {course.org}
         </span>
       </span>
 
       {/* CTA Button Badge */}
       {hasCert ? (
-        <span className="inline-flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/80 bg-[var(--surface)] px-2 sm:px-2.5 py-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-[var(--accent-secondary)] group-hover:border-[var(--accent)]/50 group-hover:bg-[var(--accent)]/15 group-hover:text-white group-focus-visible:border-[var(--accent)]/50 group-focus-visible:bg-[var(--accent)]/15 group-focus-visible:text-white transition-all duration-200">
+        <span className="inline-flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/80 bg-[var(--surface)] px-2 sm:px-2.5 py-1 font-mono text-label sm:text-label uppercase tracking-[0.12em] text-[var(--accent-secondary)] group-hover:border-[var(--accent)]/50 group-hover:bg-[var(--accent)]/15 group-hover:text-white group-focus-visible:border-[var(--accent)]/50 group-focus-visible:bg-[var(--accent)]/15 group-focus-visible:text-white transition-colors duration-200">
           <span className="hidden sm:inline">VER CERTIFICADO</span>
           <span className="sm:hidden">VER</span>
           <ExternalLink
             size={11}
-            className="shrink-0 opacity-80 group-hover:opacity-100 group-focus-visible:opacity-100 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 transition-all duration-200 ease-out transform-gpu"
+            className="shrink-0 opacity-80 group-hover:opacity-100 group-focus-visible:opacity-100 group-hover:translate-x-0.5 group-focus-visible:translate-x-0.5 transition-[opacity,transform] duration-200 ease-out transform-gpu"
             aria-hidden="true"
           />
         </span>
       ) : (
-        <span className="inline-flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/50 bg-[var(--surface-2)]/50 px-2 sm:px-2.5 py-1 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.16em] text-[var(--muted-foreground)]">
+        <span className="inline-flex items-center gap-1.5 shrink-0 rounded-xs border border-border-dim/50 bg-[var(--surface-2)]/50 px-2 sm:px-2.5 py-1 font-mono text-label sm:text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
           <span>PENDIENTE</span>
         </span>
       )}
@@ -76,7 +78,54 @@ function CourseRow({ course, onOpen }: { course: Course; onOpen: (course: Course
   );
 }
 
+const CARD_FOCUS =
+  "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)]";
+const CARD_BASE =
+  "flex h-full w-full flex-col gap-2 rounded-xs border border-border-dim bg-[var(--surface)] p-4 text-left shadow-card transition-colors hover:border-[var(--accent)]/40";
+
+function FeaturedCourseCard({
+  course,
+  onOpen,
+}: {
+  course: Course;
+  onOpen: (course: Course) => void;
+}) {
+  const content = (
+    <>
+      <span className="font-mono text-label uppercase tracking-[0.12em] text-[var(--accent-secondary)]">
+        {course.org}
+      </span>
+      <span className="text-sm font-medium leading-snug text-foreground sm:text-base">
+        {course.title}
+      </span>
+      {course.cert && (
+        <span className="mt-auto inline-flex items-center gap-1.5 pt-1 font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+          Ver certificado
+          <ExternalLink size={11} aria-hidden="true" />
+        </span>
+      )}
+    </>
+  );
+
+  if (!course.cert) return <div className={CARD_BASE}>{content}</div>;
+
+  return (
+    <button
+      type="button"
+      onClick={() => onOpen(course)}
+      aria-haspopup="dialog"
+      aria-label={`Ver certificado: ${course.title}`}
+      className={`${CARD_BASE} cursor-pointer ${CARD_FOCUS}`}
+    >
+      {content}
+    </button>
+  );
+}
+
+const EXPLORER_ID = "cursos-explorer";
+
 export function Cursos() {
+  const [expanded, setExpanded] = useState(false);
   const [selectedOrg, setSelectedOrg] = useState<string>(
     COURSE_GROUPS[0]?.org || "Coursera/Google",
   );
@@ -162,11 +211,7 @@ export function Cursos() {
       reveal="stagger-items"
     >
       {/* Telemetry Bar */}
-      <div className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] md:mb-10">
-        <span>
-          TOTAL{" "}
-          <span className="text-[var(--accent-secondary)] font-bold text-sm">{COURSES.length}</span>
-        </span>
+      <div className="mb-8 flex flex-wrap items-center gap-x-6 gap-y-3 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] md:mb-10">
         <span>
           INSTITUCIONES{" "}
           <span className="text-[var(--accent-secondary)] font-bold text-sm">
@@ -179,232 +224,262 @@ export function Cursos() {
         </Badge>
       </div>
 
-      {/* Split-Pane Terminal Hub */}
-      <div className="relative border border-border-dim bg-[var(--surface)] shadow-[0_8px_30px_-6px_rgba(0,0,0,0.5)]">
-        {/* Tactical Corner Accents */}
-        <span className="absolute top-0 left-0 size-2.5 border-t-2 border-l-2 border-[var(--accent)]/60 pointer-events-none z-10" />
-        <span className="absolute top-0 right-0 size-2.5 border-t-2 border-r-2 border-[var(--accent)]/60 pointer-events-none z-10" />
-        <span className="absolute bottom-0 left-0 size-2.5 border-b-2 border-l-2 border-[var(--accent)]/60 pointer-events-none z-10" />
-        <span className="absolute bottom-0 right-0 size-2.5 border-b-2 border-r-2 border-[var(--accent)]/60 pointer-events-none z-10" />
+      <ul
+        role="list"
+        className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+        aria-label="Cursos destacados"
+      >
+        {FEATURED_COURSES.map((course) => (
+          <li key={course.n} className="list-none">
+            <FeaturedCourseCard course={course} onOpen={openCertificate} />
+          </li>
+        ))}
+      </ul>
 
-        {/* HUD Sub-header */}
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-dim bg-[var(--surface-2)]/50 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-          <div className="flex items-center gap-2.5">
-            <Terminal size={14} className="text-[var(--accent)]" />
-            <span className="text-foreground font-semibold">
-              <span className="sm:hidden">REGISTRO</span>
-              <span className="hidden sm:inline">REGISTRO_ACADÉMICO</span>
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="hidden sm:inline text-[var(--muted-foreground)]">
-              EXPEDIENTE //{" "}
-              <span
-                className="text-[var(--accent-secondary)] font-semibold max-w-[200px] md:max-w-[280px] lg:max-w-none truncate inline-block align-bottom"
-                title={activeGroup.org}
-              >
-                {activeGroup.org}
-              </span>
-            </span>
-            <span className="h-2 w-px bg-border-dim hidden sm:inline" />
-            <span className="text-[var(--accent-secondary)] font-bold tabular-nums">
-              {`[ ${String(activeGroup.courses.length).padStart(2, "0")} ${activeGroup.courses.length === 1 ? "CURSO" : "CURSOS"} ]`}
-            </span>
-          </div>
-        </div>
+      <button
+        type="button"
+        onClick={() => setExpanded((value) => !value)}
+        aria-expanded={expanded}
+        aria-controls={EXPLORER_ID}
+        className={`${ACTION_SECONDARY_CLASS} mb-6`}
+      >
+        {expanded ? "Ocultar cursos" : `Ver los ${COURSES.length} cursos`}
+        <ChevronDown
+          size={16}
+          aria-hidden="true"
+          className={`transition-transform motion-reduce:transition-none ${expanded ? "rotate-180" : ""}`}
+        />
+      </button>
 
-        {/* Responsive Grid Layout: Sidebar + Active Dossier */}
-        <div className="grid grid-cols-1 md:grid-cols-[310px_1fr] lg:grid-cols-[340px_1fr] xl:grid-cols-[370px_1fr]">
-          {/* Left Column: Hub de Emisores */}
-          <div
-            ref={tabsRef}
-            role="tablist"
-            aria-label="Emisores de cursos y certificaciones"
-            aria-orientation="vertical"
-            className="flex md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-2.5 sm:p-3 gap-2 border-b md:border-b-0 md:border-r border-border-dim bg-[var(--surface-2)]/25 snap-x snap-proximity touch-pan-x overscroll-x-contain"
-          >
-            <div className="hidden md:flex items-center justify-between px-2 pb-2 pt-1 font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
-              <span>// EMISORES</span>
-              <span className="text-[var(--accent-secondary)] font-semibold">
-                [{String(COURSE_GROUPS.length).padStart(2, "0")}]
-              </span>
+      <div id={EXPLORER_ID}>
+        {expanded && (
+          /* Split-Pane Terminal Hub */
+          <div className="relative border border-border-dim bg-[var(--surface)] shadow-[0_8px_30px_-6px_rgba(0,0,0,0.5)]">
+            {/* Tactical Corner Accents */}
+            <CornerBrackets thickness="border-2" className="border-[var(--accent)]/60" />
+
+            {/* HUD Sub-header */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-dim bg-[var(--surface-2)]/50 px-4 py-3 font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+              <div className="flex items-center gap-2.5">
+                <Terminal size={14} className="text-[var(--accent)]" />
+                <span className="text-foreground font-semibold">
+                  <span className="sm:hidden">REGISTRO</span>
+                  <span className="hidden sm:inline">REGISTRO_ACADÉMICO</span>
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="hidden sm:inline text-[var(--muted-foreground)]">
+                  EXPEDIENTE //{" "}
+                  <span
+                    className="text-[var(--accent-secondary)] font-semibold max-w-[200px] md:max-w-[280px] lg:max-w-none truncate inline-block align-bottom"
+                    title={activeGroup.org}
+                  >
+                    {activeGroup.org}
+                  </span>
+                </span>
+                <span className="h-2 w-px bg-border-dim hidden sm:inline" />
+                <span className="text-[var(--accent-secondary)] font-bold tabular-nums">
+                  {`[ ${String(activeGroup.courses.length).padStart(2, "0")} ${activeGroup.courses.length === 1 ? "CURSO" : "CURSOS"} ]`}
+                </span>
+              </div>
             </div>
 
-            {COURSE_GROUPS.map((group, index) => {
-              const isSelected = selectedOrg === group.org;
-              const hasBadge = Boolean(group.meta?.badge);
-              const groupSlug = getGroupSlug(group);
+            {/* Responsive Grid Layout: Sidebar + Active Dossier */}
+            <div className="grid grid-cols-1 md:grid-cols-[310px_1fr] lg:grid-cols-[340px_1fr] xl:grid-cols-[370px_1fr]">
+              {/* Left Column: Hub de Emisores */}
+              <div
+                ref={tabsRef}
+                role="tablist"
+                aria-label="Emisores de cursos y certificaciones"
+                aria-orientation="vertical"
+                className="flex md:flex-col overflow-x-auto md:overflow-x-visible no-scrollbar [scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-2.5 sm:p-3 gap-2 border-b md:border-b-0 md:border-r border-border-dim bg-[var(--surface-2)]/25 snap-x snap-proximity touch-pan-x overscroll-x-contain"
+              >
+                <div className="hidden md:flex items-center justify-between px-2 pb-2 pt-1 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+                  <span>// EMISORES</span>
+                  <span className="text-[var(--accent-secondary)] font-semibold">
+                    [{String(COURSE_GROUPS.length).padStart(2, "0")}]
+                  </span>
+                </div>
 
-              return (
-                <button
-                  key={group.org}
-                  type="button"
-                  role="tab"
-                  id={`tab-${groupSlug}`}
-                  aria-selected={isSelected}
-                  aria-controls={`panel-${groupSlug}`}
-                  tabIndex={isSelected ? 0 : -1}
-                  onClick={(e) => handleSelectOrg(group.org, e.currentTarget)}
-                  onKeyDown={(e) => handleKeyDown(e, index)}
-                  aria-label={`${group.org}, ${group.courses.length} ${group.courses.length === 1 ? "curso" : "cursos"}`}
-                  className={`group/tab relative shrink-0 snap-start flex items-center gap-3 w-[240px] sm:w-[260px] md:w-full px-3 py-2.5 sm:px-3.5 sm:py-3 text-left hover:z-10 transform-gpu backface-hidden transition-all duration-200 ease-out cursor-pointer min-h-[58px] sm:min-h-[62px] border active:scale-[0.99] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-inset ${
-                    isSelected
-                      ? "bg-[color-mix(in_oklab,var(--accent)_12%,var(--surface-2))] border-[var(--accent)]/70 text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_0_18px_-3px_rgba(121,172,255,0.16)] z-[1]"
-                      : "bg-[var(--surface)]/80 hover:bg-[var(--surface-2)] border-border-dim/60 text-[var(--muted-foreground)] hover:text-foreground hover:border-border-dim"
-                  }`}
-                >
-                  {/* Active Indicator Strip */}
-                  {isSelected && (
-                    <motion.span
-                      layoutId="activeCourseTabIndicator"
-                      className="absolute left-0 inset-y-0 w-1 bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]"
-                      transition={
-                        shouldReduceMotion
-                          ? { duration: 0 }
-                          : { type: "spring", stiffness: 450, damping: 35 }
-                      }
-                    />
-                  )}
+                {COURSE_GROUPS.map((group, index) => {
+                  const isSelected = selectedOrg === group.org;
+                  const hasBadge = Boolean(group.meta?.badge);
+                  const groupSlug = getGroupSlug(group);
 
-                  {/* Monogram or Official Badge Tile with high-contrast background */}
-                  <div className="relative size-11 sm:size-12 shrink-0 flex items-center justify-center p-1.5 rounded-xs bg-white border border-white/20 ring-1 ring-black/10 shadow-xs overflow-hidden">
-                    {hasBadge && group.meta?.badge ? (
-                      <img
-                        src={group.meta.badge}
-                        alt=""
-                        aria-hidden="true"
-                        width={48}
-                        height={48}
-                        className="size-full object-contain pointer-events-none select-none"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    ) : (
+                  return (
+                    <button
+                      key={group.org}
+                      type="button"
+                      role="tab"
+                      id={`tab-${groupSlug}`}
+                      aria-selected={isSelected}
+                      aria-controls={`panel-${groupSlug}`}
+                      tabIndex={isSelected ? 0 : -1}
+                      onClick={(e) => handleSelectOrg(group.org, e.currentTarget)}
+                      onKeyDown={(e) => handleKeyDown(e, index)}
+                      aria-label={`${group.org}, ${group.courses.length} ${group.courses.length === 1 ? "curso" : "cursos"}`}
+                      className={`group/tab relative shrink-0 snap-start flex items-center gap-3 w-[240px] sm:w-[260px] md:w-full px-3 py-2.5 sm:px-3.5 sm:py-3 text-left hover:z-10 transform-gpu backface-hidden transition-[background-color,border-color,color,box-shadow,transform] duration-200 ease-out cursor-pointer min-h-[58px] sm:min-h-[62px] border active:scale-[0.99] active:duration-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-inset ${
+                        isSelected
+                          ? "bg-[color-mix(in_oklab,var(--accent)_12%,var(--surface-2))] border-[var(--accent)]/70 text-foreground shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_0_18px_-3px_rgba(121,172,255,0.16)] z-[1]"
+                          : "bg-[var(--surface)]/80 hover:bg-[var(--surface-2)] border-border-dim/60 text-[var(--muted-foreground)] hover:text-foreground hover:border-border-dim"
+                      }`}
+                    >
+                      {/* Active Indicator Strip */}
+                      {isSelected && (
+                        <motion.span
+                          layoutId="activeCourseTabIndicator"
+                          className="absolute left-0 inset-y-0 w-1 bg-[var(--accent)] shadow-[0_0_8px_var(--accent)]"
+                          transition={
+                            shouldReduceMotion
+                              ? { duration: 0 }
+                              : { type: "spring", stiffness: 450, damping: 35 }
+                          }
+                        />
+                      )}
+
+                      {/* Monogram or Official Badge Tile with high-contrast background */}
+                      <div className="relative size-11 sm:size-12 shrink-0 flex items-center justify-center p-1.5 rounded-xs bg-white border border-white/20 ring-1 ring-black/10 shadow-xs overflow-hidden">
+                        {hasBadge && group.meta?.badge ? (
+                          <img
+                            src={group.meta.badge}
+                            alt=""
+                            aria-hidden="true"
+                            width={48}
+                            height={48}
+                            className="size-full object-contain pointer-events-none select-none"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        ) : (
+                          <span
+                            className="font-mono text-label font-bold tracking-wider text-slate-800"
+                            aria-hidden="true"
+                          >
+                            {group.meta?.code || group.org.slice(0, 4).toUpperCase()}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Institution Details */}
+                      <div className="min-w-0 flex-1">
+                        <div
+                          title={group.meta?.shortName || group.org}
+                          className={`whitespace-normal leading-tight text-[12px] sm:text-[13px] md:text-[14px] font-medium transition-colors duration-200 ${
+                            isSelected
+                              ? "text-foreground font-semibold"
+                              : "text-foreground/85 group-hover/tab:text-foreground"
+                          }`}
+                        >
+                          {group.meta?.shortName || group.org}
+                        </div>
+                      </div>
+
+                      {/* Course Counter */}
                       <span
-                        className="font-mono text-[10px] font-bold tracking-wider text-slate-800"
-                        aria-hidden="true"
+                        className={`shrink-0 font-mono text-label tracking-[0.15em] tabular-nums px-1.5 py-0.5 rounded-xs transition-colors duration-200 ${
+                          isSelected
+                            ? "bg-[var(--accent)]/20 text-[var(--accent-secondary)] font-bold border border-[var(--accent)]/40"
+                            : "bg-black/30 text-[var(--muted-foreground)] border border-border-dim/40 group-hover/tab:text-foreground"
+                        }`}
                       >
-                        {group.meta?.code || group.org.slice(0, 4).toUpperCase()}
+                        [{String(group.courses.length).padStart(2, "0")}]
                       </span>
+
+                      {/* Arrow Indicator on Desktop */}
+                      <ChevronRight
+                        size={14}
+                        className={`hidden md:block shrink-0 transition-transform duration-200 ease-out transform-gpu ${
+                          isSelected
+                            ? "text-[var(--accent)] translate-x-0.5 opacity-100"
+                            : "text-[var(--muted-foreground)] opacity-0 group-hover/tab:opacity-60"
+                        }`}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Right Column: Panel de Expediente Activo */}
+              <div
+                role="tabpanel"
+                id={`panel-${activeSlug}`}
+                aria-labelledby={`tab-${activeSlug}`}
+                tabIndex={0}
+                className="flex flex-col min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-inset"
+              >
+                <motion.div
+                  key={activeGroup.org}
+                  initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={
+                    shouldReduceMotion
+                      ? { duration: 0 }
+                      : { duration: 0.22, ease: [0.16, 1, 0.3, 1] }
+                  }
+                  className="flex flex-col h-full transform-gpu backface-hidden"
+                >
+                  {/* Dossier Header Info */}
+                  <div className="border-b border-border-dim p-4 sm:p-6 bg-gradient-to-b from-[var(--surface-2)]/40 to-transparent">
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div className="flex items-center gap-3.5 sm:gap-5 min-w-0">
+                        <div className="relative size-14 sm:size-16 shrink-0 flex items-center justify-center p-2 rounded-xs bg-white border border-white/20 shadow-md ring-1 ring-black/10 overflow-hidden">
+                          {activeGroup.meta?.badge ? (
+                            <img
+                              src={activeGroup.meta.badge}
+                              alt={`Badge ${activeGroup.org}`}
+                              width={64}
+                              height={64}
+                              className="size-full object-contain select-none"
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          ) : (
+                            <span className="font-mono text-sm font-bold tracking-wider text-slate-800">
+                              {activeGroup.meta?.code || activeGroup.org.slice(0, 4).toUpperCase()}
+                            </span>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2.5 flex-wrap">
+                            <h3 className="font-display text-xl sm:text-2xl font-bold text-foreground tracking-tight break-words">
+                              {activeGroup.org}
+                            </h3>
+                          </div>
+                          <p className="mt-1 font-mono text-label uppercase tracking-[0.12em] text-[var(--accent-secondary)]">
+                            {activeGroup.meta?.domain || "Especialización Defensiva"}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {activeGroup.meta?.description && (
+                      <p className="mt-3.5 text-xs sm:text-[13px] text-[var(--muted-foreground)] leading-relaxed max-w-3xl">
+                        {activeGroup.meta.description}
+                      </p>
                     )}
                   </div>
 
-                  {/* Institution Details */}
-                  <div className="min-w-0 flex-1">
-                    <div
-                      title={group.meta?.shortName || group.org}
-                      className={`whitespace-normal leading-tight text-[12px] sm:text-[13px] md:text-[14px] font-medium transition-colors duration-200 ${
-                        isSelected
-                          ? "text-foreground font-semibold"
-                          : "text-foreground/85 group-hover/tab:text-foreground"
-                      }`}
-                    >
-                      {group.meta?.shortName || group.org}
-                    </div>
+                  {/* Course Records Table / List */}
+                  <ul className="divide-y divide-border-dim flex-1" role="list">
+                    {activeGroup.courses.map((course) => (
+                      <li key={course.n} className="list-none relative hover:z-10">
+                        <CourseRow course={course} onOpen={openCertificate} />
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Dossier Footer Summary */}
+                  <div className="flex items-center justify-end border-t border-border-dim px-4 py-3 bg-[var(--surface-2)]/30 font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+                    <span className="tabular-nums text-foreground/80">
+                      MOSTRANDO {activeGroup.courses.length} DE {COURSES.length} CURSOS
+                    </span>
                   </div>
-
-                  {/* Course Counter */}
-                  <span
-                    className={`shrink-0 font-mono text-[10px] tracking-[0.15em] tabular-nums px-1.5 py-0.5 rounded-xs transition-colors duration-200 ${
-                      isSelected
-                        ? "bg-[var(--accent)]/20 text-[var(--accent-secondary)] font-bold border border-[var(--accent)]/40"
-                        : "bg-black/30 text-[var(--muted-foreground)] border border-border-dim/40 group-hover/tab:text-foreground"
-                    }`}
-                  >
-                    [{String(group.courses.length).padStart(2, "0")}]
-                  </span>
-
-                  {/* Arrow Indicator on Desktop */}
-                  <ChevronRight
-                    size={14}
-                    className={`hidden md:block shrink-0 transition-transform duration-200 ease-out transform-gpu ${
-                      isSelected
-                        ? "text-[var(--accent)] translate-x-0.5 opacity-100"
-                        : "text-[var(--muted-foreground)] opacity-0 group-hover/tab:opacity-60"
-                    }`}
-                    aria-hidden="true"
-                  />
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Right Column: Panel de Expediente Activo */}
-          <div
-            role="tabpanel"
-            id={`panel-${activeSlug}`}
-            aria-labelledby={`tab-${activeSlug}`}
-            tabIndex={0}
-            className="flex flex-col min-w-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-inset"
-          >
-            <motion.div
-              key={activeGroup.org}
-              initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={
-                shouldReduceMotion ? { duration: 0 } : { duration: 0.22, ease: [0.16, 1, 0.3, 1] }
-              }
-              className="flex flex-col h-full transform-gpu backface-hidden"
-            >
-              {/* Dossier Header Info */}
-              <div className="border-b border-border-dim p-4 sm:p-6 bg-gradient-to-b from-[var(--surface-2)]/40 to-transparent">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div className="flex items-center gap-3.5 sm:gap-5 min-w-0">
-                    <div className="relative size-14 sm:size-16 shrink-0 flex items-center justify-center p-2 rounded-xs bg-white border border-white/20 shadow-md ring-1 ring-black/10 overflow-hidden">
-                      {activeGroup.meta?.badge ? (
-                        <img
-                          src={activeGroup.meta.badge}
-                          alt={`Badge ${activeGroup.org}`}
-                          width={64}
-                          height={64}
-                          className="size-full object-contain select-none"
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      ) : (
-                        <span className="font-mono text-sm font-bold tracking-wider text-slate-800">
-                          {activeGroup.meta?.code || activeGroup.org.slice(0, 4).toUpperCase()}
-                        </span>
-                      )}
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-2.5 flex-wrap">
-                        <h3 className="font-display text-xl sm:text-2xl font-bold text-foreground tracking-tight break-words">
-                          {activeGroup.org}
-                        </h3>
-                      </div>
-                      <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent-secondary)]">
-                        {activeGroup.meta?.domain || "Especialización Defensiva"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {activeGroup.meta?.description && (
-                  <p className="mt-3.5 text-xs sm:text-[13px] text-[var(--muted-foreground)] leading-relaxed max-w-3xl">
-                    {activeGroup.meta.description}
-                  </p>
-                )}
+                </motion.div>
               </div>
-
-              {/* Course Records Table / List */}
-              <ul className="divide-y divide-border-dim flex-1" role="list">
-                {activeGroup.courses.map((course) => (
-                  <li key={course.n} className="list-none relative hover:z-10">
-                    <CourseRow course={course} onOpen={openCertificate} />
-                  </li>
-                ))}
-              </ul>
-
-              {/* Dossier Footer Summary */}
-              <div className="flex items-center justify-end border-t border-border-dim px-4 py-3 bg-[var(--surface-2)]/30 font-mono text-[9px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
-                <span className="tabular-nums text-foreground/80">
-                  MOSTRANDO {activeGroup.courses.length} DE {COURSES.length} CURSOS
-                </span>
-              </div>
-            </motion.div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </Section>
   );

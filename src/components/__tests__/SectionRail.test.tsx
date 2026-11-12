@@ -29,7 +29,7 @@ describe("SectionRail", () => {
       Array.from(rail.querySelectorAll("button span:first-child")).map((span) => span.textContent),
     ).toEqual(["01", "02", "03", "04", "05", "06", "07"]);
 
-    fireEvent.click(screen.getByRole("button", { name: "proyectos" }));
+    fireEvent.click(screen.getByRole("button", { name: "Proyectos" }));
     expect(scrollMocks.get("proyectos")).toHaveBeenCalledWith({
       behavior: "smooth",
     });
@@ -59,7 +59,7 @@ describe("SectionRail", () => {
     try {
       render(<SectionRail />);
       await screen.findByRole("navigation", { name: "Secciones" });
-      fireEvent.click(screen.getByRole("button", { name: "about" }));
+      fireEvent.click(screen.getByRole("button", { name: "Sobre mí" }));
       expect(scrollIntoView).toHaveBeenCalledWith({ behavior: "auto" });
     } finally {
       cleanup();

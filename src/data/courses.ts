@@ -36,12 +36,14 @@ export const COURSES: Course[] = [
     title: "SOC L1 Path",
     org: "TryHackMe",
     cert: "/certs/THM-SOC L1 PATH.webp",
+    featured: true,
   },
   {
     n: "07",
     title: "SOC L1 BOOTCAMP",
     org: "DOJO COMMUNITY",
     cert: "/certs/Captura de pantalla 2026-07-30 124141.webp",
+    featured: true,
   },
   {
     n: "08",
@@ -54,6 +56,7 @@ export const COURSES: Course[] = [
     title: "Cyber Incident Response and Digital Forensics",
     org: "LinkedIn Learning",
     cert: "/certs/CertificateOfCompletion_Learning Cyber Incident Response and Digital Forensics.webp",
+    featured: true,
   },
   {
     n: "10",
@@ -90,6 +93,7 @@ export const COURSES: Course[] = [
     title: "Sound the Alarm: Detection and Response",
     org: "Coursera/Google",
     cert: "/certs/Coursera - Sound the Alarm Detection and Response.webp",
+    featured: true,
   },
   {
     n: "16",
@@ -128,6 +132,8 @@ export const COURSES: Course[] = [
     cert: "/certs/Coursera - Accelerate Your Job Search with AI.webp",
   },
 ];
+
+export const FEATURED_COURSES: Course[] = COURSES.filter((c) => c.featured);
 
 export type InstitutionMeta = {
   id: string;

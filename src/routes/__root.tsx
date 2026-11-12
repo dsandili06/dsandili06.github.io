@@ -24,7 +24,7 @@ function NotFoundComponent() {
           404
         </h1>
 
-        <h2 className="font-mono text-sm uppercase tracking-[0.25em] text-foreground mb-3">
+        <h2 className="font-mono text-sm uppercase tracking-[0.14em] text-foreground mb-3">
           PÁGINA_NO_ENCONTRADA
         </h2>
         <p className="font-mono text-xs text-[var(--muted-foreground)] mb-8 max-w-sm mx-auto leading-relaxed">
@@ -33,7 +33,7 @@ function NotFoundComponent() {
 
         <Link
           to="/"
-          className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-border-dim text-[var(--accent)] hover:bg-[var(--surface-2)] hover:border-[var(--accent)] transition-colors"
+          className="inline-flex items-center gap-2 font-mono text-label uppercase tracking-[0.14em] px-5 py-3 border border-border-dim text-[var(--accent)] hover:bg-[var(--surface-2)] hover:border-[var(--accent)] transition-colors"
         >
           <span>cd ~</span>
           <span className="text-[var(--accent)]">→</span>
@@ -50,7 +50,7 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
       <div className="max-w-md text-center">
-        <h1 className="font-mono text-sm uppercase tracking-[0.25em] text-[var(--accent-error)] mb-4">
+        <h1 className="font-mono text-sm uppercase tracking-[0.14em] text-[var(--accent-error)] mb-4">
           [ERROR] Sesión caída
         </h1>
         <p className="font-mono text-xs text-[var(--muted-foreground)] mb-8 max-w-sm mx-auto leading-relaxed">
@@ -62,13 +62,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               void router.invalidate();
               reset();
             }}
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-border-dim text-[var(--accent)] hover:bg-[var(--surface-2)] hover:border-[var(--accent)] transition-colors"
+            className="inline-flex items-center gap-2 font-mono text-label uppercase tracking-[0.14em] px-5 py-3 border border-border-dim text-[var(--accent)] hover:bg-[var(--surface-2)] hover:border-[var(--accent)] transition-colors"
           >
             <span>reintentar</span>
           </button>
           <a
             href="/"
-            className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.25em] px-5 py-3 border border-[var(--muted-foreground)]/30 text-[var(--muted-foreground)] hover:text-foreground hover:border-[var(--muted-foreground)] transition-colors"
+            className="inline-flex items-center gap-2 font-mono text-label uppercase tracking-[0.14em] px-5 py-3 border border-[var(--muted-foreground)]/30 text-[var(--muted-foreground)] hover:text-foreground hover:border-[var(--muted-foreground)] transition-colors"
           >
             <span>cd ~</span>
           </a>

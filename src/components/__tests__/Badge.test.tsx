@@ -42,12 +42,12 @@ describe("Badge", () => {
   it("applies size classes correctly without variant collisions", () => {
     const { rerender } = render(<Badge size="sm">Small Badge</Badge>);
     const smEl = screen.getByText("Small Badge");
-    expect(smEl.className).toContain("text-[9px]");
+    expect(smEl.className).toContain("text-label");
     expect(smEl.className).toContain("px-1.5");
 
     rerender(<Badge size="lg">Large Badge</Badge>);
     const lgEl = screen.getByText("Large Badge");
-    expect(lgEl.className).toContain("text-[11px]");
+    expect(lgEl.className).toContain("text-label");
     expect(lgEl.className).toContain("px-2.5");
   });
 });

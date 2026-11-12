@@ -5,7 +5,7 @@ import { About } from "@/components/sections/About";
 describe("About section - Profile Narrative & Tactical Dossier", () => {
   it("renders section header with section number, title and kicker", () => {
     render(<About />);
-    expect(screen.getByRole("heading", { name: /About Me/i })).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /Sobre mí/i })).toBeInTheDocument();
     expect(screen.getByText(/SECTION_01 \/\/ PROFILE/i)).toBeInTheDocument();
   });
 
