@@ -48,7 +48,7 @@ export function SectionRail() {
           data-active={active === section.id}
           onClick={() => scrollTo(section.id)}
           className="section-rail__item"
-          aria-label={section.id}
+          aria-label={section.navLabel}
         >
           <span>{section.number}</span>
           <span className="section-rail__line" />

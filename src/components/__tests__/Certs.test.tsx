@@ -95,13 +95,13 @@ describe("Certs section", () => {
         name: /Ver certificado y review técnica de CompTIA Security\+/i,
       }),
     ).toBeInTheDocument();
-    expect(screen.getAllByText("VER CERTIFICADO & REVIEW TÉCNICA →")).toHaveLength(2);
+    expect(screen.getAllByText("VER CERTIFICADO Y REVISIÓN →")).toHaveLength(2);
   });
 
   it("renders clean SAL1 card with review CTA and without simulation hours or review available badge", () => {
     render(<Certs />);
 
-    expect(screen.getAllByText("VER CERTIFICADO & REVIEW TÉCNICA →")).toHaveLength(2);
+    expect(screen.getAllByText("VER CERTIFICADO Y REVISIÓN →")).toHaveLength(2);
     expect(
       screen.getByRole("button", { name: /Ver certificado y review técnica de SAL1/i }),
     ).toBeInTheDocument();

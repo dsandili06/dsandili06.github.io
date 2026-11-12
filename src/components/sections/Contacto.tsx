@@ -1,7 +1,9 @@
 import { motion, useReducedMotion } from "motion/react";
-import { Linkedin, Mail, Github, type LucideIcon } from "lucide-react";
+import { Download, Linkedin, Mail, Github, type LucideIcon } from "lucide-react";
 import { Section } from "@/components/primitives/Section";
+import { ACTION_PRIMARY_CLASS } from "@/components/ui/actionLinkStyles";
 import { CONTACT_CHANNELS, CONTACT_META } from "@/data/contact";
+import { CONTACT } from "@/data/site";
 import type { ContactChannel } from "@/types";
 
 const CHANNEL_ICONS = {
@@ -24,7 +26,7 @@ export function Contacto() {
             className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[var(--accent)]/30 to-transparent pointer-events-none"
           />
 
-          <div className="mb-6 font-mono text-[10px] uppercase tracking-[0.3em] text-[var(--muted-foreground)]">
+          <div className="mb-6 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
             <span>ANALYST STATUS</span>
           </div>
 
@@ -42,7 +44,7 @@ export function Contacto() {
               )}
               <span className="relative rounded-full size-2.5 bg-[var(--accent-green)] shadow-[0_0_8px_var(--accent-green)]" />
             </span>
-            <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-foreground font-semibold break-words [overflow-wrap:anywhere]">
+            <span className="font-body text-sm text-foreground font-semibold break-words [overflow-wrap:anywhere]">
               DISPONIBLE PARA OPORTUNIDADES
             </span>
           </div>
@@ -53,7 +55,7 @@ export function Contacto() {
                 key={m.k}
                 className="flex items-center justify-between py-4 border-t border-border-dim gap-4 flex-wrap"
               >
-                <dt className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] shrink-0">
+                <dt className="font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] shrink-0">
                   {m.k}
                 </dt>
                 <dd className="text-foreground text-sm font-medium break-words [overflow-wrap:anywhere] text-right">
@@ -66,6 +68,15 @@ export function Contacto() {
 
         {/* Right Column: Secure Communication Channels */}
         <div className="flex flex-col gap-3">
+          <a
+            href={CONTACT.cv}
+            download
+            aria-label="Descargar CV (PDF)"
+            className={`${ACTION_PRIMARY_CLASS} w-full sm:w-auto sm:self-start`}
+          >
+            <Download className="size-4 shrink-0" aria-hidden="true" />
+            Descargar CV
+          </a>
           {CONTACT_CHANNELS.map((c) => {
             const Icon = CHANNEL_ICONS[c.icon];
             return (
@@ -74,7 +85,7 @@ export function Contacto() {
                 href={c.href}
                 {...(c.external ? { target: "_blank", rel: "noreferrer noopener" } : {})}
                 aria-label={c.ariaLabel}
-                className="group block px-5 sm:px-6 py-4.5 sm:py-5 bg-[var(--surface)] hover:bg-[var(--surface-2)]/70 border border-border-dim hover:border-[var(--accent)]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] relative overflow-hidden transform-gpu backface-hidden transition-all duration-200 ease-out rounded active:scale-[0.99] motion-reduce:active:scale-100 active:duration-100 min-h-[44px]"
+                className="group block px-5 sm:px-6 py-4.5 sm:py-5 bg-[var(--surface)] hover:bg-[var(--surface-2)]/70 border border-border-dim hover:border-[var(--accent)]/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] relative overflow-hidden transform-gpu backface-hidden transition-[background-color,border-color,transform] duration-200 ease-out rounded active:scale-[0.99] motion-reduce:active:scale-100 active:duration-100 min-h-[44px]"
               >
                 {/* Tactical left accent indicator bar */}
                 <span
@@ -82,7 +93,7 @@ export function Contacto() {
                   className="absolute left-0 inset-y-0 w-[2px] rounded-l bg-[var(--accent)] opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200"
                 />
 
-                <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mb-2">
+                <div className="flex items-center justify-between font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] mb-2">
                   <div className="flex items-center gap-2">
                     <Icon
                       className="size-3.5 text-[var(--muted-foreground)] group-hover:text-[var(--accent)] group-focus-visible:text-[var(--accent)] transition-colors duration-200 shrink-0"
@@ -92,7 +103,7 @@ export function Contacto() {
                       {c.label}
                     </span>
                   </div>
-                  <span className="text-[var(--muted-foreground)] group-hover:text-[var(--accent)]/90 group-focus-visible:text-[var(--accent)]/90 transition-colors duration-200 text-[9px] tracking-[0.2em] font-mono">
+                  <span className="text-[var(--muted-foreground)] group-hover:text-[var(--accent)]/90 group-focus-visible:text-[var(--accent)]/90 transition-colors duration-200 text-label tracking-[0.12em] font-mono">
                     CH_{c.code}
                   </span>
                 </div>
@@ -101,7 +112,7 @@ export function Contacto() {
                   <span className="font-semibold text-base md:text-lg text-foreground group-hover:text-[var(--accent)] group-focus-visible:text-[var(--accent)] transition-colors duration-200 break-words [overflow-wrap:anywhere]">
                     {c.value}
                   </span>
-                  <span className="font-mono text-[11px] uppercase tracking-[0.2em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 group-focus-visible:opacity-100 group-hover:translate-x-1 group-focus-visible:translate-x-1 motion-reduce:transform-none transition-all duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu shrink-0">
+                  <span className="font-mono text-label uppercase tracking-[0.12em] text-[var(--accent)] opacity-0 max-md:opacity-100 group-hover:opacity-100 group-focus-visible:opacity-100 group-hover:translate-x-1 group-focus-visible:translate-x-1 motion-reduce:transform-none transition-[opacity,transform] duration-200 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu shrink-0">
                     {c.cta}
                   </span>
                 </div>

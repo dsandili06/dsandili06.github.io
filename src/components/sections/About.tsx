@@ -23,7 +23,7 @@ export function About() {
   }, []);
 
   return (
-    <Section id="about" number="01" title="About Me" kicker="PROFILE">
+    <Section id="about" number="01" title="Sobre mí" kicker="PROFILE">
       <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-14 items-start">
         {/* Left Column: Authentic & Grounded Narrative Bio */}
         <div className="space-y-6 text-[15px] md:text-base leading-relaxed text-foreground/80 max-w-[58ch] lg:pt-5">
@@ -58,7 +58,7 @@ export function About() {
         </div>
 
         {/* Right Column: Tactical Rack Accordion */}
-        <SpotlightCard className="bg-[var(--surface)] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_12px_32px_-4px_rgba(0,0,0,0.5)] border border-border-dim hover:border-[var(--accent)]/50 hover:z-10 transform-gpu backface-hidden transition-all duration-300 ease-out p-6 sm:p-7">
+        <SpotlightCard className="bg-[var(--surface)] shadow-card border border-border-dim hover:border-[var(--accent)]/50 hover:z-10 transform-gpu backface-hidden transition-colors duration-300 ease-out p-6 sm:p-7">
           <div className="relative z-2">
             {/* Header: Centered Titular with hairline architectural anchors */}
             <div className="flex items-center gap-3 mb-5">
@@ -76,7 +76,7 @@ export function About() {
                 return (
                   <div
                     key={item.id}
-                    className={`border transition-all duration-200 ease-out rounded-xs overflow-hidden relative transform-gpu backface-hidden hover:z-10 ${
+                    className={`border transition-[border-color,background-color,box-shadow] duration-200 ease-out rounded-xs overflow-hidden relative transform-gpu backface-hidden hover:z-10 ${
                       isActive
                         ? "border-[var(--accent)]/50 bg-[color-mix(in_oklab,var(--surface-2)_60%,transparent)] shadow-xs z-[1]"
                         : "border-border-dim/70 bg-[color-mix(in_oklab,var(--surface-2)_20%,transparent)] hover:border-border-dim hover:bg-[color-mix(in_oklab,var(--surface-2)_35%,transparent)]"
@@ -100,7 +100,7 @@ export function About() {
                           }`}
                         />
                         <span
-                          className={`font-mono text-[11px] sm:text-xs uppercase tracking-[0.16em] font-semibold transition-colors ${
+                          className={`font-mono text-label uppercase tracking-[0.12em] font-semibold transition-colors ${
                             isActive
                               ? "text-[var(--accent)]"
                               : "text-[var(--muted-foreground)] group-hover:text-foreground"
@@ -111,7 +111,7 @@ export function About() {
                       </div>
 
                       <div className="flex items-center gap-2.5" aria-hidden="true">
-                        <span className="font-mono text-[10px] text-[var(--muted-foreground)] opacity-60">
+                        <span className="font-mono text-label text-[var(--muted-foreground)] opacity-60">
                           {`0${index + 1}`}
                         </span>
                         <motion.span
@@ -148,7 +148,7 @@ export function About() {
                               {item.highlights.map((h) => (
                                 <li
                                   key={h}
-                                  className="flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface)]/70 border border-border-dim/40 text-[11px] sm:text-xs text-foreground/80 hover:border-[var(--accent)]/30 hover:bg-[var(--surface)] transition-all duration-200 ease-out"
+                                  className="flex items-start gap-2.5 p-2 rounded-xs bg-[var(--surface)]/70 border border-border-dim/40 text-meta text-foreground/80 hover:border-[var(--accent)]/30 hover:bg-[var(--surface)] transition-colors duration-200 ease-out"
                                 >
                                   <span className="text-[var(--accent)] font-mono text-xs select-none">
                                     ›

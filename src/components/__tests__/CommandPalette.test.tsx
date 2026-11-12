@@ -10,6 +10,7 @@ import {
 import { CommandPalette } from "@/components/features/command-palette/CommandPalette";
 import { openCommandPalette } from "@/hooks/useCommandPalette";
 import { INVESTIGATIONS } from "@/data/investigations";
+import { CONTACT } from "@/data/site";
 import { captureModalRequests } from "@/test/modalRequests";
 
 describe("CommandPalette", () => {
@@ -212,6 +213,23 @@ describe("CommandPalette", () => {
     });
 
     expect(screen.getByText("FakeGPT")).toBeInTheDocument();
+  });
+
+  it("downloads the CV when the action is selected", () => {
+    const clicked: string[] = [];
+    const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      clicked.push(`${this.getAttribute("href")}|${this.hasAttribute("download")}`);
+    });
+
+    render(<CommandPalette />);
+    act(() => openCommandPalette());
+
+    fireEvent.click(screen.getByText("Descargar CV"));
+
+    expect(clicked).toEqual([`${CONTACT.cv}|true`]);
+    clickSpy.mockRestore();
   });
 
   it("copies analyst email to clipboard on select", async () => {

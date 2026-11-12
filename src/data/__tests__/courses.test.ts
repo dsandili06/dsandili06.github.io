@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { COURSES, COURSE_GROUPS } from "@/data/courses";
+import { COURSES, COURSE_GROUPS, FEATURED_COURSES } from "@/data/courses";
 
 describe("COURSES data integrity", () => {
   it("should have unique course IDs (n)", () => {
@@ -36,6 +36,27 @@ describe("COURSES data integrity", () => {
     const foundations = COURSES.find((c) => c.title === "Foundations of Cybersecurity");
     expect(foundations).toBeDefined();
     expect(foundations?.org).toBe("Coursera/Google");
+  });
+});
+
+describe("FEATURED_COURSES", () => {
+  const EXPECTED_TITLES = [
+    "SOC L1 Path",
+    "Cyber Incident Response and Digital Forensics",
+    "SOC L1 BOOTCAMP",
+    "Sound the Alarm: Detection and Response",
+  ];
+
+  it("has exactly 4 featured courses", () => {
+    expect(FEATURED_COURSES).toHaveLength(4);
+  });
+
+  it("all featured titles exist in COURSES", () => {
+    const titles = FEATURED_COURSES.map((c) => c.title).sort();
+    expect(titles).toEqual([...EXPECTED_TITLES].sort());
+    for (const course of FEATURED_COURSES) {
+      expect(COURSES).toContain(course);
+    }
   });
 });
 

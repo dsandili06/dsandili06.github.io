@@ -1,3 +1,4 @@
+import { INVESTIGATIONS } from "@/data/investigations";
 import type { Project } from "@/types";
 import blueteamScriptsImg from "@/assets/project-blueteam-scripts.jpg";
 import socLabsImg from "@/assets/project-soc-labs.jpg";
@@ -14,7 +15,7 @@ export const PROJECTS: Project[] = [
     inPageHref: "#investigaciones",
     inPageLabel: "Explorar Writeups (#04)",
     metrics: [
-      { label: "INVESTIGACIONES", value: "15+ Writeups" },
+      { label: "INVESTIGACIONES", value: `${INVESTIGATIONS.length} Writeups` },
       { label: "PLATAFORMAS", value: "CyberDefenders · THM" },
       { label: "ESPECIALIDAD", value: "Blue Team · DFIR" },
     ],

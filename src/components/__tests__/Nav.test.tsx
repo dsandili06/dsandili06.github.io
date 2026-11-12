@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { CONTACT } from "@/data/site";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { Nav } from "@/components/layout/Nav";
 
@@ -19,15 +20,15 @@ describe("Nav component", () => {
     render(<Nav />);
     expect(screen.getByRole("navigation", { name: "Navegación principal" })).toBeInTheDocument();
     expect(screen.getByLabelText("Inicio")).toBeInTheDocument();
-    expect(screen.getAllByText("About").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("Sobre mí").length).toBeGreaterThan(0);
     expect(screen.getAllByText("Proyectos").length).toBeGreaterThan(0);
   });
 
   it("renders navigation links in the updated order", () => {
     const { container } = render(<Nav />);
-    const desktopLinks = Array.from(container.querySelectorAll("div.hidden.xl\\:flex > a")).map(
-      (a) => a.getAttribute("href"),
-    );
+    const desktopLinks = Array.from(
+      container.querySelectorAll('div.hidden.xl\\:flex > a[href^="#"]'),
+    ).map((a) => a.getAttribute("href"));
     expect(desktopLinks).toEqual([
       "#about",
       "#formacion",
@@ -38,10 +39,18 @@ describe("Nav component", () => {
       "#contacto",
     ]);
     expect(
-      Array.from(container.querySelectorAll("div.hidden.xl\\:flex > a")).map((a) =>
+      Array.from(container.querySelectorAll('div.hidden.xl\\:flex > a[href^="#"]')).map((a) =>
         a.textContent?.trim(),
       ),
-    ).toEqual(["About", "Certs", "Proyectos", "Labs", "Stack", "Cursos", "Contacto"]);
+    ).toEqual([
+      "Sobre mí",
+      "Certificaciones",
+      "Proyectos",
+      "Investigaciones",
+      "Stack",
+      "Cursos",
+      "Contacto",
+    ]);
   });
 
   it("toggles mobile menu on hamburger button click and manages body scroll lock", async () => {
@@ -83,7 +92,18 @@ describe("Nav component", () => {
     expect(drawer.className).toContain(
       "max-h-[calc(100dvh-3.5rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))]",
     );
-    expect(drawer.querySelector('button[aria-label="Cerrar menú móvil"]')).toBeInTheDocument();
+    expect(drawer.querySelector("button")).toBeNull();
+    expect(screen.getAllByRole("button", { name: /^Cerrar menú/i })).toHaveLength(1);
+  });
+
+  it("offers the CV download in the desktop nav and the mobile menu", () => {
+    render(<Nav />);
+    const desktopCv = screen.getByRole("link", { name: "Descargar CV (PDF)" });
+    expect(desktopCv).toHaveAttribute("href", CONTACT.cv);
+    expect(desktopCv).toHaveAttribute("download");
+
+    fireEvent.click(screen.getByRole("button", { name: /Abrir menú/i }));
+    expect(screen.getAllByRole("link", { name: "Descargar CV (PDF)" })).toHaveLength(2);
   });
 
   it("keeps body scroll locked until the backdrop exit completes", async () => {
@@ -142,7 +162,8 @@ describe("Nav component", () => {
     menuButton.focus();
     fireEvent.click(menuButton);
 
-    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Cerrar menú móvil" }));
+    const drawer = screen.getByRole("dialog", { name: "Menú principal" });
+    expect(drawer.contains(document.activeElement)).toBe(true);
     expect(focusSpy).toHaveBeenCalledWith({ preventScroll: true });
 
     fireEvent.keyDown(window, { key: "Escape" });

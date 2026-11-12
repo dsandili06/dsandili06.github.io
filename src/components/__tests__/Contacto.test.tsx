@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { type ReactNode } from "react";
 import { Contacto } from "@/components/sections/Contacto";
+import { CONTACT } from "@/data/site";
 
 let mockReducedMotion = false;
 
@@ -98,7 +99,7 @@ describe("Contacto", () => {
   it("renders interactive channel cards with focus-visible, ring-offset and touch-target classes", () => {
     render(<Contacto />);
 
-    const cards = screen.getAllByRole("link");
+    const cards = screen.getAllByRole("link").filter((link) => !link.hasAttribute("download"));
     expect(cards).toHaveLength(3);
 
     cards.forEach((card) => {
@@ -111,6 +112,14 @@ describe("Contacto", () => {
       expect(card.className).toContain("active:scale-[0.99]");
       expect(card.className).toContain("motion-reduce:active:scale-100");
     });
+  });
+
+  it("renders the CV download action", () => {
+    render(<Contacto />);
+
+    const cv = screen.getByRole("link", { name: "Descargar CV (PDF)" });
+    expect(cv).toHaveAttribute("href", CONTACT.cv);
+    expect(cv).toHaveAttribute("download");
   });
 
   it("renders tactical metadata rows with consistent right-aligned values", () => {

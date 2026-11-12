@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
+import { INVESTIGATIONS } from "@/data/investigations";
 
 const LINES = [
   "[INIT] Cargando perfil analista...",
   "[OK]   SOC L1 · Blue Team · DFIR",
-  "[OK]   15 casos documentados",
+  `[OK]   ${INVESTIGATIONS.length} casos documentados`,
   "[RUN]  Santiago Daniel Sandili >",
 ];
 
@@ -44,7 +45,7 @@ export function BootSequence({ onDone }: { onDone?: () => void }) {
 
   return (
     <pre
-      className="font-mono text-[11px] md:text-xs leading-relaxed text-[var(--accent)] whitespace-pre-wrap m-0"
+      className="font-mono text-meta leading-relaxed text-[var(--accent)] whitespace-pre-wrap m-0"
       aria-hidden
     >
       {printed.map((l, i) => (

@@ -160,7 +160,7 @@ export function CertModal({
               <div className="flex items-start justify-between p-4 sm:p-5 border-b border-border-dim bg-[var(--surface-2)] shrink-0">
                 <div className="min-w-0 pr-2">
                   <div className="flex flex-wrap items-center gap-2 mb-1">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] flex items-center gap-1.5">
+                    <span className="font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] flex items-center gap-1.5">
                       {isSal1 ? (
                         <>
                           <ShieldCheck size={13} className="text-[var(--accent)]" />
@@ -171,7 +171,7 @@ export function CertModal({
                       )}
                     </span>
                     {isSal1 && (
-                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xs font-mono text-[9px] uppercase tracking-wider bg-[var(--accent-green)]/15 border border-[var(--accent-green)]/40 text-[var(--accent-green)]">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-xs font-mono text-label uppercase tracking-wider bg-[var(--accent-green)]/15 border border-[var(--accent-green)]/40 text-[var(--accent-green)]">
                         <CheckCircle2 size={10} />
                         Score Oficial: {SAL1_REVIEW.score} / {SAL1_REVIEW.maxScore} · Aprobado
                         (Intento {SAL1_REVIEW.attempt})
@@ -211,7 +211,7 @@ export function CertModal({
                     aria-controls="panel-cert"
                     tabIndex={activeTab === "cert" ? 0 : -1}
                     onClick={() => setActiveTab("cert")}
-                    className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
+                    className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-colors border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
                       activeTab === "cert"
                         ? "border-[var(--accent)] text-[var(--accent)] font-semibold bg-[var(--surface)]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-foreground"
@@ -228,7 +228,7 @@ export function CertModal({
                     aria-controls="panel-review"
                     tabIndex={activeTab === "review" ? 0 : -1}
                     onClick={() => setActiveTab("review")}
-                    className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-all border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
+                    className={`py-3 px-3 sm:px-4 font-mono text-xs uppercase tracking-wider transition-colors border-b-2 cursor-pointer flex items-center gap-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)] ${
                       activeTab === "review"
                         ? "border-[var(--accent)] text-[var(--accent)] font-semibold bg-[var(--surface)]"
                         : "border-transparent text-[var(--muted-foreground)] hover:text-foreground"
@@ -236,7 +236,7 @@ export function CertModal({
                   >
                     <FileText size={14} />
                     <span>[ REVIEW TÉCNICA DEL EXAMEN ]</span>
-                    <span className="hidden sm:inline-flex ml-1 px-1.5 py-0.5 rounded-xs text-[9px] bg-[var(--accent-green)]/20 text-[var(--accent-green)] border border-[var(--accent-green)]/40 font-mono font-bold">
+                    <span className="hidden sm:inline-flex ml-1 px-1.5 py-0.5 rounded-xs text-label bg-[var(--accent-green)]/20 text-[var(--accent-green)] border border-[var(--accent-green)]/40 font-mono font-bold">
                       {review?.score} PTS
                     </span>
                   </button>
@@ -280,7 +280,7 @@ export function CertModal({
                           className="w-full h-full object-contain rounded transition-transform duration-300 ease-out group-hover:scale-[1.01] transform-gpu backface-hidden will-change-transform"
                           style={{ maxHeight: isSal1 ? "70dvh" : "78dvh" }}
                         />
-                        <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 border border-white/10 px-2.5 py-1 rounded font-mono text-[10px] text-white flex items-center gap-1.5 pointer-events-none shadow-md">
+                        <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity bg-black/80 border border-white/10 px-2.5 py-1 rounded font-mono text-label text-white flex items-center gap-1.5 pointer-events-none shadow-md">
                           <Maximize2 size={12} className="text-[var(--accent)]" />
                           Ampliar Certificado
                         </div>
@@ -290,7 +290,7 @@ export function CertModal({
 
                   {/* Footer for Cert Tab */}
                   <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 border-t border-border-dim bg-[var(--surface-2)] shrink-0">
-                    <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                    <span className="font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
                       <span className="md:hidden">Tocá fuera para cerrar</span>
                       <span className="hidden md:inline">ESC para cerrar</span>
                     </span>
@@ -299,7 +299,7 @@ export function CertModal({
                         <button
                           type="button"
                           onClick={() => setActiveTab("review")}
-                          className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--accent)] hover:underline inline-flex items-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
+                          className="font-mono text-label uppercase tracking-[0.12em] text-[var(--accent)] hover:underline inline-flex items-center gap-1 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
                         >
                           <Terminal size={12} />
                           Ver Review Técnica →
@@ -309,7 +309,7 @@ export function CertModal({
                         href={cert}
                         target="_blank"
                         rel="noreferrer"
-                        className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] hover:underline inline-flex items-center min-h-[44px] py-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
+                        className="font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] hover:underline inline-flex items-center min-h-[44px] py-2 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent)]"
                       >
                         Abrir en nueva pestaña →
                       </a>
@@ -332,7 +332,7 @@ export function CertModal({
                     className={`grid grid-cols-2 ${isSal1 ? "lg:grid-cols-4" : "lg:grid-cols-3"} gap-3`}
                   >
                     <div className="p-3.5 sm:p-4 rounded bg-[var(--surface-2)] border border-border-dim flex flex-col justify-between">
-                      <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
+                      <div className="flex items-center justify-between text-label font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
                         <span>Puntaje Obtenido</span>
                         <Target size={14} className="text-[var(--accent-green)]" />
                       </div>
@@ -343,7 +343,7 @@ export function CertModal({
                             / {review.maxScore}
                           </span>
                         </div>
-                        <span className="text-[10px] font-mono text-[var(--accent-green)]">
+                        <span className="text-meta font-body text-[var(--accent-green)]">
                           {isSal1
                             ? `+${SAL1_REVIEW.score - SAL1_REVIEW.requiredScore} pts s/ umbral (${SAL1_REVIEW.requiredScore})`
                             : "Primer intento"}
@@ -352,7 +352,7 @@ export function CertModal({
                     </div>
 
                     <div className="p-3.5 sm:p-4 rounded bg-[var(--surface-2)] border border-border-dim flex flex-col justify-between">
-                      <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
+                      <div className="flex items-center justify-between text-label font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
                         <span>Tiempo de Examen</span>
                         <Clock size={14} className="text-[var(--accent)]" />
                       </div>
@@ -361,7 +361,7 @@ export function CertModal({
                           {review.duration}
                         </div>
                         {isSal1 && (
-                          <span className="text-[10px] font-mono text-[var(--muted-foreground)]">
+                          <span className="text-meta font-body text-[var(--muted-foreground)]">
                             Ventana máx: 24 horas
                           </span>
                         )}
@@ -369,7 +369,7 @@ export function CertModal({
                     </div>
 
                     <div className="p-3.5 sm:p-4 rounded bg-[var(--surface-2)] border border-border-dim flex flex-col justify-between">
-                      <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
+                      <div className="flex items-center justify-between text-label font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
                         <span>Resultado Oficial</span>
                         <CheckCircle2 size={14} className="text-[var(--accent-green)]" />
                       </div>
@@ -377,7 +377,7 @@ export function CertModal({
                         <div className="font-display font-bold text-2xl sm:text-3xl text-[var(--accent-green)]">
                           {review.result}
                         </div>
-                        <span className="text-[10px] font-mono text-[var(--muted-foreground)]">
+                        <span className="text-meta font-body text-[var(--muted-foreground)]">
                           Intento #{review.attempt} (Primero)
                         </span>
                       </div>
@@ -385,7 +385,7 @@ export function CertModal({
 
                     {isSal1 && (
                       <div className="p-3.5 sm:p-4 rounded bg-[var(--surface-2)] border border-border-dim flex flex-col justify-between">
-                        <div className="flex items-center justify-between text-[10px] font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
+                        <div className="flex items-center justify-between text-label font-mono uppercase tracking-wider text-[var(--muted-foreground)]">
                           <span>Simulaciones SOC</span>
                           <Terminal size={14} className="text-[var(--accent)]" />
                         </div>
@@ -393,7 +393,7 @@ export function CertModal({
                           <div className="font-display font-bold text-2xl sm:text-3xl text-foreground">
                             2 / 2
                           </div>
-                          <span className="text-[10px] font-mono text-[var(--muted-foreground)]">
+                          <span className="text-meta font-body text-[var(--muted-foreground)]">
                             Fowl Play & Red Alert C2
                           </span>
                         </div>
@@ -415,7 +415,7 @@ export function CertModal({
                           <button
                             type="button"
                             onClick={() => setLightboxImage(review.evidenceImage)}
-                            className="font-mono text-[11px] uppercase tracking-wider text-[var(--accent)] hover:underline inline-flex items-center gap-1.5 cursor-pointer"
+                            className="font-mono text-label uppercase tracking-wider text-[var(--accent)] hover:underline inline-flex items-center gap-1.5 cursor-pointer"
                           >
                             <Maximize2 size={13} />
                             Ampliar Captura Oficial
@@ -431,7 +431,9 @@ export function CertModal({
                           <img
                             src={review.evidenceImage}
                             alt={`Captura oficial de resultados de certificación TryHackMe SAL1: ${SAL1_REVIEW.score} puntos sobre ${SAL1_REVIEW.maxScore}, aprobado en ${SAL1_REVIEW.duration}`}
-                            className="max-h-[380px] sm:max-h-[460px] w-auto max-w-full object-contain mx-auto rounded shadow-lg transition-transform duration-300 ease-out group-hover:scale-[1.01] transform-gpu backface-hidden will-change-transform"
+                            className="max-h-[380px] sm:max-h-[460px] h-auto w-auto max-w-full object-contain mx-auto rounded shadow-lg transition-transform duration-300 ease-out group-hover:scale-[1.01] transform-gpu backface-hidden will-change-transform"
+                            width={578}
+                            height={558}
                             loading="lazy"
                             decoding="async"
                           />
@@ -447,7 +449,7 @@ export function CertModal({
                           </div>
                         </button>
 
-                        <div className="flex items-center justify-between text-[11px] font-mono text-[var(--muted-foreground)]">
+                        <div className="flex items-center justify-between text-meta font-mono text-[var(--muted-foreground)]">
                           <span>Desglose verificado por telemetría del simulador de TryHackMe</span>
                           <a
                             href={review.evidenceImage}
@@ -476,7 +478,7 @@ export function CertModal({
               {/* Footer for Review Tab */}
               {activeTab === "review" && review && (
                 <div className="flex flex-wrap items-center justify-between gap-3 p-3 sm:p-4 border-t border-border-dim bg-[var(--surface-2)] shrink-0">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+                  <span className="font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
                     <span className="md:hidden">Tocá fuera para cerrar</span>
                     <span className="hidden md:inline">ESC para cerrar</span>
                   </span>
@@ -484,7 +486,7 @@ export function CertModal({
                     <button
                       type="button"
                       onClick={() => setActiveTab("cert")}
-                      className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-border-dim text-[var(--accent)] hover:border-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] transition-colors cursor-pointer min-h-[44px] flex items-center gap-1.5"
+                      className="font-mono text-label uppercase tracking-[0.12em] px-3 py-1.5 rounded border border-border-dim text-[var(--accent)] hover:border-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] transition-colors cursor-pointer min-h-[44px] flex items-center gap-1.5"
                     >
                       <Award size={13} />
                       Ver Certificado Oficial →
@@ -492,7 +494,7 @@ export function CertModal({
                     <button
                       type="button"
                       onClick={handleClose}
-                      className="font-mono text-[10px] uppercase tracking-[0.2em] px-3 py-1.5 rounded border border-border-dim text-[var(--muted-foreground)] hover:text-foreground hover:border-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] transition-colors cursor-pointer min-h-[44px] flex items-center"
+                      className="font-mono text-label uppercase tracking-[0.12em] px-3 py-1.5 rounded border border-border-dim text-[var(--muted-foreground)] hover:text-foreground hover:border-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] transition-colors cursor-pointer min-h-[44px] flex items-center"
                     >
                       Cerrar
                     </button>

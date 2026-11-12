@@ -24,3 +24,7 @@ export const HERO_CREDENTIALS: HeroCredential[] = [
     cert: "/certs/Google Cybersecurity Certificate.webp",
   },
 ];
+
+/** Plain-language summary shown under the role line in the Hero. */
+export const HERO_SUMMARY =
+  "Detecto, investigo y documento incidentes de seguridad: análisis de logs, forense de memoria y red, y respuesta a incidentes.";

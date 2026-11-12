@@ -28,8 +28,8 @@ export function Certs() {
             <Wrapper
               key={c.code}
               {...wrapperProps}
-              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-all duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] focus-visible:z-20 ${isClickable ? "hover:bg-[var(--surface-2)] active:scale-[0.997] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
-              style={{ borderLeft: `3px solid ${accentColor}` }}
+              className={`group bg-[var(--surface)] p-4 sm:p-6 md:p-9 grid grid-cols-[1fr_auto] md:grid-cols-[1fr_auto_auto] gap-x-4 gap-y-3 sm:gap-x-6 md:gap-x-8 items-center transition-[background-color,box-shadow,transform] duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] focus-visible:z-20 ${isClickable ? "hover:bg-[var(--surface-2)] hover:shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--cert-accent)_45%,transparent)] focus-visible:shadow-[inset_0_0_0_1px_color-mix(in_oklab,var(--cert-accent)_45%,transparent)] active:scale-[0.997] cursor-pointer" : ""} ${c.featured ? "tactical-corner" : ""}`}
+              style={{ "--cert-accent": accentColor } as React.CSSProperties}
             >
               {/* Top ambient highlight on hover */}
               <div
@@ -44,7 +44,7 @@ export function Certs() {
               {/* Title & Metadata */}
               <div className="col-start-1 col-end-2 row-start-1">
                 <div className="mb-2 sm:mb-3">
-                  <span className="font-mono text-[11px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+                  <span className="font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
                     {c.year} · {c.org}
                   </span>
                 </div>
@@ -62,17 +62,19 @@ export function Certs() {
                   <img
                     src={c.logo}
                     alt={`Badge ${c.title}`}
+                    width={64}
+                    height={64}
                     className={`size-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] ${
                       obtained
                         ? "group-hover:drop-shadow-[0_0_16px_rgba(16,185,129,0.5)]"
                         : "group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)]"
-                    } group-hover:brightness-110 group-hover:scale-105 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none transform-gpu backface-hidden will-change-transform`}
+                    } group-hover:brightness-110 group-hover:scale-105 transition-[transform,filter] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none transform-gpu backface-hidden will-change-transform`}
                     loading="lazy"
                     decoding="async"
                   />
                   {/* Brillo reluciente sutil en la esquina superior derecha */}
                   <div
-                    className="absolute top-0 right-0 sm:top-0.5 sm:right-0.5 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu backface-hidden"
+                    className="absolute top-0 right-0 sm:top-0.5 sm:right-0.5 pointer-events-none opacity-0 scale-50 group-hover:opacity-100 group-hover:scale-100 transition-[opacity,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu backface-hidden"
                     aria-hidden="true"
                   >
                     {/* Halo suave de luz */}
@@ -104,33 +106,33 @@ export function Certs() {
               )}
 
               {/* Score and Certificate CTA: bottom row on mobile, middle column on desktop */}
-              <div className="col-span-2 md:col-span-1 md:col-start-2 md:row-start-1 md:text-right pt-3 md:pt-0 border-t md:border-t-0 border-border-dim/40 flex items-center justify-between md:justify-end md:items-end md:flex-col gap-2 md:gap-1">
+              <div className="col-span-2 md:col-span-1 md:col-start-2 md:row-start-1 md:text-right pt-3 md:pt-0 border-t md:border-t-0 border-border-dim/40 flex flex-wrap items-center justify-between md:flex-nowrap md:justify-end md:items-end md:flex-col gap-x-4 gap-y-2 md:gap-1">
                 {c.score ? (
                   <>
-                    <div className="flex items-baseline md:flex-col md:items-end gap-2 md:gap-0">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] md:mb-1">
+                    <div className="flex shrink-0 items-baseline whitespace-nowrap md:flex-col md:items-end gap-2 md:gap-0">
+                      <div className="font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] md:mb-1">
                         SCORE
                       </div>
-                      <div className="font-display font-bold text-2xl sm:text-3xl md:text-5xl text-[var(--accent)] leading-none">
+                      <div className="font-display font-bold text-2xl sm:text-3xl md:text-5xl text-[var(--accent)] leading-none whitespace-nowrap tabular-nums">
                         {c.score}
                       </div>
                     </div>
                     {c.review ? (
-                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-85 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right font-medium">
-                        VER CERTIFICADO & REVIEW TÉCNICA →
+                      <span className="md:mt-3 inline-block font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] opacity-85 group-hover:opacity-100 group-hover:translate-x-0.5 transition-[opacity,transform] duration-200 text-right font-medium">
+                        VER CERTIFICADO Y REVISIÓN →
                       </span>
                     ) : c.href ? (
-                      <span className="md:mt-3 inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
+                      <span className="md:mt-3 inline-block font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-[opacity,transform] duration-200 text-right">
                         VER CERTIFICADO →
                       </span>
                     ) : null}
                   </>
                 ) : obtained && c.href ? (
-                  <span className="ml-auto inline-block font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 text-right">
+                  <span className="ml-auto inline-block font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] opacity-80 group-hover:opacity-100 group-hover:translate-x-0.5 transition-[opacity,transform] duration-200 text-right">
                     VER CERTIFICADO →
                   </span>
                 ) : (
-                  <div className="ml-auto md:ml-0 font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] text-right">
+                  <div className="ml-auto md:ml-0 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] text-right">
                     ESTUDIO EN CURSO
                   </div>
                 )}
@@ -147,22 +149,23 @@ export function Certs() {
           target="_blank"
           rel="noreferrer"
           aria-label="Ver perfil oficial de credenciales e insignias en Credly (abre en pestaña nueva)"
-          className="group bg-[var(--surface)] p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border-dim hover:border-[#FF6B00]/50 hover:bg-[var(--surface-2)] transition-all duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6B00] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] cursor-pointer"
-          style={{ borderLeft: "3px solid #FF6B00" }}
+          className="group bg-[var(--surface)] p-4 sm:p-5 md:p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-border-dim hover:border-credly/50 hover:bg-[var(--surface-2)] transition-colors duration-200 ease-out relative text-left w-full hover:z-10 transform-gpu backface-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-credly focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] cursor-pointer"
         >
           {/* Top ambient highlight on hover */}
           <div
-            className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[#FF6B00]/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
+            className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-credly/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10"
             aria-hidden="true"
           />
 
           {/* Left: Credly Logo + Info */}
           <div className="flex items-center gap-3.5 sm:gap-5 min-w-0">
-            <div className="h-11 sm:h-12 px-3 sm:px-3.5 rounded-xs bg-[#FF6B00]/10 border border-[#FF6B00]/30 flex items-center justify-center shrink-0 group-hover:border-[#FF6B00]/60 group-hover:bg-[#FF6B00]/15 transition-all">
+            <div className="h-11 sm:h-12 px-3 sm:px-3.5 rounded-xs bg-credly/10 border border-credly/30 flex items-center justify-center shrink-0 group-hover:border-credly/60 group-hover:bg-credly/15 transition-colors">
               <img
                 src="/badges/credly.svg"
                 alt="Credly"
-                className="h-5 sm:h-6 w-auto object-contain filter drop-shadow-[0_0_8px_rgba(255,107,0,0.35)]"
+                width={97}
+                height={48}
+                className="h-5 sm:h-6 w-auto object-contain filter drop-shadow-[0_0_8px_color-mix(in_oklab,var(--credly)_35%,transparent)]"
                 loading="lazy"
                 decoding="async"
               />
@@ -170,15 +173,15 @@ export function Certs() {
 
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-mono text-[10px] uppercase tracking-[0.25em] text-[#FF8533] font-semibold">
+                <span className="font-mono text-label uppercase tracking-[0.14em] text-credly-light font-semibold">
                   EXPEDIENTE DIGITAL // CREDLY
                 </span>
-                <span className="inline-block size-1.5 rounded-full bg-[#FF6B00] animate-pulse" />
+                <span className="inline-block size-1.5 rounded-full bg-credly animate-pulse" />
               </div>
-              <h3 className="font-display font-bold text-lg sm:text-xl md:text-2xl text-foreground group-hover:text-[#FF8533] transition-colors leading-tight">
+              <h3 className="font-display font-bold text-lg sm:text-xl md:text-2xl text-foreground group-hover:text-credly-light transition-colors leading-tight">
                 Insignias y Certificaciones Verificadas
               </h3>
-              <p className="font-mono text-[11px] text-[var(--muted-foreground)] mt-1 hidden sm:block">
+              <p className="font-mono text-meta text-[var(--muted-foreground)] mt-1 hidden sm:block">
                 Validación pública y criptográfica de credenciales emitidas por organizaciones
                 oficiales
               </p>
@@ -186,7 +189,7 @@ export function Certs() {
           </div>
 
           {/* Right CTA */}
-          <div className="shrink-0 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF8533] group-hover:text-white group-hover:translate-x-0.5 transition-all duration-200 self-end sm:self-center font-medium">
+          <div className="shrink-0 flex items-center gap-2 font-mono text-label uppercase tracking-[0.12em] text-credly-light group-hover:text-white group-hover:translate-x-0.5 transition-[color,transform] duration-200 self-end sm:self-center font-medium">
             <span>VER PERFIL EN CREDLY</span>
             <ExternalLink size={13} className="shrink-0" />
           </div>

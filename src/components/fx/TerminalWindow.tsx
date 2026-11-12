@@ -177,7 +177,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
       className="w-full overflow-hidden"
       style={{
         backgroundColor: "var(--surface)",
-        border: "1px solid var(--border-dim)",
+        border: "1px solid color-mix(in oklab, var(--border-dim) 60%, transparent)",
         borderRadius: 4,
       }}
       onClick={() => interactive && inputRef.current?.focus()}
@@ -190,11 +190,11 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
         <span className="block size-2 rounded-full" style={{ background: "#FF5F56" }} />
         <span className="block size-2 rounded-full" style={{ background: "#FFBD2E" }} />
         <span className="block size-2 rounded-full" style={{ background: "#27C93F" }} />
-        <span className="ml-3 font-mono text-[11px] text-[var(--muted-foreground)]">
+        <span className="ml-3 font-mono text-meta text-[var(--muted-foreground)]">
           analyst@soc-lab:~
         </span>
         {interactive && (
-          <span className="ml-auto font-mono text-[9px] text-[var(--accent)] animate-pulse">
+          <span className="ml-auto font-mono text-label text-[var(--accent)] animate-pulse">
             INTERACTIVE
           </span>
         )}
@@ -204,7 +204,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
       <div
         ref={bodyRef}
         data-lenis-prevent
-        className="font-mono text-[11px] sm:text-[12px] leading-[1.6] p-3.5 sm:p-5 overflow-hidden md:overflow-y-auto h-[220px] md:h-[260px] lg:h-[340px]"
+        className="font-mono text-meta leading-[1.6] p-3.5 sm:p-5 overflow-hidden md:overflow-y-auto h-[220px] md:h-[260px] lg:h-[300px]"
       >
         {printed.map((l, i) => (
           <div key={i} style={{ color: l.color }}>
@@ -255,7 +255,7 @@ export function TerminalWindow({ start = true }: { start?: boolean }) {
           </div>
         )}
         {interactive && isMobile && (
-          <div className="flex items-center gap-2 font-mono text-[11px] text-[var(--muted-foreground)] flex-wrap">
+          <div className="flex items-center gap-2 font-mono text-meta text-[var(--muted-foreground)] flex-wrap">
             <span className="inline-block size-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
             <span>Modo interactivo disponible en desktop</span>
           </div>

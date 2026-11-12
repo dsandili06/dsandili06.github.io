@@ -10,7 +10,7 @@ type WriteupTocPanelProps = {
 export function WriteupTocPanel({ entries, onSelect }: WriteupTocPanelProps) {
   return (
     <aside className="hidden lg:block w-56 shrink-0 sticky top-4 max-h-[76dvh] overflow-y-auto">
-      <div className="font-mono text-[9px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] mb-3">
+      <div className="font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] mb-3">
         INDEX
       </div>
       <ul className="space-y-1.5 border-l border-border-dim">
@@ -22,7 +22,7 @@ export function WriteupTocPanel({ entries, onSelect }: WriteupTocPanelProps) {
                 event.preventDefault();
                 onSelect(entry.id);
               }}
-              className="block font-mono text-[10px] leading-snug text-[var(--muted-foreground)] hover:text-[var(--accent)] transition-colors"
+              className="block font-mono text-label leading-snug text-[var(--muted-foreground)] hover:text-[var(--accent)] transition-colors"
             >
               {entry.text}
             </a>

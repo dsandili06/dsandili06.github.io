@@ -4,6 +4,7 @@ import { FileSearch, Binary, Network, Terminal, Activity } from "lucide-react";
 import { Section } from "@/components/primitives/Section";
 import { STACK_GROUPS } from "@/data/stack";
 import { cn } from "@/lib/utils";
+import { CornerBrackets } from "@/components/ui/CornerBrackets";
 import { STACK_CATEGORY_EVENT, type StackCategoryDetail } from "@/lib/stackCategory";
 
 const CATEGORY_META: Record<
@@ -92,7 +93,7 @@ export function Stack() {
       <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-6 lg:gap-8 items-start">
         {/* Left: Domain Command Selector */}
         <div className="flex flex-col gap-3">
-          <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)] flex items-center justify-between pb-2 border-b border-border-dim">
+          <div className="font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] flex items-center justify-between pb-2 border-b border-border-dim">
             <span>OPERATIONAL_DOMAINS</span>
             <span className="flex items-center gap-1.5 text-[var(--accent)]">
               <Activity className="size-3 animate-pulse" />
@@ -157,9 +158,6 @@ export function Stack() {
                     </>
                   )}
 
-                  {/* Corner tech accent */}
-                  <span className="absolute top-0 right-0 size-2 border-t border-r border-border-dim/50 group-hover:border-[var(--accent)]/40 transition-colors pointer-events-none" />
-
                   <div className="relative z-10 flex items-center gap-2 sm:gap-3 min-w-0">
                     <Icon
                       className={cn(
@@ -171,7 +169,7 @@ export function Stack() {
                     />
                     <span
                       className={cn(
-                        "font-mono text-xs uppercase tracking-[0.14em] truncate transition-colors duration-200",
+                        "font-mono text-xs uppercase tracking-[0.14em] leading-tight text-left transition-colors duration-200",
                         isSelected
                           ? "text-foreground font-bold"
                           : "text-foreground/75 group-hover:text-foreground",
@@ -183,7 +181,7 @@ export function Stack() {
 
                   <span
                     className={cn(
-                      "relative z-10 font-mono text-[9px] px-2 py-0.5 rounded-xs border shrink-0 transition-colors duration-200",
+                      "relative z-10 font-mono text-label px-2 py-0.5 rounded-xs border shrink-0 transition-colors duration-200",
                       isSelected
                         ? "border-[var(--accent)]/30 text-foreground bg-[var(--accent)]/10"
                         : "border-border-dim text-[var(--muted-foreground)] group-hover:text-foreground",
@@ -198,29 +196,12 @@ export function Stack() {
         </div>
 
         {/* Right: Tactical Instrument Bay */}
-        <div className="relative flex flex-col p-4 sm:p-6 md:p-8 rounded-xs border border-border-dim bg-[var(--surface)] min-h-[380px] overflow-hidden shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08),0_20px_50px_-10px_rgba(0,0,0,0.7)]">
+        <div className="relative flex flex-col p-4 sm:p-6 md:p-8 rounded-xs border border-border-dim bg-[var(--surface)] min-h-[380px] overflow-hidden shadow-card">
           {/* Tactical HUD Corner Brackets */}
-          <span
+          <CornerBrackets
+            thickness="border-2"
             className={cn(
-              "absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 pointer-events-none opacity-40 sm:opacity-100 transition-all duration-300",
-              activeMeta.borderCorner,
-            )}
-          />
-          <span
-            className={cn(
-              "absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 pointer-events-none opacity-40 sm:opacity-100 transition-all duration-300",
-              activeMeta.borderCorner,
-            )}
-          />
-          <span
-            className={cn(
-              "absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 pointer-events-none opacity-40 sm:opacity-100 transition-all duration-300",
-              activeMeta.borderCorner,
-            )}
-          />
-          <span
-            className={cn(
-              "absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 pointer-events-none opacity-40 sm:opacity-100 transition-all duration-300",
+              "opacity-40 sm:opacity-100 transition-colors duration-300",
               activeMeta.borderCorner,
             )}
           />
@@ -249,7 +230,7 @@ export function Stack() {
               </div>
             </div>
 
-            <div className="font-mono text-[10px] uppercase tracking-[0.25em] text-[var(--muted-foreground)]">
+            <div className="font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
               <span>
                 STATUS //{" "}
                 <span className="text-foreground/80">{activeGroup.items.length} TOOLS READY</span>
@@ -276,13 +257,10 @@ export function Stack() {
                 {/* Top laser accent on hover */}
                 <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-[var(--accent)]/35 to-transparent opacity-0 group-hover/tool:opacity-100 transition-opacity duration-200 pointer-events-none" />
 
-                {/* Micro corner accent */}
-                <span className="absolute top-0 left-0 size-1.5 border-t border-l border-border-dim group-hover/tool:border-[var(--accent)] transition-colors pointer-events-none" />
-
                 <div className="flex items-center gap-2.5 min-w-0">
                   <span
                     className={cn(
-                      "font-mono text-[11px] font-bold transition-all duration-200 shrink-0",
+                      "font-mono text-label font-bold transition-[opacity,transform] duration-200 shrink-0",
                       activeMeta.accentColor,
                       "opacity-60 group-hover/tool:opacity-100 group-hover/tool:translate-x-0.5",
                     )}
