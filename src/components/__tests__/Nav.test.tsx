@@ -147,9 +147,13 @@ describe("Nav component", () => {
       "false",
     );
     expect(document.body.style.overflow).toBe("hidden");
-    await waitFor(() => expect(document.body.style.overflow).toBe(""));
+    // The scroll lock is released when the drawer node detaches, which can happen
+    // before AnimatePresence fires onExitComplete (where navigation runs).
+    await waitFor(() => {
+      expect(document.body.style.overflow).toBe("");
+      expect(lenis.scrollTo).toHaveBeenCalledWith(target, { offset: 0 });
+    });
     expect(lenis.start).toHaveBeenCalledTimes(1);
-    expect(lenis.scrollTo).toHaveBeenCalledWith(target, { offset: 0 });
     expect(window.location.hash).toBe("#proyectos");
     target.remove();
     history.replaceState(null, "", window.location.pathname);
