@@ -35,8 +35,7 @@ describe("Hero section", () => {
   });
 
   it("mounts the terminal on lg+ viewports", () => {
-    const original = window.matchMedia;
-    window.matchMedia = (query: string) => ({
+    vi.spyOn(window, "matchMedia").mockImplementation((query: string) => ({
       matches: query === "(min-width: 1280px)",
       media: query,
       onchange: null,
@@ -45,13 +44,10 @@ describe("Hero section", () => {
       addEventListener: () => {},
       removeEventListener: () => {},
       dispatchEvent: () => false,
-    });
-    try {
-      render(<Hero />);
-      expect(screen.getByTestId("terminal-window")).toBeInTheDocument();
-    } finally {
-      window.matchMedia = original;
-    }
+    }));
+
+    render(<Hero />);
+    expect(screen.getByTestId("terminal-window")).toBeInTheDocument();
   });
 
   it("keeps the three primary credentials in order", () => {
