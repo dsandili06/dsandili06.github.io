@@ -25,7 +25,19 @@ describe("SAL1_REVIEW data integrity", () => {
   });
 
   it("keeps the retained executive summary without removed review sections", () => {
-    expect(SAL1_REVIEW.executiveSummary).toHaveLength(3);
+    expect(SAL1_REVIEW.executiveSummary.map(({ heading }) => heading)).toEqual([
+      "Formato",
+      "Resultado",
+      "Cómo trabajé los escenarios",
+      "Qué me llevo",
+    ]);
+    expect(SAL1_REVIEW.executiveSummary.map(({ paragraphs }) => paragraphs.length)).toEqual([
+      1, 1, 2, 1,
+    ]);
+    const narrative = SAL1_REVIEW.executiveSummary.flatMap((s) => s.paragraphs).join(" ");
+    expect(narrative).toMatch(/948\/1000/);
+    expect(narrative).toMatch(/Fowl Play B1 v2, con 371\/400/);
+    expect(narrative).toMatch(/un ticket claro, con evidencia y una recomendación/);
     expect("sections" in SAL1_REVIEW).toBe(false);
     expect("verdict" in SAL1_REVIEW).toBe(false);
   });
