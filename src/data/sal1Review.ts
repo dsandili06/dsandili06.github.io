@@ -1,3 +1,5 @@
+import type { ReviewSection } from "@/types";
+
 export interface Sal1ReviewData {
   title: string;
   certCode: string;
@@ -11,7 +13,7 @@ export interface Sal1ReviewData {
   duration: string;
   evidenceImage: string;
   certImage: string;
-  executiveSummary: string[];
+  executiveSummary: ReviewSection[];
 }
 
 export const SAL1_REVIEW: Sal1ReviewData = {
@@ -28,8 +30,30 @@ export const SAL1_REVIEW: Sal1ReviewData = {
   evidenceImage: "/Puntaje.png",
   certImage: "/certs/THM-SAL1-Certificate.png",
   executiveSummary: [
-    "La certificación Security Analyst Level 1 (SAL1) de TryHackMe es una evaluación técnica y práctica diseñada para validar competencias reales de un Analista SOC y Blue Team en escenarios de intrusión simulados en vivo. A diferencia de exámenes puramente memorísticos o de opción múltiple descontextualizados, el SAL1 evalúa la capacidad de operar en consolas SIEM reales, reconstruir incidentes a partir de telemetría de endpoints y red, y redactar justificaciones precisas de triaje y contención sin ningún tipo de asistencia o pistas.",
-    "El examen otorga una ventana autogestionada de 24 horas para completar una sección de fundamentos teóricos de seguridad y dos simulaciones completas en el entorno SOC Simulator. Completé la evaluación en un tiempo neto de 4 horas, 7 minutos y 55 segundos, obteniendo una puntuación final de 948 sobre 1000 puntos (umbral de aprobación: 750) en mi primer intento.",
-    "Los dos escenarios prácticos asignados en mi evaluación fueron 'Fowl Play B1 v2' (371/400) y 'Red Alert: Command and Control B2 V2' (392/400). Más allá del puntaje, lo valioso de la prueba radica en que penaliza severamente el copiar y pegar logs sin criterio y premia la capacidad de estructurar una cronología causal coherente: qué ocurrió, cómo ingresó la amenaza, qué impacto generó y qué medidas de mitigación inmediatas deben ejecutarse.",
+    {
+      heading: "Formato",
+      paragraphs: [
+        "El SAL1 de TryHackMe es un examen práctico pensado para analistas SOC y de Blue Team. Hay 24 horas para completar un bloque de fundamentos teóricos y dos simulaciones de incidentes en el SOC Simulator. La parte práctica no es de opción múltiple: hay que investigar alertas en una consola SIEM, cruzar telemetría de endpoints y de red, clasificar cada alerta como verdadero o falso positivo y justificar la decisión por escrito, sin pistas.",
+      ],
+    },
+    {
+      heading: "Resultado",
+      paragraphs: [
+        "Aprobé en el primer intento con 948/1000 (el mínimo es 750) y terminé en 4 h 7 min 55 s. Los dos escenarios que me tocaron fueron Fowl Play B1 v2, con 371/400, y Red Alert: Command and Control B2 V2, con 392/400.",
+      ],
+    },
+    {
+      heading: "Cómo trabajé los escenarios",
+      paragraphs: [
+        "Gran parte del trabajo fue separar el ruido de lo importante. Muchas alertas eran falsos positivos, y había que descartarlas con evidencia, no por intuición. Otras parecían menores por separado, pero estaban relacionadas con alertas de mayor severidad: eran verdaderos positivos que formaban parte del mismo incidente. Correlacionarlas era clave para ver el ataque completo y no tratarlo como eventos aislados.",
+        "En cada caso intenté contestar las mismas cuatro preguntas: qué pasó, cómo entró la amenaza, qué impacto tuvo y qué había que contener de inmediato. Con esa cronología armada, justificar cada decisión salía mucho más claro.",
+      ],
+    },
+    {
+      heading: "Qué me llevo",
+      paragraphs: [
+        "El examen penaliza pegar logs sin criterio y premia explicar el incidente con una secuencia lógica. Es lo mismo que se espera de un analista L1 en el día a día: un ticket claro, con evidencia y una recomendación, que otra persona del equipo pueda retomar sin tener que empezar de cero.",
+      ],
+    },
   ],
 };

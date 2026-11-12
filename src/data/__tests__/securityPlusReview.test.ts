@@ -22,13 +22,10 @@ describe("Security+ personal review", () => {
       .join(" ");
     expect(narrative).toMatch(/Professor Messer/);
     expect(narrative).toMatch(/LinkedIn Learning/);
-    expect(narrative).toMatch(/pagué los simulacros de Dion/i);
-    expect(narrative).toMatch(/unas 1400 preguntas/i);
-    expect(narrative).toMatch(/dos o más respuestas parecían correctas/i);
-    expect(narrative).toMatch(/me ponía nervioso/i);
-    expect(narrative).toMatch(/una que no tenía idea de cómo resolver/i);
-    expect(narrative).not.toMatch(/No comparto preguntas concretas|contenido confidencial/i);
-    expect(narrative).not.toMatch(/con ayuda de IA|exigente, pero abordable/i);
-    expect(narrative).not.toMatch(/948|1000|24 horas|Puntaje\.png/);
+    expect(narrative).toMatch(/unas 1\.400 preguntas de práctica/);
+    expect(narrative).toMatch(/dos o más respuestas parecían correctas/);
+    expect(narrative).toMatch(/Las PBQ \(preguntas prácticas\)/);
+    expect(narrative).toMatch(/no para acumular respuestas memorizadas/);
+    expect(narrative).not.toMatch(/948|24 horas|Puntaje\.png/);
   });
 });

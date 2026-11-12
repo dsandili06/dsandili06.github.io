@@ -20,12 +20,27 @@ import { useDialogLifecycle } from "@/hooks/useDialogLifecycle";
 import { SAL1_REVIEW } from "@/data/sal1Review";
 import { SECURITY_PLUS_REVIEW } from "@/data/securityPlusReview";
 import { certificateBySrc } from "@/data/certificateCatalog";
-import type { CertificateReviewId } from "@/types";
+import type { CertificateReviewId, ReviewSection } from "@/types";
 
 const REVIEWS = {
   sal1: SAL1_REVIEW,
   "security-plus": SECURITY_PLUS_REVIEW,
 } satisfies Record<CertificateReviewId, unknown>;
+
+function ReviewSections({ sections }: { sections: readonly ReviewSection[] }) {
+  return (
+    <div className="space-y-6 text-sm sm:text-[15px] text-foreground/85 leading-relaxed">
+      {sections.map(({ heading, paragraphs }) => (
+        <section key={heading} className="space-y-3">
+          <h3 className="font-display font-semibold text-base text-foreground">{heading}</h3>
+          {paragraphs.map((paragraph, index) => (
+            <p key={index}>{paragraph}</p>
+          ))}
+        </section>
+      ))}
+    </div>
+  );
+}
 
 type CertModalProps = {
   cert: string;
@@ -465,13 +480,7 @@ export function CertModal({
                     </>
                   )}
 
-                  <div className="space-y-3 text-sm sm:text-[15px] text-foreground/85 leading-relaxed">
-                    {review.executiveSummary
-                      .flatMap((item) => (typeof item === "string" ? [item] : item.paragraphs))
-                      .map((paragraph, index) => (
-                        <p key={index}>{paragraph}</p>
-                      ))}
-                  </div>
+                  <ReviewSections sections={review.executiveSummary} />
                 </div>
               ) : null}
 

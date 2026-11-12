@@ -121,6 +121,12 @@ export type HeroCredential = {
   cert: string;
 };
 
+/** A headed block of paragraphs inside an exam review. */
+export type ReviewSection = {
+  heading: string;
+  paragraphs: string[];
+};
+
 /** Identifies which exam review a certificate modal renders. */
 export type CertificateReviewId = "sal1" | "security-plus";
 
