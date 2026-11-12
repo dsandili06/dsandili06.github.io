@@ -47,6 +47,12 @@ export function ModalHost() {
     const onRequest = (event: Event) => {
       const request = (event as CustomEvent<ModalRequest>).detail;
       openedInApp.current = true;
+      // Closing goes Back to this entry; flag it so the router does not scroll to
+      // the (possibly stale) hash when that entry becomes current again.
+      window.history.replaceState(
+        { ...window.history.state, __hashScrollIntoViewOptions: false },
+        "",
+      );
       void navigate({
         to: "/",
         search: {
@@ -54,6 +60,8 @@ export function ModalHost() {
           writeup: request.type === "writeup" ? request.id : undefined,
         },
         hash: currentHash(),
+        // The hash may be stale (last jumped section); never scroll to it.
+        hashScrollIntoView: false,
         resetScroll: false,
       });
     };
@@ -71,6 +79,7 @@ export function ModalHost() {
       search: {},
       hash: currentHash(),
       replace: true,
+      hashScrollIntoView: false,
       resetScroll: false,
     });
   }, [navigate, router]);

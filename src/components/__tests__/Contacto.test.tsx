@@ -122,6 +122,17 @@ describe("Contacto", () => {
     expect(cv).toHaveAttribute("download");
   });
 
+  it("places the CV card after the three channel links", () => {
+    render(<Contacto />);
+
+    const cv = screen.getByRole("link", { name: "Descargar CV (PDF)" });
+    const channels = screen.getAllByRole("link").filter((link) => !link.hasAttribute("download"));
+    expect(channels).toHaveLength(3);
+    channels.forEach((channel) => {
+      expect(channel.compareDocumentPosition(cv) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    });
+  });
+
   it("renders tactical metadata rows with consistent right-aligned values", () => {
     render(<Contacto />);
 
