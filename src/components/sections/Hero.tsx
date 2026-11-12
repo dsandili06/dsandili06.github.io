@@ -1,13 +1,12 @@
 import { motion } from "motion/react";
-import { Download } from "lucide-react";
 import { BootSequence } from "@/components/fx/BootSequence";
 import { TerminalWindow } from "@/components/fx/TerminalWindow";
 import { TextScramble } from "@/components/fx/TextScramble";
 import { openCertificateBySrc } from "@/components/features/modals/modalRequests";
-import { ACTION_PRIMARY_CLASS, ACTION_SECONDARY_CLASS } from "@/components/ui/actionLinkStyles";
+import { ACTION_PRIMARY_CLASS } from "@/components/ui/actionLinkStyles";
+import { CvDownloadButton } from "@/components/ui/CvDownloadButton";
 import { CERTIFICATIONS } from "@/data/certifications";
 import { HERO_CREDENTIALS, HERO_SUMMARY } from "@/data/heroCredentials";
-import { CONTACT } from "@/data/site";
 import { useMediaQuery } from "@/hooks/useMediaQuery";
 import type { HeroCredential } from "@/types";
 
@@ -111,15 +110,7 @@ export function Hero() {
             <a href="#investigaciones" className={ACTION_PRIMARY_CLASS}>
               Ver investigaciones
             </a>
-            <a
-              href={CONTACT.cv}
-              download
-              aria-label="Descargar CV (PDF)"
-              className={ACTION_SECONDARY_CLASS}
-            >
-              <Download className="size-4 shrink-0" aria-hidden="true" />
-              Descargar CV
-            </a>
+            <CvDownloadButton className="w-full sm:w-auto" />
           </motion.div>
 
           <div className="mt-7 pt-5 border-t border-[var(--border)]/40">
