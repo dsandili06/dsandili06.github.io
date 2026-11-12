@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from "vitest";
+import { describe, it, expect, vi, afterEach, beforeEach, type Mock } from "vitest";
 import { render, screen, fireEvent, act, cleanup } from "@testing-library/react";
 import {
   Outlet,
@@ -149,5 +149,52 @@ describe("ModalHost", () => {
     expect(router.state.location.search).toEqual({ writeup: "LAB_001" });
     expect(await screen.findByTestId("writeup-modal")).toHaveAttribute("data-open", "true");
     expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "false");
+  });
+
+  describe("with a stale #about hash in the URL", () => {
+    let scrollIntoView: Mock<() => void>;
+    let anchor: HTMLDivElement;
+
+    beforeEach(() => {
+      anchor = document.createElement("div");
+      anchor.id = "about";
+      scrollIntoView = vi.fn<() => void>();
+      anchor.scrollIntoView = scrollIntoView;
+      document.body.appendChild(anchor);
+      window.history.replaceState(null, "", "#about");
+    });
+
+    afterEach(() => {
+      anchor.remove();
+      window.history.replaceState(null, "", "/");
+    });
+
+    it("does not scroll to the hash when opening a modal", async () => {
+      const { router } = await renderHost("/#about");
+      // The initial load may legitimately scroll to the hash; only modal navigation matters.
+      scrollIntoView.mockClear();
+
+      await act(() => {
+        requestModal({ type: "cert", id: "google" });
+        return Promise.resolve();
+      });
+
+      expect(router.state.location.search).toEqual({ cert: "google" });
+      expect(scrollIntoView).not.toHaveBeenCalled();
+    });
+
+    it("does not scroll to the hash when closing a shared-link modal", async () => {
+      const { router } = await renderHost("/?cert=google#about");
+      await screen.findByTestId("cert-modal");
+      scrollIntoView.mockClear();
+
+      await act(() => {
+        fireEvent.click(screen.getByText("Cerrar certificado"));
+        return Promise.resolve();
+      });
+
+      expect(router.state.location.search).toEqual({});
+      expect(scrollIntoView).not.toHaveBeenCalled();
+    });
   });
 });
