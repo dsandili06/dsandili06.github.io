@@ -1,4 +1,5 @@
-import { ArrowUp, Download, Github, Linkedin, Mail } from "lucide-react";
+import { ArrowUp, Download, Mail } from "lucide-react";
+import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { CONTACT } from "@/data/site";
 
 const LINK_CLASS =
@@ -27,13 +28,13 @@ export function Footer() {
             <ul className="flex flex-wrap items-center gap-x-2 gap-y-1 -mx-2">
               <li>
                 <a href={CONTACT.linkedin} {...EXTERNAL} className={LINK_CLASS}>
-                  <Linkedin className="size-4 shrink-0" aria-hidden="true" />
+                  <LinkedinIcon className="size-4 shrink-0" aria-hidden="true" />
                   LinkedIn
                 </a>
               </li>
               <li>
                 <a href={CONTACT.github} {...EXTERNAL} className={LINK_CLASS}>
-                  <Github className="size-4 shrink-0" aria-hidden="true" />
+                  <GithubIcon className="size-4 shrink-0" aria-hidden="true" />
                   GitHub
                 </a>
               </li>

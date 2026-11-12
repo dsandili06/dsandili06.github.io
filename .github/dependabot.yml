@@ -14,3 +14,6 @@ updates:
       minor-and-patch:
         update-types: ["minor", "patch"]
         patterns: ["*"]
+    ignore:
+      - dependency-name: "@vitejs/plugin-react"
+        update-types: ["version-update:semver-major"]

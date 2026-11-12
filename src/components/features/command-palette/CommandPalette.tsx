@@ -11,8 +11,6 @@ import {
   Award,
   BookOpen,
   Mail,
-  Github,
-  Linkedin,
   Download,
   ExternalLink,
   Copy,
@@ -23,6 +21,7 @@ import {
   Radio,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
 import { INVESTIGATIONS } from "@/data/investigations";
 import { STACK_GROUPS } from "@/data/stack";
 import { CERTIFICATIONS } from "@/data/certifications";
@@ -310,7 +309,7 @@ export function CommandPalette() {
                       className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <Github size={14} className="text-[var(--accent)] shrink-0" />
+                        <GithubIcon size={14} className="text-[var(--accent)] shrink-0" />
                         <span className="truncate">Abrir perfil de GitHub (dsandili06)</span>
                       </div>
                       <ExternalLink
@@ -328,7 +327,7 @@ export function CommandPalette() {
                       className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <Linkedin size={14} className="text-[var(--accent)] shrink-0" />
+                        <LinkedinIcon size={14} className="text-[var(--accent)] shrink-0" />
                         <span className="truncate">Abrir perfil de LinkedIn</span>
                       </div>
                       <ExternalLink
