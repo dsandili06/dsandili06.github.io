@@ -1,10 +1,10 @@
 import { motion, useReducedMotion } from "motion/react";
 import type { ComponentType } from "react";
-import { Download, FileText, Mail } from "lucide-react";
+import { Mail } from "lucide-react";
 import { GithubIcon, LinkedinIcon } from "@/components/ui/BrandIcons";
+import { CvDownloadButton } from "@/components/ui/CvDownloadButton";
 import { Section } from "@/components/primitives/Section";
 import { CONTACT_CHANNELS, CONTACT_META } from "@/data/contact";
-import { CONTACT } from "@/data/site";
 import type { ContactChannel } from "@/types";
 
 const CHANNEL_ICONS = {
@@ -114,42 +114,7 @@ export function Contacto() {
               </a>
             );
           })}
-          <a
-            href={CONTACT.cv}
-            download
-            aria-label="Descargar CV (PDF)"
-            className="group relative flex items-center gap-4 min-h-[72px] px-5 sm:px-6 py-4 rounded-xs overflow-hidden border border-[var(--accent)]/50 bg-[var(--accent)]/[0.06] hover:bg-[var(--accent)]/[0.12] hover:border-[var(--accent)] hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--background)] transition-[background-color,border-color,box-shadow] duration-200 ease-out"
-          >
-            {/* Folded corner: background notch + accent flap */}
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute top-0 right-0 size-3.5"
-            >
-              <span
-                className="absolute inset-0 bg-[var(--background)]"
-                style={{ clipPath: "polygon(0 0, 100% 100%, 100% 0)" }}
-              />
-              <span
-                className="absolute inset-0 bg-[var(--accent)]/40"
-                style={{ clipPath: "polygon(0 0, 0 100%, 100% 100%)" }}
-              />
-            </span>
-            <span
-              aria-hidden="true"
-              className="flex size-11 shrink-0 items-center justify-center rounded-xs border border-[var(--accent)]/40 bg-[var(--accent)]/10"
-            >
-              <FileText className="size-[22px] text-[var(--accent)]" />
-            </span>
-            <span className="flex-1 min-w-0 text-base font-medium text-foreground">
-              Descargar CV
-            </span>
-            <span
-              aria-hidden="true"
-              className="flex size-9 shrink-0 items-center justify-center rounded-xs text-[var(--accent)] transition-transform duration-200 motion-reduce:transition-none group-hover:translate-y-0.5 group-focus-visible:translate-y-0.5 motion-reduce:transform-none"
-            >
-              <Download className="size-[18px]" />
-            </span>
-          </a>
+          <CvDownloadButton size="lg" className="w-full" />
         </div>
       </div>
     </Section>
