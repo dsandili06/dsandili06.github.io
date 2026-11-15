@@ -4,6 +4,7 @@ import type { Investigation } from "@/types";
 import { useWriteup } from "@/components/features/writeups/useWriteup";
 
 const INVESTIGATION: Investigation = {
+  slug: "fakegpt",
   id: "LAB_001",
   title: "FakeGPT",
   platform: "CyberDefenders",

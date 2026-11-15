@@ -30,6 +30,8 @@ export type Project = {
 
 export type Investigation = {
   id: string;
+  /** URL-safe kebab-case identifier used in /writeups/<slug>. */
+  slug: string;
   title: string;
   platform: string;
   summary: string;

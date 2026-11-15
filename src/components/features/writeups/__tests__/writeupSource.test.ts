@@ -3,6 +3,7 @@ import { INVESTIGATIONS } from "@/data/investigations";
 import {
   getWriteupCacheKey,
   investigationById,
+  investigationBySlug,
   toRawUrl,
 } from "@/components/features/writeups/writeupSource";
 
@@ -26,5 +27,16 @@ describe("writeupSource", () => {
 
   it("keeps the writeup cache key stable", () => {
     expect(getWriteupCacheKey("LAB_001")).toBe("writeup-LAB_001");
+  });
+
+  it("has unique kebab-case slugs", () => {
+    const slugs = INVESTIGATIONS.map((i) => i.slug);
+    expect(new Set(slugs).size).toBe(slugs.length);
+    for (const slug of slugs) expect(slug).toMatch(/^[a-z0-9]+(-[a-z0-9]+)*$/);
+  });
+
+  it("resolves investigations by slug", () => {
+    expect(investigationBySlug("fakegpt")?.id).toBe("LAB_001");
+    expect(investigationBySlug("nope")).toBeUndefined();
   });
 });

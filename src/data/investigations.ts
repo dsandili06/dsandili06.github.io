@@ -6,6 +6,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_001",
     title: "FakeGPT",
+    slug: "fakegpt",
     platform: "CyberDefenders",
     summary:
       "Análisis de malware en extensión de navegador que simula ser ChatGPT para interceptar credenciales y sesiones web. Identificación de Image Beacons y exfiltración cifrada.",
@@ -20,6 +21,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_002",
     title: "3CX Supply Chain",
+    slug: "3cx-supply-chain",
     platform: "CyberDefenders",
     summary:
       "Investigación basada en CTI de un instalador oficial comprometido de 3CX. Análisis de payloads maliciosos, técnicas de evasión (T1497) y DLL Side-Loading (T1574).",
@@ -29,6 +31,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_003",
     title: "Insider",
+    slug: "insider",
     platform: "CyberDefenders",
     summary:
       "Forense en imagen de Kali Linux para investigar actividad de una amenaza interna. Análisis de .bash_history, extracción de herramientas ofensivas y trazabilidad de eventos.",
@@ -38,6 +41,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_004",
     title: "Kraken Keylogger",
+    slug: "kraken-keylogger",
     platform: "CyberDefenders",
     summary:
       "Análisis de un vector inicial LNK distribuido por mensajería web. Reconstrucción de persistencia abusando de software legítimo (Greenshot) y exfiltración de red.",
@@ -47,6 +51,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_005",
     title: "Silent Breach",
+    slug: "silent-breach",
     platform: "CyberDefenders",
     summary:
       "Investigación de una imagen de disco tras ataque de ransomware. Extracción de artefactos de navegador/correo, deofuscación de script PowerShell y descifrado de evidencia.",
@@ -56,6 +61,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_006",
     title: "Lockdown",
+    slug: "lockdown",
     platform: "CyberDefenders",
     summary:
       "Análisis forense de red y memoria sobre una intrusión en servidor IIS. Detección de webshells SMB2, persistencia en Startup y análisis de malware AgentTesla ofuscado con UPX.",
@@ -65,6 +71,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_007",
     title: "Oski",
+    slug: "oski",
     platform: "CyberDefenders",
     summary:
       "Análisis de comportamiento de un infostealer (Oski Stealer). Identificación de C2, uso de sqlite3.dll para robo de credenciales, exfiltración de datos y técnicas de auto-borrado.",
@@ -74,6 +81,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_008",
     title: "PsExec Hunt",
+    slug: "psexec-hunt",
     platform: "CyberDefenders",
     summary:
       "Investigación sobre el abuso de herramientas legítimas (PsExec) para movimiento lateral. Análisis de tráfico SMB2, shares administrativos (ADMIN$) y extracción de credenciales NTLM.",
@@ -83,6 +91,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_009",
     title: "RamnIt",
+    slug: "ramnit",
     platform: "CyberDefenders",
     summary:
       "Análisis forense de memoria sobre una infección del gusano bancario Ramnit. Identificación de procesos anómalos (ChromeSetup.exe), geolocalización de C2 y extracción de hashes.",
@@ -92,6 +101,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_010",
     title: "Red Stealer",
+    slug: "red-stealer",
     platform: "CyberDefenders",
     summary:
       "Análisis del malware RedLine Stealer distribuido como wextract.exe. Mapeo de técnicas de recolección de datos (T1005), escalación de privilegios e infraestructura C2.",
@@ -101,6 +111,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_011",
     title: "Web Investigation",
+    slug: "web-investigation",
     platform: "CyberDefenders",
     summary:
       "Investigación de un compromiso a servidor web. Detección de SQL Injection, enumeración con GoBuster, bypass de panel de administración y despliegue de webshell.",
@@ -110,6 +121,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_012",
     title: "Brave",
+    slug: "brave",
     platform: "CyberDefenders",
     summary:
       "Análisis forense de memoria de host Windows sospechoso de exfiltración. Identificación de conexiones, sesiones web cifradas (T1071.001) y uso de LOLApps. Reconstrucción de actividad vía UserAssist.",
@@ -119,6 +131,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_013",
     title: "SysInternals",
+    slug: "sysinternals",
     platform: "CyberDefenders",
     summary:
       "Investigación forense de un endpoint Windows comprometido usando la suite Sysinternals. Análisis de artefactos de registro, prefetch y reconstrucción de la cadena de ejecución.",
@@ -128,6 +141,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_014",
     title: "TheCrime",
+    slug: "thecrime",
     platform: "CyberDefenders",
     summary:
       "Análisis forense de dispositivo Android para investigar un crimen. Recuperación de evidencia borrada, análisis de metadatos de archivos y reconstrucción de actividad del usuario mediante artefactos.",
@@ -137,6 +151,7 @@ export const INVESTIGATIONS: Investigation[] = [
   {
     id: "LAB_015",
     title: "WebStrike",
+    slug: "webstrike",
     platform: "CyberDefenders",
     summary:
       "Análisis de captura de tráfico HTTP tras ataque a aplicación web. Detección de file upload malicioso, despliegue de webshell PHP y extracción de IOCs desde logs de servidor.",

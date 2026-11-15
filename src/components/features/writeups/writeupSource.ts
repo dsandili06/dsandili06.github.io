@@ -13,6 +13,11 @@ export function investigationById(id: string): Investigation | undefined {
   return INVESTIGATIONS.find((i) => i.id === id);
 }
 
+/** Resolves a writeup investigation by its URL slug. */
+export function investigationBySlug(slug: string): Investigation | undefined {
+  return INVESTIGATIONS.find((i) => i.slug === slug);
+}
+
 /** Session storage key used to cache a fetched writeup. */
 export function getWriteupCacheKey(id: string): string {
   return `writeup-${id}`;
