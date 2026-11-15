@@ -70,16 +70,28 @@ export function WriteupsIndex({ cat }: WriteupsIndexProps) {
         {items.map((investigation) => (
           <li
             key={investigation.id}
-            className="flex flex-col gap-3 border border-border-dim bg-[var(--surface)] p-5"
+            className="group relative flex flex-col gap-3 overflow-hidden border border-border-dim bg-[var(--surface)] p-5 transition-[border-color,background-color,box-shadow,transform] duration-300 ease-out hover:border-[var(--accent)]/45 hover:bg-[var(--surface-2)] hover:shadow-[0_12px_32px_-16px_color-mix(in_oklab,var(--accent)_45%,transparent)] focus-within:border-[var(--accent)]/45 focus-within:bg-[var(--surface-2)] motion-safe:hover:-translate-y-1 motion-safe:focus-within:-translate-y-1"
           >
-            {investigation.visual && (
-              <img
-                src={investigation.visual.src}
-                alt={investigation.visual.alt}
-                loading="lazy"
-                className="aspect-video w-full border border-border-dim object-cover"
-              />
-            )}
+            {/* Línea de acento superior */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-x-0 top-0 h-px origin-left scale-x-0 bg-gradient-to-r from-[var(--accent-green)] via-[var(--accent)] to-transparent transition-transform duration-500 ease-out group-hover:scale-x-100 group-focus-within:scale-x-100"
+            />
+            {/* Esquinas tácticas */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute left-2 top-2 size-3 border-l border-t border-[var(--accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100"
+            />
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-2 right-2 size-3 border-b border-r border-[var(--accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100"
+            />
+            <span
+              aria-hidden="true"
+              className="font-mono text-label uppercase tracking-[0.18em] text-[var(--muted-foreground)]/70 transition-colors duration-300 group-hover:text-[var(--accent)]"
+            >
+              {investigation.id.replace("_", " · ")}
+            </span>
             <div className="flex flex-wrap items-center gap-2">
               <span className="border border-[var(--accent-green)]/50 px-2 py-0.5 font-mono text-label uppercase tracking-[0.12em] text-[var(--accent-green)]">
                 {investigation.platform}
@@ -97,14 +109,20 @@ export function WriteupsIndex({ cat }: WriteupsIndexProps) {
               <Link
                 to="/writeups/$slug"
                 params={{ slug: investigation.slug }}
-                className="hover:text-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+                className="transition-colors duration-300 after:absolute after:inset-0 after:content-[''] group-hover:text-[var(--accent)] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[var(--accent)]"
               >
                 {investigation.title}
               </Link>
             </h2>
-            <p className="text-sm leading-relaxed text-[var(--muted-foreground)]">
+            <p className="text-sm leading-relaxed text-[var(--muted-foreground)] transition-colors duration-300 group-hover:text-foreground/80">
               {investigation.summary}
             </p>
+            <span
+              aria-hidden="true"
+              className="mt-auto pt-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] opacity-70 transition-[opacity,transform] duration-300 group-hover:opacity-100 motion-safe:group-hover:translate-x-1"
+            >
+              Leer writeup →
+            </span>
           </li>
         ))}
       </ul>
