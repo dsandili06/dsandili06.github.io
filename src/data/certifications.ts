@@ -35,4 +35,13 @@ export const CERTIFICATIONS: Certification[] = [
     href: "/certs/Google Cybersecurity Certificate.webp",
     logo: "/badges/badgegoogle.png",
   },
+  {
+    code: "CYSA+",
+    title: "CompTIA CySA+",
+    org: "CompTIA",
+    year: "En curso",
+    status: "EN PREPARACIÓN",
+    badge: "IN PROGRESS",
+    logo: "/badges/cysabadge.png",
+  },
 ];

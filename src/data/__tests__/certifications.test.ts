@@ -41,7 +41,16 @@ describe("CERTIFICATIONS data integrity", () => {
       "SY0-701",
       "SAL1",
       "GOOGLE",
+      "CYSA+",
     ]);
+  });
+
+  it("should list CompTIA CySA+ as in preparation without certificate", () => {
+    const cysa = CERTIFICATIONS.find((c) => c.code === "CYSA+");
+    expect(cysa?.status).toBe("EN PREPARACIÓN");
+    expect(cysa?.href).toBeUndefined();
+    expect(cysa?.score).toBeUndefined();
+    expect(cysa?.logo).toBe("/badges/cysabadge.png");
   });
 
   it("each certification should have required fields", () => {

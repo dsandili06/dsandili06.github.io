@@ -67,7 +67,7 @@ export function Certs() {
                     className={`size-full object-contain filter drop-shadow-[0_4px_12px_rgba(0,0,0,0.5)] ${
                       obtained
                         ? "group-hover:drop-shadow-[0_0_16px_rgba(16,185,129,0.5)]"
-                        : "group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)]"
+                        : "grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 group-hover:drop-shadow-[0_0_16px_rgba(59,130,246,0.6)]"
                     } group-hover:brightness-110 group-hover:scale-105 transition-[transform,filter] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] pointer-events-none transform-gpu backface-hidden will-change-transform`}
                     loading="lazy"
                     decoding="async"
