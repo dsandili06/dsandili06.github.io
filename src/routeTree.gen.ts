@@ -10,33 +10,52 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WriteupsRouteRouteImport } from './routes/writeups/route'
+import { Route as WriteupsSlugRouteImport } from './routes/writeups/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const WriteupsRouteRoute = WriteupsRouteRouteImport.update({
+  id: '/writeups',
+  path: '/writeups',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WriteupsSlugRoute = WriteupsSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => WriteupsRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/writeups': typeof WriteupsRouteRouteWithChildren
+  '/writeups/$slug': typeof WriteupsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/writeups': typeof WriteupsRouteRouteWithChildren
+  '/writeups/$slug': typeof WriteupsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/writeups': typeof WriteupsRouteRouteWithChildren
+  '/writeups/$slug': typeof WriteupsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/writeups' | '/writeups/$slug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/writeups' | '/writeups/$slug'
+  id: '__root__' | '/' | '/writeups' | '/writeups/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  WriteupsRouteRoute: typeof WriteupsRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +67,38 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/writeups': {
+      id: '/writeups'
+      path: '/writeups'
+      fullPath: '/writeups'
+      preLoaderRoute: typeof WriteupsRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/writeups/$slug': {
+      id: '/writeups/$slug'
+      path: '/$slug'
+      fullPath: '/writeups/$slug'
+      preLoaderRoute: typeof WriteupsSlugRouteImport
+      parentRoute: typeof WriteupsRouteRoute
+    }
   }
 }
 
+interface WriteupsRouteRouteChildren {
+  WriteupsSlugRoute: typeof WriteupsSlugRoute
+}
+
+const WriteupsRouteRouteChildren: WriteupsRouteRouteChildren = {
+  WriteupsSlugRoute: WriteupsSlugRoute,
+}
+
+const WriteupsRouteRouteWithChildren = WriteupsRouteRoute._addFileChildren(
+  WriteupsRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  WriteupsRouteRoute: WriteupsRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
