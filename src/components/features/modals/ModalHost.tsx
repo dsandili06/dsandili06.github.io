@@ -1,14 +1,10 @@
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useRouter, useSearch } from "@tanstack/react-router";
 import { certificateById } from "@/data/certificateCatalog";
-import { WriteupModalFallback } from "@/components/features/writeups/WriteupModalFallback";
 import { MODAL_REQUEST_EVENT, type ModalRequest } from "./modalRequests";
 import { validateModalSearch } from "./modalSearch";
 
-// Both modals are lazy: react-markdown and the lightbox load only when opened.
-const WriteupModal = lazy(() =>
-  import("@/components/features/writeups/WriteupModal").then((m) => ({ default: m.WriteupModal })),
-);
+// The certificate modal is lazy: the PDF/image viewer loads only when opened.
 const CertModal = lazy(() =>
   import("@/components/features/certificates/CertModal").then((m) => ({ default: m.CertModal })),
 );
@@ -18,8 +14,7 @@ function currentHash(): string | undefined {
 }
 
 /**
- * Renders the certificate and writeup modals from the `?cert=` / `?writeup=`
- * search params. Opening pushes a history entry, so the browser Back button
+ * Renders the certificate modal from the `?cert=` search param. Opening pushes a history entry, so the browser Back button
  * closes the modal through the router. A modal reached by a shared link is
  * closed by replacing the URL instead, so Back does not leave the site.
  */
@@ -31,17 +26,14 @@ export function ModalHost() {
   const openedInApp = useRef(false);
 
   const certId = search.cert;
-  const writeupId = search.writeup;
 
   // Keep the last payload mounted until its exit animation completes.
   const [shownCert, setShownCert] = useState(certId);
-  const [shownWriteup, setShownWriteup] = useState(writeupId);
   if (certId && certId !== shownCert) setShownCert(certId);
-  if (writeupId && writeupId !== shownWriteup) setShownWriteup(writeupId);
 
   useEffect(() => {
-    if (!certId && !writeupId) openedInApp.current = false;
-  }, [certId, writeupId]);
+    if (!certId) openedInApp.current = false;
+  }, [certId]);
 
   useEffect(() => {
     const onRequest = (event: Event) => {
@@ -56,8 +48,7 @@ export function ModalHost() {
       void navigate({
         to: "/",
         search: {
-          cert: request.type === "cert" ? request.id : undefined,
-          writeup: request.type === "writeup" ? request.id : undefined,
+          cert: request.id,
         },
         hash: currentHash(),
         // The hash may be stale (last jumped section); never scroll to it.
@@ -88,16 +79,6 @@ export function ModalHost() {
 
   return (
     <>
-      {shownWriteup && (
-        <Suspense fallback={<WriteupModalFallback />}>
-          <WriteupModal
-            investigationId={shownWriteup}
-            isOpen={writeupId === shownWriteup}
-            onClose={close}
-            onExitComplete={() => setShownWriteup(undefined)}
-          />
-        </Suspense>
-      )}
       {certificate && (
         <Suspense fallback={null}>
           <CertModal

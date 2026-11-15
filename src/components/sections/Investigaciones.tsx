@@ -14,7 +14,7 @@ import { CornerBrackets } from "@/components/ui/CornerBrackets";
 import { ACTION_SECONDARY_CLASS } from "@/components/ui/actionLinkStyles";
 import { Section } from "@/components/primitives/Section";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
-import { openWriteup } from "@/components/features/modals/modalRequests";
+import { Link } from "@tanstack/react-router";
 import Autoplay from "embla-carousel-autoplay";
 
 type AutoplayPluginType = {
@@ -150,14 +150,14 @@ export function Investigaciones() {
                   </figure>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => openWriteup(FEATURED_INVESTIGATIONS[0].id)}
+              <Link
+                to="/writeups/$slug"
+                params={{ slug: FEATURED_INVESTIGATIONS[0].slug }}
                 aria-label={`Abrir investigación: ${FEATURED_INVESTIGATIONS[0].title}`}
                 className="absolute inset-0 z-20 size-full cursor-pointer rounded-xs bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
               >
                 <span className="sr-only">SPOTLIGHT_01</span>
-              </button>
+              </Link>
             </article>
           )}
 
@@ -199,34 +199,39 @@ export function Investigaciones() {
                     →
                   </span>
                 </span>
-                <button
-                  type="button"
-                  onClick={() => openWriteup(i.id)}
+                <Link
+                  to="/writeups/$slug"
+                  params={{ slug: i.slug }}
                   aria-label={`Abrir caso: ${i.title}`}
                   className="absolute inset-0 z-20 size-full cursor-pointer bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)]"
                 >
                   <span className="sr-only">SPOTLIGHT_0{idx + 2}</span>
-                </button>
+                </Link>
               </article>
             ))}
           </div>
         </div>
       </div>
 
-      <button
-        type="button"
-        onClick={() => setExpanded((value) => !value)}
-        aria-expanded={expanded}
-        aria-controls={CASE_LOG_ID}
-        className={ACTION_SECONDARY_CLASS}
-      >
-        {expanded ? "Ocultar casos" : `Ver los ${INVESTIGATIONS.length} casos`}
-        <ChevronDown
-          size={16}
-          aria-hidden="true"
-          className={`transition-transform motion-reduce:transition-none ${expanded ? "rotate-180" : ""}`}
-        />
-      </button>
+      <div className="flex flex-wrap items-center gap-3">
+        <button
+          type="button"
+          onClick={() => setExpanded((value) => !value)}
+          aria-expanded={expanded}
+          aria-controls={CASE_LOG_ID}
+          className={ACTION_SECONDARY_CLASS}
+        >
+          {expanded ? "Ocultar casos" : `Ver los ${INVESTIGATIONS.length} casos`}
+          <ChevronDown
+            size={16}
+            aria-hidden="true"
+            className={`transition-transform motion-reduce:transition-none ${expanded ? "rotate-180" : ""}`}
+          />
+        </button>
+        <Link to="/writeups" className={ACTION_SECONDARY_CLASS}>
+          Ver todos los writeups
+        </Link>
+      </div>
 
       <div id={CASE_LOG_ID}>
         {expanded && (
@@ -333,9 +338,9 @@ export function Investigaciones() {
                       key={i.id}
                       className="relative hover:z-10 flex-[0_0_100%] min-w-0 sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] pl-4"
                     >
-                      <button
-                        type="button"
-                        onClick={() => openWriteup(i.id)}
+                      <Link
+                        to="/writeups/$slug"
+                        params={{ slug: i.slug }}
                         className="group relative flex flex-col justify-between h-full p-6 rounded-xs bg-[var(--surface)] border border-border-dim hover:border-[var(--accent)]/50 hover:bg-[var(--surface-2)] shadow-card hover:shadow-card-hover hover:z-10 transform-gpu backface-hidden will-change-transform active:scale-[0.985] active:duration-100 transition-[background-color,border-color,box-shadow,transform] duration-300 ease-out text-left w-full cursor-pointer overflow-hidden"
                       >
                         {/* Top ambient highlight line */}
@@ -376,7 +381,7 @@ export function Investigaciones() {
                             VER WRITEUP →
                           </span>
                         </div>
-                      </button>
+                      </Link>
                     </div>
                   ))}
                 </div>
@@ -391,10 +396,10 @@ export function Investigaciones() {
                     <div>SOBRE EL LAB</div>
                   </div>
                   {INVESTIGATIONS.map((i) => (
-                    <button
-                      type="button"
+                    <Link
                       key={i.id}
-                      onClick={() => openWriteup(i.id)}
+                      to="/writeups/$slug"
+                      params={{ slug: i.slug }}
                       className="group relative grid grid-cols-[minmax(0,0.9fr)_minmax(0,1fr)_minmax(0,2fr)] gap-4 items-start px-5 py-4 border-b border-border-dim last:border-b-0 w-full text-left transition-colors duration-200 ease-out hover:bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] hover:z-10 transform-gpu backface-hidden cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent)] before:absolute before:left-0 before:top-0 before:bottom-0 before:w-[2px] before:bg-[var(--accent)] before:opacity-0 hover:before:opacity-100 focus-visible:before:opacity-100 before:transition-opacity"
                       title={i.summary}
                     >
@@ -417,16 +422,16 @@ export function Investigaciones() {
                         </span>
                         <span>{i.summary}</span>
                       </div>
-                    </button>
+                    </Link>
                   ))}
                 </div>
                 <div className="md:hidden flex flex-col">
                   {INVESTIGATIONS.map((i) => (
-                    <button
-                      type="button"
+                    <Link
                       key={i.id}
-                      onClick={() => openWriteup(i.id)}
-                      className="group relative border-t border-border-dim w-full px-3 py-3.5 rounded-xs first:border-t-0 text-left cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] hover:z-10 transform-gpu backface-hidden transition-colors duration-200 ease-out before:absolute before:left-0 before:top-1 before:bottom-1 before:w-[2px] before:bg-[var(--accent)] before:opacity-0 hover:before:opacity-100 before:transition-opacity"
+                      to="/writeups/$slug"
+                      params={{ slug: i.slug }}
+                      className="group relative block border-t border-border-dim w-full px-3 py-3.5 rounded-xs first:border-t-0 text-left cursor-pointer hover:bg-[color-mix(in_oklab,var(--accent)_6%,transparent)] hover:z-10 transform-gpu backface-hidden transition-colors duration-200 ease-out before:absolute before:left-0 before:top-1 before:bottom-1 before:w-[2px] before:bg-[var(--accent)] before:opacity-0 hover:before:opacity-100 before:transition-opacity"
                     >
                       <span className="min-w-0 truncate font-display font-semibold text-[14px] tracking-tight text-foreground group-hover:text-[var(--accent)] transition-colors duration-200">
                         {i.title}
@@ -440,7 +445,7 @@ export function Investigaciones() {
                         </span>
                         <span>{i.summary}</span>
                       </span>
-                    </button>
+                    </Link>
                   ))}
                 </div>
               </>

@@ -4,6 +4,7 @@ import {
   getWriteupCacheKey,
   investigationById,
   investigationBySlug,
+  legacyWriteupRedirectSlug,
   toRawUrl,
 } from "@/components/features/writeups/writeupSource";
 
@@ -38,5 +39,12 @@ describe("writeupSource", () => {
   it("resolves investigations by slug", () => {
     expect(investigationBySlug("fakegpt")?.id).toBe("LAB_001");
     expect(investigationBySlug("nope")).toBeUndefined();
+  });
+
+  it("maps legacy ?writeup=LAB_xxx ids to a redirect slug", () => {
+    expect(legacyWriteupRedirectSlug({ writeup: "LAB_001" })).toBe("fakegpt");
+    expect(legacyWriteupRedirectSlug({ writeup: "LAB_999" })).toBeUndefined();
+    expect(legacyWriteupRedirectSlug({ writeup: 1 })).toBeUndefined();
+    expect(legacyWriteupRedirectSlug({})).toBeUndefined();
   });
 });

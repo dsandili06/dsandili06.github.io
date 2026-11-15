@@ -37,21 +37,6 @@ vi.mock("@/components/features/certificates/CertModal", () => ({
   ),
 }));
 
-vi.mock("@/components/features/writeups/WriteupModal", () => ({
-  WriteupModal: ({
-    investigationId,
-    isOpen,
-    onClose,
-  }: MockModalProps & {
-    investigationId: string;
-  }) => (
-    <div data-testid="writeup-modal" data-open={String(isOpen)}>
-      <span>{investigationId}</span>
-      <button onClick={onClose}>Cerrar writeup</button>
-    </div>
-  ),
-}));
-
 async function renderHost(initialEntry = "/") {
   const rootRoute = createRootRoute({ component: () => <Outlet /> });
   const indexRoute = createRoute({
@@ -83,19 +68,10 @@ describe("ModalHost", () => {
     expect(screen.getByText("SAL1 (Security Analyst L1)")).toBeInTheDocument();
   });
 
-  it("opens the writeup named by ?writeup= on load", async () => {
-    await renderHost("/?writeup=LAB_001");
-
-    const modal = await screen.findByTestId("writeup-modal");
-    expect(modal).toHaveAttribute("data-open", "true");
-    expect(screen.getByText("LAB_001")).toBeInTheDocument();
-  });
-
   it("ignores unknown ids from the URL", async () => {
-    await renderHost("/?cert=nope&writeup=<script>");
+    await renderHost("/?cert=nope&writeup=LAB_001");
 
     expect(screen.queryByTestId("cert-modal")).toBeNull();
-    expect(screen.queryByTestId("writeup-modal")).toBeNull();
   });
 
   it("pushes a history entry on request and closes with Back", async () => {
@@ -124,30 +100,16 @@ describe("ModalHost", () => {
   });
 
   it("replaces the URL when closing a modal reached by a shared link", async () => {
-    const { router, history } = await renderHost("/?writeup=LAB_001");
-    await screen.findByTestId("writeup-modal");
+    const { router, history } = await renderHost("/?cert=sal1");
+    await screen.findByTestId("cert-modal");
 
     await act(() => {
-      fireEvent.click(screen.getByText("Cerrar writeup"));
+      fireEvent.click(screen.getByText("Cerrar certificado"));
       return Promise.resolve();
     });
 
     expect(router.state.location.search).toEqual({});
     expect(history.length).toBe(1);
-    expect(screen.getByTestId("writeup-modal")).toHaveAttribute("data-open", "false");
-  });
-
-  it("switches modals when a different one is requested", async () => {
-    const { router } = await renderHost("/?cert=sal1");
-    await screen.findByTestId("cert-modal");
-
-    await act(() => {
-      requestModal({ type: "writeup", id: "LAB_001" });
-      return Promise.resolve();
-    });
-
-    expect(router.state.location.search).toEqual({ writeup: "LAB_001" });
-    expect(await screen.findByTestId("writeup-modal")).toHaveAttribute("data-open", "true");
     expect(screen.getByTestId("cert-modal")).toHaveAttribute("data-open", "false");
   });
 

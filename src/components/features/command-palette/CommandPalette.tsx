@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { CONTACT } from "@/data/site";
 import { Command } from "cmdk";
 import { motion, AnimatePresence } from "motion/react";
@@ -29,7 +30,7 @@ import { SECTIONS, type SectionId } from "@/data/sections";
 import { getLenis } from "@/lib/lenis";
 import { useDialogLifecycle } from "@/hooks/useDialogLifecycle";
 import { COMMAND_PALETTE_OPEN_EVENT, COMMAND_PALETTE_CLOSE_EVENT } from "@/hooks/useCommandPalette";
-import { openCertificateBySrc, openWriteup } from "@/components/features/modals/modalRequests";
+import { openCertificateBySrc } from "@/components/features/modals/modalRequests";
 import { replaceHash } from "@/lib/hash";
 import { selectStackCategory } from "@/lib/stackCategory";
 
@@ -47,6 +48,7 @@ const SECTION_ICONS = {
 } satisfies Record<SectionId, LucideIcon>;
 
 export function CommandPalette() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [copiedEmail, setCopiedEmail] = useState(false);
@@ -126,10 +128,13 @@ export function CommandPalette() {
     [scrollToElement],
   );
 
-  const handleSelectWriteup = useCallback((labId: string) => {
-    setIsOpen(false);
-    openWriteup(labId);
-  }, []);
+  const handleSelectWriteup = useCallback(
+    (slug: string) => {
+      setIsOpen(false);
+      void navigate({ to: "/writeups/$slug", params: { slug } });
+    },
+    [navigate],
+  );
 
   const handleSelectCert = useCallback((certHref: string) => {
     setIsOpen(false);
@@ -385,7 +390,7 @@ export function CommandPalette() {
                       <Command.Item
                         key={lab.id}
                         value={`${lab.id} ${lab.title} ${lab.platform} ${lab.categories.join(" ")} ${lab.summary}`}
-                        onSelect={() => handleSelectWriteup(lab.id)}
+                        onSelect={() => handleSelectWriteup(lab.slug)}
                         className="flex min-h-[44px] items-center justify-between px-3 py-2.5 rounded-xs cursor-pointer text-foreground/90 transition-colors data-[selected='true']:bg-[var(--surface-2)] data-[selected='true']:text-[var(--accent)] data-[selected='true']:border-l-2 data-[selected='true']:border-[var(--accent)]"
                       >
                         <div className="flex items-center gap-2.5 min-w-0">

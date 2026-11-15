@@ -1,13 +1,17 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { Investigaciones } from "@/components/sections/Investigaciones";
 import { INVESTIGATIONS, FEATURED_INVESTIGATIONS } from "@/data/investigations";
-import { captureModalRequests } from "@/test/modalRequests";
+
+vi.mock("@tanstack/react-router", async (importOriginal) => {
+  const { createRouterMock } = await import("@/test/routerMock");
+  return createRouterMock(() => importOriginal<typeof import("@tanstack/react-router")>());
+});
 
 const expandLog = () =>
   fireEvent.click(screen.getByRole("button", { name: `Ver los ${INVESTIGATIONS.length} casos` }));
 
-const idByTitle = (title: string) => INVESTIGATIONS.find((i) => i.title.includes(title))?.id;
+const slugByTitle = (title: string) => INVESTIGATIONS.find((i) => i.title.includes(title))?.slug;
 
 /**
  * Smoke tests for the Full case log view toggle: switching between the
@@ -15,14 +19,6 @@ const idByTitle = (title: string) => INVESTIGATIONS.find((i) => i.title.includes
  * (autoplay plugin stops on unmount — regression guard).
  */
 describe("Investigaciones", () => {
-  let capture: ReturnType<typeof captureModalRequests>;
-  beforeEach(() => {
-    capture = captureModalRequests();
-  });
-  afterEach(() => {
-    capture.stop();
-  });
-
   it("renders the section header with number 04 and case log kicker", () => {
     render(<Investigaciones />);
     expect(screen.getByText(/SECTION_04 \/\/ CASE_LOG/i)).toBeInTheDocument();
@@ -110,8 +106,8 @@ describe("Investigaciones", () => {
     expandLog();
 
     fireEvent.click(screen.getByRole("button", { name: /tabla/i }));
-    const allButtons = screen.getAllByRole("button");
-    const labRows = allButtons.filter(
+    const allLinks = screen.getAllByRole("link");
+    const labRows = allLinks.filter(
       (b) => b.className.includes("cursor-pointer") && b.className.includes("grid"),
     );
     expect(labRows.length).toBeGreaterThanOrEqual(15);
@@ -127,8 +123,8 @@ describe("Investigaciones", () => {
 
     expect(screen.getByText("SOBRE EL LAB")).toBeInTheDocument();
     const labRows = screen
-      .getAllByRole("button")
-      .filter((button) => button.textContent?.includes("Análisis de malware en extensión"));
+      .getAllByRole("link")
+      .filter((link) => link.textContent?.includes("Análisis de malware en extensión"));
 
     expect(labRows.length).toBeGreaterThan(0);
     for (const row of labRows) {
@@ -142,7 +138,7 @@ describe("Investigaciones", () => {
     render(<Investigaciones />);
 
     const spotlightButtons = screen
-      .getAllByRole("button")
+      .getAllByRole("link")
       .filter((b) => b.textContent?.includes("SPOTLIGHT_0"));
 
     expect(spotlightButtons).toHaveLength(FEATURED_INVESTIGATIONS.length);
@@ -159,23 +155,31 @@ describe("Investigaciones", () => {
     expect(screen.getAllByText("LAB_003").length).toBeGreaterThanOrEqual(1);
   });
 
-  it("requests the lead writeup when its featured card is clicked", () => {
+  it("links the lead featured card to its writeup page", () => {
     render(<Investigaciones />);
 
-    const featuredCard = screen.getByRole("button", { name: "Abrir investigación: FakeGPT" });
+    const featuredCard = screen.getByRole("link", { name: "Abrir investigación: FakeGPT" });
     expect(featuredCard.className).toContain("absolute inset-0");
-    fireEvent.click(featuredCard);
-
-    expect(capture.requests).toEqual([{ type: "writeup", id: idByTitle("FakeGPT") }]);
+    expect(featuredCard).toHaveAttribute("href", `/writeups/${slugByTitle("FakeGPT")}`);
   });
 
-  it("requests a secondary featured case when its card body is clicked", () => {
+  it("links a secondary featured case to its writeup page", () => {
     render(<Investigaciones />);
 
-    const secondaryCard = screen.getByRole("button", { name: "Abrir caso: Brave" });
+    const secondaryCard = screen.getByRole("link", { name: "Abrir caso: Brave" });
     expect(secondaryCard.className).toContain("absolute inset-0");
-    fireEvent.click(secondaryCard);
+    expect(secondaryCard).toHaveAttribute("href", `/writeups/${slugByTitle("Brave")}`);
+  });
 
-    expect(capture.requests).toEqual([{ type: "writeup", id: idByTitle("Brave") }]);
+  it("links every case in the expanded log and offers the full writeups index", () => {
+    render(<Investigaciones />);
+    expect(screen.getByRole("link", { name: "Ver todos los writeups" })).toHaveAttribute(
+      "href",
+      "/writeups",
+    );
+
+    expandLog();
+    const hrefs = screen.getAllByRole("link").map((a) => a.getAttribute("href"));
+    for (const i of INVESTIGATIONS) expect(hrefs).toContain(`/writeups/${i.slug}`);
   });
 });

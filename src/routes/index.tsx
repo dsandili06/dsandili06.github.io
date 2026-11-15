@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { lazy, Suspense, useState } from "react";
 import { MotionConfig } from "motion/react";
 import { LenisProvider } from "@/components/fx/LenisProvider";
@@ -17,6 +17,7 @@ import { CommandPalette } from "@/components/features/command-palette/CommandPal
 import { ModalHost } from "@/components/features/modals/ModalHost";
 import { validateModalSearch } from "@/components/features/modals/modalSearch";
 import { SectionSkeleton } from "@/components/layout/SectionSkeleton";
+import { legacyWriteupRedirectSlug } from "@/components/features/writeups/writeupSource";
 import { SITE } from "@/data/site";
 
 // Lazy load below-the-fold sections for better initial load performance
@@ -41,7 +42,18 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: SITE.tagline },
     ],
   }),
-  validateSearch: validateModalSearch,
+  // `writeup` survives validation only so beforeLoad can redirect legacy links.
+  validateSearch: (search: Record<string, unknown>) => ({
+    ...validateModalSearch(search),
+    ...(typeof search.writeup === "string" ? { writeup: search.writeup } : {}),
+  }),
+  beforeLoad: ({ search }) => {
+    const slug = legacyWriteupRedirectSlug(search);
+    if (slug) {
+      // eslint-disable-next-line @typescript-eslint/only-throw-error -- TanStack Router control-flow helper
+      throw redirect({ to: "/writeups/$slug", params: { slug }, replace: true });
+    }
+  },
   component: Portfolio,
 });
 

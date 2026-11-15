@@ -12,12 +12,19 @@ import { openCommandPalette } from "@/hooks/useCommandPalette";
 import { INVESTIGATIONS } from "@/data/investigations";
 import { CONTACT } from "@/data/site";
 import { captureModalRequests } from "@/test/modalRequests";
+import { navigateMock } from "@/test/routerMock";
+
+vi.mock("@tanstack/react-router", async (importOriginal) => {
+  const { createRouterMock } = await import("@/test/routerMock");
+  return createRouterMock(() => importOriginal<typeof import("@tanstack/react-router")>());
+});
 
 describe("CommandPalette", () => {
   let capture: ReturnType<typeof captureModalRequests>;
   beforeEach(() => {
     // Reset body style
     document.body.style.overflow = "";
+    navigateMock.mockClear();
     capture = captureModalRequests();
   });
 
@@ -259,13 +266,14 @@ describe("CommandPalette", () => {
     expect(writeTextMock).toHaveBeenCalledWith("sdsandili06@gmail.com");
   });
 
-  it("requests the writeup modal when a writeup is selected", () => {
+  it("navigates to the writeup page when a writeup is selected", async () => {
     render(<CommandPalette />);
     act(() => openCommandPalette());
 
     fireEvent.click(screen.getByText("FakeGPT"));
 
-    const id = INVESTIGATIONS.find((i) => i.title.includes("FakeGPT"))?.id;
-    expect(capture.requests).toEqual([{ type: "writeup", id }]);
+    const slug = INVESTIGATIONS.find((i) => i.title.includes("FakeGPT"))?.slug;
+    expect(navigateMock).toHaveBeenCalledWith({ to: "/writeups/$slug", params: { slug } });
+    await waitFor(() => expect(screen.queryByRole("dialog")).not.toBeInTheDocument());
   });
 });
