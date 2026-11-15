@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { SpotlightCard } from "@/components/fx/SpotlightCard";
 import { Section } from "@/components/primitives/Section";
 import { ABOUT_DOSSIER_TABS } from "@/data/about";
+import { SITE } from "@/data/site";
 import type { AboutTabId } from "@/types";
 
 export function About() {
@@ -27,6 +28,35 @@ export function About() {
       <div className="grid grid-cols-1 lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-14 items-start">
         {/* Left Column: Authentic & Grounded Narrative Bio */}
         <div className="space-y-6 text-[15px] md:text-base leading-relaxed text-foreground/80 max-w-[58ch] lg:pt-5">
+          <figure className="group flex items-center gap-4 sm:gap-5">
+            <div className="relative shrink-0 p-1.5">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute left-0 top-0 size-3.5 border-l border-t border-[var(--accent)]"
+              />
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute bottom-0 right-0 size-3.5 border-b border-r border-[var(--accent)]"
+              />
+              <img
+                src="/profile.webp"
+                alt={`Retrato de ${SITE.author}`}
+                width={112}
+                height={112}
+                loading="lazy"
+                decoding="async"
+                className="size-24 sm:size-28 border border-border-dim object-cover grayscale-[35%] transition-[filter] duration-300 group-hover:grayscale-0"
+              />
+            </div>
+            <figcaption className="min-w-0">
+              <span className="block font-display text-lg sm:text-xl font-bold tracking-tight text-foreground">
+                {SITE.author}
+              </span>
+              <span className="mt-1 block font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)]">
+                {SITE.role}
+              </span>
+            </figcaption>
+          </figure>
           <p className="text-base sm:text-[17px] text-foreground/90 font-normal leading-relaxed">
             Mi interés por la informática nació de una curiosidad simple: entender qué sucede detrás
             de cada sistema, cómo funciona y qué ocurre cuando algo deja de comportarse como

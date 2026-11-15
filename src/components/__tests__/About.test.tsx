@@ -9,6 +9,12 @@ describe("About section - Profile Narrative & Tactical Dossier", () => {
     expect(screen.getByText(/SECTION_01 \/\/ PROFILE/i)).toBeInTheDocument();
   });
 
+  it("renders the profile portrait with the author name", () => {
+    render(<About />);
+    const portrait = screen.getByRole("img", { name: "Retrato de Santiago Daniel Sandili" });
+    expect(portrait.getAttribute("src")).toBe("/profile.webp");
+  });
+
   it("renders the four authorized narrative paragraphs in order", () => {
     const { container } = render(<About />);
     const narrative = Array.from(container.querySelectorAll("div")).find((element) =>
