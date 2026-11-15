@@ -6,7 +6,7 @@ import { CONTACT } from "@/data/site";
 describe("Footer", () => {
   it("shows identity, role and copyright", () => {
     render(<Footer />);
-    expect(screen.getByText("Analista SOC · Blue Team · DFIR")).toBeInTheDocument();
+    expect(screen.getByText("Analista de Seguridad L1 · Blue Team · DFIR")).toBeInTheDocument();
     expect(screen.getAllByText(/Santiago Daniel Sandili/).length).toBeGreaterThanOrEqual(2);
     expect(screen.getByText(/© 2026/)).toBeInTheDocument();
   });

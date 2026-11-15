@@ -92,6 +92,19 @@ describe("Investigaciones", () => {
     expect(carouselToggle).toHaveAttribute("aria-pressed", "true");
   });
 
+  it("displays the carousel counter matching the exact number of investigations", () => {
+    render(<Investigaciones />);
+    expandLog();
+
+    const total = String(INVESTIGATIONS.length).padStart(2, "0");
+    const offByOne = String(INVESTIGATIONS.length + 1).padStart(2, "0");
+    const counter = screen.getByText(
+      (_, el) => el?.tagName === "SPAN" && el.textContent === `CASO 01 / ${total}`,
+    );
+    expect(counter).toBeInTheDocument();
+    expect(counter.textContent).not.toContain(`/ ${offByOne}`);
+  });
+
   it("table lab rows show click affordance (cursor + hover styles)", () => {
     render(<Investigaciones />);
     expandLog();

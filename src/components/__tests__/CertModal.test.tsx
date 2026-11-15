@@ -136,7 +136,7 @@ describe("CertModal component", () => {
 
   it("restores focus inside the new credential after the real lightbox exit", async () => {
     const { rerender } = render(
-      <CertModal isOpen onClose={vi.fn()} cert="/certs/THM-SAL1-Certificate.png" title="SAL1" />,
+      <CertModal isOpen onClose={vi.fn()} cert="/certs/THM-SAL1-Certificate.webp" title="SAL1" />,
     );
     const evidenceButton = screen.getByRole("button", {
       name: /Ampliar captura oficial de puntaje/i,
@@ -175,7 +175,7 @@ describe("CertModal component", () => {
           isOpen
           onClose={vi.fn()}
           onExitComplete={onExitComplete}
-          cert="/certs/THM-SAL1-Certificate.png"
+          cert="/certs/THM-SAL1-Certificate.webp"
           title="SAL1"
         />,
       );
@@ -207,7 +207,7 @@ describe("CertModal component", () => {
 
   it("recognizes SAL1 short title and resets the lightbox when credential changes", async () => {
     const { rerender } = render(
-      <CertModal isOpen onClose={vi.fn()} cert="/certs/THM-SAL1-Certificate.png" title="SAL1" />,
+      <CertModal isOpen onClose={vi.fn()} cert="/certs/THM-SAL1-Certificate.webp" title="SAL1" />,
     );
     expect(screen.getByText(sal1Paragraphs[0])).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /Ampliar captura oficial de puntaje/i }));
@@ -315,7 +315,7 @@ describe("CertModal component", () => {
       <CertModal
         isOpen={true}
         onClose={vi.fn()}
-        cert="/certs/THM-SAL1-Certificate.png"
+        cert="/certs/THM-SAL1-Certificate.webp"
         title="SAL1 (Security Analyst L1)"
       />,
     );
@@ -358,7 +358,7 @@ describe("CertModal component", () => {
       <CertModal
         isOpen={true}
         onClose={vi.fn()}
-        cert="/certs/THM-SAL1-Certificate.png"
+        cert="/certs/THM-SAL1-Certificate.webp"
         title="SAL1 (Security Analyst L1)"
         initialTab="review"
       />,
@@ -371,7 +371,7 @@ describe("CertModal component", () => {
     fireEvent.click(certTab);
     const certImg = screen.getByAltText("SAL1 (Security Analyst L1)");
     expect(certImg).toBeInTheDocument();
-    expect(certImg).toHaveAttribute("src", "/certs/THM-SAL1-Certificate.png");
+    expect(certImg).toHaveAttribute("src", "/certs/THM-SAL1-Certificate.webp");
 
     // Click review tab
     fireEvent.click(reviewTab);
@@ -386,7 +386,7 @@ describe("CertModal component", () => {
       <CertModal
         isOpen={true}
         onClose={vi.fn()}
-        cert="/certs/THM-SAL1-Certificate.png"
+        cert="/certs/THM-SAL1-Certificate.webp"
         title="SAL1 (Security Analyst L1)"
         initialTab="review"
       />,
@@ -405,7 +405,7 @@ describe("CertModal component", () => {
       <CertModal
         isOpen={true}
         onClose={vi.fn()}
-        cert="/certs/THM-SAL1-Certificate.png"
+        cert="/certs/THM-SAL1-Certificate.webp"
         title="SAL1 (Security Analyst L1)"
         initialTab="cert"
       />,
@@ -417,7 +417,7 @@ describe("CertModal component", () => {
       <CertModal
         isOpen={true}
         onClose={vi.fn()}
-        cert="/certs/THM-SAL1-Certificate.png"
+        cert="/certs/THM-SAL1-Certificate.webp"
         title="SAL1 (Security Analyst L1)"
         initialTab="review"
       />,
@@ -431,7 +431,7 @@ describe("CertModal component", () => {
       <CertModal
         isOpen={true}
         onClose={vi.fn()}
-        cert="/certs/THM-SAL1-Certificate.png"
+        cert="/certs/THM-SAL1-Certificate.webp"
         title="SAL1 (Security Analyst L1)"
         initialTab="review"
       />,
@@ -445,7 +445,7 @@ describe("CertModal component", () => {
       <CertModal
         isOpen={true}
         onClose={vi.fn()}
-        cert="/certs/THM-SAL1-Certificate.png"
+        cert="/certs/THM-SAL1-Certificate.webp"
         title="SAL1 (Security Analyst L1)"
         initialTab="review"
       />,
@@ -476,7 +476,7 @@ describe("CertModal component", () => {
       <CertModal
         isOpen={true}
         onClose={vi.fn()}
-        cert="/certs/THM-SAL1-Certificate.png"
+        cert="/certs/THM-SAL1-Certificate.webp"
         title="SAL1 (Security Analyst L1)"
         initialTab="review"
       />,

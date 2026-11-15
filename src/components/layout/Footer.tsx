@@ -20,7 +20,7 @@ export function Footer() {
               Santiago Daniel Sandili
             </p>
             <p className="mt-1 text-meta text-[var(--muted-foreground)]">
-              Analista SOC · Blue Team · DFIR
+              Analista de Seguridad L1 · Blue Team · DFIR
             </p>
           </div>
 

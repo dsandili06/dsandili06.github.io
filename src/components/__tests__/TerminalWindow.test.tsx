@@ -29,6 +29,30 @@ describe("TerminalWindow", () => {
     expect(screen.getByLabelText("Terminal input")).toBeInTheDocument();
   });
 
+  it("prints the Security Analyst L1 role on whoami with reduced motion", () => {
+    const matchMediaSpy = vi.spyOn(window, "matchMedia").mockImplementation((query) => ({
+      matches: query === "(prefers-reduced-motion: reduce)",
+      media: query,
+      onchange: null,
+      addListener: vi.fn(),
+      removeListener: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    }));
+
+    try {
+      const { container } = render(<TerminalWindow start={true} />);
+      const input = screen.getByLabelText("Terminal input");
+      fireEvent.change(input, { target: { value: "whoami" } });
+      fireEvent.keyDown(input, { key: "Enter" });
+
+      expect(container.textContent).toContain("Security Analyst L1 · Blue Team · DFIR");
+    } finally {
+      matchMediaSpy.mockRestore();
+    }
+  });
+
   it("does not passively focus the input element when boot animation completes", () => {
     render(<TerminalWindow start={true} />);
 

@@ -90,7 +90,7 @@ export function Hero() {
             transition={{ delay: 0.15, duration: 0.5 }}
             className="mt-8 font-mono text-xs md:text-sm uppercase tracking-[0.14em] text-[var(--muted-foreground)]"
           >
-            SOC Analyst Jr. <span className="text-foreground/60">·</span> Blue Team{" "}
+            Security Analyst L1 <span className="text-foreground/60">·</span> Blue Team{" "}
             <span className="text-foreground/60">·</span> DFIR
           </motion.p>
           <motion.p

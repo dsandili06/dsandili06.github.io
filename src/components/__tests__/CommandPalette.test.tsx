@@ -106,6 +106,10 @@ describe("CommandPalette", () => {
     expect(
       screen.getByText("Perfil profesional, trayectoria en Blue Team y enfoque operacional"),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText("Contacto directo, redes profesionales y CV descargable"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/clave pública/i)).not.toBeInTheDocument();
 
     // Check presence of investigations
     expect(screen.getByText("INVESTIGACIONES & WRITEUPS DFIR")).toBeInTheDocument();

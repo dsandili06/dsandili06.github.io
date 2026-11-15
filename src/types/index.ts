@@ -50,26 +50,6 @@ export type Course = {
   featured?: boolean;
 };
 
-export type MockExamDomain = {
-  domain: string;
-  score: number;
-};
-
-export type MockExam = {
-  id: string;
-  title: string;
-  date: string;
-  score: number;
-  correctQuestions: number;
-  totalQuestions: number;
-  timeSpent: string;
-  image: string;
-  domains: MockExamDomain[];
-  highlightedDomains?: string[];
-  analysis?: string;
-  shortLabel?: string;
-};
-
 export type Certification = {
   code: string;
   title: string;
@@ -82,7 +62,6 @@ export type Certification = {
   featured?: boolean;
   note?: string;
   logo?: string;
-  mockExams?: MockExam[];
   /** Technical exam review shown in the certificate modal, if any. */
   review?: CertificateReviewId;
 };

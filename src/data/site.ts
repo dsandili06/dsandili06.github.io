@@ -7,7 +7,7 @@
  */
 export const SITE = {
   /** Full document title, also used as the page title once hydrated. */
-  title: "Santiago Daniel Sandili — SECURITY ANALYST L1 / Blue Team",
+  title: "Santiago Daniel Sandili — Security Analyst L1 / Blue Team",
   /** Long description used as the meta description. */
   description:
     "Portfolio de Santiago Daniel Sandili — Analista de Seguridad L1 / Blue Team. DFIR, threat hunting, malware analysis y automatización defensiva.",
@@ -22,7 +22,7 @@ export const SITE = {
   locale: "es_AR",
   author: "Santiago Daniel Sandili",
   themeColor: "#080A0E",
-  role: "SECURITY ANALYST L1 / Blue Team",
+  role: "Security Analyst L1 / Blue Team",
 } as const;
 
 /** Public contact channels, single source for UI components. */

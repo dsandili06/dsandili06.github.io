@@ -99,6 +99,13 @@ describe("Hero section", () => {
   it("renders the plain-language summary", () => {
     render(<Hero />);
     expect(screen.getByText(HERO_SUMMARY)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        (_, el) =>
+          el?.tagName === "P" &&
+          /Security Analyst L1 · Blue Team · DFIR/.test(el.textContent ?? ""),
+      ),
+    ).toBeInTheDocument();
   });
 
   it("renders the primary actions", () => {

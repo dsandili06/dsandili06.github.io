@@ -28,7 +28,7 @@ export const SAL1_REVIEW: Sal1ReviewData = {
   attempt: 1,
   duration: "4h 7m 55s",
   evidenceImage: "/Puntaje.png",
-  certImage: "/certs/THM-SAL1-Certificate.png",
+  certImage: "/certs/THM-SAL1-Certificate.webp",
   executiveSummary: [
     {
       heading: "Formato",

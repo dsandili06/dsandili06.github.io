@@ -14,7 +14,7 @@ export const HERO_CREDENTIALS: HeroCredential[] = [
     name: "SAL1",
     shortName: "SAL1",
     logo: "/badges/sal1badge.png",
-    cert: "/certs/THM-SAL1-Certificate.png",
+    cert: "/certs/THM-SAL1-Certificate.webp",
   },
   {
     id: "google-cybersecurity",

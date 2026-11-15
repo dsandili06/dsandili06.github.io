@@ -48,7 +48,7 @@ export const SECTIONS = [
     number: "07",
     navLabel: "Contacto",
     title: "Canales de Contacto",
-    description: "Contacto directo, redes profesionales y clave pública",
+    description: "Contacto directo, redes profesionales y CV descargable",
   },
 ] as const;
 

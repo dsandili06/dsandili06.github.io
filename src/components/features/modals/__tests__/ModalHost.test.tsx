@@ -79,7 +79,7 @@ describe("ModalHost", () => {
 
     const modal = await screen.findByTestId("cert-modal");
     expect(modal).toHaveAttribute("data-open", "true");
-    expect(modal).toHaveAttribute("data-src", "/certs/THM-SAL1-Certificate.png");
+    expect(modal).toHaveAttribute("data-src", "/certs/THM-SAL1-Certificate.webp");
     expect(screen.getByText("SAL1 (Security Analyst L1)")).toBeInTheDocument();
   });
 

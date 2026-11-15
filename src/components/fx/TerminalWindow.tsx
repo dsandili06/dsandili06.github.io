@@ -28,7 +28,7 @@ const COMMANDS: Record<string, Line[]> = {
   ],
   whoami: [
     { text: "Santiago Daniel Sandili", color: "var(--accent)" },
-    { text: "SOC Analyst Jr. · Blue Team · DFIR", color: "var(--foreground)" },
+    { text: "Security Analyst L1 · Blue Team · DFIR", color: "var(--foreground)" },
     { text: "Tucumán, Argentina", color: "var(--muted-foreground)" },
   ],
   ls: [

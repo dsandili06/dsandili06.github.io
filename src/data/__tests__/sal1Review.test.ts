@@ -21,7 +21,7 @@ describe("SAL1_REVIEW data integrity", () => {
 
   it("contains valid evidence and certificate image paths", () => {
     expect(SAL1_REVIEW.evidenceImage).toBe("/Puntaje.png");
-    expect(SAL1_REVIEW.certImage).toBe("/certs/THM-SAL1-Certificate.png");
+    expect(SAL1_REVIEW.certImage).toBe("/certs/THM-SAL1-Certificate.webp");
   });
 
   it("keeps the retained executive summary without removed review sections", () => {
