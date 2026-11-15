@@ -4,6 +4,7 @@ import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import path from "path";
+import { prerenderRoutesPlugin } from "./scripts/prerenderRoutes";
 
 export default defineConfig({
   plugins: [
@@ -16,6 +17,7 @@ export default defineConfig({
     react(),
     tailwindcss(),
     tsconfigPaths(),
+    prerenderRoutesPlugin(),
   ],
   resolve: {
     alias: {

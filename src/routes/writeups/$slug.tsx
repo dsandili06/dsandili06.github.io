@@ -1,7 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { WriteupArticle } from "@/components/features/writeups/WriteupArticle";
 import { investigationBySlug } from "@/components/features/writeups/writeupSource";
-import { SITE } from "@/data/site";
+import { writeupMeta } from "@/data/writeupMeta";
 
 export const Route = createFileRoute("/writeups/$slug")({
   beforeLoad: ({ params }) => {
@@ -11,17 +11,16 @@ export const Route = createFileRoute("/writeups/$slug")({
   head: ({ params }) => {
     const investigation = investigationBySlug(params.slug);
     if (!investigation) return {};
-    const title = `${investigation.title} · Writeup | ${SITE.author}`;
-    const url = `${SITE.url}writeups/${investigation.slug}/`;
+    const meta = writeupMeta(investigation);
     return {
       meta: [
-        { title },
-        { name: "description", content: investigation.summary },
-        { property: "og:title", content: title },
-        { property: "og:description", content: investigation.summary },
-        { property: "og:url", content: url },
+        { title: meta.title },
+        { name: "description", content: meta.description },
+        { property: "og:title", content: meta.title },
+        { property: "og:description", content: meta.description },
+        { property: "og:url", content: meta.canonical },
       ],
-      links: [{ rel: "canonical", href: url }],
+      links: [{ rel: "canonical", href: meta.canonical }],
     };
   },
   component: WriteupDetail,
