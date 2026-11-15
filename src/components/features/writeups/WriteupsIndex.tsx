@@ -86,12 +86,6 @@ export function WriteupsIndex({ cat }: WriteupsIndexProps) {
               aria-hidden="true"
               className="pointer-events-none absolute bottom-2 right-2 size-3 border-b border-r border-[var(--accent)] opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-within:opacity-100"
             />
-            <span
-              aria-hidden="true"
-              className="font-mono text-label uppercase tracking-[0.18em] text-[var(--muted-foreground)]/70 transition-colors duration-300 group-hover:text-[var(--accent)]"
-            >
-              {investigation.id.replace("_", " · ")}
-            </span>
             <div className="flex flex-wrap items-center gap-2">
               <span className="border border-[var(--accent-green)]/50 px-2 py-0.5 font-mono text-label uppercase tracking-[0.12em] text-[var(--accent-green)]">
                 {investigation.platform}
@@ -109,7 +103,7 @@ export function WriteupsIndex({ cat }: WriteupsIndexProps) {
               <Link
                 to="/writeups/$slug"
                 params={{ slug: investigation.slug }}
-                className="transition-colors duration-300 after:absolute after:inset-0 after:content-[''] group-hover:text-[var(--accent)] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[var(--accent)]"
+                className="transition-colors duration-300 after:absolute after:inset-0 after:z-10 after:content-[''] group-hover:text-[var(--accent)] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-inset focus-visible:after:ring-[var(--accent)]"
               >
                 {investigation.title}
               </Link>
