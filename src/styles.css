@@ -809,3 +809,20 @@ html {
     scroll-behavior: auto;
   }
 }
+
+/* Writeup article: lede paragraph and drop cap (first child of the prose root). */
+.writeup-prose > p:first-child {
+  font-size: 1.2em;
+  color: var(--foreground);
+}
+@media (min-width: 640px) {
+  .writeup-prose > p:first-child::first-letter {
+    float: left;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 4.2em;
+    line-height: 0.82;
+    margin: 0.06em 0.12em 0 0;
+    color: var(--accent);
+  }
+}

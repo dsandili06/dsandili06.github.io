@@ -97,4 +97,64 @@ describe("WriteupMarkdown", () => {
     expect(screen.getByRole("button", { name: "Ampliar imagen" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Ampliar imagen: Diagrama" })).toBeInTheDocument();
   });
+  it("renders a titled image as figure with figcaption outside any paragraph", () => {
+    const { container } = render(
+      <WriteupMarkdown
+        markdown={
+          '![Captura](https://user-attachments.githubusercontent.com/1/c.png "Pie de foto")'
+        }
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+
+    const figure = container.querySelector("figure");
+    expect(figure).not.toBeNull();
+    expect(figure?.querySelector("figcaption")).toHaveTextContent("Pie de foto");
+    expect(figure?.closest("p")).toBeNull();
+    expect(screen.getByAltText("Captura")).not.toHaveAttribute("title");
+  });
+
+  it("marks lab question paragraphs as English and leaves normal paragraphs untouched", () => {
+    render(
+      <WriteupMarkdown
+        markdown={"**Q1.** Which encoding method?\n\nUn párrafo normal"}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+
+    const question = screen.getByText("Q1.").closest("p");
+    expect(question).toHaveAttribute("lang", "en");
+    expect(question).toHaveTextContent("Q1. Which encoding method?");
+    expect(screen.getByText("Un párrafo normal").closest("p")).not.toHaveAttribute("lang");
+  });
+
+  it("renders a Respuesta blockquote as a note callout", () => {
+    render(
+      <WriteupMarkdown
+        markdown={"> **Respuesta:** `192.168.1.10`"}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("note", { name: "Respuesta del laboratorio" })).toHaveTextContent(
+      "192.168.1.10",
+    );
+    expect(screen.queryByRole("blockquote")).not.toBeInTheDocument();
+  });
+
+  it("renders any other blockquote as a pull quote", () => {
+    const { container } = render(
+      <WriteupMarkdown
+        markdown={"> Una frase destacada."}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+
+    expect(container.querySelector("blockquote")).toHaveTextContent("Una frase destacada.");
+    expect(screen.queryByRole("note")).not.toBeInTheDocument();
+  });
 });

@@ -9,9 +9,9 @@ type WriteupTocPanelProps = {
 /** Sticky heading index rendered beside long writeups (desktop only). */
 export function WriteupTocPanel({ entries, onSelect }: WriteupTocPanelProps) {
   return (
-    <aside className="hidden lg:block w-56 shrink-0 sticky top-4 max-h-[76dvh] overflow-y-auto">
+    <aside className="hidden lg:block sticky top-24 self-start max-h-[76dvh] overflow-y-auto">
       <div className="font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] mb-3">
-        INDEX
+        En este informe
       </div>
       <ul className="space-y-1.5 border-l border-border-dim">
         {entries.map((entry) => (

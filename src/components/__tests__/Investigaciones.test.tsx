@@ -124,7 +124,7 @@ describe("Investigaciones", () => {
     expect(screen.getByText("SOBRE EL LAB")).toBeInTheDocument();
     const labRows = screen
       .getAllByRole("link")
-      .filter((link) => link.textContent?.includes("Análisis de malware en extensión"));
+      .filter((link) => link.textContent?.includes('Una extensión "ChatGPT" falsa'));
 
     expect(labRows.length).toBeGreaterThan(0);
     for (const row of labRows) {

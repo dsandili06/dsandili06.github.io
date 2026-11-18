@@ -1,7 +1,14 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from "vitest";
-import { renderHook, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { act, renderHook, waitFor } from "@testing-library/react";
 import type { Investigation } from "@/types";
 import { useWriteup } from "@/components/features/writeups/useWriteup";
+import { loadWriteupMarkdown } from "@/components/features/writeups/writeupContent";
+
+vi.mock("@/components/features/writeups/writeupContent", () => ({
+  loadWriteupMarkdown: vi.fn(),
+}));
+
+const loadMock = vi.mocked(loadWriteupMarkdown);
 
 const INVESTIGATION: Investigation = {
   slug: "fakegpt",
@@ -13,84 +20,64 @@ const INVESTIGATION: Investigation = {
   href: "https://github.com/dsandili06/Artifakt-Labs/blob/main/Writeups/CyberDefenders/FakeGPT.md",
 };
 
-const MARKDOWN = "# FakeGPT\n\nContenido.";
-
-function mockFetchOk() {
-  const fetchMock = vi.fn().mockResolvedValue({ ok: true, text: () => Promise.resolve(MARKDOWN) });
-  vi.stubGlobal("fetch", fetchMock);
-  return fetchMock;
-}
+const MARKDOWN = "Contenido.\n\n## Sección";
 
 describe("useWriteup", () => {
   beforeEach(() => {
-    sessionStorage.clear();
+    loadMock.mockReset();
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
-  afterEach(() => {
-    vi.unstubAllGlobals();
-  });
-
-  it("requests the raw writeup url exactly once per investigation", async () => {
-    const fetchMock = mockFetchOk();
-
+  it("loads the markdown for the investigation slug", async () => {
+    loadMock.mockResolvedValue(MARKDOWN);
     const { result } = renderHook(() => useWriteup(INVESTIGATION, INVESTIGATION.id));
 
     await waitFor(() => expect(result.current.loading).toBe(false));
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(fetchMock).toHaveBeenCalledWith(
-      "https://raw.githubusercontent.com/dsandili06/Artifakt-Labs/main/Writeups/CyberDefenders/FakeGPT.md",
-      expect.objectContaining({ signal: expect.any(AbortSignal) as AbortSignal }),
-    );
+    expect(loadMock).toHaveBeenCalledWith("fakegpt");
     expect(result.current.markdown).toBe(MARKDOWN);
     expect(result.current.error).toBe(false);
   });
 
-  it("serves a cached writeup without fetching again", async () => {
-    sessionStorage.setItem(`writeup-${INVESTIGATION.id}`, MARKDOWN);
-    const fetchMock = mockFetchOk();
-
-    const { result } = renderHook(() => useWriteup(INVESTIGATION, INVESTIGATION.id));
-
-    await waitFor(() => expect(result.current.loading).toBe(false));
-    expect(fetchMock).not.toHaveBeenCalled();
-    expect(result.current.markdown).toBe(MARKDOWN);
-  });
-
-  it("still fetches when session storage is unavailable", async () => {
-    vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
-      throw new Error("storage blocked");
-    });
-    vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
-      throw new Error("storage blocked");
-    });
-    const fetchMock = mockFetchOk();
-
-    const { result } = renderHook(() => useWriteup(INVESTIGATION, INVESTIGATION.id));
-
-    await waitFor(() => expect(result.current.loading).toBe(false));
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    expect(result.current.markdown).toBe(MARKDOWN);
-  });
-
-  it("reports an error for an unknown investigation without fetching", async () => {
-    const fetchMock = mockFetchOk();
-
+  it("reports an error for a missing investigation without loading", async () => {
     const { result } = renderHook(() => useWriteup(undefined, "LAB_999"));
 
     await waitFor(() => expect(result.current.loading).toBe(false));
-    expect(fetchMock).not.toHaveBeenCalled();
+    expect(loadMock).not.toHaveBeenCalled();
     expect(result.current.error).toBe(true);
   });
 
-  it("retries by dropping the cached copy and fetching again", async () => {
-    const fetchMock = mockFetchOk();
+  it("reports loader rejection and recovers on retry", async () => {
+    loadMock.mockRejectedValueOnce(new Error("Writeup not found: fakegpt"));
     const { result } = renderHook(() => useWriteup(INVESTIGATION, INVESTIGATION.id));
-    await waitFor(() => expect(result.current.loading).toBe(false));
 
-    result.current.retry();
+    await waitFor(() => expect(result.current.error).toBe(true));
+    expect(result.current.markdown).toBeNull();
 
-    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(2));
-    expect(result.current.markdown).toBe(MARKDOWN);
+    loadMock.mockResolvedValueOnce(MARKDOWN);
+    act(() => result.current.retry());
+
+    await waitFor(() => expect(result.current.markdown).toBe(MARKDOWN));
     expect(result.current.error).toBe(false);
+    expect(loadMock).toHaveBeenCalledTimes(2);
+  });
+
+  it("ignores a late resolve after unmount", async () => {
+    let resolve!: (value: string) => void;
+    loadMock.mockReturnValue(
+      new Promise<string>((r) => {
+        resolve = r;
+      }),
+    );
+    const { result, unmount } = renderHook(() => useWriteup(INVESTIGATION, INVESTIGATION.id));
+    expect(result.current.loading).toBe(true);
+
+    unmount();
+    await act(() => {
+      resolve(MARKDOWN);
+      return Promise.resolve();
+    });
+
+    expect(result.current.markdown).toBeNull();
+    expect(result.current.loading).toBe(true);
   });
 });

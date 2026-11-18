@@ -1,15 +1,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { ArrowLeft, ArrowRight, ExternalLink, Loader2, AlertTriangle } from "lucide-react";
+import { ArrowLeft, ArrowRight, ExternalLink, AlertTriangle } from "lucide-react";
 import Lightbox from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 import { INVESTIGATIONS } from "@/data/investigations";
+import { SITE } from "@/data/site";
 import { getLenis } from "@/lib/lenis";
 import type { Investigation } from "@/types";
 import { parseToc, TOC_VISIBLE_THRESHOLD } from "@/components/features/writeups/writeupToc";
 import { WriteupMarkdown } from "@/components/features/writeups/WriteupMarkdown";
 import { WriteupTocPanel } from "@/components/features/writeups/WriteupTocPanel";
 import { useWriteup } from "@/components/features/writeups/useWriteup";
+import { readingMinutes } from "@/components/features/writeups/writeupContent";
 
 type WriteupArticleProps = {
   investigation: Investigation;
@@ -23,7 +25,12 @@ function prefersReducedMotion(): boolean {
 }
 
 const NAV_LINK_CLASS =
-  "group flex min-h-[44px] flex-col gap-1 border border-border-dim p-4 transition-colors hover:border-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]";
+  "group flex min-h-[44px] flex-col gap-2 border-t border-border-dim py-6 transition-colors hover:text-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]";
+
+const SKELETON_WIDTHS = ["w-full", "w-11/12", "w-full", "w-4/5", "w-10/12", "w-2/3"];
+
+const CAPTION_CLASS =
+  "mt-3 border-l-2 border-[var(--accent)] pl-3 font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]";
 
 /** Editorial page for a single writeup. */
 export function WriteupArticle({ investigation }: WriteupArticleProps) {
@@ -91,39 +98,57 @@ export function WriteupArticle({ investigation }: WriteupArticleProps) {
         />
       </div>
 
-      <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 md:px-10 md:py-12">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 md:px-10 md:py-12">
         <Link
           to="/writeups"
-          className="mb-6 inline-flex min-h-[44px] items-center gap-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] transition-colors hover:text-[var(--accent)]"
+          className="mb-8 inline-flex min-h-[44px] items-center gap-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)] transition-colors hover:text-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
         >
           <ArrowLeft size={14} strokeWidth={1.5} aria-hidden /> Volver a writeups
         </Link>
 
-        <header className="mb-8 max-w-4xl">
-          <div className="mb-2 flex flex-wrap items-center gap-3">
-            <span className="border border-[var(--accent-green)]/50 px-2 py-0.5 font-mono text-label uppercase tracking-[0.12em] text-[var(--accent-green)]">
-              {investigation.platform}
+        <header className="max-w-5xl">
+          <p className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-label uppercase tracking-[0.14em]">
+            <span className="text-[var(--accent-green)]">{investigation.platform}</span>
+            <span aria-hidden className="text-[var(--muted-foreground)]">
+              ·
             </span>
-            {investigation.categories.map((cat) => (
-              <span
-                key={cat}
-                className="border border-border-dim px-2 py-0.5 font-mono text-label uppercase tracking-[0.15em] text-[var(--muted-foreground)]"
-              >
-                {cat}
-              </span>
-            ))}
-          </div>
+            <span className="text-[var(--muted-foreground)]">
+              {investigation.categories.join(" / ")}
+            </span>
+            <span aria-hidden className="text-[var(--muted-foreground)]">
+              ·
+            </span>
+            <span className="text-[var(--muted-foreground)]">{investigation.id}</span>
+          </p>
           <h1
             ref={titleRef}
             tabIndex={-1}
-            className="font-display text-3xl font-bold leading-tight tracking-tight text-foreground outline-none md:text-5xl"
+            className="mt-5 max-w-[18ch] font-display text-4xl font-bold leading-[0.95] tracking-[-0.04em] text-foreground outline-none sm:text-5xl md:text-6xl lg:text-7xl"
           >
             {investigation.title}
           </h1>
-          <p className="mt-3 max-w-[70ch] text-sm leading-relaxed text-[var(--muted-foreground)] sm:text-base">
+          <p className="mt-6 max-w-[60ch] text-lg leading-relaxed text-foreground/75 md:text-xl">
             {investigation.summary}
           </p>
+          <div className="mt-8 flex flex-wrap gap-x-6 gap-y-1 border-y border-border-dim py-3 font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+            <span>Por {SITE.author}</span>
+            {md && <span>{readingMinutes(md)} min de lectura</span>}
+            <span>Fuente: {investigation.platform}</span>
+          </div>
         </header>
+
+        {investigation.visual && (
+          <figure className="mt-10">
+            <img
+              src={investigation.visual.src}
+              alt={investigation.visual.alt}
+              loading="eager"
+              decoding="async"
+              className="h-auto w-full border border-border-dim"
+            />
+            <figcaption className={CAPTION_CLASS}>{investigation.visual.caption}</figcaption>
+          </figure>
+        )}
 
         {loading && (
           <div role="status" aria-live="polite" className="sr-only">
@@ -131,27 +156,24 @@ export function WriteupArticle({ investigation }: WriteupArticleProps) {
           </div>
         )}
 
-        <div className={showToc ? "flex items-start gap-8" : ""}>
-          <div
-            className={`min-h-[200px] rounded border border-border-dim bg-[var(--surface-2)] ${
-              showToc ? "min-w-0 flex-1" : "w-full max-w-[70ch]"
-            }`}
-          >
+        <div
+          className={`mt-12 ${showToc ? "lg:grid lg:grid-cols-[minmax(0,1fr)_240px] lg:gap-16" : ""}`}
+        >
+          <div className="min-h-[200px] min-w-0 max-w-[68ch]">
             {loading && (
-              <div
-                aria-hidden="true"
-                className="flex flex-col items-center justify-center gap-3 py-20 text-[var(--muted-foreground)]"
-              >
-                <Loader2 size={24} className="animate-spin" />
-                <span className="font-mono text-label uppercase tracking-[0.12em]">
-                  Fetching writeup...
-                </span>
+              <div aria-hidden="true" className="space-y-4 py-4">
+                {SKELETON_WIDTHS.map((width, i) => (
+                  <div
+                    key={i}
+                    className={`h-4 ${width} rounded bg-foreground/10 animate-pulse motion-reduce:animate-none`}
+                  />
+                ))}
               </div>
             )}
             {error && !loading && (
               <div
                 role="alert"
-                className="flex flex-col items-center justify-center gap-4 px-6 py-20 text-center"
+                className="flex flex-col items-center justify-center gap-4 border border-border-dim px-6 py-20 text-center"
               >
                 <AlertTriangle size={24} className="text-[var(--accent-amber)]" />
                 <span className="font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
@@ -161,73 +183,95 @@ export function WriteupArticle({ investigation }: WriteupArticleProps) {
                   href={investigation.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 border border-[var(--accent)]/50 px-4 py-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] transition-colors hover:bg-[var(--accent)]/10"
+                  className="inline-flex min-h-[44px] items-center gap-2 border border-[var(--accent)]/50 px-4 py-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] transition-colors hover:bg-[var(--accent)]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
                 >
                   <ExternalLink size={14} strokeWidth={1.5} /> Ver en GitHub
                 </a>
                 <button
                   onClick={retry}
-                  className="font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)] underline underline-offset-2 transition-colors hover:text-foreground"
+                  className="min-h-[44px] font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)] underline underline-offset-2 transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
                 >
                   Reintentar
                 </button>
               </div>
             )}
             {md && (
-              <div className="p-4 sm:p-6 md:p-10">
-                <WriteupMarkdown
-                  markdown={md}
-                  investigationHref={investigation.href}
-                  onOpenImage={setLightboxSrc}
-                />
-              </div>
+              <WriteupMarkdown
+                markdown={md}
+                investigationHref={investigation.href}
+                onOpenImage={setLightboxSrc}
+              />
             )}
           </div>
 
           {showToc && <WriteupTocPanel entries={toc} onSelect={scrollToHeading} />}
         </div>
 
-        <div className="mt-10 flex flex-col gap-4">
-          <a
-            href={investigation.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex min-h-[44px] items-center gap-2 py-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] hover:underline"
-          >
-            <ExternalLink size={12} strokeWidth={1.5} />
-            Ver en GitHub →
-          </a>
-          <nav aria-label="Otros writeups" className="grid gap-4 sm:grid-cols-2">
-            {prev ? (
-              <Link
-                to="/writeups/$slug"
-                params={{ slug: prev.slug }}
-                rel="prev"
-                className={NAV_LINK_CLASS}
-              >
-                <span className="inline-flex items-center gap-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
-                  <ArrowLeft size={12} aria-hidden /> Anterior
-                </span>
-                <span className="font-display text-lg font-bold text-foreground">{prev.title}</span>
-              </Link>
-            ) : (
-              <span />
-            )}
-            {next && (
-              <Link
-                to="/writeups/$slug"
-                params={{ slug: next.slug }}
-                rel="next"
-                className={`${NAV_LINK_CLASS} sm:items-end sm:text-right`}
-              >
-                <span className="inline-flex items-center gap-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
-                  Siguiente <ArrowRight size={12} aria-hidden />
-                </span>
-                <span className="font-display text-lg font-bold text-foreground">{next.title}</span>
-              </Link>
-            )}
+        <footer className="mt-20">
+          <div className="flex items-center gap-4" aria-hidden>
+            <span className="h-px flex-1 bg-border-dim" />
+            <span className="font-mono text-label uppercase tracking-[0.2em] text-[var(--muted-foreground)]">
+              Fin del informe
+            </span>
+            <span className="h-px flex-1 bg-border-dim" />
+          </div>
+          <div className="mt-8 flex justify-center">
+            <a
+              href={investigation.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-[44px] items-center gap-2 py-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--accent)] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+            >
+              <ExternalLink size={12} strokeWidth={1.5} />
+              Ver el original en GitHub
+            </a>
+          </div>
+          <nav aria-label="Otros writeups" className="mt-12">
+            <p className="mb-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+              Sigue leyendo
+            </p>
+            <div className="grid gap-x-12 sm:grid-cols-2">
+              {prev ? (
+                <Link
+                  to="/writeups/$slug"
+                  params={{ slug: prev.slug }}
+                  rel="prev"
+                  className={NAV_LINK_CLASS}
+                >
+                  <span className="inline-flex items-center gap-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+                    <ArrowLeft size={12} aria-hidden /> Anterior
+                  </span>
+                  <span className="font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                    {prev.title}
+                  </span>
+                  <span className="line-clamp-2 text-sm text-[var(--muted-foreground)]">
+                    {prev.summary}
+                  </span>
+                </Link>
+              ) : (
+                <span />
+              )}
+              {next && (
+                <Link
+                  to="/writeups/$slug"
+                  params={{ slug: next.slug }}
+                  rel="next"
+                  className={`${NAV_LINK_CLASS} sm:items-end sm:text-right`}
+                >
+                  <span className="inline-flex items-center gap-2 font-mono text-label uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+                    Siguiente <ArrowRight size={12} aria-hidden />
+                  </span>
+                  <span className="font-display text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                    {next.title}
+                  </span>
+                  <span className="line-clamp-2 text-sm text-[var(--muted-foreground)]">
+                    {next.summary}
+                  </span>
+                </Link>
+              )}
+            </div>
           </nav>
-        </div>
+        </footer>
       </div>
 
       {/* Zoom lightbox for writeup screenshots — single slide: no prev/next arrows */}

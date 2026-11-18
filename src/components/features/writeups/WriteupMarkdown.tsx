@@ -115,29 +115,37 @@ export function WriteupMarkdown({
   const startsWithH1 = /^#\s+\S/.test(markdown.slice(firstBlockOffset));
 
   const components: MarkdownComponents = {
-    img: ({ src, alt, ...props }) => {
+    img: ({ node, src, alt, title, ...props }) => {
+      void node;
       const resolved = src ? resolveWriteupImageUri(src, investigationHref) : src;
       if (!resolved) return null;
       return (
-        <img
-          src={resolved}
-          alt={alt || ""}
-          loading="lazy"
-          decoding="async"
-          referrerPolicy="no-referrer"
-          tabIndex={0}
-          role="button"
-          aria-label={alt ? `Ampliar imagen: ${alt}` : "Ampliar imagen"}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault();
-              onOpenImage(resolved);
-            }
-          }}
-          onClick={() => onOpenImage(resolved)}
-          className="writeup-img max-w-full h-auto rounded border border-border-dim my-4 cursor-zoom-in"
-          {...props}
-        />
+        <figure className="my-10">
+          <img
+            src={resolved}
+            alt={alt || ""}
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+            tabIndex={0}
+            role="button"
+            aria-label={alt ? `Ampliar imagen: ${alt}` : "Ampliar imagen"}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onOpenImage(resolved);
+              }
+            }}
+            onClick={() => onOpenImage(resolved)}
+            className="writeup-img max-w-full h-auto rounded border border-border-dim cursor-zoom-in"
+            {...props}
+          />
+          {title && (
+            <figcaption className="mt-3 border-l-2 border-[var(--accent)] pl-3 font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+              {title}
+            </figcaption>
+          )}
+        </figure>
       );
     },
     a: ({ href, children, ...props }) => (
@@ -166,48 +174,130 @@ export function WriteupMarkdown({
         </h1>
       );
     },
-    h2: ({ children, ...props }) => (
-      <h2
-        className="font-display font-bold text-2xl md:text-3xl leading-tight tracking-tight text-foreground mt-8 mb-3 scroll-mt-6"
-        {...props}
-      >
-        {stripHeadingEmoji(children)}
-      </h2>
-    ),
-    h3: ({ children, ...props }) => (
-      <h3
-        className="font-display font-bold text-xl md:text-2xl leading-tight tracking-tight text-foreground mt-6 mb-2 scroll-mt-6"
-        {...props}
-      >
-        {stripHeadingEmoji(children)}
-      </h3>
-    ),
-    p: ({ children, ...props }) => (
-      <p className="text-[15px] leading-relaxed text-foreground/85 mb-4" {...props}>
-        {children}
-      </p>
-    ),
-    ul: ({ children, ...props }) => (
-      <ul
-        className="list-disc list-inside space-y-1 mb-4 text-[15px] text-foreground/85"
-        {...props}
-      >
-        {children}
-      </ul>
-    ),
-    ol: ({ children, ...props }) => (
-      <ol
-        className="list-decimal list-inside space-y-1 mb-4 text-[15px] text-foreground/85"
-        {...props}
-      >
-        {children}
-      </ol>
-    ),
-    li: ({ children, ...props }) => (
-      <li className="text-[15px]" {...props}>
-        {children}
-      </li>
-    ),
+    h2: ({ node, children, ...props }) => {
+      void node;
+      return (
+        <h2
+          className="font-display font-bold text-3xl md:text-4xl leading-tight tracking-[-0.03em] text-foreground mt-20 mb-6 pt-6 border-t border-border-dim scroll-mt-6"
+          {...props}
+        >
+          {stripHeadingEmoji(children)}
+        </h2>
+      );
+    },
+    h3: ({ node, children, ...props }) => {
+      void node;
+      return (
+        <h3
+          className="font-display font-bold text-xl md:text-2xl leading-tight tracking-tight text-foreground mt-12 mb-4 scroll-mt-6"
+          {...props}
+        >
+          {stripHeadingEmoji(children)}
+        </h3>
+      );
+    },
+    p: ({ node, children, ...props }) => {
+      // A paragraph holding only an image renders as a block so the <figure> is not nested in <p>.
+      const meaningful = (node?.children ?? []).filter(
+        (child) => !(child.type === "text" && child.value.trim() === ""),
+      );
+      if (
+        meaningful.length === 1 &&
+        meaningful[0].type === "element" &&
+        meaningful[0].tagName === "img"
+      ) {
+        return <div {...props}>{children}</div>;
+      }
+      // Original lab question ("**Qn.** ..."): English, so mark the language and set it apart.
+      const first = meaningful[0];
+      if (
+        first?.type === "element" &&
+        first.tagName === "strong" &&
+        /^Q\d+\.$/.test(
+          first.children.map((child) => (child.type === "text" ? child.value : "")).join(""),
+        )
+      ) {
+        return (
+          <p
+            className="mb-6 border-l-2 border-[var(--accent)] pl-4 font-mono text-sm leading-relaxed text-foreground/90"
+            lang="en"
+            {...props}
+          >
+            {children}
+          </p>
+        );
+      }
+      return (
+        <p className="text-[17px] md:text-[18px] leading-[1.75] text-foreground/85 mb-6" {...props}>
+          {children}
+        </p>
+      );
+    },
+    blockquote: ({ node, children, ...props }) => {
+      const firstElement = node?.children.find((child) => child.type === "element");
+      const firstInner =
+        firstElement?.type === "element" && firstElement.tagName === "p"
+          ? firstElement.children.find((child) => child.type === "element")
+          : undefined;
+      const innerText =
+        firstInner?.type === "element"
+          ? firstInner.children.map((child) => (child.type === "text" ? child.value : "")).join("")
+          : "";
+      const isAnswer =
+        firstInner?.type === "element" &&
+        firstInner.tagName === "strong" &&
+        innerText.trimStart().startsWith("Respuesta");
+      if (isAnswer) {
+        return (
+          <aside
+            role="note"
+            aria-label="Respuesta del laboratorio"
+            className="my-6 border-l-2 border-[var(--accent-green)] bg-[color-mix(in_oklab,var(--accent-green)_6%,transparent)] px-5 py-4 font-mono text-sm [&_p]:mb-0 [&_p]:text-sm [&_p]:leading-relaxed [&_p]:text-foreground"
+            {...props}
+          >
+            {children}
+          </aside>
+        );
+      }
+      return (
+        <blockquote
+          className="my-12 max-w-[30ch] border-l-2 border-[var(--accent)] pl-6 font-display text-2xl leading-snug tracking-tight text-foreground md:text-3xl [&_p]:mb-0 [&_p]:text-inherit [&_p]:leading-snug"
+          {...props}
+        >
+          {children}
+        </blockquote>
+      );
+    },
+    ul: ({ node, children, ...props }) => {
+      void node;
+      return (
+        <ul
+          className="list-disc list-outside pl-6 space-y-2 mb-6 text-[17px] leading-[1.7] text-foreground/85 marker:text-[var(--accent)]"
+          {...props}
+        >
+          {children}
+        </ul>
+      );
+    },
+    ol: ({ node, children, ...props }) => {
+      void node;
+      return (
+        <ol
+          className="list-decimal list-outside pl-6 space-y-2 mb-6 text-[17px] leading-[1.7] text-foreground/85 marker:text-[var(--accent)]"
+          {...props}
+        >
+          {children}
+        </ol>
+      );
+    },
+    li: ({ node, children, ...props }) => {
+      void node;
+      return (
+        <li className="text-[17px] leading-[1.7]" {...props}>
+          {children}
+        </li>
+      );
+    },
     code: ({ className, children, ...props }) => {
       const isInline = !className;
       if (isInline) {
@@ -231,13 +321,35 @@ export function WriteupMarkdown({
         </div>
       );
     },
-    table: ({ children, ...props }) => (
-      <div className="overflow-x-auto mb-4">
-        <table className="w-full border-collapse border border-border-dim text-[14px]" {...props}>
+    table: ({ node, children, ...props }) => {
+      void node;
+      return (
+        <div className="overflow-x-auto mb-8">
+          <table className="w-full border-collapse text-sm" {...props}>
+            {children}
+          </table>
+        </div>
+      );
+    },
+    th: ({ node, children, ...props }) => {
+      void node;
+      return (
+        <th
+          className="border-b border-foreground/30 py-3 pr-6 text-left align-top font-mono text-label font-normal uppercase tracking-[0.12em] text-[var(--muted-foreground)]"
+          {...props}
+        >
           {children}
-        </table>
-      </div>
-    ),
+        </th>
+      );
+    },
+    td: ({ node, children, ...props }) => {
+      void node;
+      return (
+        <td className="border-b border-border-dim py-3 pr-6 align-top text-sm" {...props}>
+          {children}
+        </td>
+      );
+    },
     // react-markdown wraps code blocks in its own <pre>; our code component
     // already returns a <pre> inside a <div>, so we strip the outer <pre>
     pre: ({ children }) => <>{children}</>,
@@ -245,18 +357,20 @@ export function WriteupMarkdown({
 
   return (
     <MarkdownErrorBoundary>
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[
-          rehypeRaw,
-          [rehypeSanitize, writeupSanitizeSchema],
-          [rehypeSlug, { prefix: "writeup-content-" }],
-        ]}
-        urlTransform={safeMarkdownUrl}
-        components={components}
-      >
-        {markdown}
-      </ReactMarkdown>
+      <div className="writeup-prose">
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[
+            rehypeRaw,
+            [rehypeSanitize, writeupSanitizeSchema],
+            [rehypeSlug, { prefix: "writeup-content-" }],
+          ]}
+          urlTransform={safeMarkdownUrl}
+          components={components}
+        >
+          {markdown}
+        </ReactMarkdown>
+      </div>
     </MarkdownErrorBoundary>
   );
 }

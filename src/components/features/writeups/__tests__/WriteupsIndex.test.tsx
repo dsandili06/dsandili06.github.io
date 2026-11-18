@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { render, screen, cleanup, act, within } from "@testing-library/react";
+import { render, screen, cleanup, act } from "@testing-library/react";
 import {
   Outlet,
   RouterProvider,
@@ -51,8 +51,10 @@ describe("WriteupsIndex", () => {
     await renderIndex("Malware Analysis");
     const expected = INVESTIGATIONS.filter((i) => i.categories.includes("Malware Analysis"));
     expect(expected.length).toBeLessThan(INVESTIGATIONS.length);
-    const list = screen.getAllByRole("list").at(-1)!;
-    expect(within(list).getAllByRole("heading", { level: 2 })).toHaveLength(expected.length);
+    expect(screen.getAllByRole("heading", { level: 2 })).toHaveLength(expected.length);
+    for (const inv of expected) {
+      expect(screen.getByRole("link", { name: inv.title })).toBeInTheDocument();
+    }
   });
 
   it("filter chips link with the cat search param", async () => {
@@ -61,6 +63,19 @@ describe("WriteupsIndex", () => {
       "cat=Threat+Intel",
     );
     expect(screen.getByRole("link", { name: "Todos" })).toHaveAttribute("aria-current", "page");
+  });
+
+  it("marks only the active filter tab with the accent underline", async () => {
+    await renderIndex("Threat Intel");
+    expect(screen.getByRole("link", { name: "Threat Intel" })).toHaveClass(
+      "border-[var(--accent)]",
+    );
+    expect(screen.getByRole("link", { name: "Todos" })).not.toHaveClass("border-[var(--accent)]");
+  });
+
+  it("does not number the items", async () => {
+    await renderIndex();
+    expect(screen.queryByText(/^0?1$/)).not.toBeInTheDocument();
   });
 
   it("validateWriteupsSearch drops unknown categories", () => {

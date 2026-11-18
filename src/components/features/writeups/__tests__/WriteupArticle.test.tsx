@@ -70,6 +70,19 @@ describe("WriteupArticle", () => {
     expect(screen.getByText("Contenido de prueba del writeup.")).toBeInTheDocument();
   });
 
+  it("shows author, source and reading time once the markdown is loaded", async () => {
+    const inv = await renderArticle(0);
+    expect(screen.getByText(/^Por /)).toBeInTheDocument();
+    expect(screen.getByText(`Fuente: ${inv.platform}`)).toBeInTheDocument();
+    expect(screen.getByText(/^\d+ min de lectura$/)).toBeInTheDocument();
+  });
+
+  it("hides reading time while loading", async () => {
+    useWriteupMock.mockReturnValue({ markdown: null, loading: true, error: false, retry: vi.fn() });
+    await renderArticle(0);
+    expect(screen.queryByText(/min de lectura/)).not.toBeInTheDocument();
+  });
+
   it("announces loading state", async () => {
     useWriteupMock.mockReturnValue({ markdown: null, loading: true, error: false, retry: vi.fn() });
     await renderArticle(0);
