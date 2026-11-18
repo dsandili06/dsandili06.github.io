@@ -10,7 +10,7 @@
 
 En el contenido del laboratorio nos entregan un hash del archivo malicioso para posteriormente realizar los análisis y pruebas pertinentes en las plataformas de CTI (VirusTotal, Hybrid Analisis, Any.Run, etc)
 
-![Enunciado del laboratorio con el hash del archivo malicioso](https://github.com/user-attachments/assets/f03076b9-f485-46c3-a671-afe6b527f7d0)
+<img width="1359" height="677" alt="Enunciado del laboratorio con el hash del archivo malicioso" src="https://github.com/user-attachments/assets/f03076b9-f485-46c3-a671-afe6b527f7d0" />
 
 *HASH*: **248FCC901AFF4E4B4C48C91E4D78A939BF681C9A1BC24ADDC3551B32768F907B**
 
@@ -22,7 +22,7 @@ En el contenido del laboratorio nos entregan un hash del archivo malicioso para 
 
 Siguiendo la consigna de la pregunta nos dirigimos a VirusTotal, al introducir el Hash buscamos como lo categoriza dicho motor, viendo así que el mismo lo categoriza como un "Trojan".
 
-![Detecciones de VirusTotal con la categoría asignada por Microsoft](https://github.com/user-attachments/assets/88adefa6-f34b-4cdb-bd4d-469523a42c94)
+<img width="1359" height="681" alt="Detecciones de VirusTotal con la categoría asignada por Microsoft" src="https://github.com/user-attachments/assets/88adefa6-f34b-4cdb-bd4d-469523a42c94" />
 
 > **R:** `Trojan`
 
@@ -32,7 +32,7 @@ Siguiendo la consigna de la pregunta nos dirigimos a VirusTotal, al introducir e
 
 Si nos vamos al apartado de "Details" podemos bajar hasta donde están los nombres de archivo vinculados a este Hash.
 
-![Nombres de archivo asociados al hash en VirusTotal](https://github.com/user-attachments/assets/134de7f4-ae18-4f50-ad89-8b808a0e2296)
+<img width="1358" height="677" alt="Nombres de archivo asociados al hash en VirusTotal" src="https://github.com/user-attachments/assets/134de7f4-ae18-4f50-ad89-8b808a0e2296" />
 
 > **R:**`wextract`
 
@@ -42,7 +42,7 @@ Si nos vamos al apartado de "Details" podemos bajar hasta donde están los nombr
 
 Acá en "Details" vemos que la primera vez que fue analizado por VirusTotal fue la siguiente:
 
-![Fecha de primer envío del archivo a VirusTotal](https://github.com/user-attachments/assets/48799136-931a-4cea-943a-c133c2877e02)
+<img width="1359" height="679" alt="Fecha de primer envío del archivo a VirusTotal" src="https://github.com/user-attachments/assets/48799136-931a-4cea-943a-c133c2877e02" />
 
 > **R:**`2023-10-06 04:41`
 
@@ -52,7 +52,7 @@ Acá en "Details" vemos que la primera vez que fue analizado por VirusTotal fue 
 
 Si nos vamos a "Behaviour" en VT, podemos corroborar en "Data Collection" el comportamiento principal de recolección de información se trata de la siguiente TTP:
 
-![Sección Data Collection del comportamiento en VirusTotal](https://github.com/user-attachments/assets/b9a04ae2-90cb-42ca-b9e1-a8c677dbb2ef)
+<img width="1136" height="159" alt="Sección Data Collection del comportamiento en VirusTotal" src="https://github.com/user-attachments/assets/b9a04ae2-90cb-42ca-b9e1-a8c677dbb2ef" />
 
 > **R:**`T1005`
 
@@ -63,7 +63,7 @@ Si nos vamos a "Behaviour" en VT, podemos corroborar en "Data Collection" el com
 Siguiendo el comportamiento desde VT, podemos ver en "Activity Summary" que en "DNS Resolutions" podemos encontrar el dominio "Facebook.com".
 Esto es una clara señal de intentar ofuscar el comportamiento maligno de este malware simulando comportamiento "benigno" de red.
 
-![DNS Resolutions del Activity Summary en VirusTotal](https://github.com/user-attachments/assets/c292cdb6-5f25-4c2a-8650-2f21eb93e889)
+<img width="1359" height="682" alt="DNS Resolutions del Activity Summary en VirusTotal" src="https://github.com/user-attachments/assets/c292cdb6-5f25-4c2a-8650-2f21eb93e889" />
 
 > **R:**`Facebook.com`
 
@@ -73,7 +73,7 @@ Esto es una clara señal de intentar ofuscar el comportamiento maligno de este m
 
 Para buscar la YARA rule de nuestro bro "Varp0s" nos dirigiremos hacia MalwareBazaar. Ingresando al buscar e inyectando el hash del archivo, nos vamos hasta el apartado de YARA. Aquí es donde encontraremos el nombre de la YARA rule correspondiente.
 
-![Apartado YARA de MalwareBazaar para el hash analizado](https://github.com/user-attachments/assets/feb052c9-cb5f-4e3e-a2c4-c6bf3359c689)
+<img width="1359" height="677" alt="Apartado YARA de MalwareBazaar para el hash analizado" src="https://github.com/user-attachments/assets/feb052c9-cb5f-4e3e-a2c4-c6bf3359c689" />
 
 > **R:**`detect_Redline_Stealer`
 
@@ -83,7 +83,7 @@ Para buscar la YARA rule de nuestro bro "Varp0s" nos dirigiremos hacia MalwareBa
 
 Teniendo en cuenta que el malware con el que estamos tratando es *"Redline"*, ingresamos en ThreatFox y buscamos por *"malware:Redline"*. Acá podemos entrar a cualquiera que nos salga y veremos que se hace llamar también *"RecordStealer"*
 
-![Resultados de ThreatFox para malware:Redline con el alias RecordStealer](https://github.com/user-attachments/assets/995a1d9d-0c1e-42a2-bea7-2a6698f5e06d)
+<img width="1359" height="677" alt="Resultados de ThreatFox para malware:Redline con el alias RecordStealer" src="https://github.com/user-attachments/assets/995a1d9d-0c1e-42a2-bea7-2a6698f5e06d" />
 
 > **R:**`RecordStealer`
 
@@ -93,7 +93,7 @@ Teniendo en cuenta que el malware con el que estamos tratando es *"Redline"*, in
 
 En VT, si nos posicionamos en "Details" y luego buscamos en "Imports" vemos como primera opción "ADVAPI32.dll" si nos fijamos en la info relacionada con esta librería, vemos claramente que apunta a escalación de privilegios.
 
-![Imports del malware en VirusTotal con ADVAPI32.dll](https://github.com/user-attachments/assets/fecb3742-2293-4ee2-a797-ee0b12d7bc13)
+<img width="1359" height="679" alt="Imports del malware en VirusTotal con ADVAPI32.dll" src="https://github.com/user-attachments/assets/fecb3742-2293-4ee2-a797-ee0b12d7bc13" />
 
 > **R:** `ADVAPI32.dll`
 

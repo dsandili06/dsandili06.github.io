@@ -171,4 +171,52 @@ describe("WriteupMarkdown", () => {
     expect(container.querySelector("blockquote")).toHaveTextContent("Una frase destacada.");
     expect(screen.queryByRole("note")).not.toBeInTheDocument();
   });
+
+  it("renders language-less fenced blocks inside a pre", () => {
+    const { container } = render(
+      <WriteupMarkdown
+        markdown={"```\nvol -f dump.mem windows.pslist\n```"}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+    expect(container.querySelector("pre")).toHaveTextContent("vol -f dump.mem windows.pslist");
+  });
+
+  it("keeps width/height on raw img inside a figure button, never inside a p", () => {
+    const onOpen = vi.fn();
+    const { container } = render(
+      <WriteupMarkdown
+        markdown={
+          '<img width="800" height="400" alt="Captura" src="https://github.com/user-attachments/assets/abc" />'
+        }
+        investigationHref={HREF}
+        onOpenImage={onOpen}
+      />,
+    );
+    const img = container.querySelector("figure img");
+    expect(img).toHaveAttribute("width", "800");
+    expect(img).toHaveAttribute("height", "400");
+    expect(img?.closest("p")).toBeNull();
+    expect(img?.closest("button")).toHaveAccessibleName("Ampliar imagen: Captura");
+  });
+
+  it("makes scrollable tables focusable regions", () => {
+    render(
+      <WriteupMarkdown
+        markdown={"| a | b |\n| - | - |\n| 1 | 2 |"}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+    const region = screen.getByRole("region", { name: "Tabla (desplazable horizontalmente)" });
+    expect(region).toHaveAttribute("tabindex", "0");
+  });
+
+  it("renders h4 headings", () => {
+    render(
+      <WriteupMarkdown markdown={"#### Detalle"} investigationHref={HREF} onOpenImage={vi.fn()} />,
+    );
+    expect(screen.getByRole("heading", { level: 4 })).toHaveTextContent("Detalle");
+  });
 });

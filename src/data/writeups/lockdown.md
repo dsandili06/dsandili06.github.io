@@ -13,9 +13,9 @@
 
 Para el inicio del análisis y comprender la etapa inicial del ataque, nos dirigimos a Wireshark y navegamos a **Statistics → Conversations → IPv4**. Aquí identificamos el volumen de paquetes que fueron enviados de la IP del atacante hacia el servidor. Otro método efectivo es aplicar el filtro `tcp.flags.syn == 1 && tcp.flags.ack == 0` para comprobar los SYN iniciales del handshake, encontrando así un reconocimiento bastante obvio.  
 
-![Conversaciones IPv4 en Wireshark con el volumen de paquetes de la IP del atacante hacia el servidor](https://github.com/user-attachments/assets/adf7b37e-784a-4d90-9431-2ba8ff7f983f)
+<img width="1418" height="411" alt="Conversaciones IPv4 en Wireshark con el volumen de paquetes de la IP del atacante hacia el servidor" src="https://github.com/user-attachments/assets/adf7b37e-784a-4d90-9431-2ba8ff7f983f" />
 
-![Filtro de SYN iniciales en Wireshark que muestra el barrido de reconocimiento](https://github.com/user-attachments/assets/3e57f440-c046-4f4e-b052-5c387afdc7dc)
+<img width="1918" height="595" alt="Filtro de SYN iniciales en Wireshark que muestra el barrido de reconocimiento" src="https://github.com/user-attachments/assets/3e57f440-c046-4f4e-b052-5c387afdc7dc" />
 
 > **R:** `10.0.2.4`
 
@@ -25,7 +25,7 @@ Para el inicio del análisis y comprender la etapa inicial del ataque, nos dirig
 
 Dada la naturaleza del tráfico observado y el comportamiento del atacante, podemos comprobar que se trata de una enumeración de puertos y servicios abiertos. Al consultar la matriz de MITRE ATT&CK, confirmamos que esta actividad se corresponde con la técnica de Network Service Discovery.  
 
-![Tráfico de enumeración de puertos y servicios abiertos observado en Wireshark](https://github.com/user-attachments/assets/10cb7b41-0533-4524-8ff8-bfbdf35da98b)
+<img width="1919" height="593" alt="Tráfico de enumeración de puertos y servicios abiertos observado en Wireshark" src="https://github.com/user-attachments/assets/10cb7b41-0533-4524-8ff8-bfbdf35da98b" />
 
 > **R:** `T1046`
 
@@ -35,7 +35,7 @@ Dada la naturaleza del tráfico observado y el comportamiento del atacante, pode
 
 El protocolo SMB (Server Message Block) es un protocolo cliente-servidor diseñado para compartir archivos e impresoras, el cual los atacantes suelen aprovechar para obtener acceso no autorizado y realizar movimientos laterales. Aplicamos el filtro `smb || smb2` en Wireshark para aislar el tráfico. Tras filtrar, observamos claramente cómo el atacante realiza peticiones sobre las carpetas "IPC$" y "Documents".  
 
-![Filtro smb || smb2 en Wireshark con los Tree Connect hacia IPC$ y Documents](https://github.com/user-attachments/assets/5340fc2b-e50d-44fb-b433-bfcf71332dfa)
+<img width="1919" height="611" alt="Filtro smb || smb2 en Wireshark con los Tree Connect hacia IPC$ y Documents" src="https://github.com/user-attachments/assets/5340fc2b-e50d-44fb-b433-bfcf71332dfa" />
 
 > **R:** `\\10.0.2.15\Documents, \\10.0.2.15\IPC$`
 
@@ -45,7 +45,7 @@ El protocolo SMB (Server Message Block) es un protocolo cliente-servidor diseña
 
 Continuando con la revisión del tráfico `smb || smb2`, localizamos una secuencia de **Create-Request** y **Write-Request** correspondientes a un archivo llamado `shell.aspx`. Los archivos `.aspx` son páginas web dinámicas que, si el servidor está mal configurado o desactualizado, permiten a los atacantes ejecutar comandos del sistema operativo o abrir reverse shells. En el *Write-Request* específico, podemos verificar el tamaño del contenido inyectado en dicho archivo.  
 
-![Create-Request y Write-Request de SMB2 para shell.aspx con la longitud del contenido escrito](https://github.com/user-attachments/assets/d2e41307-e168-4c31-bc8d-06de1afa79ed)
+<img width="1919" height="781" alt="Create-Request y Write-Request de SMB2 para shell.aspx con la longitud del contenido escrito" src="https://github.com/user-attachments/assets/d2e41307-e168-4c31-bc8d-06de1afa79ed" />
 
 > **R:** `shell.aspx, 1015024`
 
@@ -55,7 +55,7 @@ Continuando con la revisión del tráfico `smb || smb2`, localizamos una secuenc
 
 Asimilando que el atacante abrió una reverse shell desde el archivo inyectado, analizamos la actividad en **Statistics → Conversations → TCP**, ordenando por cantidad de paquetes. Observamos que los puertos principales de intercambio son el 445 (estándar SMB) y el 4443. Deduciendo que el primero es el estándar, concluimos que el 4443 es el utilizado por el atacante como listener.  
 
-![Conversaciones TCP ordenadas por paquetes, con los puertos 445 y 4443](https://github.com/user-attachments/assets/b0514156-c66c-4592-90e2-8e2c6376e676)
+<img width="1916" height="309" alt="Conversaciones TCP ordenadas por paquetes, con los puertos 445 y 4443" src="https://github.com/user-attachments/assets/b0514156-c66c-4592-90e2-8e2c6376e676" />
 
 > **R:** `4443`
 
@@ -69,7 +69,7 @@ Ejecutamos el plugin de información del sistema para obtener detalles sobre el 
 `vol -f memory.dmp windows.info`  
 El output nos brinda los detalles del sistema operativo y la dirección base del kernel.  
 
-![Salida de windows.info de Volatility 3 con la dirección base del kernel](https://github.com/user-attachments/assets/237520df-9071-48e7-8f6d-709216ba2bd9)
+<img width="915" height="337" alt="Salida de windows.info de Volatility 3 con la dirección base del kernel" src="https://github.com/user-attachments/assets/237520df-9071-48e7-8f6d-709216ba2bd9" />
 
 > **R:** `0xf80079213000`
 
@@ -79,14 +79,14 @@ El output nos brinda los detalles del sistema operativo y la dirección base del
 
 Lanzamos el plugin `vol. -f memory.dmp windows.pstree` para visualizar la jerarquía de procesos. Observamos que el proceso padre `w3wp.exe` (encargado de IIS) está ejecutando un archivo fuera de lo habitual en la ruta de inicio automático (Startup).
 
-![Salida de windows.pstree con w3wp.exe ejecutando un archivo desde la carpeta Startup](https://github.com/user-attachments/assets/5fd43e23-96dc-4103-bd4a-74e091378e65)
+<img width="1919" height="49" alt="Salida de windows.pstree con w3wp.exe ejecutando un archivo desde la carpeta Startup" src="https://github.com/user-attachments/assets/5fd43e23-96dc-4103-bd4a-74e091378e65" />
 
 Correlacionando esta ruta con la matriz de MITRE ATT&CK bajo la táctica de *Persistence*, identificamos la técnica utilizada.  
 
 <div align="center">
   
 
-![Matriz de MITRE ATT&CK con la técnica de persistencia por autoarranque](https://github.com/user-attachments/assets/d92beb41-8514-4ed3-bc7d-3b41edee818a)
+<img width="324" height="534" alt="Matriz de MITRE ATT&CK con la técnica de persistencia por autoarranque" src="https://github.com/user-attachments/assets/d92beb41-8514-4ed3-bc7d-3b41edee818a" />
 
 </div>
 
@@ -98,7 +98,7 @@ Correlacionando esta ruta con la matriz de MITRE ATT&CK bajo la táctica de *Per
 
 Aplicamos el plugin `vol -f memory.dmp windows.netscan` para inspeccionar las conexiones activas al momento del dump. Identificamos la conexión generada por el proceso legítimo `w3wp.exe` hacia la IP del atacante (10.0.2.4) a través del puerto 4443 (identificado anteriormente como el listener). El output nos entrega directamente el PID del proceso responsable.  
 
-![Salida de windows.netscan con la conexión de w3wp.exe hacia 10.0.2.4 por el puerto 4443](https://github.com/user-attachments/assets/671ec9c4-3ec5-469f-b1db-d8f4d981c766)
+<img width="997" height="755" alt="Salida de windows.netscan con la conexión de w3wp.exe hacia 10.0.2.4 por el puerto 4443" src="https://github.com/user-attachments/assets/671ec9c4-3ec5-469f-b1db-d8f4d981c766" />
 
 > **R:** `w3wp.exe, 4332`
 
@@ -110,7 +110,7 @@ Aplicamos el plugin `vol -f memory.dmp windows.netscan` para inspeccionar las co
 
 Tras calcular el hash MD5 del archivo (`D797600296DDBED4497725579D814B7E`) y consultarlo en VirusTotal, revisamos los detalles del binario. Los *packers* se utilizan para envolver el código original en una estructura que incluye un lanzador y el payload cifrado. En este caso, el reporte confirma que el packer utilizado es UPX.  
 
-![Detalles del binario en VirusTotal con el packer identificado](https://github.com/user-attachments/assets/00a1dee9-6e80-471c-af96-199cb6841270)
+<img width="1640" height="408" alt="Detalles del binario en VirusTotal con el packer identificado" src="https://github.com/user-attachments/assets/00a1dee9-6e80-471c-af96-199cb6841270" />
 
 > **R:** `UPX`
 
@@ -120,7 +120,7 @@ Tras calcular el hash MD5 del archivo (`D797600296DDBED4497725579D814B7E`) y con
 
 En la plataforma VirusTotal, navegamos al apartado **Relations** para inspeccionar los dominios contactados por el archivo malicioso. Allí identificamos el FQDN con el que el malware establece comunicación.  
 
-![Pestaña Relations de VirusTotal con el dominio contactado por la muestra](https://github.com/user-attachments/assets/bf799409-6343-42ba-aac7-d1ead5975b0d)
+<img width="600" height="225" alt="Pestaña Relations de VirusTotal con el dominio contactado por la muestra" src="https://github.com/user-attachments/assets/bf799409-6343-42ba-aac7-d1ead5975b0d" />
 
 > **R:** `cp8nl.hyperhost.ua`
 
@@ -130,7 +130,7 @@ En la plataforma VirusTotal, navegamos al apartado **Relations** para inspeccion
 
 Revisando las *family labels* en la página principal del análisis de VirusTotal para el hash proporcionado, identificamos la familia de malware a la que pertenece la muestra.  
 
-![Family labels de VirusTotal para el hash de la muestra](https://github.com/user-attachments/assets/94416327-8b4e-4192-a412-1b74799bf8ec)
+<img width="325" height="90" alt="Family labels de VirusTotal para el hash de la muestra" src="https://github.com/user-attachments/assets/94416327-8b4e-4192-a412-1b74799bf8ec" />
 
 > **R:** `AgentTesla`
 

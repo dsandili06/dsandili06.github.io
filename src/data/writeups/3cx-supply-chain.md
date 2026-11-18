@@ -7,11 +7,11 @@
 
 En el contenido del laboratorio nos entregan un archivo (3CXDesktopApp-18.12.416.msi) el cual usaremos para la investigación.
 
-![Archivo MSI de 3CX entregado por el laboratorio](https://github.com/user-attachments/assets/45119053-ca12-4ab6-8676-b5e68ab91bb3)
+<img width="186" height="196" alt="Archivo MSI de 3CX entregado por el laboratorio" src="https://github.com/user-attachments/assets/45119053-ca12-4ab6-8676-b5e68ab91bb3" />
 
 Y un poco de info sobre como ocurren estas infecciones a nivel corporativos por el compromiso de la supply chain.
 
-![Esquema del funcionamiento de un ataque de supply chain](https://github.com/user-attachments/assets/9ed91e04-67be-4acf-bda8-bcd0427ed982)
+<img width="1280" height="720" alt="Esquema del funcionamiento de un ataque de supply chain" src="https://github.com/user-attachments/assets/9ed91e04-67be-4acf-bda8-bcd0427ed982" />
 
 ### 📖 Contexto Previo
 
@@ -25,7 +25,7 @@ Antes de iniciar el análisis es importante entender qué es **3CX**. Se trata d
 
 Teniendo en cuenta que ya sabemos el tipo de corporación y el sistema que usan, es cuestión de activar la inteligencia de amenazas y buscar información relevante en foros de seguridad y reportes vinculados a las vulnerabilidades asociadas a las versiones presentes. Investigando podemos confirmar que las versiones afectadas son **18.12.407** y **18.12.416**, ambas con comportamiento malicioso documentado.  
 
-![Reporte con las versiones de 3CX marcadas como maliciosas](https://github.com/user-attachments/assets/b19c209b-02b7-4236-b6c8-18ba8794615a)
+<img width="498" height="236" alt="Reporte con las versiones de 3CX marcadas como maliciosas" src="https://github.com/user-attachments/assets/b19c209b-02b7-4236-b6c8-18ba8794615a" />
 
 > **R:** `2`
 
@@ -38,7 +38,7 @@ Para facilitar el input en los motores de threat intel, extraemos el SHA256 del 
 Obteniendo el hash: `59E1EDF4D82FAE4978E97512B0331B7EB21DD4B838B850BA46794D9C7A2C0983`.  
 Insertándolo en VirusTotal y navegando al apartado **Details → History**, podemos visualizar el **Creation Time** del archivo malicioso.  
 
-![Historial del archivo en VirusTotal con la hora de creación](https://github.com/user-attachments/assets/8c891f15-c939-4aec-83a8-f691e3571368)
+<img width="640" height="186" alt="Historial del archivo en VirusTotal con la hora de creación" src="https://github.com/user-attachments/assets/8c891f15-c939-4aec-83a8-f691e3571368" />
 
 > **R:** `2023-03-13 06:33`
 
@@ -48,7 +48,7 @@ Insertándolo en VirusTotal y navegando al apartado **Details → History**, pod
 
 En VirusTotal podemos corroborar que el archivo `.msi` malicioso deposita varios archivos durante su ejecución. Al analizar los **Dropped Files**, identificamos 2 DLLs como los payloads principales, diferenciados por poseer el mayor porcentaje de detección entre los motores de antivirus. Al verificar las categorías de detección de ambas, confirmamos que estos son los principales payloads inyectados en el sistema por parte del instalador malicioso.  
 
-![Dropped Files del MSI en VirusTotal con las DLLs más detectadas](https://github.com/user-attachments/assets/0c72cdb2-7ea4-42a9-bccb-53b51cae5d87)
+<img width="1001" height="369" alt="Dropped Files del MSI en VirusTotal con las DLLs más detectadas" src="https://github.com/user-attachments/assets/0c72cdb2-7ea4-42a9-bccb-53b51cae5d87" />
 
 > **R:** `ffmpeg.dll, d3dcompiler_47.dll`
 
@@ -58,7 +58,7 @@ En VirusTotal podemos corroborar que el archivo `.msi` malicioso deposita varios
 
 Continuando con la temática de Threat Intelligence, buscamos un mapeo de las TTPs MITRE ATT&CK empleadas en el ataque. Encontramos un reporte bien estructurado y completo que detalla el **MITRE TID Mapping** del incidente, donde se confirma que la técnica empleada para cargar la DLL maliciosa es **DLL Side-Loading**, una técnica donde un ejecutable legítimo es manipulado para cargar una DLL maliciosa en su lugar.  
 
-![Mapeo MITRE TID del incidente con la técnica de DLL Side-Loading](https://github.com/user-attachments/assets/1d64fd7f-f3c9-4fd5-b785-de14dc28e264)
+<img width="1019" height="754" alt="Mapeo MITRE TID del incidente con la técnica de DLL Side-Loading" src="https://github.com/user-attachments/assets/1d64fd7f-f3c9-4fd5-b785-de14dc28e264" />
 
 > **R:** `T1574`
 
@@ -68,9 +68,9 @@ Continuando con la temática de Threat Intelligence, buscamos un mapeo de las TT
 
 Al revisar los reportes individuales de las 2 DLLs maliciosas en VirusTotal, vemos que ambas se encuentran categorizadas de forma consistente por los motores de detección como **Trojan**.  
 
-![Reporte de VirusTotal de la primera DLL con categoría Trojan](https://github.com/user-attachments/assets/02af2b87-c276-44d4-98b4-0d019492a7ae)
+<img width="1919" height="990" alt="Reporte de VirusTotal de la primera DLL con categoría Trojan" src="https://github.com/user-attachments/assets/02af2b87-c276-44d4-98b4-0d019492a7ae" />
 
-![Reporte de VirusTotal de la segunda DLL con categoría Trojan](https://github.com/user-attachments/assets/60ac348a-2088-4390-bc62-7e3ef0fa39fc)
+<img width="1919" height="989" alt="Reporte de VirusTotal de la segunda DLL con categoría Trojan" src="https://github.com/user-attachments/assets/60ac348a-2088-4390-bc62-7e3ef0fa39fc" />
 
 > **R:** `Trojan`
 
@@ -80,7 +80,7 @@ Al revisar los reportes individuales de las 2 DLLs maliciosas en VirusTotal, vem
 
 Retomando el reporte del MITRE TID Mapping identificado en Q4, navegamos hasta la sección correspondiente a técnicas de evasión de entornos virtualizados y de análisis, donde encontramos la TID directamente relacionada con **Virtualization/Sandbox Evasion**.  
 
-![Sección de evasión de virtualización y sandbox en el reporte MITRE](https://github.com/user-attachments/assets/3cee1ea6-7a4b-47a6-918f-c0b4c5b79b30)
+<img width="971" height="580" alt="Sección de evasión de virtualización y sandbox en el reporte MITRE" src="https://github.com/user-attachments/assets/3cee1ea6-7a4b-47a6-918f-c0b4c5b79b30" />
 
 > **R:** `T1497`
 
@@ -90,7 +90,7 @@ Retomando el reporte del MITRE TID Mapping identificado en Q4, navegamos hasta l
 
 En VirusTotal, en el apartado **Behavior** del análisis de `ffmpeg.dll`, podemos ver las **capabilities** detalladas del DLL malicioso. Aquí se expone claramente el hipervisor objetivo de las técnicas anti-análisis implementadas por el malware.  
 
-![Capabilities de ffmpeg.dll en la sección Behavior de VirusTotal](https://github.com/user-attachments/assets/54e6eb7b-cf5a-4773-aed2-2f1c50068e23)
+<img width="453" height="304" alt="Capabilities de ffmpeg.dll en la sección Behavior de VirusTotal" src="https://github.com/user-attachments/assets/54e6eb7b-cf5a-4773-aed2-2f1c50068e23" />
 
 > **R:** `VMware`
 
@@ -100,7 +100,7 @@ En VirusTotal, en el apartado **Behavior** del análisis de `ffmpeg.dll`, podemo
 
 En el apartado de comportamiento del análisis de `ffmpeg.dll`, dentro de la sección de **Cryptography**, podemos ver que el malware hace uso de **RC4** para encriptar el payload malicioso, dificultando su análisis estático y evadiendo firmas basadas en strings en texto plano.  
 
-![Sección Cryptography del análisis de comportamiento de ffmpeg.dll](https://github.com/user-attachments/assets/ba800fb9-c19b-4fbe-a9e5-ede42f08ced7)
+<img width="732" height="658" alt="Sección Cryptography del análisis de comportamiento de ffmpeg.dll" src="https://github.com/user-attachments/assets/ba800fb9-c19b-4fbe-a9e5-ede42f08ced7" />
 
 > **R:** `RC4`
 
@@ -110,7 +110,7 @@ En el apartado de comportamiento del análisis de `ffmpeg.dll`, dentro de la sec
 
 Para la atribución del ataque podemos consultar el artículo de Qualys referenciado en los reportes del incidente, o bien revisar la sección **Community** en VirusTotal sobre los archivos maliciosos analizados. Ambas fuentes atribuyen de forma consistente el ataque al grupo APT **Lazarus**, actor de amenazas patrocinado por el Estado norcoreano con historial documentado de ataques de supply chain de alto perfil.  
 
-![Sección Community de VirusTotal con la atribución a Lazarus](https://github.com/user-attachments/assets/13339241-d0ee-4517-9b52-0c0d5483b2f4)
+<img width="1919" height="874" alt="Sección Community de VirusTotal con la atribución a Lazarus" src="https://github.com/user-attachments/assets/13339241-d0ee-4517-9b52-0c0d5483b2f4" />
 
 > **R:** `Lazarus`
 

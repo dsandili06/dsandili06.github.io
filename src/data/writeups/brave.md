@@ -16,7 +16,7 @@ En este caso, lo más factible es realizar un análisis inicial del dump con un 
 Comando utilizado:  
 `vol -f (path al dump) windows.info`  
 
-![Salida de windows.info con la hora del sistema al momento de la adquisición](https://github.com/user-attachments/assets/753deb98-1102-45d0-a104-5773abe1b780)
+<img width="1229" height="352" alt="Salida de windows.info con la hora del sistema al momento de la adquisición" src="https://github.com/user-attachments/assets/753deb98-1102-45d0-a104-5773abe1b780" />
 
 > **R:** `2021-04-30 17:52`
 
@@ -40,7 +40,7 @@ Comando utilizado:
 `vol -f (path al dump) windows.pslist | sls "brave"`  
 Es importante tener en cuenta que en la salida del plugin, el **primer identificador corresponde al PID** y el **segundo al PPID**, por lo que hay que interpretar correctamente ambos campos. 
 
-![Salida filtrada de pslist con las entradas de brave.exe](https://github.com/user-attachments/assets/f98849ad-d2c2-458f-aff7-0994c36cf1f1)
+<img width="1287" height="55" alt="Salida filtrada de pslist con las entradas de brave.exe" src="https://github.com/user-attachments/assets/f98849ad-d2c2-458f-aff7-0994c36cf1f1" />
 
 > **R:** `4856`
 
@@ -53,7 +53,7 @@ Comando utilizado:
 `vol -f (path al dump) windows.netscan | sls "ESTABLISHED"`  
 De esta manera podemos contar la cantidad exacta de conexiones activas en ese instante.  
 
-![Conexiones en estado ESTABLISHED listadas por netscan](https://github.com/user-attachments/assets/24b174f2-0095-41fc-b51f-c6f574ef5cfb)
+<img width="1139" height="181" alt="Conexiones en estado ESTABLISHED listadas por netscan" src="https://github.com/user-attachments/assets/24b174f2-0095-41fc-b51f-c6f574ef5cfb" />
 
 > **R:** `10`
 
@@ -63,11 +63,11 @@ De esta manera podemos contar la cantidad exacta de conexiones activas en ese in
 
 Tomando como base la información de la pregunta anterior, podemos identificar la IP remota asociada a la conexión establecida de `chrome.exe` y posteriormente realizar un **Reverse DNS Lookup**. Este procedimiento permite consultar qué nombre de dominio está asociado a una IP específica. 
 
-![Conexión establecida de chrome.exe con su IP remota](https://github.com/user-attachments/assets/222228dc-e227-4953-a2c6-b490a1b03151)
+<img width="1028" height="244" alt="Conexión establecida de chrome.exe con su IP remota" src="https://github.com/user-attachments/assets/222228dc-e227-4953-a2c6-b490a1b03151" />
 
 Para esto utilicé la página `dnschecker.org`, resolviendo así el dominio correspondiente a la conexión observada.  
 
-![Resultado del Reverse DNS Lookup en dnschecker.org](https://github.com/user-attachments/assets/4b6143f1-51bf-4aec-9ed0-21699dd3acf4)
+<img width="1499" height="626" alt="Resultado del Reverse DNS Lookup en dnschecker.org" src="https://github.com/user-attachments/assets/4b6143f1-51bf-4aec-9ed0-21699dd3acf4" />
 
 > **R:** `protonmail.ch`
 
@@ -81,7 +81,7 @@ Comando utilizado para el dump del proceso:
 Una vez extraído el proceso, calculamos el hash MD5 con PowerShell:  
 `Get-FileHash -Algorithm MD5 (path al dump del proceso)`  
 
-![Hash MD5 del ejecutable del PID 6988 calculado con Get-FileHash](https://github.com/user-attachments/assets/c0d5b97b-4e6d-45ef-90b1-5d63173d43cd)
+<img width="1208" height="218" alt="Hash MD5 del ejecutable del PID 6988 calculado con Get-FileHash" src="https://github.com/user-attachments/assets/c0d5b97b-4e6d-45ef-90b1-5d63173d43cd" />
 
 > **R:** `0B493D8E26F03CCD2060E0BE85F430AF`
 
@@ -91,7 +91,7 @@ Una vez extraído el proceso, calculamos el hash MD5 con PowerShell:
 
 Para identificar exactamente lo que solicita la pregunta, recurrimos a **HxD**, un editor hexadecimal muy útil para este tipo de validaciones puntuales. Navegamos directamente al offset `0x45BE876` y, una vez posicionados allí, leemos los 6 bytes indicados por la consigna.  
 
-![Vista hexadecimal en HxD en el offset 0x45BE876](https://github.com/user-attachments/assets/81883e68-d1f0-4e28-83dd-541e61875879)
+<img width="1919" height="679" alt="Vista hexadecimal en HxD en el offset 0x45BE876" src="https://github.com/user-attachments/assets/81883e68-d1f0-4e28-83dd-541e61875879" />
 
 > **R:** `hacker`
 
@@ -103,7 +103,7 @@ En este caso utilizamos el plugin `windows.pstree`, ya que es la forma más clar
 Comando utilizado:  
 `vol -f (path al dump) windows.pstree`  
 
-![Árbol de procesos con powershell.exe y su proceso padre explorer.exe](https://github.com/user-attachments/assets/b22a8267-012e-46e7-83d9-8d852f226f14)
+<img width="1902" height="357" alt="Árbol de procesos con powershell.exe y su proceso padre explorer.exe" src="https://github.com/user-attachments/assets/b22a8267-012e-46e7-83d9-8d852f226f14" />
 
 > **R:** `2021-04-30 17:39`
 
@@ -115,7 +115,7 @@ Aquí aplicamos el plugin `windows.cmdline`, que nos entrega los parámetros con
 Comando utilizado:  
 `vol -f (path al dump) windows.cmdline | sls "notepad"`  
 
-![Línea de comandos de notepad.exe con la ruta del archivo abierto](https://github.com/user-attachments/assets/ea188541-f0ab-403f-9668-77c624ffced7)
+<img width="1053" height="86" alt="Línea de comandos de notepad.exe con la ruta del archivo abierto" src="https://github.com/user-attachments/assets/ea188541-f0ab-403f-9668-77c624ffced7" />
 
 > **R:** `C:\Users\JOHNDO~1\AppData\Local\Temp\7zO4FB31F24\accountNum`
 
@@ -128,7 +128,7 @@ Para extraer esta información desde memoria utilizamos el plugin específico de
 `vol -f (path al dump) windows.registry.userassist | sls "brave"`  
 De esta manera filtramos el ruido del output y nos quedamos únicamente con la evidencia asociada a Brave.  
 
-![Entradas de UserAssist asociadas a Brave con el tiempo de uso](https://github.com/user-attachments/assets/447472f8-644f-49e1-b290-a8a2011073ee)
+<img width="1919" height="244" alt="Entradas de UserAssist asociadas a Brave con el tiempo de uso" src="https://github.com/user-attachments/assets/447472f8-644f-49e1-b290-a8a2011073ee" />
 
 > **R:** `4`
 

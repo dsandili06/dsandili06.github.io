@@ -17,7 +17,7 @@ En el contenido del laboratorio nos entregan un hash del archivo malicioso para 
 
 En la plataforma de VirusTotal después de haber introducido el hash, podemos irnos al apartado de "Details" y en "History" podemos encontrar dicha fecha de creación.
 
-![Sección History de VirusTotal con la fecha de creación de la muestra](https://github.com/user-attachments/assets/0072dd05-08a7-4cbf-ad8a-6ff5af4637bf)
+<img width="1360" height="692" alt="Sección History de VirusTotal con la fecha de creación de la muestra" src="https://github.com/user-attachments/assets/0072dd05-08a7-4cbf-ad8a-6ff5af4637bf" />
 
 > **R:** `2022-09-28 17:40 UTC`
 
@@ -27,7 +27,7 @@ En la plataforma de VirusTotal después de haber introducido el hash, podemos ir
 
 Podemos corroborar en VirusTotal que en "Relations" hay un C2 Server vinculado a este malware, o también en el texto del reporte de Any.Run, en "Malware Configuration" vemos el C2 Server correspondiente.
 
-![Pestaña Relations de VirusTotal con el servidor C2 vinculado a la muestra](https://github.com/user-attachments/assets/d10675a0-6ea6-4d7a-bfbf-4772e96061f3)
+<img width="1360" height="694" alt="Pestaña Relations de VirusTotal con el servidor C2 vinculado a la muestra" src="https://github.com/user-attachments/assets/d10675a0-6ea6-4d7a-bfbf-4772e96061f3" />
 
 > **R:**`http://171.22.28.221/5c06c05b7b34e8e6.php`
 
@@ -37,7 +37,7 @@ Podemos corroborar en VirusTotal que en "Relations" hay un C2 Server vinculado a
 
 Después de ver el apartado de "Behaviour" en VirusTotal, encontramos que la primer librería que solicita el malware es la siguiente: 
 
-![Sección Behaviour de VirusTotal con la primera librería solicitada por el malware](https://github.com/user-attachments/assets/eee18e24-e49c-417e-9597-327a61aef554)
+<img width="1360" height="692" alt="Sección Behaviour de VirusTotal con la primera librería solicitada por el malware" src="https://github.com/user-attachments/assets/eee18e24-e49c-417e-9597-327a61aef554" />
 
 > **R:**`sqlite3.dll`
 
@@ -62,9 +62,9 @@ En Any.Run podemos ver un mapeo de las TTPs de MITRE ATT&CK, en la parte de robo
 
 Podemos intentar con las dos opciones y ver cual es la correcta, o podemos irnos a alguna de las POST Request del malware. Como vimos anteriormente este malware codifica en Base64 así que copiamos la POST Request y nos dirigimos a CyberChef. Decodificando el Base64 encontramos que hace el envío de los artefactos, dándonos a entender que se trata de un "Credential from Password Stores".
 
-![Mapeo de TTPs de MITRE ATT&CK en Any.Run con las técnicas de robo de credenciales](https://github.com/user-attachments/assets/f5f4a410-97b3-413e-addc-96c3f6827b78)
+<img width="1359" height="677" alt="Mapeo de TTPs de MITRE ATT&CK en Any.Run con las técnicas de robo de credenciales" src="https://github.com/user-attachments/assets/f5f4a410-97b3-413e-addc-96c3f6827b78" />
 
-![Contenido del POST Request decodificado en Base64 con CyberChef mostrando los artefactos enviados](https://github.com/user-attachments/assets/c5d98813-68b2-4317-b313-9092c7183025)
+<img width="1360" height="692" alt="Contenido del POST Request decodificado en Base64 con CyberChef mostrando los artefactos enviados" src="https://github.com/user-attachments/assets/c5d98813-68b2-4317-b313-9092c7183025" />
 
 > **R:**`T1555`
 
@@ -74,7 +74,7 @@ Podemos intentar con las dos opciones y ver cual es la correcta, o podemos irnos
 
 Como bien podemos observar el malware crea un proceso `cmd.exe` con varios parámetros.. Espera 5 segundos antes de eliminarse a sí mismo y también todo el contenido de la carpeta `C:\ProgramData` apuntando a las librerías `*.dll`.
 
-![Proceso hijo cmd.exe en Any.Run con los parámetros de espera y borrado de DLLs](https://github.com/user-attachments/assets/7b8547fe-ee31-4a8b-8ddb-bbcb1979f930)
+<img width="1360" height="694" alt="Proceso hijo cmd.exe en Any.Run con los parámetros de espera y borrado de DLLs" src="https://github.com/user-attachments/assets/7b8547fe-ee31-4a8b-8ddb-bbcb1979f930" />
 
 > **R:**`C:\ProgramData`
 

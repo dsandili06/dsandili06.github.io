@@ -15,7 +15,7 @@ El laboratorio provee un archivo `.ad1` (imagen forense del host de Ethan) para 
 
 Una vez inyectado el archivo `.ad1` en FTK Imager, navegamos directamente a la carpeta `Downloads` del usuario para examinar las descargas realizadas. En su contenido encontramos un archivo que presenta una **doble extensión** (`.pdf.exe`), una red flag altamente relevante desde el punto de vista forense, ya que es una técnica clásica de ofuscación del tipo de archivo real con el objetivo de engañar al usuario haciéndolo creer que se trata de un documento PDF legítimo. Para extraer el hash MD5 del archivo, lo seleccionamos en FTK Imager y visualizamos sus propiedades en el panel inferior izquierdo, donde el hash MD5 es calculado y mostrado directamente por la herramienta.  
 
-![Propiedades en FTK Imager del archivo IMF-Info.pdf.exe con su hash MD5](https://github.com/user-attachments/assets/edb535db-8b60-47bf-92f2-49bb9976dfc9)
+<img width="1005" height="1030" alt="Propiedades en FTK Imager del archivo IMF-Info.pdf.exe con su hash MD5" src="https://github.com/user-attachments/assets/edb535db-8b60-47bf-92f2-49bb9976dfc9" />
 
 > **R:** `336a7cf476ebc7548c93507339196abb`
 
@@ -25,7 +25,7 @@ Una vez inyectado el archivo `.ad1` en FTK Imager, navegamos directamente a la c
 
 La URL de descarga del archivo malicioso se encuentra en el archivo `Zone.Identifier` asociado al ejecutable. Es importante comprender la función de este archivo: **Zone.Identifier** es un metadato de seguridad que Windows crea automáticamente para rastrear el origen y la zona de seguridad de cualquier archivo descargado desde Internet. Funciona como una **"Mark of the Web" (MotW)**, permitiendo al sistema operativo aplicar advertencias de seguridad como bloquear la ejecución automática de scripts o activar SmartScreen. Los archivos provenientes de Internet reciben `ZoneId=3`, que es precisamente el valor presente en este caso, confirmando que el archivo fue descargado desde una fuente externa. El contenido del `Zone.Identifier` expone la URL completa de origen.  
 
-![Contenido de Zone.Identifier con ZoneId=3 y la URL de origen del ejecutable](https://github.com/user-attachments/assets/1b8f7ad5-dbc5-48d5-8bcf-f3ad92455397)
+<img width="1048" height="544" alt="Contenido de Zone.Identifier con ZoneId=3 y la URL de origen del ejecutable" src="https://github.com/user-attachments/assets/1b8f7ad5-dbc5-48d5-8bcf-f3ad92455397" />
 
 > **R:** `http://192.168.16.128:8000/IMF-Info.pdf.exe`
 
@@ -39,9 +39,9 @@ Para identificar el navegador utilizado en la descarga, realizamos un análisis 
 
 Al abrir el historial de **Chrome** con DB Browser for SQLite, la única descarga registrada corresponde al instalador de **TeamViewer**, descartando este navegador como origen. En cambio, al analizar el historial de **Microsoft Edge**, podemos ver claramente múltiples descargas registradas, incluyendo de forma explícita el archivo malicioso `IMF-Info.pdf.exe`, confirmando así el navegador utilizado.  
 
-![Historial de descargas de Chrome con el instalador de TeamViewer como única entrada](https://github.com/user-attachments/assets/12298d37-097c-4ad7-9a2e-052847ce1474)
+<img width="1919" height="608" alt="Historial de descargas de Chrome con el instalador de TeamViewer como única entrada" src="https://github.com/user-attachments/assets/12298d37-097c-4ad7-9a2e-052847ce1474" />
 
-![Historial de descargas de Edge con IMF-Info.pdf.exe entre las descargas registradas](https://github.com/user-attachments/assets/f68aa84e-4958-460e-bfb0-df7eead40efc)
+<img width="1919" height="609" alt="Historial de descargas de Edge con IMF-Info.pdf.exe entre las descargas registradas" src="https://github.com/user-attachments/assets/f68aa84e-4958-460e-bfb0-df7eead40efc" />
 
 > **R:** `Microsoft Edge`
 
@@ -62,9 +62,9 @@ Esto confirma el uso frecuente de **Windows Mail** por parte del usuario. El sig
 
 Una vez exportado, lo introducimos en **CyberChef** mediante la opción `Open file as input`. Aplicamos la receta `Extract IP Addresses` con la opción `Unique` habilitada para eliminar duplicados del output. El resultado expone las tres IPs mencionadas en los correos electrónicos cacheados localmente.  
 
-![Receta Extract IP Addresses de CyberChef aplicada sobre HxStore.hxd](https://github.com/user-attachments/assets/4a56f69a-bdce-4d51-9ef7-722bd323503f)
+<img width="1919" height="506" alt="Receta Extract IP Addresses de CyberChef aplicada sobre HxStore.hxd" src="https://github.com/user-attachments/assets/4a56f69a-bdce-4d51-9ef7-722bd323503f" />
 
-![Resultado único de CyberChef con las tres direcciones IP extraídas del correo](https://github.com/user-attachments/assets/a8fb7a43-b78b-485c-ba74-1851a43263c0)
+<img width="1919" height="656" alt="Resultado único de CyberChef con las tres direcciones IP extraídas del correo" src="https://github.com/user-attachments/assets/a8fb7a43-b78b-485c-ba74-1851a43263c0" />
 
 > **R:** `145.67.29.88, 212.33.10.112, 192.168.16.128`
 
@@ -76,9 +76,9 @@ Para analizar el contenido del ejecutable malicioso sin ejecutarlo, lo extraemos
 
 Introducimos dicho payload en CyberChef para identificar el método de ofuscación. Tras probar distintas combinaciones, la receta correcta resulta ser **Reverse + From Base64**, la cual decodifica exitosamente el script, revelando un **ransomware dirigido específicamente a dos archivos concretos del sistema de Ethan**. Esto indica que el atacante realizó un reconocimiento previo del endpoint antes de desplegar el malware, seleccionando manualmente los archivos de mayor valor. En la primera línea del script decodificado se puede observar la **contraseña hardcodeada** utilizada para la encriptación de los archivos objetivo.  
 
-![Receta Strings de CyberChef sobre el ejecutable con el payload de PowerShell ofuscado](https://github.com/user-attachments/assets/7085e74c-4b58-4a80-bb4b-646c107d33ac)
+<img width="1538" height="923" alt="Receta Strings de CyberChef sobre el ejecutable con el payload de PowerShell ofuscado" src="https://github.com/user-attachments/assets/7085e74c-4b58-4a80-bb4b-646c107d33ac" />
 
-![Script de PowerShell decodificado con Reverse y From Base64 mostrando la contraseña en la primera línea](https://github.com/user-attachments/assets/04e4b21d-8a5b-4496-b38c-919dfe1a9b4e)
+<img width="1680" height="923" alt="Script de PowerShell decodificado con Reverse y From Base64 mostrando la contraseña en la primera línea" src="https://github.com/user-attachments/assets/04e4b21d-8a5b-4496-b38c-919dfe1a9b4e" />
 
 > **R:** `Imf!nfo#2025Sec$`
 
@@ -90,9 +90,9 @@ Con el funcionamiento completo del script ransomware identificado (algoritmo de 
 
 Al ejecutar el proceso de descifrado sobre los archivos encriptados, podemos corroborar que los mismos contienen **información claramente confidencial de la IMF**, lo que confirma que el ataque fue meticulosamente dirigido contra activos de alto valor. Al examinar el contenido del archivo `IMF-Mission.pdf` descifrado, encontramos al final del documento la **flag** que confirma la resolución exitosa del laboratorio.
 
-![Ejecución del script de descifrado sobre los archivos cifrados](https://github.com/user-attachments/assets/76658b9d-df08-4374-8d2a-ea8d9da0a3fb)
+<img width="1265" height="718" alt="Ejecución del script de descifrado sobre los archivos cifrados" src="https://github.com/user-attachments/assets/76658b9d-df08-4374-8d2a-ea8d9da0a3fb" />
 
-![Contenido de IMF-Mission.pdf descifrado con la flag al final del documento](https://github.com/user-attachments/assets/4447564c-b0f6-407a-80e8-4bbf34258150)
+<img width="1919" height="952" alt="Contenido de IMF-Mission.pdf descifrado con la flag al final del documento" src="https://github.com/user-attachments/assets/4447564c-b0f6-407a-80e8-4bbf34258150" />
 
 > **R:** `CyberDefenders{N3v3r_eX3cuTe_F!l3$_dOwnL0ded_fr0m_M@lic10u5_$erV3r}`
 

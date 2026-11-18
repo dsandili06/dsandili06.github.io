@@ -14,7 +14,7 @@ En el laboratorio nos entregan un PCAP para análisis de compromiso web server.
 **Q1.** By knowing the attacker's IP, we can analyze all logs and actions related to that IP. Can you provide the attacker's IP?
 Siguiendo el nombre "Web Investigation" filtramos HTTP conversations. Observamos volumen masivo de GET requests desde **111.224.250.131**.
 
-![Conversaciones HTTP en Wireshark con un volumen masivo de GET requests desde una única IP](https://github.com/user-attachments/assets/dbe31eed-9a78-4ae2-a788-40298f3654fc)
+<img width="1355" height="608" alt="Conversaciones HTTP en Wireshark con un volumen masivo de GET requests desde una única IP" src="https://github.com/user-attachments/assets/dbe31eed-9a78-4ae2-a788-40298f3654fc" />
 
 > **R:** `111.224.250.131`
 
@@ -23,7 +23,7 @@ Siguiendo el nombre "Web Investigation" filtramos HTTP conversations. Observamos
 **Q2.** If the geographical origin of an IP address is known to be from a region that has no business traffic, this can be an indicator of a targeted attack. Can you determine the origin city of the attacker?
 Usando WhatIsMyIPAddress con la IP maliciosa identificamos origen geográfico.  
 
-![Resultado de geolocalización de la IP maliciosa en WhatIsMyIPAddress](https://github.com/user-attachments/assets/bfc43e89-8e5d-4ffb-beb3-318f481611bf)
+<img width="1358" height="570" alt="Resultado de geolocalización de la IP maliciosa en WhatIsMyIPAddress" src="https://github.com/user-attachments/assets/bfc43e89-8e5d-4ffb-beb3-318f481611bf" />
 
 > **R:** `Shijiazhuang`
 
@@ -33,7 +33,7 @@ Usando WhatIsMyIPAddress con la IP maliciosa identificamos origen geográfico.
 
 En las primeras interacciones de la IP maliciosa con el servidor web, podemos ver que después del request al "search.php" empiezan las peticiones comprometedoras.
 
-![Primeras peticiones de la IP maliciosa en Wireshark seguidas por request a search.php](https://github.com/user-attachments/assets/68a2b322-60e4-4f67-bec0-6d57bc5cb249)
+<img width="1360" height="608" alt="Primeras peticiones de la IP maliciosa en Wireshark seguidas por request a search.php" src="https://github.com/user-attachments/assets/68a2b322-60e4-4f67-bec0-6d57bc5cb249" />
 
 > **R:** `search.php`
 
@@ -43,7 +43,7 @@ En las primeras interacciones de la IP maliciosa con el servidor web, podemos ve
 
 Viendo las peticiones posteriores a la petición del script vulnerable, se hace un intento de SQLi para testear parámetros vulnerables en el servidor, si al payload lo limpiamos ("%20" se traduce a " ") encontramos la respuesta.
 
-![Request con el primer intento de SQLi contra search.php en Wireshark](https://github.com/user-attachments/assets/555162bb-ccba-4c9d-8532-7fc76ee765f6)
+<img width="1360" height="607" alt="Request con el primer intento de SQLi contra search.php en Wireshark" src="https://github.com/user-attachments/assets/555162bb-ccba-4c9d-8532-7fc76ee765f6" />
 
 > **R:** `/search.php?search=book and 1=1; -- -`
 
@@ -54,9 +54,9 @@ Viendo las peticiones posteriores a la petición del script vulnerable, se hace 
 Para encontrar  la respuesta tenemos que buscar patrones en el reconocimiento de DB disponibles en el servidor como por ej ("schema" o "information_schema" - SELECT schema_name FROM information_schema.schemata).
 Aplicando dichos filtros en la búsqueda de paquetes encontramos que en el paquete 1525 lista todas las DB disponibles del servidor.
 
-![Filtro por information_schema en Wireshark que localiza el paquete 1525](https://github.com/user-attachments/assets/bb92c51d-db0f-4a3a-9788-daa5167844f7)
+<img width="1360" height="643" alt="Filtro por information_schema en Wireshark que localiza el paquete 1525" src="https://github.com/user-attachments/assets/bb92c51d-db0f-4a3a-9788-daa5167844f7" />
 
-![Detalle del paquete 1525 con la lista de bases de datos del servidor](https://github.com/user-attachments/assets/ba67bfd3-7cd0-4551-ab19-5ba23d397923)
+<img width="1360" height="607" alt="Detalle del paquete 1525 con la lista de bases de datos del servidor" src="https://github.com/user-attachments/assets/ba67bfd3-7cd0-4551-ab19-5ba23d397923" />
 
 > **R:** `/search.php?search=book' UNION ALL SELECT NULL,CONCAT(0x7178766271,JSON_ARRAYAGG(CONCAT_WS(0x7a76676a636b,schema_name)),0x7176706a71) FROM INFORMATION_SCHEMA.SCHEMATA-- -`
 
@@ -67,9 +67,9 @@ Aplicando dichos filtros en la búsqueda de paquetes encontramos que en el paque
 Teniendo en cuenta la syntaxis de SQL y demás parámetros para agilizar la búsqueda buscamos directamente los frames que contenga la siguiente info: "table_name".
 Haciendo un follow HTTP stream del segundo paquete que encontramos, podemos ver claramente que se lista la table_name **Customers**.
 
-![Frames con table_name filtrados en Wireshark](https://github.com/user-attachments/assets/85cf449c-f932-4976-b8be-a07818f27dff)
+<img width="1360" height="608" alt="Frames con table_name filtrados en Wireshark" src="https://github.com/user-attachments/assets/85cf449c-f932-4976-b8be-a07818f27dff" />
 
-![Follow HTTP Stream con la tabla Customers listada](https://github.com/user-attachments/assets/d34c3b30-1a71-4157-892e-d9a034bdc390)
+<img width="1360" height="609" alt="Follow HTTP Stream con la tabla Customers listada" src="https://github.com/user-attachments/assets/d34c3b30-1a71-4157-892e-d9a034bdc390" />
 
 > **R:** `customers`
 
@@ -79,9 +79,9 @@ Haciendo un follow HTTP stream del segundo paquete que encontramos, podemos ver 
 Si nos vamos al apartado de "Statistics" - "HTTP" - "Requests" podemos encontrar una cantidad exorbitante de requests solicitadas por el atacante. Claramente un intento de enumeración de directorios web, y viendo el User-Agent se trata de la conocida herramienta "GoBuster".
 Teniendo en cuenta la respuesta de la pregunta anterior podemos aplicar un "http.request.method==POST" y podemos ver el atacante interactuando con el directorio "/admin/".
 
-![Statistics HTTP Requests en Wireshark con la enumeración masiva de directorios](https://github.com/user-attachments/assets/1391a5c4-b2aa-4557-a483-6b020e48c2a7)
+<img width="1360" height="609" alt="Statistics HTTP Requests en Wireshark con la enumeración masiva de directorios" src="https://github.com/user-attachments/assets/1391a5c4-b2aa-4557-a483-6b020e48c2a7" />
 
-![Filtro POST en Wireshark con el atacante interactuando con el directorio /admin/](https://github.com/user-attachments/assets/6e16c15f-b41b-4122-b8c9-138ec6c04076)
+<img width="1360" height="607" alt="Filtro POST en Wireshark con el atacante interactuando con el directorio /admin/" src="https://github.com/user-attachments/assets/6e16c15f-b41b-4122-b8c9-138ec6c04076" />
 
 > **R:** `/admin/`
 
@@ -91,7 +91,7 @@ Teniendo en cuenta la respuesta de la pregunta anterior podemos aplicar un "http
 
 Después de buscar el timeline para correlacionar la respuesta de la pregunta anterior, podemos ver que encontró las credenciales para iniciar sesión desde el panel de Admin.
 
-![Petición de login al panel de administración con las credenciales del atacante](https://github.com/user-attachments/assets/452e7ffa-e8f7-47c3-abad-0e1b0e1284b6)
+<img width="1360" height="733" alt="Petición de login al panel de administración con las credenciales del atacante" src="https://github.com/user-attachments/assets/452e7ffa-e8f7-47c3-abad-0e1b0e1284b6" />
 
 > **R:** `admin:admin123!`
 
@@ -101,7 +101,7 @@ Después de buscar el timeline para correlacionar la respuesta de la pregunta an
 
 Después de que el atacante inició sesión mandó un POST request en el paquete N°88757 si hacemos un Follow HTTP Stream, encontramos que subió un archivo en el index.php.
 
-![Follow HTTP Stream del paquete 88757 con el archivo subido por el atacante en index.php](https://github.com/user-attachments/assets/f5a8f30a-219b-4bf5-8ab7-fec075a8613f)
+<img width="1360" height="608" alt="Follow HTTP Stream del paquete 88757 con el archivo subido por el atacante en index.php" src="https://github.com/user-attachments/assets/f5a8f30a-219b-4bf5-8ab7-fec075a8613f" />
 
 > **R:** `NVri2vhp.php`
 

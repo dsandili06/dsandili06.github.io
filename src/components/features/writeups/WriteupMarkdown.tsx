@@ -121,25 +121,22 @@ export function WriteupMarkdown({
       if (!resolved) return null;
       return (
         <figure className="my-10">
-          <img
-            src={resolved}
-            alt={alt || ""}
-            loading="lazy"
-            decoding="async"
-            referrerPolicy="no-referrer"
-            tabIndex={0}
-            role="button"
+          <button
+            type="button"
             aria-label={alt ? `Ampliar imagen: ${alt}` : "Ampliar imagen"}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onOpenImage(resolved);
-              }
-            }}
             onClick={() => onOpenImage(resolved)}
-            className="writeup-img max-w-full h-auto rounded border border-border-dim cursor-zoom-in"
-            {...props}
-          />
+            className="block w-full cursor-zoom-in rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+          >
+            <img
+              src={resolved}
+              alt={alt || ""}
+              loading="lazy"
+              decoding="async"
+              referrerPolicy="no-referrer"
+              className="writeup-img max-w-full h-auto rounded border border-border-dim"
+              {...props}
+            />
+          </button>
           {title && (
             <figcaption className="mt-3 border-l-2 border-[var(--accent)] pl-3 font-mono text-label uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
               {title}
@@ -194,6 +191,17 @@ export function WriteupMarkdown({
         >
           {stripHeadingEmoji(children)}
         </h3>
+      );
+    },
+    h4: ({ node, children, ...props }) => {
+      void node;
+      return (
+        <h4
+          className="font-display text-lg md:text-xl font-semibold tracking-tight text-foreground mt-10 mb-3 scroll-mt-24"
+          {...props}
+        >
+          {stripHeadingEmoji(children)}
+        </h4>
       );
     },
     p: ({ node, children, ...props }) => {
@@ -299,11 +307,12 @@ export function WriteupMarkdown({
       );
     },
     code: ({ className, children, ...props }) => {
-      const isInline = !className;
+      const text = extractText(children);
+      const isInline = !className && !text.includes("\n");
       if (isInline) {
         return (
           <code
-            className="font-mono text-[13px] px-1 py-0.5 rounded bg-[var(--surface)] border border-border-dim"
+            className="font-mono text-[13px] px-1 py-0.5 rounded bg-[var(--surface)] border border-border-dim [overflow-wrap:anywhere] [box-decoration-break:clone]"
             {...props}
           >
             {children}
@@ -324,7 +333,12 @@ export function WriteupMarkdown({
     table: ({ node, children, ...props }) => {
       void node;
       return (
-        <div className="overflow-x-auto mb-8">
+        <div
+          className="overflow-x-auto mb-8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)]"
+          tabIndex={0}
+          role="region"
+          aria-label="Tabla (desplazable horizontalmente)"
+        >
           <table className="w-full border-collapse text-sm" {...props}>
             {children}
           </table>
@@ -357,7 +371,7 @@ export function WriteupMarkdown({
 
   return (
     <MarkdownErrorBoundary>
-      <div className="writeup-prose">
+      <div className="writeup-prose break-words">
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[

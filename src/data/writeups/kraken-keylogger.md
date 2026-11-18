@@ -19,7 +19,7 @@ Este archivo es una **base de datos SQLite** donde Windows almacena todas las no
 
 Exportamos `wpndatabase.db` y lo abrimos con **DB Browser for SQLite**. En la tabla `Notification` identificamos un registro cuyo payload referencia explícitamente **`web.telegram.org`**, lo que indica que el empleado estaba utilizando **Telegram Web** como cliente de mensajería en el navegador. 
 
-![Tabla Notification de wpndatabase.db en DB Browser for SQLite con un registro de web.telegram.org](https://github.com/user-attachments/assets/b86b6d76-9ce8-4ba3-b624-e6c09a599aca)
+<img width="1919" height="765" alt="Tabla Notification de wpndatabase.db en DB Browser for SQLite con un registro de web.telegram.org" src="https://github.com/user-attachments/assets/b86b6d76-9ce8-4ba3-b624-e6c09a599aca" />
 
 > **R:** `Telegram`
 
@@ -35,7 +35,7 @@ Al expandir el payload en DB Browser for SQLite, encontramos el mensaje enviado 
 
 Esta línea deja explícito que el ZIP protegido enviado por el atacante utiliza la contraseña `@1122d`. 
 
-![Payload de la notificación con el mensaje del atacante que incluye el nombre del ZIP y su contraseña](https://github.com/user-attachments/assets/374460b3-cc00-4370-92b8-f57314f73f7f)
+<img width="1919" height="705" alt="Payload de la notificación con el mensaje del atacante que incluye el nombre del ZIP y su contraseña" src="https://github.com/user-attachments/assets/374460b3-cc00-4370-92b8-f57314f73f7f" />
 
 > **R:** `@1122d`
 
@@ -54,7 +54,7 @@ LECmd.exe -f "templet.lnk"
 
 LEcmd expone todos los campos estructurales del archivo: target path, timestamps, volume serial number y, lo más relevante para este caso, el campo Command Line Arguments. Al inspeccionarlo, confirmamos que el archivo no apuntaba a ningún documento legítimo, sino a powershell.exe con un argumento ofuscado — una red flag inmediata que nos indicó que este .lnk era el vector de ejecución inicial del atacante.
 
-![Salida de LECmd sobre templet.lnk con powershell.exe y un argumento ofuscado](https://github.com/user-attachments/assets/d90bd828-61c8-496a-898b-51b3258a38ca)
+<img width="1919" height="941" alt="Salida de LECmd sobre templet.lnk con powershell.exe y un argumento ofuscado" src="https://github.com/user-attachments/assets/d90bd828-61c8-496a-898b-51b3258a38ca" />
 
 **Fase 2 – filescan.io**  
 Subimos `templet.lnk` a **filescan.io**, que emula la ejecución y extrae automáticamente IOCs (URLs, dominios, DNS, etc.). En la sección **Network Behavior / Domains** se observa que el LNK descarga un HTA de segunda etapa desde:
@@ -63,7 +63,7 @@ Subimos `templet.lnk` a **filescan.io**, que emula la ejecución y extrae autom�
 
 El archivo `se1.hta` es un HTML Application descargado y ejecutado por `mshta.exe` — un binario legítimo de Windows frecuentemente abusado en ataques Living off the Land (LotL) para evadir controles de seguridad basados en reputación de procesos.  
 
-![Sección Network Behavior de filescan.io con el dominio de descarga de se1.hta](https://github.com/user-attachments/assets/58432dd5-3392-4c56-86c2-a0f29f878073)
+<img width="1919" height="952" alt="Sección Network Behavior de filescan.io con el dominio de descarga de se1.hta" src="https://github.com/user-attachments/assets/58432dd5-3392-4c56-86c2-a0f29f878073" />
 
 > **R:** `masherofmasters.cyou`
 
@@ -98,9 +98,9 @@ Argument.jlhgfjhdfIghjhuhuh=C:\Users\OMEN\AppData\Local\Temp\templet.lnk
 
 El comando **`MS Paint`** funciona como señuelo legítimo, mientras que el comando **`jlhgfjhdfIghjhuhuh`** ejecuta `cmd.exe` apuntando a `templet.lnk`, re-lanzando toda la cadena maliciosa **cada vez que el usuario toma una captura de pantalla**.  
 
-![Contenido de Greenshot.ini con la sección ExternalCommand y el comando malicioso](https://github.com/user-attachments/assets/2626371b-fffe-46c0-a29c-a2b65c9d08fc)
+<img width="1918" height="966" alt="Contenido de Greenshot.ini con la sección ExternalCommand y el comando malicioso" src="https://github.com/user-attachments/assets/2626371b-fffe-46c0-a29c-a2b65c9d08fc" />
 
-![Evidencia complementaria de la configuración de Greenshot con el comando que apunta a templet.lnk](https://github.com/user-attachments/assets/87c6afc5-03a3-4a5f-afb4-cb9c7f1be313)
+<img width="1784" height="681" alt="Evidencia complementaria de la configuración de Greenshot con el comando que apunta a templet.lnk" src="https://github.com/user-attachments/assets/87c6afc5-03a3-4a5f-afb4-cb9c7f1be313" />
 
 > **R:** `jlhgfjhdfIghjhuhuh`
 
@@ -140,9 +140,9 @@ El comando genera, entre otros, el archivo:
 
 Al abrir este CSV y filtrar por **`AnyDesk.exe`**, observamos una sesión con ~**2.8 GB de datos enviados**, claramente desproporcionado para un uso de soporte remoto legítimo. Esto, correlacionado con el resto de la evidencia, apunta a **exfiltración de datos masiva** a través de AnyDesk.  
 
-![NetworkUsages de SRUM en Timeline Explorer filtrado por AnyDesk.exe](https://github.com/user-attachments/assets/2726d701-d2c6-48e4-8d7d-ae9d29ed42dc)
+<img width="1697" height="729" alt="NetworkUsages de SRUM en Timeline Explorer filtrado por AnyDesk.exe" src="https://github.com/user-attachments/assets/2726d701-d2c6-48e4-8d7d-ae9d29ed42dc" />
 
-![Detalle de la sesión de AnyDesk.exe con aproximadamente 2.8 GB de bytes enviados](https://github.com/user-attachments/assets/8e3a1d54-2f96-40ab-892b-9b31c71b228a)
+<img width="1919" height="938" alt="Detalle de la sesión de AnyDesk.exe con aproximadamente 2.8 GB de bytes enviados" src="https://github.com/user-attachments/assets/8e3a1d54-2f96-40ab-892b-9b31c71b228a" />
 
 > **R:** `AnyDesk`
 
@@ -161,7 +161,7 @@ Importamos `ad.trace` en **Timeline Explorer** y filtramos por la palabra clave 
 
 El filtro devuelve las entradas de sesión correspondientes al atacante, revelando la IP pública utilizada durante la sesión de exfiltración (~2.8 GB) detectada previamente en SRUM.  
 
-![ad.trace en Timeline Explorer filtrado por External address con la IP pública del atacante](https://github.com/user-attachments/assets/16bdef9d-85ff-4e8e-a16b-cbd65291dd15)
+<img width="1919" height="350" alt="ad.trace en Timeline Explorer filtrado por External address con la IP pública del atacante" src="https://github.com/user-attachments/assets/16bdef9d-85ff-4e8e-a16b-cbd65291dd15" />
 
 > **R:** `77.232.122.31`
 

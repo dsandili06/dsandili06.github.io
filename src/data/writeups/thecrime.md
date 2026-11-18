@@ -16,7 +16,7 @@ Cabe recalcar que nunca use ALEAPP, es la primera vez que lo utilice, no revisé
 
 En la sección **Installed Apps (GMS)** de ALEAPP encontramos el listado completo de aplicaciones instaladas en el dispositivo (5 entradas). Entre ellas, se identifica una aplicación con Bundle ID `com.ticno.olymptrade`, correspondiente a la plataforma de trading **OlympTrade**. En la columna SHA-256 Hash podemos leer directamente el hash del archivo APK instalado.
 
-![Sección Installed Apps de ALEAPP con OlympTrade y su hash SHA-256](https://github.com/user-attachments/assets/6c9a3577-c232-4679-99e2-4d02e2c3d19e)
+<img width="1919" height="755" alt="Sección Installed Apps de ALEAPP con OlympTrade y su hash SHA-256" src="https://github.com/user-attachments/assets/6c9a3577-c232-4679-99e2-4d02e2c3d19e" />
 
 > **R:** `4f168a772350f283a1c49e78c1548d7c2c6c05106d8b9feb825fdc3466e9df3c`
 
@@ -26,9 +26,9 @@ En la sección **Installed Apps (GMS)** de ALEAPP encontramos el listado complet
 
 En la sección **SMS messages** de ALEAPP encontramos un único mensaje SMS recibido el **2023-09-20 20:09:49**. Su contenido es una amenaza extorsiva explícita del acreedor hacia la víctima: *"It's time for you to pay back the money you owe me, but you're not picking up my calls. You better think twice about not paying, because it won't end well for you. Prepare the sum of 250,000 EGP, and I'll expect your call within an hour at most."* El monto de la deuda queda explicitado directamente en el cuerpo del mensaje.
 
-![Sección SMS messages de ALEAPP con el mensaje extorsivo recibido](https://github.com/user-attachments/assets/af81daed-bee2-48c1-bf41-f885349e3076)
+<img width="1919" height="753" alt="Sección SMS messages de ALEAPP con el mensaje extorsivo recibido" src="https://github.com/user-attachments/assets/af81daed-bee2-48c1-bf41-f885349e3076" />
 
-![Detalle del cuerpo del SMS con el monto exigido](https://github.com/user-attachments/assets/c5037582-b9eb-406a-8c43-a07a6fba806e)
+<img width="1919" height="709" alt="Detalle del cuerpo del SMS con el monto exigido" src="https://github.com/user-attachments/assets/c5037582-b9eb-406a-8c43-a07a6fba806e" />
 
 > **R:** `250000`
 
@@ -38,7 +38,7 @@ En la sección **SMS messages** de ALEAPP encontramos un único mensaje SMS reci
 
 Correlacionando el número remitente del SMS amenazante (`+201172137258`) con la sección **Contacts** de ALEAPP, identificamos que dicho número pertenece al contacto guardado en la agenda de la víctima como **Shady Wahab**. Esta correlación entre el SMS y la agenda del dispositivo establece la identidad del acreedor que amenaza a la víctima.
 
-![Sección Contacts de ALEAPP con el número +201172137258 asociado a Shady Wahab](https://github.com/user-attachments/assets/cb770373-b49d-4ef4-ae82-40b890c85869)
+<img width="1919" height="565" alt="Sección Contacts de ALEAPP con el número +201172137258 asociado a Shady Wahab" src="https://github.com/user-attachments/assets/cb770373-b49d-4ef4-ae82-40b890c85869" />
 
 > **R:** `Shady Wahab`
 
@@ -48,9 +48,9 @@ Correlacionando el número remitente del SMS amenazante (`+201172137258`) con la
 
 Al revisar la sección **Recent Activity** en ALEAPP, identificamos que la última aplicación con actividad registrada fue **com.google.android.apps.maps** con `Last_Time_Moved: 2023-09-20 23:50:29`. Al examinar el snapshot asociado a esa actividad reciente, podemos ver la pantalla de Google Maps del dispositivo mostrando la ubicación activa de la víctima: **The Nile Ritz-Carlton, Cairo**.
 
-![Recent Activity de ALEAPP con la última actividad de Google Maps](https://github.com/user-attachments/assets/f142f12d-7455-4553-bf8e-c80f1c9f7840)
+<img width="1919" height="528" alt="Recent Activity de ALEAPP con la última actividad de Google Maps" src="https://github.com/user-attachments/assets/f142f12d-7455-4553-bf8e-c80f1c9f7840" />
 
-![Snapshot de Google Maps con la ubicación de la víctima](https://github.com/user-attachments/assets/766d55ae-7f81-4f0f-b4f0-77730ce3b2ad)
+<img width="788" height="518" alt="Snapshot de Google Maps con la ubicación de la víctima" src="https://github.com/user-attachments/assets/766d55ae-7f81-4f0f-b4f0-77730ce3b2ad" />
 
 > **R:** `The Nile Ritz-Carlton`
 
@@ -60,9 +60,9 @@ Al revisar la sección **Recent Activity** en ALEAPP, identificamos que la últi
 
 Navegando a la sección **Google Photos - Cache** en ALEAPP, encontramos en caché una imagen correspondiente a un boarding pass de **Egypt Airlines**. Este artefacto es especialmente valioso porque persiste en caché aunque el usuario haya eliminado la imagen original de su galería. El ticket muestra todos los detalles del viaje planeado por la víctima: vuelo 310, fecha 01/10/2023, horario 09:00 AM, Gate 08, Seat 20, Origen: Cairo → Destino: **Las Vegas**.
 
-![Sección Google Photos - Cache de ALEAPP con la imagen del boarding pass](https://github.com/user-attachments/assets/a907211b-3101-47c9-86c4-c75782014af3)
+<img width="1924" height="594" alt="Sección Google Photos - Cache de ALEAPP con la imagen del boarding pass" src="https://github.com/user-attachments/assets/a907211b-3101-47c9-86c4-c75782014af3" />
 
-![Boarding pass de Egypt Airlines con destino Las Vegas](https://github.com/user-attachments/assets/26d5bbd2-33b0-4ba5-90fb-dd7f821a9c8e)
+<img width="1919" height="624" alt="Boarding pass de Egypt Airlines con destino Las Vegas" src="https://github.com/user-attachments/assets/26d5bbd2-33b0-4ba5-90fb-dd7f821a9c8e" />
 
 > **R:** `Las Vegas`
 
@@ -72,7 +72,7 @@ Navegando a la sección **Google Photos - Cache** en ALEAPP, encontramos en cach
 
 Al examinar la sección **Discord Chats** dentro de ALEAPP, encontramos una conversación entre el usuario `infern0_o` y `rob1ns0n`. En el segundo mensaje, `rob1ns0n` responde: *"What a wonderful news! We'll meet at **The Mob Museum**. I'll await your call when you arrive. Enjoy your flight bro ❤️"*. El punto de encuentro acordado queda confirmado explícitamente en el contenido del mensaje.
 
-![Conversación de Discord entre infern0_o y rob1ns0n en ALEAPP](https://github.com/user-attachments/assets/801fa45a-1503-4a09-ab56-4e96010da5f7)
+<img width="1274" height="688" alt="Conversación de Discord entre infern0_o y rob1ns0n en ALEAPP" src="https://github.com/user-attachments/assets/801fa45a-1503-4a09-ab56-4e96010da5f7" />
 
 > **R:** `The Mob Museum`
 

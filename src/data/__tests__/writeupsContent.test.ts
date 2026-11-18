@@ -20,9 +20,13 @@ describe("writeups content", () => {
     it("has no H1", () => {
       expect(lines.filter((l) => l.startsWith("# "))).toEqual([]);
     });
-    it("has no raw img tags", () => {
+    it("raw img tags carry width, height, alt and an https src", () => {
       // `<img>` as inline code is prose about the HTML element, not a raw tag.
-      expect(text.replace(/`[^`\n]*`/g, "")).not.toContain("<img");
+      const stripped = text.replace(/`[^`\n]*`/g, "");
+      const tags = stripped.match(/<img\b[^>]*>/g) ?? [];
+      for (const tag of tags) {
+        expect(tag).toMatch(/<img width="\d+" height="\d+" alt="[^"]+" src="https:\/\/[^"]+" \/>/);
+      }
     });
     it("has no horizontal rules or front matter", () => {
       expect(lines.filter((l) => l.trim() === "---")).toEqual([]);

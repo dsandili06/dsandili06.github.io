@@ -17,7 +17,7 @@ Para el análisis de la imagen de disco se utiliza **FTK Imager**, una herramien
 
 Para identificar la distribución Linux del sistema analizamos múltiples rutas que contienen metadata del sistema operativo. La primera opción es revisar la carpeta `/boot/`, donde los archivos del kernel frecuentemente incluyen información sobre la versión y distribución cargada durante el booteo. Como alternativa complementaria, el archivo `grub.cfg` también expone información relevante sobre la distro. Finalmente, una tercera fuente confiable es el archivo `syslog` ubicado en `/var/log/installer/`, el cual es generado automáticamente durante la instalación del sistema operativo y contiene información detallada sobre la distribución instalada. Cualquiera de estas fuentes confirma la distribución utilizada por Karen en su workstation.  
 
-![Árbol de archivos en FTK Imager con la información de la distribución](https://github.com/user-attachments/assets/6ce6484d-266e-4f70-a405-540a34dc166d)
+<img width="1919" height="1031" alt="Árbol de archivos en FTK Imager con la información de la distribución" src="https://github.com/user-attachments/assets/6ce6484d-266e-4f70-a405-540a34dc166d" />
 
 > **R:** `Kali Linux`
 
@@ -31,9 +31,9 @@ Para calcular el hash MD5 del archivo `access.log` de Apache contamos con tres m
 **Método 2**: Utilizar la funcionalidad nativa de FTK Imager de exportar hashes en formato `.csv`, los cuales pueden ser examinados directamente.  
 **Método 3**: Seleccionar el archivo en FTK Imager y visualizar el hash en el panel inferior izquierdo de propiedades del archivo. El valor hash resultante corresponde al hash MD5 de un archivo vacío, lo que es consistente con la ausencia de registros en el archivo `access.log`, confirmando que Apache nunca fue ejecutado (relevante para Q7). 
 
-![Hash MD5 del access.log mostrado en FTK Imager](https://github.com/user-attachments/assets/ca14b408-c609-4804-a8d1-9e1e0be75e93)
+<img width="1712" height="38" alt="Hash MD5 del access.log mostrado en FTK Imager" src="https://github.com/user-attachments/assets/ca14b408-c609-4804-a8d1-9e1e0be75e93" />
 
-![Propiedades del archivo access.log en FTK Imager](https://github.com/user-attachments/assets/1985fc5c-5035-4788-b1dc-136937aa8def)
+<img width="1919" height="1031" alt="Propiedades del archivo access.log en FTK Imager" src="https://github.com/user-attachments/assets/1985fc5c-5035-4788-b1dc-136937aa8def" />
 
 > **R:** `d41d8cd98f00b204e9800998ecf8427e`
 
@@ -43,7 +43,7 @@ Para calcular el hash MD5 del archivo `access.log` de Apache contamos con tres m
 
 Navegando directamente a la carpeta `Downloads` del usuario `root` (`/root/Downloads/`), encontramos un archivo `.zip` que corresponde a **Mimikatz**, una herramienta de código abierto ampliamente conocida en el ámbito ofensivo. Mimikatz está diseñada principalmente para extraer credenciales en texto plano, hashes NTLM, PINs y tickets Kerberos directamente desde la memoria de sistemas Windows comprometidos. Su presencia en el sistema de Karen es un indicador claro de intención de credential dumping sobre otros sistemas de la red. 
 
-![Contenido de /root/Downloads con el archivo ZIP de Mimikatz](https://github.com/user-attachments/assets/0665a7fa-0120-40bd-9c78-1dabc4c50392)
+<img width="1919" height="1033" alt="Contenido de /root/Downloads con el archivo ZIP de Mimikatz" src="https://github.com/user-attachments/assets/0665a7fa-0120-40bd-9c78-1dabc4c50392" />
 
 > **R:** `mimikatz_trunk.zip`
 
@@ -53,7 +53,7 @@ Navegando directamente a la carpeta `Downloads` del usuario `root` (`/root/Downl
 
 El análisis del archivo `.bash_history` ubicado en `/root/.bash_history` nos permite reconstruir cronológicamente los comandos ejecutados por el usuario en sus sesiones de terminal. Este archivo registra el historial completo de comandos ejecutados una vez que la sesión de terminal es cerrada. En su contenido, podemos observar que Karen utiliza el comando `touch` combinado con redirección de output (`>`) para crear un archivo en la ruta `/root/Desktop/SuperSecretFile.txt`, constituyendo esta la ruta absoluta del archivo sospechoso.  
 
-![Contenido de .bash_history con la creación del archivo secreto](https://github.com/user-attachments/assets/029196a9-f756-412c-b22c-30a99d29991f)
+<img width="1919" height="1032" alt="Contenido de .bash_history con la creación del archivo secreto" src="https://github.com/user-attachments/assets/029196a9-f756-412c-b22c-30a99d29991f" />
 
 > **R:** `/root/Desktop/SuperSecretFile.txt`
 
@@ -63,7 +63,7 @@ El análisis del archivo `.bash_history` ubicado en `/root/.bash_history` nos pe
 
 Continuando el análisis del archivo `.bash_history`, encontramos una entrada que referencia el archivo `didyouthinkwedmakeiteasy.jpg` siendo procesado por **binwalk**. Esta herramienta es utilizada en análisis forense y reversing, diseñada específicamente para escanear, identificar y extraer archivos embebidos dentro de binarios y firmwares. Su uso sobre un archivo `.jpg` es indicativo de esteganografía o análisis de archivos con datos ocultos embebidos, una técnica frecuentemente empleada para ocultar payloads maliciosos dentro de imágenes aparentemente legítimas. 
 
-![Entrada de .bash_history con binwalk sobre la imagen JPG](https://github.com/user-attachments/assets/08588095-df75-4481-8b7f-2d7b2d414c41)
+<img width="1918" height="1030" alt="Entrada de .bash_history con binwalk sobre la imagen JPG" src="https://github.com/user-attachments/assets/08588095-df75-4481-8b7f-2d7b2d414c41" />
 
 > **R:** `binwalk`
 
@@ -73,7 +73,7 @@ Continuando el análisis del archivo `.bash_history`, encontramos una entrada qu
 
 En el directorio `/root/Desktop/` localizamos un archivo denominado `Checklist`. Al examinar su contenido, podemos ver que Karen documentó tres objetivos planificados para su actividad maliciosa dentro de la organización. El tercer y último ítem de dicho listado revela la motivación final de sus acciones.  
 
-![Contenido del archivo Checklist de Karen](https://github.com/user-attachments/assets/2323a598-cdaa-446a-8833-a406f774f4ef)
+<img width="1919" height="1030" alt="Contenido del archivo Checklist de Karen" src="https://github.com/user-attachments/assets/2323a598-cdaa-446a-8833-a406f774f4ef" />
 
 > **R:** `profit`
 
@@ -83,7 +83,7 @@ En el directorio `/root/Desktop/` localizamos un archivo denominado `Checklist`.
 
 Para determinar la cantidad de ejecuciones del servidor Apache, navegamos a su directorio de logs en `/var/log/apache2/`. Al examinar los tres archivos `.log` presentes (`access.log`, `error.log`, `other_vhosts_access.log`), encontramos que todos se encuentran completamente vacíos, sin ningún registro de actividad. Esto es consistente con el hash MD5 obtenido en Q2 (`d41d8cd98f00b204e9800998ecf8427e`), que corresponde exactamente al hash de un archivo vacío en cualquier sistema, confirmando que Apache nunca fue iniciado en esta máquina.  
 
-![Archivos de log de Apache vacíos en /var/log/apache2](https://github.com/user-attachments/assets/03df5e8e-b6b9-4fc5-946d-783ee1ef99b8)
+<img width="1919" height="1031" alt="Archivos de log de Apache vacíos en /var/log/apache2" src="https://github.com/user-attachments/assets/03df5e8e-b6b9-4fc5-946d-783ee1ef99b8" />
 
 > **R:** `0`
 
@@ -93,7 +93,7 @@ Para determinar la cantidad de ejecuciones del servidor Apache, navegamos a su d
 
 En el directorio del usuario `root` localizamos un archivo de imagen `.jpeg`. Al exportarlo a nuestra máquina host y visualizarlo, podemos observar que la imagen captura un escritorio con una interfaz de línea de comandos ejecutando **Flightsim**, una utilidad diseñada para generar patrones de tráfico de red malicioso con fines de auditoría. Esta herramienta simula tráfico de túnel DNS, tráfico DGA (Domain Generation Algorithm), solicitudes a servidores C2 activos y otros patrones de red sospechosos. La presencia de esta imagen constituye evidencia directa de que la máquina de Karen fue utilizada para lanzar ataques simulados contra la infraestructura de red de la organización.  
 
-![Captura de pantalla que muestra la ejecución de Flightsim](https://github.com/user-attachments/assets/79f5e163-2c52-4a60-8cbd-04fe53ee2548)
+<img width="1318" height="300" alt="Captura de pantalla que muestra la ejecución de Flightsim" src="https://github.com/user-attachments/assets/79f5e163-2c52-4a60-8cbd-04fe53ee2548" />
 
 ![Imagen de evidencia adicional del escritorio de Karen](https://github.com/user-attachments/assets/e4144317-79f8-421b-9308-63bdf4067f06)
 
@@ -110,7 +110,7 @@ Analizando el script Bash presente en la carpeta `/root/Documents/`, podemos ver
 
 Al final del script, Karen incluye un mensaje dirigido explícitamente a un compañero: `"Heck yeah! I can write bash too Young"`, revelando así el nombre del experto al que intentaba intimidar o provocar.  
 
-![Contenido del script bash en /root/Documents con el mensaje final](https://github.com/user-attachments/assets/83037076-3a1c-4980-8c13-181b51d91be0)
+<img width="1919" height="1030" alt="Contenido del script bash en /root/Documents con el mensaje final" src="https://github.com/user-attachments/assets/83037076-3a1c-4980-8c13-181b51d91be0" />
 
 > **R:** `Young`
 
@@ -120,7 +120,7 @@ Al final del script, Karen incluye un mensaje dirigido explícitamente a un comp
 
 Para esta investigación navegamos hasta el directorio centralizado de logs del sistema `/var/log/` y examinamos específicamente el archivo `auth.log`, el cual registra todos los eventos de autenticación, autorización y escalación de privilegios del sistema. Analizando las entradas correspondientes a las **11:26**, encontramos que el usuario **postgres** ejecuta reiteradamente el comando `su` para obtener acceso con privilegios root. Esto es especialmente relevante desde una perspectiva de seguridad, ya que si PostgreSQL está configurado para correr como root (mala práctica de hardening), puede ser abusado para ejecutar comandos arbitrarios del sistema operativo con máximos privilegios.  
 
-![Entradas de auth.log a las 11:26 con ejecuciones de su](https://github.com/user-attachments/assets/84734ccb-16c0-414b-a218-791d79072737)
+<img width="1919" height="1030" alt="Entradas de auth.log a las 11:26 con ejecuciones de su" src="https://github.com/user-attachments/assets/84734ccb-16c0-414b-a218-791d79072737" />
 
 > **R:** `postgres`
 
@@ -130,7 +130,7 @@ Para esta investigación navegamos hasta el directorio centralizado de logs del 
 
 Realizando un análisis completo y cronológico del archivo `.bash_history` en `/root/.bash_history`, podemos observar el patrón de navegación del sistema de Karen. Se evidencia claramente que el atacante realiza un `cd` hacia el directorio `/root/Documents/myfirsthack/`, y es desde esa ubicación desde donde ejecuta la totalidad de los comandos posteriores registrados en el historial, estableciéndola como el directorio de trabajo activo al momento del análisis.
 
-![Historial de comandos con el cambio a /root/Documents/myfirsthack](https://github.com/user-attachments/assets/79cb80a3-1314-4a27-ad8f-02ab720b2778)
+<img width="1919" height="1032" alt="Historial de comandos con el cambio a /root/Documents/myfirsthack" src="https://github.com/user-attachments/assets/79cb80a3-1314-4a27-ad8f-02ab720b2778" />
 
 > **R:** `/root/Documents/myfirsthack/`
 

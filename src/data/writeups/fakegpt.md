@@ -9,7 +9,7 @@ El laboratorio provee los archivos fuente de la extensión (`.js`, `.json`, `.ht
 
 ### 📦 Preparación del Entorno
 
-![Archivos fuente de la extensión entregados por el laboratorio](https://github.com/user-attachments/assets/b8d9b81c-9c9c-4440-abc4-6e4eaeeea091)
+<img width="861" height="99" alt="Archivos fuente de la extensión entregados por el laboratorio" src="https://github.com/user-attachments/assets/b8d9b81c-9c9c-4440-abc4-6e4eaeeea091" />
 
 Antes de iniciar el análisis, empaquetamos los archivos de la extensión en un archivo `.crx` para poder subirlos a ExtAnalysis y CRXViewer:
 
@@ -21,7 +21,7 @@ zip -r extension.crx app.js crypto.js loader.js manifest.json ui.html IMG.gif
 
 Antes de iniciar con las preguntas del laboratorio, realizamos un análisis del archivo `manifest.json`, el cual expone múltiples red flags desde la primera lectura.
 
-![Contenido del manifest.json de la extensión](https://github.com/user-attachments/assets/de5da17e-2d2b-42f9-a2fd-48429ae7a2eb)
+<img width="1280" height="685" alt="Contenido del manifest.json de la extensión" src="https://github.com/user-attachments/assets/de5da17e-2d2b-42f9-a2fd-48429ae7a2eb" />
 
 ### **Metadata de la Extensión**
 
@@ -76,7 +76,7 @@ Simplemente leyendo el `manifest.json` en su forma cruda, ya podemos identificar
 
 Posterior al análisis del `manifest.json`, nos dirigimos a examinar el archivo `app.js`. En su contenido podemos identificar una URL objetivo encodeada en **Base64**, reconocible por los caracteres `==` al final de la cadena. Al decodear en CyberChef, confirmamos que se trata de `www.facebook.com`, lo que indica que la extensión implementa un listener específicamente orientado a ese dominio para interceptar la actividad del usuario.  
 
-![Cadena Base64 en app.js decodificada en CyberChef](https://github.com/user-attachments/assets/20491f03-e5bc-41d6-a738-85924734e131)
+<img width="1280" height="686" alt="Cadena Base64 en app.js decodificada en CyberChef" src="https://github.com/user-attachments/assets/20491f03-e5bc-41d6-a738-85924734e131" />
 
 > **R:** `Base64`
 
@@ -86,7 +86,7 @@ Posterior al análisis del `manifest.json`, nos dirigimos a examinar el archivo 
 
 Resultado directo de la decodificación Base64 realizada en la pregunta anterior. La URL objetivo hardcodeada en el código de `app.js` corresponde al dominio de Facebook, confirmando que la extensión fue diseñada específicamente para interceptar credenciales y sesiones de usuarios de dicha plataforma.  
 
-![Dominio de Facebook hardcodeado en el código de app.js](https://github.com/user-attachments/assets/37539576-f4a7-40c1-a385-c637186a8b47)
+<img width="1280" height="684" alt="Dominio de Facebook hardcodeado en el código de app.js" src="https://github.com/user-attachments/assets/37539576-f4a7-40c1-a385-c637186a8b47" />
 
 > **R:** `www.facebook.com`
 
@@ -101,7 +101,7 @@ Continuando el análisis de `app.js`, podemos identificar el uso de una técnica
 4. Responde con `204 No Content` o una imagen 1x1px transparente.  
 5. El usuario no percibe ninguna actividad anómala en ningún momento.
 
-![Código de app.js que crea el elemento de imagen para exfiltrar datos](https://github.com/user-attachments/assets/47a4d8f2-82df-43c4-acbd-cba0a373eb79)
+<img width="1280" height="686" alt="Código de app.js que crea el elemento de imagen para exfiltrar datos" src="https://github.com/user-attachments/assets/47a4d8f2-82df-43c4-acbd-cba0a373eb79" />
 
   
 > **R:** `<img>`
@@ -120,7 +120,7 @@ Busca la string `"HeadlessChrome"` en el User-Agent del navegador. Chrome en mod
 
 Adicionalmente, este script es el encargado de cargar dinámicamente el payload principal `app.js` una vez que los controles anti-análisis son superados. 
 
-![Condiciones anti-análisis dentro de loader.js](https://github.com/user-attachments/assets/16f2b2f8-d77a-4235-8e9b-132baa8ad4ef)
+<img width="1280" height="684" alt="Condiciones anti-análisis dentro de loader.js" src="https://github.com/user-attachments/assets/16f2b2f8-d77a-4235-8e9b-132baa8ad4ef" />
 
 > **R:** `navigator.plugins.length === 0`
 
@@ -130,7 +130,7 @@ Adicionalmente, este script es el encargado de cargar dinámicamente el payload 
 
 Retornando al análisis de `app.js`, podemos examinar el comportamiento completo del módulo de **credential stealer**. La extensión registra un event listener sobre el evento `submit` de formularios web, el cual se activa en el momento en que el usuario envía un formulario. Dicho listener captura los campos `username`, `email` y `password` únicamente si contienen contenido, para posteriormente encriptarlos y transmitirlos al servidor C2.  
 
-![Listener del evento submit en app.js](https://github.com/user-attachments/assets/a0482995-0dbd-4510-94b5-770ba00bfa94)
+<img width="1280" height="684" alt="Listener del evento submit en app.js" src="https://github.com/user-attachments/assets/a0482995-0dbd-4510-94b5-770ba00bfa94" />
 
 > **R:** `submit`
 
@@ -140,7 +140,7 @@ Retornando al análisis de `app.js`, podemos examinar el comportamiento completo
 
 En `app.js` existe un módulo de **keylogger** implementado en pocas líneas pero extremadamente efectivo. Registra un event listener a nivel de documento completo sobre el evento `keydown`, capturando y registrando cada tecla presionada por el usuario independientemente del campo o contexto activo en la página, lo que lo hace aplicable a cualquier tipo de input fuera de formularios tradicionales.  
 
-![Event listener keydown del keylogger en app.js](https://github.com/user-attachments/assets/5b0a805e-0e3c-4386-8c1d-9d94db25cf20)
+<img width="1280" height="683" alt="Event listener keydown del keylogger en app.js" src="https://github.com/user-attachments/assets/5b0a805e-0e3c-4386-8c1d-9d94db25cf20" />
 
 > **R:** `keydown`
 
@@ -150,7 +150,7 @@ En `app.js` existe un módulo de **keylogger** implementado en pocas líneas per
 
 Durante el análisis del mecanismo de Image Beacon en `app.js` (Q3), pudimos observar en el código la URL completa del servidor C2 al cual se envían las credenciales e información robada mediante las requests GET encubiertas. 
 
-![URL del servidor C2 en el código de app.js](https://github.com/user-attachments/assets/3c8cd8a1-3cad-450d-ae8c-4e48e5377425)
+<img width="1280" height="683" alt="URL del servidor C2 en el código de app.js" src="https://github.com/user-attachments/assets/3c8cd8a1-3cad-450d-ae8c-4e48e5377425" />
 
 > **R:** `mo.elshaheedy.com`
 
@@ -160,7 +160,7 @@ Durante el análisis del mecanismo de Image Beacon en `app.js` (Q3), pudimos obs
 
 En `app.js` podemos identificar la función responsable de orquestar el proceso completo de exfiltración. Esta función construye un objeto `.JSON` con los campos `user`, `pass` y `site`, los cuales son encriptados mediante AES y posteriormente transmitidos al canal C2 a través del mecanismo de Image Beacon analizado en Q3.  
 
-![Definición de la función de exfiltración en app.js](https://github.com/user-attachments/assets/7a72845f-873b-4277-91eb-84ed33409ac1)
+<img width="1117" height="136" alt="Definición de la función de exfiltración en app.js" src="https://github.com/user-attachments/assets/7a72845f-873b-4277-91eb-84ed33409ac1" />
 
 > **R:** `exfiltrateCredentials(username, password)`
 
@@ -170,7 +170,7 @@ En `app.js` podemos identificar la función responsable de orquestar el proceso 
 
 En `app.js` podemos localizar la función de cifrado que procesa el payload antes de su exfiltración. El proceso funciona de la siguiente manera: toma el objeto `.JSON` con `usuario`, `contraseña` y `sitio web`, lo cifra con **AES-CBC** utilizando un **vector de inicialización (IV)** generado aleatoriamente para garantizar que cada paquete transmitido sea único e irrepetible, y finalmente lo convierte a formato **Base64** antes de ser enviado al canal C2. Esta combinación de cifrado simétrico + IV aleatorio + encoding dificulta significativamente la detección por inspección de tráfico.  
 
-![Función de cifrado AES-CBC con IV aleatorio en app.js](https://github.com/user-attachments/assets/a5aee07c-74b8-421d-9bc7-adc16fe84315)
+<img width="1280" height="590" alt="Función de cifrado AES-CBC con IV aleatorio en app.js" src="https://github.com/user-attachments/assets/a5aee07c-74b8-421d-9bc7-adc16fe84315" />
 
 > **R:** `AES`
 
@@ -180,7 +180,7 @@ En `app.js` podemos localizar la función de cifrado que procesa el payload ante
 
 Retomando el análisis del `manifest.json`, entre los permisos declarados por la extensión podemos ver que incluye acceso explícito a las **cookies** del navegador. Las cookies de sesión son un objetivo de alto valor para los atacantes ya que permiten secuestrar sesiones autenticadas sin necesidad de conocer las credenciales del usuario. Con los permisos garantizados, esta extensión puede leer, modificar y exfiltrar cookies de sesión de cualquier dominio visitado.  
 
-![Permiso de cookies declarado en el manifest.json](https://github.com/user-attachments/assets/8e4a600b-636f-498a-bbcd-af784e3a3b18)
+<img width="1280" height="481" alt="Permiso de cookies declarado en el manifest.json" src="https://github.com/user-attachments/assets/8e4a600b-636f-498a-bbcd-af784e3a3b18" />
 
 > **R:** `cookies`
 

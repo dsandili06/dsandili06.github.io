@@ -21,7 +21,7 @@ Al revisar la lista inicialmente no vemos procesos potencialmente maliciosos evi
 
 `python3 vol.py -f (PATH al dump) Windows.cmdline`  
 
-![Salida de Windows.cmdline con la línea de comando de ChromeSetup.exe](https://github.com/user-attachments/assets/87f3e5ae-5851-40d0-a420-143e9a8b520d)
+<img width="1361" height="606" alt="Salida de Windows.cmdline con la línea de comando de ChromeSetup.exe" src="https://github.com/user-attachments/assets/87f3e5ae-5851-40d0-a420-143e9a8b520d" />
 
 Aquí podemos observar claramente una línea de comando sospechosa: **ChromeSetup.exe**. Este comportamiento es anómalo ya que un instalador legítimo de Chrome se cierra automáticamente tras completar la instalación, no permanece activo en el sistema. Con este criterio podemos responder tanto la primera como la segunda pregunta del laboratorio.  
 
@@ -43,7 +43,7 @@ Path del proceso malicioso confirmado desde los flags de cmdline en Volatility.
 
 `python3 vol.py -f (PATH al dump) Windows.netscan | grep -i "4628"`  
 
-![Salida de Windows.netscan filtrada por el PID 4628](https://github.com/user-attachments/assets/d5ef71aa-316d-4d24-ac18-8bab4c51c19e)
+<img width="1360" height="170" alt="Salida de Windows.netscan filtrada por el PID 4628" src="https://github.com/user-attachments/assets/d5ef71aa-316d-4d24-ac18-8bab4c51c19e" />
 
 > **R:** `58.64.204.181`
 
@@ -53,7 +53,7 @@ Path del proceso malicioso confirmado desde los flags de cmdline en Volatility.
 
 **Para geolocalizar la IP maliciosa recurrimos a plataformas como geodatatool, VirusTotal, WhatIsMyIPAddress**, entre otras herramientas de inteligencia de IP. 
 
-![Geolocalización de la IP maliciosa](https://github.com/user-attachments/assets/f5170c7a-95cc-42f6-b15b-4aca0b75bba6)
+<img width="1360" height="528" alt="Geolocalización de la IP maliciosa" src="https://github.com/user-attachments/assets/f5170c7a-95cc-42f6-b15b-4aca0b75bba6" />
 
 > **R:** `Hong Kong`
 
@@ -65,7 +65,7 @@ Path del proceso malicioso confirmado desde los flags de cmdline en Volatility.
 
 `python3 vol.py -f (PATH al dump) Windows.dumpfiles --pid 4628`  
 
-![Resultado de Windows.dumpfiles con el volcado del ejecutable](https://github.com/user-attachments/assets/d7196ff7-4640-40e5-8637-52d2c97c1347)
+<img width="1360" height="176" alt="Resultado de Windows.dumpfiles con el volcado del ejecutable" src="https://github.com/user-attachments/assets/d7196ff7-4640-40e5-8637-52d2c97c1347" />
 
 Tras el dumpeo exitoso del ejecutable, calculamos el hash SHA1:  
 
@@ -79,7 +79,7 @@ Tras el dumpeo exitoso del ejecutable, calculamos el hash SHA1:
 
 **Realizamos análisis de Threat Intelligence en VirusTotal** ingresando el hash SHA1 extraído. En el apartado "Details" de la muestra identificamos la fecha de compilación del malware. 
 
-![Fecha de compilación en la pestaña Details de VirusTotal](https://github.com/user-attachments/assets/47526e6d-9209-42d5-9660-34e5bca999e1)
+<img width="1360" height="643" alt="Fecha de compilación en la pestaña Details de VirusTotal" src="https://github.com/user-attachments/assets/47526e6d-9209-42d5-9660-34e5bca999e1" />
 
 > **R:** `2019-12-01 08:36`
 
@@ -89,7 +89,7 @@ Tras el dumpeo exitoso del ejecutable, calculamos el hash SHA1:
 
 **En VirusTotal navegamos al apartado "Relations"** de la muestra analizada. En la sección "Contacted Domains" identificamos el dominio C2 asociado al malware.  
 
-![Sección Contacted Domains en Relations de VirusTotal](https://github.com/user-attachments/assets/b70b9fe7-a0c8-4b37-bf34-070b57b39d95)
+<img width="1360" height="526" alt="Sección Contacted Domains en Relations de VirusTotal" src="https://github.com/user-attachments/assets/b70b9fe7-a0c8-4b37-bf34-070b57b39d95" />
 
 > **R:** `dnsnb8.net`
 

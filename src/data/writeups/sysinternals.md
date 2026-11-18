@@ -28,7 +28,7 @@ Archivo ubicado en `C:\\Users\\<USER>\\AppData\\Roaming\\Microsoft\\Windows\\Pow
 
 En Autopsy, navegando a la ruta `Users/Public/Downloads`, encontramos el archivo **SysInternals.exe** marcado con una **X roja** indicando que fue eliminado del sistema de archivos (estado Unallocated). Su nombre imita deliberadamente la suite legítima de herramientas de Microsoft SysInternals, una técnica clásica de **masquerading** para evadir sospechas del usuario.
 
-![Autopsy mostrando SysInternals.exe eliminado en Users/Public/Downloads](https://github.com/user-attachments/assets/a15ee811-9280-4d12-b489-71921196507d)
+<img width="1919" height="720" alt="Autopsy mostrando SysInternals.exe eliminado en Users/Public/Downloads" src="https://github.com/user-attachments/assets/a15ee811-9280-4d12-b489-71921196507d" />
 
 > **R:** `SysInternals.exe`
 
@@ -38,11 +38,11 @@ En Autopsy, navegando a la ruta `Users/Public/Downloads`, encontramos el archivo
 
 Para obtener el timestamp preciso de última modificación del ejecutable, utilizamos las herramientas de **Eric Zimmerman**: primero `AppCompatCacheParser.exe` para parsear el hive `SYSTEM` del registro. 
 
-![Ejecución de AppCompatCacheParser.exe sobre el hive SYSTEM](https://github.com/user-attachments/assets/61070feb-b6fb-4d19-823b-34713e5f89d3)
+<img width="1919" height="191" alt="Ejecución de AppCompatCacheParser.exe sobre el hive SYSTEM" src="https://github.com/user-attachments/assets/61070feb-b6fb-4d19-823b-34713e5f89d3" />
 
 El output '.csv' fue cargado en **Timeline Explorer** para su análisis. Filtrando por `sysinternals` en el AppCompatCache, encontramos la entrada con `Last Modified Time UTC: 2022-11-15 21:18:51`.
 
-![Timeline Explorer con la entrada de sysinternals en el AppCompatCache](https://github.com/user-attachments/assets/863dad4b-d362-455f-88be-afd14c0d575e)
+<img width="1919" height="220" alt="Timeline Explorer con la entrada de sysinternals en el AppCompatCache" src="https://github.com/user-attachments/assets/863dad4b-d362-455f-88be-afd14c0d575e" />
 
 > **R:** `11/15/2022 6:18:51 PM`
 
@@ -52,11 +52,11 @@ El output '.csv' fue cargado en **Timeline Explorer** para su análisis. Filtran
 
 El **Amcache**, a diferencia del AppCompatCache, registra el hash SHA1 real del ejecutable al momento de su primera ejecución. 
 
-![Ejecución de AmcacheParser.exe sobre Amcache.hve](https://github.com/user-attachments/assets/2710dc9a-9474-4378-81d5-70d69cab5b2f)
+<img width="1900" height="288" alt="Ejecución de AmcacheParser.exe sobre Amcache.hve" src="https://github.com/user-attachments/assets/2710dc9a-9474-4378-81d5-70d69cab5b2f" />
 
 Cargando el CSV generado por `AmcacheParser.exe` en Timeline Explorer y filtrando por `sysinternals`, encontramos la entrada correspondiente a `c:\\users\\public\\downloads\\sysinternals.exe` con su hash SHA1 completo.
 
-![Timeline Explorer con la entrada de Amcache y el SHA1 de sysinternals.exe](https://github.com/user-attachments/assets/888d6ec3-e5d4-42d9-8a60-338c26a781d0)
+<img width="1919" height="407" alt="Timeline Explorer con la entrada de Amcache y el SHA1 de sysinternals.exe" src="https://github.com/user-attachments/assets/888d6ec3-e5d4-42d9-8a60-338c26a781d0" />
 
 > **R:** `fa1002b02fc5551e075ec44bb4ff9cc13d563dcf`
 
@@ -66,7 +66,7 @@ Cargando el CSV generado por `AmcacheParser.exe` en Timeline Explorer y filtrand
 
 Buscando el hash MD5 del ejecutable `72e6d1728a546c2f3ee32c063ed09fa6ba8c46ac33b0dd2e354087c1ad26ef48` en **VirusTotal**, el análisis muestra que **51 de 70** vendors lo clasifican como malicioso. En la sección **Detection** el vendor **Alibaba** lo detecta como `Downloader:Win32/Rozena.cadb0acb`.
 
-![Resultado de VirusTotal con 51 de 70 detecciones y la etiqueta de Alibaba](https://github.com/user-attachments/assets/d941a351-1af6-430b-8691-73a7cdf0cbb0)
+<img width="1919" height="838" alt="Resultado de VirusTotal con 51 de 70 detecciones y la etiqueta de Alibaba" src="https://github.com/user-attachments/assets/d941a351-1af6-430b-8691-73a7cdf0cbb0" />
 
 > **R:** `Rozena`
 
@@ -76,7 +76,7 @@ Buscando el hash MD5 del ejecutable `72e6d1728a546c2f3ee32c063ed09fa6ba8c46ac33b
 
 El análisis se realizó en dos niveles complementarios. Primero, en **VirusTotal** sección **Relations**, vemos que el malware contactó la URL `http://www.malware430.com/html/VMwareUpdate.exe`. 
 
-![Sección Relations de VirusTotal con la URL contactada por el malware](https://github.com/user-attachments/assets/9b252670-24ba-4c2d-aa6f-29608e4c734d)
+<img width="1896" height="620" alt="Sección Relations de VirusTotal con la URL contactada por el malware" src="https://github.com/user-attachments/assets/9b252670-24ba-4c2d-aa6f-29608e4c734d" />
 
 > **R:** `www.malware430.com`
 
@@ -85,7 +85,7 @@ El análisis se realizó en dos niveles complementarios. Primero, en **VirusTota
 **Q6.** The mapped domain is linked to an IP address. What is that IP address?
 Desde el punto de vista forense del host, en **Autopsy** navegamos al archivo `ConsoleHost_history.txt` ubicado en `IEUser\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\`. Este historial de PowerShell contiene el comando: `Add-Content -Path $env:windir\\System32\\drivers\\etc\\hosts -Value "192.168.15.10 www.malware430.com" -Force`, revelando que el malware **modificó el archivo hosts** para mapear el dominio malicioso a una IP interna, técnica de DNS hijacking local para redirigir tráfico o evadir detección.
 
-![Historial de PowerShell en Autopsy con el comando Add-Content sobre el archivo hosts](https://github.com/user-attachments/assets/82684056-3481-4042-ac34-e722ba27cb83)
+<img width="1919" height="813" alt="Historial de PowerShell en Autopsy con el comando Add-Content sobre el archivo hosts" src="https://github.com/user-attachments/assets/82684056-3481-4042-ac34-e722ba27cb83" />
 
 El mismo comando `Add-Content` que mapea el dominio en el archivo `hosts` especifica explícitamente la dirección IP asociada: `192.168.15.10`. Esta IP privada fue mapeada tanto a `www.malware430.com` como a `www.sysinternals.com`, lo que sugiere que el atacante buscaba interceptar conexiones legítimas a SysInternals para redirigirlas a su infraestructura.
 
@@ -97,7 +97,7 @@ El mismo comando `Add-Content` que mapea el dominio en el archivo `hosts` especi
 
 En **VirusTotal**, sección **Behavior** (Process Tree), observamos la cadena de ejecución completa del malware. El ejecutable `SysInternals.exe` lanza como proceso: `"%ComSpec%" /C %windir%\\vmtoolsIO.exe -install && net start VMwareIOHelperService && sc config VMwareIOHelperService start= auto`. Esto confirma que `SysInternals.exe` descarga y coloca `vmtoolsIO.exe` en `C:\Windows\`, simulando como si fuese una herramienta legítima de VMware.
 
-![Process Tree de VirusTotal con la ejecución de vmtoolsIO.exe y la creación del servicio](https://github.com/user-attachments/assets/dc32d486-052f-4f41-9325-2f66b695beb6)
+<img width="1919" height="400" alt="Process Tree de VirusTotal con la ejecución de vmtoolsIO.exe y la creación del servicio" src="https://github.com/user-attachments/assets/dc32d486-052f-4f41-9325-2f66b695beb6" />
 
 > **R:** `vmtoolsIO.exe`
 

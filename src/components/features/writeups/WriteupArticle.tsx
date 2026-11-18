@@ -36,6 +36,7 @@ const CAPTION_CLASS =
 export function WriteupArticle({ investigation }: WriteupArticleProps) {
   const { markdown: md, loading, error, retry } = useWriteup(investigation, investigation.id);
   const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+  const [activeId, setActiveId] = useState<string | undefined>();
   const titleRef = useRef<HTMLHeadingElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
@@ -74,6 +75,29 @@ export function WriteupArticle({ investigation }: WriteupArticleProps) {
       if (frame) window.cancelAnimationFrame(frame);
     };
   }, [md]);
+
+  // Track the heading being read for the TOC (top-most intersecting heading).
+  useEffect(() => {
+    if (typeof IntersectionObserver === "undefined" || toc.length === 0) return;
+    const elements = toc
+      .map((entry) => document.getElementById(entry.id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (elements.length === 0) return;
+    const visible = new Set<string>();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) visible.add(e.target.id);
+          else visible.delete(e.target.id);
+        }
+        const top = elements.find((el) => visible.has(el.id));
+        if (top) setActiveId(top.id);
+      },
+      { rootMargin: "-80px 0px -70% 0px" },
+    );
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [toc]);
 
   const scrollToHeading = useCallback((id: string) => {
     const target = document.getElementById(id);
@@ -204,7 +228,9 @@ export function WriteupArticle({ investigation }: WriteupArticleProps) {
             )}
           </div>
 
-          {showToc && <WriteupTocPanel entries={toc} onSelect={scrollToHeading} />}
+          {showToc && (
+            <WriteupTocPanel entries={toc} onSelect={scrollToHeading} activeId={activeId} />
+          )}
         </div>
 
         <footer className="mt-20">

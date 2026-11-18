@@ -23,7 +23,7 @@ Antes de iniciar cualquier tipo de análisis, es importante comprender qué es *
 
 Como primeras instancias de análisis siempre recomiendo revisar **Statistics → Conversations**, ya que aquí podemos encontrar información relevante acerca del escenario general que estamos observando. En este caso podemos ver un gran volumen de intercambio de datos entre 2 IPs.  
 
-![Statistics Conversations en Wireshark con alto volumen entre dos IPs](https://github.com/user-attachments/assets/84cb6e3b-8629-406a-8898-b64e8a6ed125)
+<img width="1359" height="720" alt="Statistics Conversations en Wireshark con alto volumen entre dos IPs" src="https://github.com/user-attachments/assets/84cb6e3b-8629-406a-8898-b64e8a6ed125" />
 
 Aplicando el filtro:  
 
@@ -31,7 +31,7 @@ Aplicando el filtro:
 
 Podemos ver claramente el inicio de la conversación: **Create Request**, **File PSEXECSVC.EXE**, la creación del archivo `.key`, y demás información que confirma el origen del ataque. 
 
-![Paquetes SMB2 con Create Request de PSEXECSVC.EXE y creación del archivo .key](https://github.com/user-attachments/assets/c733cb89-926b-4e22-adfe-61598ec96572)
+<img width="1359" height="143" alt="Paquetes SMB2 con Create Request de PSEXECSVC.EXE y creación del archivo .key" src="https://github.com/user-attachments/assets/c733cb89-926b-4e22-adfe-61598ec96572" />
 
 > **R:** `10.0.0.130`
 
@@ -41,7 +41,7 @@ Podemos ver claramente el inicio de la conversación: **Create Request**, **File
 
 Siguiendo la conversación identificada previamente, podemos visualizar directamente el nombre del host objetivo. También podemos aplicar un **Follow → TCP Stream** sobre los paquetes SMB relevantes y ver en texto claro el nombre del host al que el atacante realizó el pivoting.  
 
-![TCP Stream SMB con el nombre del host objetivo en texto claro](https://github.com/user-attachments/assets/2b70021f-082b-4906-a677-bc9b3cb0ed43)
+<img width="1359" height="720" alt="TCP Stream SMB con el nombre del host objetivo en texto claro" src="https://github.com/user-attachments/assets/2b70021f-082b-4906-a677-bc9b3cb0ed43" />
 
 > **R:** `Sales-PC`
 
@@ -51,7 +51,7 @@ Siguiendo la conversación identificada previamente, podemos visualizar directam
 
 En el mismo TCP Stream de la respuesta anterior, podemos ver claramente el usuario ingresado por el atacante para autenticarse contra el host objetivo, expuesto en texto claro dentro de los paquetes de negociación NTLM.  
 
-![TCP Stream con el usuario de la autenticación NTLM en texto claro](https://github.com/user-attachments/assets/aa286e4d-6720-4a8c-980e-80b9266fd280)
+<img width="1358" height="719" alt="TCP Stream con el usuario de la autenticación NTLM en texto claro" src="https://github.com/user-attachments/assets/aa286e4d-6720-4a8c-980e-80b9266fd280" />
 
 > **R:** `ssales`
 
@@ -61,7 +61,7 @@ En el mismo TCP Stream de la respuesta anterior, podemos ver claramente el usuar
 
 Como mencionamos al inicio del laboratorio en el análisis del funcionamiento de PsExec, esta herramienta instala en el host objetivo el servicio `PSEXESVC.exe` para poder ejecutar comandos de forma remota. Esto se confirma en la conversación SMB capturada, donde vemos un **Create Request, File: PSEXESVC.exe** dirigido al sistema comprometido.  
 
-![Create Request de PSEXESVC.exe hacia el sistema comprometido](https://github.com/user-attachments/assets/a015f3e3-a366-4677-a110-361bee8f24eb)
+<img width="1359" height="720" alt="Create Request de PSEXESVC.exe hacia el sistema comprometido" src="https://github.com/user-attachments/assets/a015f3e3-a366-4677-a110-361bee8f24eb" />
 
 > **R:** `PSEXESVC`
 
@@ -71,7 +71,7 @@ Como mencionamos al inicio del laboratorio en el análisis del funcionamiento de
 
 En la misma conversación inicial entre atacante y objetivo, dentro del **Create Request**, podemos ver claramente que el archivo `PSEXESVC.exe` es creado en el share **ADMIN$**, lo cual se alinea perfectamente con el comportamiento documentado y esperado de PsExec para instalar su servicio de forma remota.  
 
-![Create Request con PSEXESVC.exe creado en el share ADMIN$](https://github.com/user-attachments/assets/388afcec-5bfa-40bc-b327-b737bfc6028e)
+<img width="1359" height="719" alt="Create Request con PSEXESVC.exe creado en el share ADMIN$" src="https://github.com/user-attachments/assets/388afcec-5bfa-40bc-b327-b737bfc6028e" />
 
 > **R:** `ADMIN$`
 
@@ -81,7 +81,7 @@ En la misma conversación inicial entre atacante y objetivo, dentro del **Create
 
 Previo a la conexión con el share **ADMIN$**, podemos observar claramente en el flujo de paquetes cómo el atacante establece primero una conexión al share **IPC$** antes de iniciar el intercambio principal. Este share es utilizado por PsExec para establecer el canal de comunicación via Named Pipes y llamadas MSRPC.  
 
-![Conexión al share IPC$ previa a la conexión con ADMIN$](https://github.com/user-attachments/assets/9240fc73-151f-4c66-b4d9-0005f7cacb9b)
+<img width="1359" height="100" alt="Conexión al share IPC$ previa a la conexión con ADMIN$" src="https://github.com/user-attachments/assets/9240fc73-151f-4c66-b4d9-0005f7cacb9b" />
 
 > **R:** `IPC$`
 
@@ -91,7 +91,7 @@ Previo a la conexión con el share **ADMIN$**, podemos observar claramente en el
 
 Para identificar el segundo objetivo del atacante, podemos filtrar directamente los **NTLM Challenges** en Wireshark y analizar las requests realizadas mediante **Follow → TCP Stream**, donde veremos que el atacante replicó exactamente el mismo método de acceso. Alternativamente, filtrando por paquetes SMB podemos identificar otro intento de comunicación con un host distinto de la red, al cual también podemos aplicar **Follow → TCP Stream** para extraer el hostname solicitado.  
 
-![TCP Stream de la segunda autenticación con el hostname del segundo objetivo](https://github.com/user-attachments/assets/222a4dd6-19c0-4944-bfd3-86f01eefa080)
+<img width="1359" height="719" alt="TCP Stream de la segunda autenticación con el hostname del segundo objetivo" src="https://github.com/user-attachments/assets/222a4dd6-19c0-4944-bfd3-86f01eefa080" />
 
 > **R:** `Marketing-PC`
 
