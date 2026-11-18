@@ -1,136 +1,152 @@
-Un IDS alertó sobre comportamiento sospechoso en una workstation y el laboratorio entrega un dump de memoria. Con Volatility 3 aislamos un falso instalador de Chrome, extrajimos su C2 y su hash, y lo enriquecimos en VirusTotal hasta identificarlo como Ramnit.
+## 🧩 Escenario del Laboratorio
 
-## El caso
+**Contexto**: IDS alerta comportamiento sospechoso en workstation. Memory dump disponible para análisis forense.  
+**Objetivo**: Identificar proceso malicioso, extraer IOCs de red, hash del ejecutable y timestamp de compilación correlacionando con Threat Intelligence externa.  
+**Herramientas**: Volatility 3, VirusTotal.  
+**Tácticas**: Execution | Defense Evasion | Command and Control.
 
-Un IDS alertó sobre comportamiento sospechoso en una workstation y hay un memory dump disponible para análisis forense. El objetivo fue identificar el proceso malicioso, extraer IOCs de red, el hash del ejecutable y el timestamp de compilación, correlacionando con threat intelligence externa. Aplicamos técnicas de Volatility para detectar actividad maliciosa en el dump.
+El escenario presenta un dump de memoria para realizar análisis forense y aplicar técnicas Volatility para detectar actividad maliciosa.
 
-- **Plataforma:** CyberDefenders
-- **Categoría:** Endpoint Forensics
-- **Herramientas:** Volatility 3, VirusTotal, sha1sum, GeoDataTool, WhatIsMyIPAddress
-- **Tácticas:** Execution | Defense Evasion | Command and Control
+## 📋 Preguntas del Laboratorio & Respuestas
 
-## La investigación
-
-### El proceso que no debería seguir vivo
+### Pregunta 1
 
 **Q1.** What is the name of the process responsible for the suspicious activity?
 
-Primero corroboramos los procesos en ejecución:
+**Primero corroboramos los procesos ejecutándose con**:  
 
-```bash
-python3 vol.py -f (PATH al dump) Windows.pslist
-```
+`python3 vol.py -f (PATH al dump) Windows.pslist`  
 
-Al revisar la lista no vimos procesos maliciosos evidentes, así que analizamos los comandos ejecutados en el sistema:
+Al revisar la lista inicialmente no vemos procesos potencialmente maliciosos evidentes, por lo que procedemos a analizar los comandos ejecutados en el sistema con:  
 
-```bash
-python3 vol.py -f (PATH al dump) Windows.cmdline
-```
+`python3 vol.py -f (PATH al dump) Windows.cmdline`  
 
-![Salida de Windows.cmdline con la línea de comando de ChromeSetup.exe](https://github.com/user-attachments/assets/87f3e5ae-5851-40d0-a420-143e9a8b520d "Windows.cmdline revela ChromeSetup.exe")
+![Salida de Windows.cmdline con la línea de comando de ChromeSetup.exe](https://github.com/user-attachments/assets/87f3e5ae-5851-40d0-a420-143e9a8b520d)
 
-Una línea de comando sospechosa destaca: `ChromeSetup.exe`. Es anómalo, porque un instalador legítimo de Chrome se cierra solo tras completar la instalación y no permanece activo en el sistema. Con este criterio respondemos tanto la primera como la segunda pregunta del laboratorio.
+Aquí podemos observar claramente una línea de comando sospechosa: **ChromeSetup.exe**. Este comportamiento es anómalo ya que un instalador legítimo de Chrome se cierra automáticamente tras completar la instalación, no permanece activo en el sistema. Con este criterio podemos responder tanto la primera como la segunda pregunta del laboratorio.  
 
-> **Respuesta:** `ChromeSetup.exe`
+> **R:** `ChromeSetup.exe`
 
-### La ruta del ejecutable
+### Pregunta 2
 
 **Q2.** What is the exact path of the executable for the malicious process?
 
-La ruta del proceso malicioso se confirma desde los flags de cmdline en Volatility.
+Path del proceso malicioso confirmado desde los flags de cmdline en Volatility.  
 
-> **Respuesta:** `C:\Users\alex\Downloads\ChromeSetup.exe`
+> **R:** `C:\Users\alex\Downloads\ChromeSetup.exe`
 
-### A qué IP intentó conectarse
+### Pregunta 3
 
 **Q3.** Identifying network connections is crucial for understanding the malware's communication strategy. What IP address did the malware attempt to connect to?
 
-Usamos el plugin `Windows.netscan` para enumerar las conexiones de red de los procesos del dump. Para reducir ruido y filtrar el proceso malicioso, aplicamos un grep sobre el PID extraído antes (4628):
+**Para contestar esta pregunta recurrimos al plugin Windows.netscan** para enumerar todas las conexiones de red realizadas por los procesos del dump. Para reducir ruido y filtrar específicamente el proceso malicioso, aplicamos un grep sobre el PID extraído anteriormente (4628):  
 
-```bash
-python3 vol.py -f (PATH al dump) Windows.netscan | grep -i "4628"
-```
+`python3 vol.py -f (PATH al dump) Windows.netscan | grep -i "4628"`  
 
-![Salida de Windows.netscan filtrada por el PID 4628](https://github.com/user-attachments/assets/d5ef71aa-316d-4d24-ac18-8bab4c51c19e "Conexión de red del PID 4628")
+![Salida de Windows.netscan filtrada por el PID 4628](https://github.com/user-attachments/assets/d5ef71aa-316d-4d24-ac18-8bab4c51c19e)
 
-> **Respuesta:** `58.64.204.181`
+> **R:** `58.64.204.181`
 
-### De dónde viene la conexión
+### Pregunta 4
 
 **Q4.** To determine the specific geographical origin of the attack, Which city is associated with the IP address the malware communicated with?
 
-Para geolocalizar la IP maliciosa recurrimos a plataformas como geodatatool, VirusTotal y WhatIsMyIPAddress, entre otras herramientas de inteligencia de IP.
+**Para geolocalizar la IP maliciosa recurrimos a plataformas como geodatatool, VirusTotal, WhatIsMyIPAddress**, entre otras herramientas de inteligencia de IP. 
 
-![Geolocalización de la IP maliciosa](https://github.com/user-attachments/assets/f5170c7a-95cc-42f6-b15b-4aca0b75bba6 "Geolocalización de la IP del C2")
+![Geolocalización de la IP maliciosa](https://github.com/user-attachments/assets/f5170c7a-95cc-42f6-b15b-4aca0b75bba6)
 
-> **Respuesta:** `Hong Kong`
+> **R:** `Hong Kong`
 
-### Recuperar el ejecutable y calcular su SHA1
+### Pregunta 5
 
 **Q5.** Hashes serve as unique identifiers for files, assisting in the detection of similar threats across different machines. What is the SHA1 hash of the malware executable?
 
-Con el proceso malicioso identificado (PID 4628), volcamos el ejecutable para calcular su hash. Usamos el plugin `Windows.dumpfiles` con el parámetro `--pid` para señalar el proceso objetivo:
+**Ya con el proceso malicioso identificado (PID 4628), realizamos dump del ejecutable** para posteriormente calcular su hash. Utilizamos el plugin Windows.dumpfiles con el parámetro --pid para especificar el proceso objetivo:  
 
-```bash
-python3 vol.py -f (PATH al dump) Windows.dumpfiles --pid 4628
-```
+`python3 vol.py -f (PATH al dump) Windows.dumpfiles --pid 4628`  
 
-![Resultado de Windows.dumpfiles con el volcado del ejecutable](https://github.com/user-attachments/assets/d7196ff7-4640-40e5-8637-52d2c97c1347 "Volcado del ejecutable con dumpfiles")
+![Resultado de Windows.dumpfiles con el volcado del ejecutable](https://github.com/user-attachments/assets/d7196ff7-4640-40e5-8637-52d2c97c1347)
 
-Con el ejecutable volcado, calculamos el SHA1:
+Tras el dumpeo exitoso del ejecutable, calculamos el hash SHA1:  
 
-```bash
-sha1sum file.0xca82b85325a0.0xca82b7e06c80.ImageSectionObject.ChromeSetup.exe.img
-```
+`sha1sum file.0xca82b85325a0.0xca82b7e06c80.ImageSectionObject.ChromeSetup.exe.img` 
 
-> **Respuesta:** `280c9d36039f9432433893dee6126d72b9112ad2`
+> **R:** `280c9d36039f9432433893dee6126d72b9112ad2`
 
-### Cuándo se compiló
+### Pregunta 6
 
 **Q6.** Examining the malware's development timeline can provide insights into its deployment. What is the compilation timestamp for the malware?
 
-Hicimos el análisis de threat intelligence en VirusTotal con el SHA1 extraído. En el apartado "Details" de la muestra identificamos la fecha de compilación.
+**Realizamos análisis de Threat Intelligence en VirusTotal** ingresando el hash SHA1 extraído. En el apartado "Details" de la muestra identificamos la fecha de compilación del malware. 
 
-![Fecha de compilación en la pestaña Details de VirusTotal](https://github.com/user-attachments/assets/47526e6d-9209-42d5-9660-34e5bca999e1 "Timestamp de compilación en VirusTotal")
+![Fecha de compilación en la pestaña Details de VirusTotal](https://github.com/user-attachments/assets/47526e6d-9209-42d5-9660-34e5bca999e1)
 
-> **Respuesta:** `2019-12-01 08:36`
+> **R:** `2019-12-01 08:36`
 
-### El dominio asociado
+### Pregunta 7
 
 **Q7.** Identifying the domains associated with this malware is crucial for blocking future malicious communications and detecting any ongoing interactions with those domains within our network. Can you provide the domain connected to the malware?
 
-En VirusTotal fuimos al apartado "Relations" de la muestra. En la sección "Contacted Domains" identificamos el dominio C2 asociado.
+**En VirusTotal navegamos al apartado "Relations"** de la muestra analizada. En la sección "Contacted Domains" identificamos el dominio C2 asociado al malware.  
 
-![Sección Contacted Domains en Relations de VirusTotal](https://github.com/user-attachments/assets/b70b9fe7-a0c8-4b37-bf34-070b57b39d95 "Dominio contactado por la muestra")
+![Sección Contacted Domains en Relations de VirusTotal](https://github.com/user-attachments/assets/b70b9fe7-a0c8-4b37-bf34-070b57b39d95)
 
-> **Respuesta:** `dnsnb8.net`
+> **R:** `dnsnb8.net`
 
-## Reconstrucción del ataque
+## 🔬 Resumen del Proceso de Análisis
 
-1. **Enumeración de procesos y análisis de comportamiento.** `Windows.pslist` da la línea base. `Windows.cmdline` muestra `ChromeSetup.exe` (PID 4628) persistente. La razón: los instaladores legítimos se cierran solos tras la instalación.
-2. **Extracción de IOCs de red.** `Windows.netscan` filtrado por el PID 4628 revela la IP C2 `58.64.204.181` (Hong Kong), con geolocalización confirmada vía GeoDataTool.
-3. **Recuperación de la muestra.** `Windows.dumpfiles --pid 4628` extrae `ChromeSetup.exe.img`. SHA1: `280c9d36039f9432433893dee6126d72b9112ad2`.
-4. **Enriquecimiento con threat intelligence.** VirusTotal da la compilación `2019-12-01 08:36`, el dominio C2 `dnsnb8.net` (Relations → Contacted Domains) y la familia Ramnit, por comportamiento e IOCs.
+### 1. Process Enumeration y Behavioral Analysis
 
-## Indicadores de compromiso
+```
+python3 vol.py -f dump.mem Windows.pslist   → Process baseline
+python3 vol.py -f dump.mem Windows.cmdline  → ChromeSetup.exe (PID 4628) persistente
+Razón: Installers legítimos auto-cierran post-instalación
+```
 
-| Tipo | Indicador | Contexto |
-|------|-----------|----------|
-| Archivo | `C:\Users\alex\Downloads\ChromeSetup.exe` | Ejecutable malicioso (PID 4628) |
-| IP | `58.64.204.181` | Destino de la conexión del malware (Hong Kong) |
-| Dominio | `dnsnb8.net` | Dominio C2 en Contacted Domains de VirusTotal |
-| SHA1 | `280c9d36039f9432433893dee6126d72b9112ad2` | Hash del ejecutable volcado |
-| Timestamp | `2019-12-01 08:36` | Fecha de compilación según VirusTotal |
+### 2. Network IOC Extraction
 
-## Herramientas
+```
+python3 vol.py -f dump.mem Windows.netscan | grep 4628
+→ C2 IP: 58.64.204.181 (Hong Kong)
+Geolocalizáción confirmada via GeoDataTool
+```
 
-- **Volatility 3:** `pslist`, `cmdline`, `netscan` y `dumpfiles`.
-- **sha1sum:** cálculo del hash del ejecutable.
-- **VirusTotal:** análisis de la muestra, timestamps y dominios.
-- **WhatIsMyIPAddress:** geolocalización de la IP.
+### 3. Malware Sample Recovery
 
-## Lecciones aprendidas
+```
+python3 vol.py -f dump.mem Windows.dumpfiles --pid 4628
+→ ChromeSetup.exe.img extraído exitosamente
+SHA1: 280c9d36039f9432433893dee6126d72b9112ad2
+```
 
-1. **Process hunting.** `Windows.cmdline` rinde más que `pslist` para detectar persistencia anómala.
-2. **Correlación por PID.** Filtrar siempre `netscan` por el PID sospechoso (`grep -i "PID"`).
-3. **Flujo de memory forensics.** Dump, hash y enriquecimiento en VirusTotal producen IOCs accionables.
+### 4. Threat Intelligence Enrichment
+
+```
+VirusTotal Analysis:
+├── Compilation: 2019-12-01 08:36
+├── C2 Domain: dnsnb8.net (Relations → Contacted Domains)
+└── Family: Ramnit (comportamiento + IOCs)
+```
+
+## 🔬 Herramientas Utilizadas
+
+**Memoria Forense**
+```
+├── Volatility 3 → pslist, cmdline, netscan, dumpfiles
+└── sha1sum → Hash calculation
+```
+
+**Threat Intelligence**
+```
+├── VirusTotal → Sample analysis, timestamps, domains
+└── WhatIsMyIPAddress → IP geolocation
+```
+
+## 📊 Lecciones Aprendidas
+
+1. **Process Hunting**: `Windows.cmdline` > `pslist` para detectar persistence anómalo.
+2. **PID Correlation**: Siempre filtrar netscan por PID sospechoso (`grep -i "PID"`).
+3. **Memory Forensics Workflow**: Dump → Hash → VT Enrichment = IOCs accionables.
+
+> **Santiago Daniel Sandili** – SOC Analyst Jr. | Blue Team · DFIR  
+> *CyberDefenders Blue Team Lab: Ramnit (Endpoint Forensics Category)*

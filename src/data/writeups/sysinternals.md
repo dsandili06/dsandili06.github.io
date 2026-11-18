@@ -1,128 +1,160 @@
-Un usuario descargó un ejecutable que se hacía pasar por una herramienta de SysInternals. Con Autopsy, las herramientas de Eric Zimmerman y VirusTotal reconstruimos la cadena de infección: un dropper de la familia Rozena que instala un servicio falso de VMware y manipula el archivo hosts.
+## 🧩 Escenario del Laboratorio
 
-## El caso
+**Contexto**: Un usuario descargó un archivo ejecutable haciéndose pasar por una herramienta legítima de SysInternals. Las autoridades sospechan que dicho archivo es malware y solicitan al equipo de DFIR un análisis forense completo de la imagen de disco para determinar qué fue descargado, cuándo fue ejecutado, qué infraestructura contactó y qué acciones realizó en el sistema.  
+**Objetivo**: Analizar una imagen forense de disco Windows con Autopsy, AppCompatCacheParser, AmcacheParser y VirusTotal para reconstruir la cadena de infección completa: desde la descarga del malware hasta su persistencia en el sistema.  
+**Herramientas**: Autopsy, AppCompatCacheParser (Eric Zimmerman), AmcacheParser (Eric Zimmerman), Timeline Explorer (Eric Zimmerman), VirusTotal.  
+**Tácticas**: Initial Access | Execution | Persistence | Defense Evasion | Command and Control.
 
-Un usuario descargó un archivo ejecutable haciéndose pasar por una herramienta legítima de SysInternals. Las autoridades sospechan que es malware y solicitan al equipo de DFIR un análisis forense completo de la imagen de disco para determinar qué fue descargado, cuándo fue ejecutado, qué infraestructura contactó y qué acciones realizó en el sistema.
+Este laboratorio de dificultad **Medium** requirió investigar y aprender sobre artefactos forenses de Windows que no los conocía realmente: el **Amcache**, el **AppCompatCache** y el **historial de comandos de PowerShell**. A continuación se detalla tanto el proceso de análisis como los conceptos aprendidos durante la resolución.
 
-El objetivo es analizar una imagen forense de disco Windows con Autopsy, AppCompatCacheParser, AmcacheParser y VirusTotal para reconstruir la cadena de infección completa, desde la descarga del malware hasta su persistencia. El laboratorio es de dificultad Medium y nos obligó a investigar artefactos de Windows que no conocíamos bien: el Amcache, el AppCompatCache y el historial de comandos de PowerShell.
+## 📚 Conceptos Clave Investigados
 
-- **Plataforma:** CyberDefenders
-- **Categoría:** Endpoint Forensics
-- **Herramientas:** Autopsy, AppCompatCacheParser (Eric Zimmerman), AmcacheParser (Eric Zimmerman), Timeline Explorer (Eric Zimmerman), VirusTotal
-- **Tácticas:** Initial Access, Execution, Persistence, Defense Evasion, Command and Control
+Antes de poder responder las preguntas del laboratorio, fue necesario investigar y comprender tres artefactos forenses de Windows:
 
-## La investigación
+**AppCompatCache (ShimCache)**  
+Registro de Windows ubicado en `HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\AppCompatCache`. Registra los ejecutables que han sido **creados o modificados** en el sistema, incluyendo su ruta y timestamp de última modificación. Es importante aclarar que su presencia **no garantiza ejecución** — solo indica que el archivo existió en ese path. Se parsea con `AppCompatCacheParser.exe` de Eric Zimmerman.
 
-### Tres artefactos que hay que entender primero
+**Amcache.hve**  
+Hive de registro ubicado en `C:\\Windows\\AppCompat\\Programs\\Amcache.hve`. A diferencia del ShimCache, el Amcache **sí registra ejecución real** de programas, almacenando además el hash **SHA1** del ejecutable, su ruta completa y el timestamp de primera ejecución. Se parsea con `AmcacheParser.exe` de Eric Zimmerman.
 
-Antes de responder las preguntas fue necesario investigar y comprender tres artefactos forenses de Windows.
+**PSReadLine - ConsoleHost_history.txt**  
+Archivo ubicado en `C:\\Users\\<USER>\\AppData\\Roaming\\Microsoft\\Windows\\PowerShell\\PSReadLine\\ConsoleHost_history.txt`. Almacena el **historial de comandos de PowerShell** ejecutados por el usuario, similar al `.bash_history` en Linux. Es un artefacto de alto valor forense porque puede revelar comandos maliciosos ejecutados manualmente o por scripts.
 
-**AppCompatCache (ShimCache).** Registro de Windows ubicado en `HKLM\\SYSTEM\\CurrentControlSet\\Control\\Session Manager\\AppCompatCache`. Registra los ejecutables que han sido creados o modificados en el sistema, incluyendo su ruta y timestamp de última modificación. Su presencia no garantiza ejecución: solo indica que el archivo existió en ese path. Se parsea con `AppCompatCacheParser.exe` de Eric Zimmerman.
+## 📋 Preguntas del Laboratorio & Respuestas
 
-**Amcache.hve.** Hive de registro ubicado en `C:\\Windows\\AppCompat\\Programs\\Amcache.hve`. A diferencia del ShimCache, el Amcache sí registra ejecución real de programas, y además almacena el hash SHA1 del ejecutable, su ruta completa y el timestamp de primera ejecución. Se parsea con `AmcacheParser.exe` de Eric Zimmerman.
-
-**PSReadLine y ConsoleHost_history.txt.** Archivo ubicado en `C:\\Users\\<USER>\\AppData\\Roaming\\Microsoft\\Windows\\PowerShell\\PSReadLine\\ConsoleHost_history.txt`. Almacena el historial de comandos de PowerShell ejecutados por el usuario, similar al `.bash_history` en Linux. Tiene alto valor forense porque puede revelar comandos maliciosos ejecutados manualmente o por scripts.
-
-### Un ejecutable que imita a Microsoft
+### Pregunta 1
 
 **Q1.** What was the malicious executable file name that the user downloaded?
 
-En Autopsy navegamos a `Users/Public/Downloads` y encontramos el archivo **SysInternals.exe** marcado con una X roja, que indica que fue eliminado del sistema de archivos (estado Unallocated). Su nombre imita deliberadamente la suite legítima de herramientas de Microsoft SysInternals, una técnica clásica de masquerading para evadir sospechas del usuario.
+En Autopsy, navegando a la ruta `Users/Public/Downloads`, encontramos el archivo **SysInternals.exe** marcado con una **X roja** indicando que fue eliminado del sistema de archivos (estado Unallocated). Su nombre imita deliberadamente la suite legítima de herramientas de Microsoft SysInternals, una técnica clásica de **masquerading** para evadir sospechas del usuario.
 
-![Autopsy mostrando SysInternals.exe eliminado en Users/Public/Downloads](https://github.com/user-attachments/assets/a15ee811-9280-4d12-b489-71921196507d "SysInternals.exe marcado como eliminado en Autopsy")
+![Autopsy mostrando SysInternals.exe eliminado en Users/Public/Downloads](https://github.com/user-attachments/assets/a15ee811-9280-4d12-b489-71921196507d)
 
-> **Respuesta:** `SysInternals.exe`
+> **R:** `SysInternals.exe`
 
-### La última modificación del ejecutable
+### Pregunta 2
 
 **Q2.** When was the last time the malicious executable file was modified? 12-hour format?
 
-Para obtener el timestamp preciso usamos las herramientas de Eric Zimmerman. Primero `AppCompatCacheParser.exe` para parsear el hive `SYSTEM` del registro.
+Para obtener el timestamp preciso de última modificación del ejecutable, utilizamos las herramientas de **Eric Zimmerman**: primero `AppCompatCacheParser.exe` para parsear el hive `SYSTEM` del registro. 
 
-![Ejecución de AppCompatCacheParser.exe sobre el hive SYSTEM](https://github.com/user-attachments/assets/61070feb-b6fb-4d19-823b-34713e5f89d3 "AppCompatCacheParser parseando el hive SYSTEM")
+![Ejecución de AppCompatCacheParser.exe sobre el hive SYSTEM](https://github.com/user-attachments/assets/61070feb-b6fb-4d19-823b-34713e5f89d3)
 
-El output `.csv` se cargó en Timeline Explorer. Al filtrar por `sysinternals` en el AppCompatCache encontramos la entrada con `Last Modified Time UTC: 2022-11-15 21:18:51`.
+El output '.csv' fue cargado en **Timeline Explorer** para su análisis. Filtrando por `sysinternals` en el AppCompatCache, encontramos la entrada con `Last Modified Time UTC: 2022-11-15 21:18:51`.
 
-![Timeline Explorer con la entrada de sysinternals en el AppCompatCache](https://github.com/user-attachments/assets/863dad4b-d362-455f-88be-afd14c0d575e "Entrada de sysinternals con su Last Modified Time UTC")
+![Timeline Explorer con la entrada de sysinternals en el AppCompatCache](https://github.com/user-attachments/assets/863dad4b-d362-455f-88be-afd14c0d575e)
 
-> **Respuesta:** `11/15/2022 6:18:51 PM`
+> **R:** `11/15/2022 6:18:51 PM`
 
-### El SHA1 que delata al malware
+### Pregunta 3
 
 **Q3.** What is the SHA1 hash value of the malware?
 
-El Amcache, a diferencia del AppCompatCache, registra el hash SHA1 real del ejecutable al momento de su primera ejecución.
+El **Amcache**, a diferencia del AppCompatCache, registra el hash SHA1 real del ejecutable al momento de su primera ejecución. 
 
-![Ejecución de AmcacheParser.exe sobre Amcache.hve](https://github.com/user-attachments/assets/2710dc9a-9474-4378-81d5-70d69cab5b2f "AmcacheParser procesando Amcache.hve")
+![Ejecución de AmcacheParser.exe sobre Amcache.hve](https://github.com/user-attachments/assets/2710dc9a-9474-4378-81d5-70d69cab5b2f)
 
-Cargamos en Timeline Explorer el CSV generado por `AmcacheParser.exe` y filtramos por `sysinternals`. Encontramos la entrada correspondiente a `c:\\users\\public\\downloads\\sysinternals.exe` con su hash SHA1 completo.
+Cargando el CSV generado por `AmcacheParser.exe` en Timeline Explorer y filtrando por `sysinternals`, encontramos la entrada correspondiente a `c:\\users\\public\\downloads\\sysinternals.exe` con su hash SHA1 completo.
 
-![Timeline Explorer con la entrada de Amcache y el SHA1 de sysinternals.exe](https://github.com/user-attachments/assets/888d6ec3-e5d4-42d9-8a60-338c26a781d0 "Entrada de Amcache con el SHA1 del ejecutable")
+![Timeline Explorer con la entrada de Amcache y el SHA1 de sysinternals.exe](https://github.com/user-attachments/assets/888d6ec3-e5d4-42d9-8a60-338c26a781d0)
 
-> **Respuesta:** `fa1002b02fc5551e075ec44bb4ff9cc13d563dcf`
+> **R:** `fa1002b02fc5551e075ec44bb4ff9cc13d563dcf`
 
-### La familia del malware
+### Pregunta 4
 
 **Q4.** What is the malware's family?
 
-Buscamos el hash MD5 del ejecutable, `72e6d1728a546c2f3ee32c063ed09fa6ba8c46ac33b0dd2e354087c1ad26ef48`, en VirusTotal. El análisis muestra que 51 de 70 vendors lo clasifican como malicioso. En la sección Detection, el vendor Alibaba lo detecta como `Downloader:Win32/Rozena.cadb0acb`.
+Buscando el hash MD5 del ejecutable `72e6d1728a546c2f3ee32c063ed09fa6ba8c46ac33b0dd2e354087c1ad26ef48` en **VirusTotal**, el análisis muestra que **51 de 70** vendors lo clasifican como malicioso. En la sección **Detection** el vendor **Alibaba** lo detecta como `Downloader:Win32/Rozena.cadb0acb`.
 
-![Resultado de VirusTotal con 51 de 70 detecciones y la etiqueta de Alibaba](https://github.com/user-attachments/assets/d941a351-1af6-430b-8691-73a7cdf0cbb0 "Detecciones en VirusTotal para el ejecutable")
+![Resultado de VirusTotal con 51 de 70 detecciones y la etiqueta de Alibaba](https://github.com/user-attachments/assets/d941a351-1af6-430b-8691-73a7cdf0cbb0)
 
-> **Respuesta:** `Rozena`
+> **R:** `Rozena`
 
-### El primer dominio mapeado
+### Pregunta 5
 
 **Q5.** What is the first mapped domain's Fully Qualified Domain Name (FQDN)?
 
-El análisis se hizo en dos niveles complementarios. Primero, en la sección Relations de VirusTotal vemos que el malware contactó la URL `http://www.malware430.com/html/VMwareUpdate.exe`.
+El análisis se realizó en dos niveles complementarios. Primero, en **VirusTotal** sección **Relations**, vemos que el malware contactó la URL `http://www.malware430.com/html/VMwareUpdate.exe`. 
 
-![Sección Relations de VirusTotal con la URL contactada por el malware](https://github.com/user-attachments/assets/9b252670-24ba-4c2d-aa6f-29608e4c734d "URL contactada por el malware según VirusTotal")
+![Sección Relations de VirusTotal con la URL contactada por el malware](https://github.com/user-attachments/assets/9b252670-24ba-4c2d-aa6f-29608e4c734d)
 
-> **Respuesta:** `www.malware430.com`
+> **R:** `www.malware430.com`
 
-### Hosts modificado a mano
+### Pregunta 6
 
 **Q6.** The mapped domain is linked to an IP address. What is that IP address?
+Desde el punto de vista forense del host, en **Autopsy** navegamos al archivo `ConsoleHost_history.txt` ubicado en `IEUser\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\`. Este historial de PowerShell contiene el comando: `Add-Content -Path $env:windir\\System32\\drivers\\etc\\hosts -Value "192.168.15.10 www.malware430.com" -Force`, revelando que el malware **modificó el archivo hosts** para mapear el dominio malicioso a una IP interna, técnica de DNS hijacking local para redirigir tráfico o evadir detección.
 
-Desde el punto de vista forense del host, en Autopsy navegamos al archivo `ConsoleHost_history.txt` ubicado en `IEUser\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadLine\`. El historial contiene el comando `Add-Content -Path $env:windir\\System32\\drivers\\etc\\hosts -Value "192.168.15.10 www.malware430.com" -Force`. Revela que el malware modificó el archivo hosts para mapear el dominio malicioso a una IP interna, una técnica de DNS hijacking local para redirigir tráfico o evadir detección.
+![Historial de PowerShell en Autopsy con el comando Add-Content sobre el archivo hosts](https://github.com/user-attachments/assets/82684056-3481-4042-ac34-e722ba27cb83)
 
-![Historial de PowerShell en Autopsy con el comando Add-Content sobre el archivo hosts](https://github.com/user-attachments/assets/82684056-3481-4042-ac34-e722ba27cb83 "ConsoleHost_history.txt con la modificación del archivo hosts")
+El mismo comando `Add-Content` que mapea el dominio en el archivo `hosts` especifica explícitamente la dirección IP asociada: `192.168.15.10`. Esta IP privada fue mapeada tanto a `www.malware430.com` como a `www.sysinternals.com`, lo que sugiere que el atacante buscaba interceptar conexiones legítimas a SysInternals para redirigirlas a su infraestructura.
 
-El mismo comando `Add-Content` que mapea el dominio especifica explícitamente la dirección IP asociada: `192.168.15.10`. Esta IP privada fue mapeada tanto a `www.malware430.com` como a `www.sysinternals.com`. Eso sugiere que el atacante buscaba interceptar conexiones legítimas a SysInternals para redirigirlas a su infraestructura.
+> **R:** `192.168.15.10`
 
-> **Respuesta:** `192.168.15.10`
-
-### El segundo stage
+### Pregunta 7
 
 **Q7.** What is the name of the executable dropped by the first-stage executable?
 
-En la sección Behavior (Process Tree) de VirusTotal observamos la cadena de ejecución completa. `SysInternals.exe` lanza como proceso `"%ComSpec%" /C %windir%\\vmtoolsIO.exe -install && net start VMwareIOHelperService && sc config VMwareIOHelperService start= auto`. Esto confirma que `SysInternals.exe` descarga y coloca `vmtoolsIO.exe` en `C:\Windows\`, simulando una herramienta legítima de VMware.
+En **VirusTotal**, sección **Behavior** (Process Tree), observamos la cadena de ejecución completa del malware. El ejecutable `SysInternals.exe` lanza como proceso: `"%ComSpec%" /C %windir%\\vmtoolsIO.exe -install && net start VMwareIOHelperService && sc config VMwareIOHelperService start= auto`. Esto confirma que `SysInternals.exe` descarga y coloca `vmtoolsIO.exe` en `C:\Windows\`, simulando como si fuese una herramienta legítima de VMware.
 
-![Process Tree de VirusTotal con la ejecución de vmtoolsIO.exe y la creación del servicio](https://github.com/user-attachments/assets/dc32d486-052f-4f41-9325-2f66b695beb6 "Árbol de procesos del malware en VirusTotal")
+![Process Tree de VirusTotal con la ejecución de vmtoolsIO.exe y la creación del servicio](https://github.com/user-attachments/assets/dc32d486-052f-4f41-9325-2f66b695beb6)
 
-> **Respuesta:** `vmtoolsIO.exe`
+> **R:** `vmtoolsIO.exe`
 
-### El servicio de persistencia
+### Pregunta 8
 
 **Q8.** What is the name of the service installed by 2nd stage executable?
 
-Continuando con el árbol de procesos de la captura anterior, el mismo comando ejecutado por el segundo stage instala un servicio de Windows mediante `sc config VMwareIOHelperService start= auto`. El nombre del servicio imita un componente legítimo de VMware Tools.
+Continuando el análisis del árbol de procesos de la captura anterior, el mismo comando ejecutado por el segundo stage instala un servicio de Windows mediante `sc config VMwareIOHelperService start= auto`, el nombre del servicio imita un componente legítimo de VMware Tools.
 
-> **Respuesta:** `VMwareIOHelperService`
+> **R:** `VMwareIOHelperService`
 
-## Reconstrucción del ataque
+## 🔬 Resumen del Proceso de Análisis
 
-1. **Descarga e identificación.** `SysInternals.exe` aparece en `Users/Public/Downloads`, eliminado (Unallocated). El nombre imita una suite legítima de Microsoft (T1036).
-2. **Línea temporal del ejecutable.** AppCompatCacheParser sobre el hive SYSTEM da Last Modified `2022-11-15 21:18:51` UTC. AmcacheParser sobre `Amcache.hve` da el SHA1 `fa1002b02fc5551e075ec44bb4ff9cc13d563dcf`. El Amcache confirma ejecución real; el AppCompatCache confirma presencia en disco.
-3. **Análisis de reputación.** En VirusTotal (MD5: `72e6d1728a546c2f3ee32c063ed09fa6ba8c46ac33b0dd2e354087c1ad26ef48`) 51 de 70 vendors lo marcan como malicioso. Familia: deyma / jaik. Categoría: Trojan + Downloader.
-4. **Infraestructura C2 y DNS hijacking.** El historial `ConsoleHost_history.txt` muestra dos modificaciones de hosts: `192.168.15.10` para `www.malware430.com` y `192.168.15.10` para `www.sysinternals.com`.
-5. **Cadena de infección completa.** `SysInternals.exe` (1st stage) deja `C:\\Windows\\vmtoolsIO.exe` (2nd stage), que instala el servicio `VMwareIOHelperService` con `start=auto`, es decir, persistencia.
+### 1. **Descarga e Identificación del Malware**
 
-## MITRE ATT&CK
+Autopsy → Users/Public/Downloads → SysInternals.exe (deleted/unallocated)
 
-| Táctica | Técnica | ID | Evidencia |
-|---------|---------|----|-----------|
+└── Técnica: Masquerading (T1036) — nombre imita suite legítima de Microsoft
+
+### 2. **Timeline del Ejecutable**
+
+AppCompatCacheParser → SYSTEM hive → Last Modified: 2022-11-15 21:18:51 UTC
+
+AmcacheParser → Amcache.hve → SHA1: fa1002b02fc5551e075ec44bb4ff9cc13d563dcf
+
+└── Amcache confirma ejecución real; AppCompatCache confirma presencia en disco
+
+### 3. **Análisis de Reputación**
+
+VirusTotal (MD5: 72e6d1728a546c2f3ee32c063ed09fa6ba8c46ac33b0dd2e354087c1ad26ef48)
+
+├── 51/70 vendors: malicious
+
+├── Family: deyma / jaik
+
+└── Categoría: Trojan + Downloader
+
+### 4. **Infraestructura C2 y DNS Hijacking**
+
+PSReadLine history → ConsoleHost_history.txt
+
+├── hosts modification: 192.168.15.10 → www.malware430.com
+
+└── hosts modification: 192.168.15.10 → www.sysinternals.com
+
+### 5. **Cadena de Infección Completa**
+
+SysInternals.exe (1st stage)
+
+└── Drops: C:\\Windows\\vmtoolsIO.exe (2nd stage)
+
+└── Instala servicio: VMwareIOHelperService (start=auto → persistencia)
+
+## 🎯 MITRE ATT&CK Mapping
+
+| Táctica | Técnica | ID | Descripción Observada |
+|---------|---------|----|-----------------------|
 | Initial Access | User Execution: Malicious File | T1204.002 | Usuario descarga y ejecuta SysInternals.exe desde C:\\Users\\Public\\Downloads |
 | Defense Evasion | Masquerading | T1036 | Ejecutable nombrado SysInternals.exe para imitar herramienta legítima de Microsoft |
 | Defense Evasion | Modify Hosts File | T1565.001 | PowerShell modifica hosts para mapear www.malware430.com y www.sysinternals.com a 192.168.15.10 |
@@ -130,30 +162,31 @@ Continuando con el árbol de procesos de la captura anterior, el mismo comando e
 | Persistence | Create or Modify System Process: Windows Service | T1543.003 | vmtoolsIO.exe instala VMwareIOHelperService con start=auto para sobrevivir reinicios |
 | Command and Control | Application Layer Protocol: Web Protocols | T1071.001 | Malware contacta http://www.malware430.com/html/VMwareUpdate.exe para descarga de 2nd stage |
 
-## Indicadores de compromiso
+## 🔬 Herramientas Utilizadas
 
-| Tipo | Indicador | Contexto |
-|------|-----------|----------|
-| Archivo | `SysInternals.exe` | Primer stage, en `c:\\users\\public\\downloads\\sysinternals.exe` |
-| Hash SHA1 | `fa1002b02fc5551e075ec44bb4ff9cc13d563dcf` | Registrado en Amcache para el primer stage |
-| Hash MD5 | `72e6d1728a546c2f3ee32c063ed09fa6ba8c46ac33b0dd2e354087c1ad26ef48` | Valor buscado en VirusTotal (51 de 70 detecciones) |
-| Dominio | `www.malware430.com` | Dominio mapeado en el archivo hosts |
-| Dominio | `www.sysinternals.com` | Dominio legítimo redirigido por el archivo hosts |
-| URL | `http://www.malware430.com/html/VMwareUpdate.exe` | Descarga de segundo stage contactada por el malware |
-| IP | `192.168.15.10` | IP privada mapeada en hosts para ambos dominios |
-| Archivo | `vmtoolsIO.exe` | Segundo stage en `C:\Windows\` |
-| Servicio | `VMwareIOHelperService` | Servicio con `start=auto` que da persistencia |
+  Análisis de Imagen Forense
 
-## Herramientas
+├── Autopsy → File system browsing y PSReadLine history extraction
 
-- **Autopsy:** navegación del sistema de archivos y extracción del historial de PSReadLine.
-- **AppCompatCacheParser.exe:** parseo del ShimCache desde el hive SYSTEM.
-- **AmcacheParser.exe:** parseo de `Amcache.hve` para SHA1 y evidencia de ejecución.
-- **Timeline Explorer:** visualización y filtrado de los CSV generados.
-- **VirusTotal:** reputación por hash, Process Tree, URLs contactadas y etiquetas de familia.
+  Parseo de Artefactos de Registro (Eric Zimmerman Tools)
 
-## Lecciones aprendidas
+├── AppCompatCacheParser.exe → Parseo de ShimCache desde hive SYSTEM
 
-1. **Amcache y AppCompatCache se complementan.** El AppCompatCache (ShimCache) registra archivos que existieron en disco pero no garantiza ejecución. El Amcache sí confirma ejecución real y guarda el SHA1 del binario, una fuente directa de inteligencia de amenazas sin necesidad de tener el archivo físico.
-2. **PSReadLine es un artefacto forense de primer nivel.** `ConsoleHost_history.txt` es el equivalente Windows de `.bash_history`. Con ScriptBlock Logging o Module Logging deshabilitados, puede ser la única evidencia de comandos maliciosos ejecutados manualmente o por scripts de primer stage.
-3. **Masquerading con nombres de herramientas legítimas.** Nombrar malware `SysInternals.exe` o `vmtoolsIO.exe` busca evadir sospechas visuales y potencialmente reglas de detección que excluyen herramientas de administración conocidas. Apuntar `www.sysinternals.com` a una IP controlada por el atacante muestra que entiende cómo los administradores usan esas herramientas.
+├── AmcacheParser.exe → Parseo de Amcache.hve para SHA1 y evidencia de ejecución
+
+└── Timeline Explorer → Visualización y filtrado de CSVs generados
+
+  Análisis de Malware
+
+└── VirusTotal → Reputación por hash, Process Tree, Contacted URLs, Family labels
+
+## 📊 Lecciones Aprendidas
+
+1. **Amcache vs AppCompatCache**: Son dos artefactos distintos y complementarios. El **AppCompatCache** (ShimCache) registra archivos que existieron en el disco pero **no garantiza ejecución**. El **Amcache** sí confirma ejecución real y además almacena el **SHA1** del binario, lo que lo convierte en fuente directa de inteligencia de amenazas sin necesidad de tener el archivo físico.
+
+2. **PSReadLine como artefacto forense**: El archivo `ConsoleHost_history.txt` es el equivalente Windows del `.bash_history` de Linux. En entornos donde los logs de PowerShell están deshabilitados (ScriptBlock Logging, Module Logging), este archivo puede ser la **única evidencia** de comandos maliciosos ejecutados manualmente por el atacante o por scripts de primer stage.
+
+3. **Masquerading con nombres de herramientas legítimas**: Nombrar malware como `SysInternals.exe` o `vmtoolsIO.exe` es una táctica deliberada para evadir sospechas visuales y potencialmente bypassear reglas de detección que excluyen nombres de herramientas de administración conocidas. La modificación del archivo `hosts` para apuntar `www.sysinternals.com` a una IP controlada por el atacante demuestra un entendimiento profundo de cómo los administradores interactúan con esas herramientas.
+
+> **Santiago Daniel Sandili** – SOC Analyst L1 Portfolio  
+> *CyberDefenders Blue Team Lab: SysInternals (Endpoint Forensics Category)*

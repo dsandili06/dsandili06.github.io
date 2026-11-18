@@ -246,7 +246,7 @@ export function WriteupMarkdown({
       const isAnswer =
         firstInner?.type === "element" &&
         firstInner.tagName === "strong" &&
-        innerText.trimStart().startsWith("Respuesta");
+        /^(Respuesta\b|R:)/.test(innerText.trimStart());
       if (isAnswer) {
         return (
           <aside

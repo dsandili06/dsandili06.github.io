@@ -9,7 +9,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "fakegpt",
     platform: "CyberDefenders",
     summary:
-      'Una extensión "ChatGPT" falsa roba credenciales, registra teclas y exfiltra con un Image Beacon cifrado, mientras evade sandboxes con checks anti-análisis.',
+      "Análisis de malware en extensión de navegador que simula ser ChatGPT para interceptar credenciales y sesiones web. Identificación de Image Beacons y exfiltración cifrada.",
     categories: ["Malware Analysis"],
     href: CD_BASE + "FakeGPT.md",
     visual: {
@@ -24,7 +24,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "3cx-supply-chain",
     platform: "CyberDefenders",
     summary:
-      "Un MSI troyanizado de 3CX deja DLLs con DLL Side-Loading, RC4 y evasión de VMware; la atribución apunta a Lazarus mediante VirusTotal y threat intel.",
+      "Investigación basada en CTI de un instalador oficial comprometido de 3CX. Análisis de payloads maliciosos, técnicas de evasión (T1497) y DLL Side-Loading (T1574).",
     categories: ["Threat Intel"],
     href: CD_BASE + "3CX-Supply%20Chain.md",
   },
@@ -34,7 +34,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "insider",
     platform: "CyberDefenders",
     summary:
-      "En la imagen de disco de una workstation Kali de Karen reconstruimos Mimikatz, un archivo secreto, binwalk, Flightsim y una escalación con su desde postgres.",
+      "Forense en imagen de Kali Linux para investigar actividad de una amenaza interna. Análisis de .bash_history, extracción de herramientas ofensivas y trazabilidad de eventos.",
     categories: ["Endpoint Forensics"],
     href: CD_BASE + "Insider.md",
   },
@@ -44,7 +44,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "kraken-keylogger",
     platform: "CyberDefenders",
     summary:
-      "Un ZIP enviado por Telegram Web, un LNK que persiste vía Greenshot y unos 2.8 GB exfiltrados por AnyDesk hacia 77.232.122.31 en un endpoint comprometido.",
+      "Análisis de un vector inicial LNK distribuido por mensajería web. Reconstrucción de persistencia abusando de software legítimo (Greenshot) y exfiltración de red.",
     categories: ["Endpoint Forensics"],
     href: CD_BASE + "KrakenKeylogger.md",
   },
@@ -54,7 +54,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "silent-breach",
     platform: "CyberDefenders",
     summary:
-      "Un ejecutable disfrazado de PDF (IMF-Info.pdf.exe) cifra archivos de la IMF con un PowerShell ofuscado; recuperamos la clave y desciframos los datos.",
+      "Investigación de una imagen de disco tras ataque de ransomware. Extracción de artefactos de navegador/correo, deofuscación de script PowerShell y descifrado de evidencia.",
     categories: ["Endpoint Forensics"],
     href: CD_BASE + "Silent%20Breach.md",
   },
@@ -64,7 +64,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "lockdown",
     platform: "CyberDefenders",
     summary:
-      "Un web shell subido por SMB a un IIS abre una reverse shell por el puerto 4443 desde w3wp.exe y deja un AgentTesla empaquetado con UPX.",
+      "Análisis forense de red y memoria sobre una intrusión en servidor IIS. Detección de webshells SMB2, persistencia en Startup y análisis de malware AgentTesla ofuscado con UPX.",
     categories: ["Network Forensics", "Endpoint Forensics"],
     href: CD_BASE + "Lockdown.md",
   },
@@ -74,7 +74,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "oski",
     platform: "CyberDefenders",
     summary:
-      "A partir de un hash analizamos un stealer tipo Oski: roba credenciales de navegadores, las exfiltra por POST a su C2 y se autoelimina a los 5 segundos.",
+      "Análisis de comportamiento de un infostealer (Oski Stealer). Identificación de C2, uso de sqlite3.dll para robo de credenciales, exfiltración de datos y técnicas de auto-borrado.",
     categories: ["Threat Intel"],
     href: CD_BASE + "Oski.md",
   },
@@ -84,7 +84,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "psexec-hunt",
     platform: "CyberDefenders",
     summary:
-      "Rastreamos en un PCAP el movimiento lateral con PsExec desde 10.0.0.130 hacia Sales-PC y Marketing-PC usando credenciales NTLM de ssales.",
+      "Investigación sobre el abuso de herramientas legítimas (PsExec) para movimiento lateral. Análisis de tráfico SMB2, shares administrativos (ADMIN$) y extracción de credenciales NTLM.",
     categories: ["Network Forensics"],
     href: CD_BASE + "PsExec-Hunt.md",
   },
@@ -94,7 +94,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "ramnit",
     platform: "CyberDefenders",
     summary:
-      "Con Volatility 3 aislamos ChromeSetup.exe en un dump de memoria, extrajimos IP y dominio C2, calculamos su SHA1 y lo enriquecimos en VirusTotal como Ramnit.",
+      "Análisis forense de memoria sobre una infección del gusano bancario Ramnit. Identificación de procesos anómalos (ChromeSetup.exe), geolocalización de C2 y extracción de hashes.",
     categories: ["Endpoint Forensics"],
     href: CD_BASE + "RamnIt.md",
   },
@@ -104,7 +104,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "red-stealer",
     platform: "CyberDefenders",
     summary:
-      "Desde un solo hash en VirusTotal, MalwareBazaar y ThreatFox identificamos wextract.exe como Redline Stealer y extrajimos su C2, TTPs e IOCs.",
+      "Análisis del malware RedLine Stealer distribuido como wextract.exe. Mapeo de técnicas de recolección de datos (T1005), escalación de privilegios e infraestructura C2.",
     categories: ["Threat Intel"],
     href: CD_BASE + "Red%20Stealer.md",
   },
@@ -114,7 +114,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "web-investigation",
     platform: "CyberDefenders",
     summary:
-      "Desde un barrido de GET requests hasta una SQLi en search.php, el panel /admin/ y el webshell NVri2vhp.php en el servidor web de BookWorld.",
+      "Investigación de un compromiso a servidor web. Detección de SQL Injection, enumeración con GoBuster, bypass de panel de administración y despliegue de webshell.",
     categories: ["Network Forensics"],
     href: CD_BASE + "Web%20Investigation.md",
   },
@@ -124,7 +124,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "brave",
     platform: "CyberDefenders",
     summary:
-      "Análisis de un dump de memoria Windows con Volatility 3 y HxD: procesos, conexiones establecidas, archivos abiertos y tiempo de uso de Brave.",
+      "Análisis forense de memoria de host Windows sospechoso de exfiltración. Identificación de conexiones, sesiones web cifradas (T1071.001) y uso de LOLApps. Reconstrucción de actividad vía UserAssist.",
     categories: ["Endpoint Forensics"],
     href: CD_BASE + "Brave.md",
   },
@@ -134,7 +134,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "sysinternals",
     platform: "CyberDefenders",
     summary:
-      "Un falso SysInternals.exe de la familia Rozena instala un servicio falso de VMware y manipula el archivo hosts; lo reconstruimos con Amcache, ShimCache y PSReadLine.",
+      "Investigación forense de un endpoint Windows comprometido usando la suite Sysinternals. Análisis de artefactos de registro, prefetch y reconstrucción de la cadena de ejecución.",
     categories: ["Endpoint Forensics"],
     href: CD_BASE + "SysInternals.md",
   },
@@ -144,7 +144,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "thecrime",
     platform: "CyberDefenders",
     summary:
-      "Con ALEAPP reconstruimos la deuda de trading, la amenaza del acreedor, la última ubicación y el viaje a Las Vegas de una víctima desaparecida.",
+      "Análisis forense de dispositivo Android para investigar un crimen. Recuperación de evidencia borrada, análisis de metadatos de archivos y reconstrucción de actividad del usuario mediante artefactos.",
     categories: ["Android Forensics"],
     href: CD_BASE + "TheCrime.md",
   },
@@ -154,7 +154,7 @@ export const INVESTIGATIONS: Investigation[] = [
     slug: "webstrike",
     platform: "CyberDefenders",
     summary:
-      "En un PCAP seguimos un file upload con doble extensión, un reverse shell Netcat al puerto 8080 y la exfiltración de /etc/passwd en shoporoma.com.",
+      "Análisis de captura de tráfico HTTP tras ataque a aplicación web. Detección de file upload malicioso, despliegue de webshell PHP y extracción de IOCs desde logs de servidor.",
     categories: ["Network Forensics"],
     href: CD_BASE + "WebStrike.md",
   },

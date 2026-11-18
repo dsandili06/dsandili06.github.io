@@ -27,12 +27,11 @@ describe("writeups content", () => {
     it("has no horizontal rules or front matter", () => {
       expect(lines.filter((l) => l.trim() === "---")).toEqual([]);
     });
-    it("has no heading level 4 or deeper", () => {
-      expect(lines.filter((l) => /^#{4,}\s/.test(l))).toEqual([]);
-    });
-    it("starts with a lede paragraph, not a heading", () => {
-      const first = lines.find((l) => l.trim() !== "") ?? "";
-      expect(first.startsWith("#")).toBe(false);
+    it("pairs every lab question with an answer callout", () => {
+      const questions = lines.filter((l) => /^\*\*Q\d+\.\*\* /.test(l)).length;
+      const answers = lines.filter((l) => l.startsWith("> **R:**")).length;
+      expect(questions).toBeGreaterThan(0);
+      expect(answers).toBe(questions);
     });
     it("contains sections", () => {
       expect(text).toContain("## ");

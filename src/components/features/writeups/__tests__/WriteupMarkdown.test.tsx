@@ -145,6 +145,20 @@ describe("WriteupMarkdown", () => {
     expect(screen.queryByRole("blockquote")).not.toBeInTheDocument();
   });
 
+  it("renders an original **R:** answer blockquote as a note callout", () => {
+    render(
+      <WriteupMarkdown
+        markdown={"> **R:** `10.0.2.4`"}
+        investigationHref={HREF}
+        onOpenImage={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByRole("note", { name: "Respuesta del laboratorio" })).toHaveTextContent(
+      "10.0.2.4",
+    );
+  });
+
   it("renders any other blockquote as a pull quote", () => {
     const { container } = render(
       <WriteupMarkdown

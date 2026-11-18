@@ -1,202 +1,202 @@
-Analizamos el dump de memoria de una workstation Windows sospechada de actividad no autorizada y patrones de navegación inusuales. Con Volatility 3, CertUtil y HxD reconstruimos procesos, conexiones establecidas y el uso real de aplicaciones por parte del usuario.
+## 🧩 Escenario del Laboratorio
 
-## El caso
+**Contexto**: Se nos entrega un dump de memoria de una workstation Windows sospechada de haber sido utilizada para actividades potencialmente maliciosas, incluyendo accesos no autorizados y patrones de navegación inusuales. El equipo de seguridad detectó actividad de red hacia IPs externas asociadas a servicios de comunicación cifrada.  
+**Objetivo**: Analizar la memoria para identificar procesos relevantes, conexiones activas al momento de la adquisición y reconstruir patrones de uso de aplicaciones por parte del usuario.  
+**Herramientas**: Volatility 3, CertUtil, HxD.  
+**Tácticas**: Execution | Discovery | Command and Control.  
+Este laboratorio de CyberDefenders corresponde a la categoría **Endpoint Forensics** y está orientado específicamente al análisis de memoria con Volatility 3, CertUtil y HxD.
 
-Recibimos un dump de memoria de una workstation Windows que se sospecha fue utilizada para actividades potencialmente maliciosas, incluyendo accesos no autorizados y patrones de navegación inusuales. El equipo de seguridad detectó actividad de red hacia IPs externas asociadas a servicios de comunicación cifrada.
+## 📋 Preguntas del Laboratorio & Respuestas
 
-El objetivo es analizar la memoria para identificar procesos relevantes, conexiones activas al momento de la adquisición y reconstruir patrones de uso de aplicaciones por parte del usuario. El laboratorio corresponde a la categoría Endpoint Forensics y está orientado al análisis de memoria con Volatility 3, CertUtil y HxD.
-
-- **Plataforma:** CyberDefenders
-- **Categoría:** Endpoint Forensics
-- **Herramientas:** Volatility 3, CertUtil, HxD
-- **Tácticas:** Execution, Discovery, Command and Control
-
-## La investigación
-
-### Fijar la línea temporal de la evidencia
+### Pregunta 1
 
 **Q1.** What time was the RAM image acquired according to the suspect system?
 
-Empezamos con un plugin de reconocimiento general, `windows.info`, que extrae metadatos fundamentales de la evidencia: procesadores, versión del sistema operativo, hora y fecha del sistema, entre otros artefactos básicos que fijan la línea temporal inicial del análisis.
+En este caso, lo más factible es realizar un análisis inicial del dump con un plugin de reconocimiento general como `windows.info`, ya que este nos permite extraer metadatos fundamentales de la evidencia en memoria. Entre estos datos encontramos procesadores, versión del sistema operativo, hora y fecha del sistema, entre otros artefactos básicos que sirven para fijar la línea temporal inicial del análisis.  
+Comando utilizado:  
+`vol -f (path al dump) windows.info`  
 
-```text
-vol -f (path al dump) windows.info
-```
+![Salida de windows.info con la hora del sistema al momento de la adquisición](https://github.com/user-attachments/assets/753deb98-1102-45d0-a104-5773abe1b780)
 
-![Salida de windows.info con la hora del sistema al momento de la adquisición](https://github.com/user-attachments/assets/753deb98-1102-45d0-a104-5773abe1b780 "Metadatos del dump obtenidos con windows.info")
+> **R:** `2021-04-30 17:52`
 
-> **Respuesta:** `2021-04-30 17:52`
-
-### Verificar la integridad del dump
+### Pregunta 2
 
 **Q2.** What is the SHA256 hash value of the RAM image?
 
-Como nuestro entorno de análisis está basado en Windows, calculamos el hash con PowerShell. Desde el punto de vista forense, verificar los hashes de la evidencia es una buena práctica obligatoria: permite garantizar la integridad del artefacto analizado y demostrar que no fue alterado durante el proceso.
+Como mi entorno de análisis está basado en Windows, realizo este paso con PowerShell. Desde el punto de vista forense, **verificar los hashes de la evidencia es una buena práctica obligatoria**, ya que permite garantizar la integridad del artefacto analizado y demostrar que no fue alterado durante el proceso.  
+Comando utilizado:  
+`Get-FileHash -Algorithm SHA256 (path al dump)`  
+Con esto obtenemos directamente el hash SHA256 del archivo de memoria.  
 
-```powershell
-Get-FileHash -Algorithm SHA256 (path al dump)
-```
+> **R:** `9DB01B1E7B19A3B2113BFB65E860FFFD7A1630BDF2B18613D206EBF2AA0EA172`
 
-Con esto obtenemos directamente el hash SHA256 del archivo de memoria.
-
-> **Respuesta:** `9DB01B1E7B19A3B2113BFB65E860FFFD7A1630BDF2B18613D206EBF2AA0EA172`
-
-### Localizar el proceso de Brave
+### Pregunta 3
 
 **Q3.** What is the process ID of brave.exe?
 
-Para evitar ruido al aplicar el plugin `pslist`, filtramos la salida con `Select-String`. Así nos quedamos solo con las líneas relevantes y acelerar la identificación del proceso objetivo.
+Para evitar ruido al momento de aplicar el plugin `pslist`, conviene filtrar directamente la salida usando `Select-String`. Esto permite quedarnos únicamente con las líneas relevantes y acelerar bastante la identificación del proceso objetivo.  
+Comando utilizado:  
+`vol -f (path al dump) windows.pslist | sls "brave"`  
+Es importante tener en cuenta que en la salida del plugin, el **primer identificador corresponde al PID** y el **segundo al PPID**, por lo que hay que interpretar correctamente ambos campos. 
 
-```powershell
-vol -f (path al dump) windows.pslist | sls "brave"
-```
+![Salida filtrada de pslist con las entradas de brave.exe](https://github.com/user-attachments/assets/f98849ad-d2c2-458f-aff7-0994c36cf1f1)
 
-Hay que interpretar bien la salida: el primer identificador corresponde al PID y el segundo al PPID.
+> **R:** `4856`
 
-![Salida filtrada de pslist con las entradas de brave.exe](https://github.com/user-attachments/assets/f98849ad-d2c2-458f-aff7-0994c36cf1f1 "Procesos brave.exe listados con pslist")
-
-> **Respuesta:** `4856`
-
-### Contar las conexiones establecidas
+### Pregunta 4
 
 **Q4.** How many established network connections were there at the time of acquisition?
 
-Aplicamos la misma limpieza de salida. En lugar de revisar manualmente todas las conexiones obtenidas por `netscan`, filtramos únicamente las que están en estado `ESTABLISHED`, que son las que reconstruyen la actividad viva del host al momento de la adquisición.
+Aquí también aplicamos limpieza de salida, igual que en la pregunta anterior. En lugar de revisar manualmente todas las conexiones obtenidas por `netscan`, filtramos únicamente las que se encuentran en estado `ESTABLISHED`, que son las que realmente nos interesan para reconstruir la actividad viva del host al momento de la adquisición.  
+Comando utilizado:  
+`vol -f (path al dump) windows.netscan | sls "ESTABLISHED"`  
+De esta manera podemos contar la cantidad exacta de conexiones activas en ese instante.  
 
-```powershell
-vol -f (path al dump) windows.netscan | sls "ESTABLISHED"
-```
+![Conexiones en estado ESTABLISHED listadas por netscan](https://github.com/user-attachments/assets/24b174f2-0095-41fc-b51f-c6f574ef5cfb)
 
-De esta manera contamos la cantidad exacta de conexiones activas en ese instante.
+> **R:** `10`
 
-![Conexiones en estado ESTABLISHED listadas por netscan](https://github.com/user-attachments/assets/24b174f2-0095-41fc-b51f-c6f574ef5cfb "Conexiones ESTABLISHED al momento de la adquisición")
-
-> **Respuesta:** `10`
-
-### Resolver el dominio detrás de Chrome
+### Pregunta 5
 
 **Q5.** Which domain name does Chrome have an established network connection with?
 
-Con la información anterior identificamos la IP remota de la conexión establecida de `chrome.exe` y realizamos un Reverse DNS Lookup, que consulta qué nombre de dominio está asociado a una IP específica.
+Tomando como base la información de la pregunta anterior, podemos identificar la IP remota asociada a la conexión establecida de `chrome.exe` y posteriormente realizar un **Reverse DNS Lookup**. Este procedimiento permite consultar qué nombre de dominio está asociado a una IP específica. 
 
-![Conexión establecida de chrome.exe con su IP remota](https://github.com/user-attachments/assets/222228dc-e227-4953-a2c6-b490a1b03151 "IP remota de la conexión establecida de chrome.exe")
+![Conexión establecida de chrome.exe con su IP remota](https://github.com/user-attachments/assets/222228dc-e227-4953-a2c6-b490a1b03151)
 
-Para esto usamos la página `dnschecker.org`, que resolvió el dominio correspondiente a la conexión observada.
+Para esto utilicé la página `dnschecker.org`, resolviendo así el dominio correspondiente a la conexión observada.  
 
-![Resultado del Reverse DNS Lookup en dnschecker.org](https://github.com/user-attachments/assets/4b6143f1-51bf-4aec-9ed0-21699dd3acf4 "Reverse DNS de la IP remota en dnschecker.org")
+![Resultado del Reverse DNS Lookup en dnschecker.org](https://github.com/user-attachments/assets/4b6143f1-51bf-4aec-9ed0-21699dd3acf4)
 
-> **Respuesta:** `protonmail.ch`
+> **R:** `protonmail.ch`
 
-### Extraer el ejecutable del PID 6988
+### Pregunta 6
 
 **Q6.** What is the MD5 hash value of the process executable for PID 6988?
 
-Necesitamos extraer el proceso asociado al PID `6988` para trabajar sobre el ejecutable recuperado, ya sea con `Strings`, extracción de IOCs o cálculo de hashes. Primero volcamos el proceso:
+Para esta pregunta necesitamos extraer el proceso asociado al PID `6988`, ya que el objetivo es trabajar posteriormente sobre el ejecutable recuperado, ya sea para análisis con `Strings`, extracción de IOCs o cálculo de hashes del binario.  
+Comando utilizado para el dump del proceso:  
+`vol -f (path al dump) windows.pslist --pid 6988 --dump`  
+Una vez extraído el proceso, calculamos el hash MD5 con PowerShell:  
+`Get-FileHash -Algorithm MD5 (path al dump del proceso)`  
 
-```powershell
-vol -f (path al dump) windows.pslist --pid 6988 --dump
-```
+![Hash MD5 del ejecutable del PID 6988 calculado con Get-FileHash](https://github.com/user-attachments/assets/c0d5b97b-4e6d-45ef-90b1-5d63173d43cd)
 
-Una vez extraído, calculamos el hash MD5 con PowerShell:
+> **R:** `0B493D8E26F03CCD2060E0BE85F430AF`
 
-```powershell
-Get-FileHash -Algorithm MD5 (path al dump del proceso)
-```
-
-![Hash MD5 del ejecutable del PID 6988 calculado con Get-FileHash](https://github.com/user-attachments/assets/c0d5b97b-4e6d-45ef-90b1-5d63173d43cd "MD5 del proceso volcado del PID 6988")
-
-> **Respuesta:** `0B493D8E26F03CCD2060E0BE85F430AF`
-
-### Una palabra en un offset concreto
+### Pregunta 7
 
 **Q7.** Can you identify the word that begins at offset 0x45BE876 and is 6 bytes long?
 
-Para esta validación puntual recurrimos a HxD, un editor hexadecimal. Navegamos directamente al offset `0x45BE876` y, una vez posicionados, leemos los 6 bytes indicados por la consigna.
+Para identificar exactamente lo que solicita la pregunta, recurrimos a **HxD**, un editor hexadecimal muy útil para este tipo de validaciones puntuales. Navegamos directamente al offset `0x45BE876` y, una vez posicionados allí, leemos los 6 bytes indicados por la consigna.  
 
-![Vista hexadecimal en HxD en el offset 0x45BE876](https://github.com/user-attachments/assets/81883e68-d1f0-4e28-83dd-541e61875879 "Seis bytes leídos en HxD desde el offset 0x45BE876")
+![Vista hexadecimal en HxD en el offset 0x45BE876](https://github.com/user-attachments/assets/81883e68-d1f0-4e28-83dd-541e61875879)
 
-> **Respuesta:** `hacker`
+> **R:** `hacker`
 
-### El padre de PowerShell
+### Pregunta 8
 
 **Q8.** What is the creation date and time of the parent process of powershell.exe?
 
-Usamos `windows.pstree`, la forma más clara de visualizar la relación padre-hijo entre procesos dentro del dump. Al ubicar `powershell.exe` en el árbol vemos qué proceso lo originó: el parent process es `explorer.exe`. De la misma salida obtenemos la fecha y hora de creación del proceso padre.
+En este caso utilizamos el plugin `windows.pstree`, ya que es la forma más clara de visualizar la relación padre-hijo entre procesos dentro del dump. Al revisar el árbol de procesos y ubicar `powershell.exe`, podemos identificar qué proceso lo originó; en este caso, el parent process es `explorer.exe`. A partir de esa misma salida obtenemos la fecha y hora de creación del proceso padre.  
+Comando utilizado:  
+`vol -f (path al dump) windows.pstree`  
 
-```text
-vol -f (path al dump) windows.pstree
-```
+![Árbol de procesos con powershell.exe y su proceso padre explorer.exe](https://github.com/user-attachments/assets/b22a8267-012e-46e7-83d9-8d852f226f14)
 
-![Árbol de procesos con powershell.exe y su proceso padre explorer.exe](https://github.com/user-attachments/assets/b22a8267-012e-46e7-83d9-8d852f226f14 "Relación padre-hijo de powershell.exe en pstree")
+> **R:** `2021-04-30 17:39`
 
-> **Respuesta:** `2021-04-30 17:39`
-
-### El último archivo abierto en Notepad
+### Pregunta 9
 
 **Q9.** What is the full path and name of the last file opened in notepad?
 
-Aplicamos `windows.cmdline`, que entrega los parámetros con los que fue ejecutado cada proceso. Para enfocarnos en `notepad.exe` filtramos con `Select-String`. Así identificamos que desde la carpeta temporal de Windows (`\Temp\`) se abrió un archivo potencialmente sensible o sospechoso a través de Notepad.
+Aquí aplicamos el plugin `windows.cmdline`, que nos entrega los parámetros con los que fue ejecutado cada proceso. Para limpiar la salida y enfocarnos únicamente en `notepad.exe`, utilizamos nuevamente `Select-String`. De esta manera identificamos que desde la carpeta temporal de Windows (`\Temp\`) se abrió un archivo potencialmente sensible o sospechoso a través de Notepad.  
+Comando utilizado:  
+`vol -f (path al dump) windows.cmdline | sls "notepad"`  
 
-```powershell
-vol -f (path al dump) windows.cmdline | sls "notepad"
-```
+![Línea de comandos de notepad.exe con la ruta del archivo abierto](https://github.com/user-attachments/assets/ea188541-f0ab-403f-9668-77c624ffced7)
 
-![Línea de comandos de notepad.exe con la ruta del archivo abierto](https://github.com/user-attachments/assets/ea188541-f0ab-403f-9668-77c624ffced7 "Archivo abierto por notepad.exe según cmdline")
+> **R:** `C:\Users\JOHNDO~1\AppData\Local\Temp\7zO4FB31F24\accountNum`
 
-> **Respuesta:** `C:\Users\JOHNDO~1\AppData\Local\Temp\7zO4FB31F24\accountNum`
-
-### Cuánto tiempo usó Brave el sospechoso
+### Pregunta 10
 
 **Q10.** How long did the suspect use Brave browser? (In Hours)
 
-Para responder recurrimos a UserAssist, una clave del registro que almacena información sobre la ejecución de procesos con interfaz gráfica. Este artefacto permite identificar la ruta de ejecución, el tiempo activo, la cantidad de veces que se ejecutó un programa y su último momento de uso. Lo extraemos desde memoria con el plugin específico de Volatility y filtramos para quedarnos solo con la evidencia asociada a Brave:
+Aquí se nos consulta cuánto tiempo utilizó Brave el sospechoso. Para responder esto recurrimos a **UserAssist**, una clave del registro que almacena información sobre la ejecución de procesos con interfaz gráfica. Este artefacto es muy valioso porque permite identificar la ruta de ejecución del proceso, tiempo activo, cantidad de veces que fue ejecutado un programa y último momento de uso.  
+Para extraer esta información desde memoria utilizamos el plugin específico de Volatility:  
+`vol -f (path al dump) windows.registry.userassist | sls "brave"`  
+De esta manera filtramos el ruido del output y nos quedamos únicamente con la evidencia asociada a Brave.  
 
-```powershell
+![Entradas de UserAssist asociadas a Brave con el tiempo de uso](https://github.com/user-attachments/assets/447472f8-644f-49e1-b290-a8a2011073ee)
+
+> **R:** `4`
+
+## 🔬 Resumen del Proceso de Análisis
+
+### 1. **Validación inicial de la evidencia**
+```text
+Get-FileHash -Algorithm SHA256 (path al dump)
+```
+Se calculó el hash SHA256 de la imagen de memoria para preservar la integridad de la evidencia y trabajar sobre una referencia verificable durante todo el análisis.
+
+### 2. **Enumeración de procesos relevantes**
+```text
+vol -f (path al dump) windows.pslist | sls "brave"
+vol -f (path al dump) windows.pstree
+vol -f (path al dump) windows.cmdline | sls "notepad"
+```
+Con estos plugins se identificó el PID de `brave.exe`, la relación padre-hijo de `powershell.exe` y el último archivo abierto mediante Notepad.
+
+### 3. **Enumeración de conexiones activas**
+```text
+vol -f (path al dump) windows.netscan | sls "ESTABLISHED"
+```
+Se localizaron las conexiones establecidas al momento de la adquisición, permitiendo luego resolver el dominio asociado a la conexión activa de Chrome mediante reverse DNS.
+
+### 4. **Extracción y análisis de binario**
+```text
+vol -f (path al dump) windows.pslist --pid 6988 --dump
+Get-FileHash -Algorithm MD5 (path al dump del proceso)
+```
+Se extrajo el ejecutable asociado al PID `6988` para posterior hashing y posible análisis estático orientado a IOCs y atribución.
+
+### 5. **Artefactos hexadecimales y registro**
+```text
+HxD → offset 0x45BE876
 vol -f (path al dump) windows.registry.userassist | sls "brave"
 ```
+Con HxD se validó la cadena en el offset solicitado, mientras que UserAssist permitió reconstruir el tiempo de uso del navegador Brave.
 
-![Entradas de UserAssist asociadas a Brave con el tiempo de uso](https://github.com/user-attachments/assets/447472f8-644f-49e1-b290-a8a2011073ee "Tiempo de uso de Brave en UserAssist")
+## 🎯 MITRE ATT&CK Mapping
 
-> **Respuesta:** `4`
-
-## Reconstrucción del ataque
-
-El análisis siguió cinco fases:
-
-1. **Validación inicial de la evidencia.** Calculamos el hash SHA256 de la imagen de memoria para preservar su integridad y trabajar sobre una referencia verificable durante todo el análisis.
-2. **Enumeración de procesos relevantes.** Con `windows.pslist`, `windows.pstree` y `windows.cmdline` identificamos el PID de `brave.exe`, la relación padre-hijo de `powershell.exe` y el último archivo abierto mediante Notepad.
-3. **Enumeración de conexiones activas.** `windows.netscan` filtrado por `ESTABLISHED` localizó las conexiones al momento de la adquisición y permitió resolver, por reverse DNS, el dominio de la conexión activa de Chrome.
-4. **Extracción y análisis de binario.** Extrajimos el ejecutable asociado al PID `6988` para hashing y posible análisis estático orientado a IOCs y atribución.
-5. **Artefactos hexadecimales y registro.** HxD validó la cadena en el offset solicitado, mientras que UserAssist permitió reconstruir el tiempo de uso del navegador Brave.
-
-## MITRE ATT&CK
-
-| Táctica | Técnica | ID | Evidencia |
-|---------|---------|----|-----------|
+| Táctica | Técnica | ID | Descripción Observada |
+|---------|---------|----|-----------------------|
 | Discovery | Process Discovery | T1057 | Enumeración de procesos relevantes como `brave.exe`, `powershell.exe` y `notepad.exe` |
 | Discovery | System Network Connections Discovery | T1049 | Identificación de conexiones activas en estado `ESTABLISHED` mediante `windows.netscan` |
 | Command and Control | Application Layer Protocol | T1071.001 | Conexión activa de Chrome hacia `protonmail.ch`, servicio asociado a comunicaciones cifradas |
 | Execution | PowerShell | T1059.001 | Presencia y análisis del árbol de ejecución relacionado con `powershell.exe` |
 | Collection | Data from Local System | T1005 | Identificación del archivo abierto en Notepad dentro del directorio temporal del usuario |
 
-## Indicadores de compromiso
+## 🔬 Herramientas Utilizadas
 
-| Tipo | Indicador | Contexto |
-|------|-----------|----------|
-| Hash SHA256 | `9DB01B1E7B19A3B2113BFB65E860FFFD7A1630BDF2B18613D206EBF2AA0EA172` | Imagen de memoria analizada |
-| Hash MD5 | `0B493D8E26F03CCD2060E0BE85F430AF` | Ejecutable del proceso con PID `6988` |
-| Dominio | `protonmail.ch` | Conexión establecida de `chrome.exe` |
-| Ruta | `C:\Users\JOHNDO~1\AppData\Local\Temp\7zO4FB31F24\accountNum` | Último archivo abierto en Notepad |
+Memoria
 
-## Herramientas
+├── Volatility 3 → windows.info, windows.pslist, windows.netscan, windows.pstree, windows.cmdline, windows.registry.userassist
 
-- **Volatility 3:** `windows.info`, `windows.pslist`, `windows.netscan`, `windows.pstree`, `windows.cmdline` y `windows.registry.userassist`.
-- **PowerShell:** `Get-FileHash` para SHA256 y MD5.
-- **HxD:** análisis manual de offset hexadecimal.
-- **DNSChecker:** Reverse DNS Lookup para resolución de FQDN.
+├── PowerShell → Get-FileHash para SHA256 y MD5
 
-## Lecciones aprendidas
+└── HxD → análisis manual de offset hexadecimal
 
-1. **La validación de hashes de evidencia no es opcional.** Es un paso básico pero crítico para garantizar integridad forense y trazabilidad del análisis.
-2. **Volatility 3 reconstruye comportamiento con mucha precisión.** Funciona si se combinan correctamente plugins como `pslist`, `pstree`, `netscan`, `cmdline` y `userassist`.
-3. **Correlacionar procesos, conexiones y registro da contexto.** Cruzar procesos, conexiones activas y artefactos del registro permite reconstruir el uso real del sistema y posibles acciones sospechosas del usuario.
+Enriquecimiento
+
+└── DNSChecker → Reverse DNS Lookup para resolución de FQDN
+
+## 📊 Lecciones Aprendidas
+
+1. **La validación de hashes de evidencia no es opcional**: es un paso básico pero crítico para garantizar integridad forense y trazabilidad del análisis.
+2. **Volatility 3 permite reconstruir comportamiento con mucha precisión** si se combinan correctamente plugins como `pslist`, `pstree`, `netscan`, `cmdline` y `userassist`.
+3. **La correlación entre procesos, conexiones activas y artefactos del registro** aporta contexto suficiente para reconstruir uso real del sistema y posibles acciones sospechosas del usuario.
+
+> **Santiago Daniel Sandili** – SOC Analyst L1 Portfolio  
+> *CyberDefenders Blue Team Lab: Brave (Endpoint Forensics Category)*
